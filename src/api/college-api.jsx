@@ -5,5 +5,7 @@ const api = axios.create({
 });
 
 export const createCollege = (data) => {
-  return api.post("/api/create/", data);
+  return api.post("/api/college/create/", data);
 };
+
+
