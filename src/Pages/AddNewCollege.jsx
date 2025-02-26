@@ -137,12 +137,13 @@ const MultiStepForm = () => {
         admissionStartDate: Yup.date().required("Admission Start Date is required"),
         admissionEndDate: Yup.date().required("Admission End Date is required"),
         lastYearCutoffMarks: Yup.number().required("Last Year Cutoff Marks is required"),
-        scholarshipsAvailable: Yup.array()
-          .of(Yup.string().oneOf(scholershipAvailable, "Invalid scholarship type"))
-          .required("At least one scholarship type is required"),
-        quotaSystem: Yup.array()
-          .of(Yup.string().oneOf(quotaSystem, "Invalid quota type"))
-          .required("At least one quota type is required"),
+        scholarshipsAvailable: Yup.string()
+        .oneOf(scholershipAvailable, "Invalid scholarship type")
+        .required("Scholarship type is required"),
+      
+      quotaSystem: Yup.string()
+        .oneOf(quotaSystem, "Invalid quota type")
+        .required("Quota type is required"),
       }),
     }),
     onSubmit: (values) => {
@@ -595,67 +596,71 @@ const MultiStepForm = () => {
             </div>
 
             <div className="mb-3">
-      <label>Last Year Cutoff Marks</label>
-      <input
-        type="number"
-        name="admissionEntranceDetails.lastYearCutoffMarks"
-        value={formik.values.admissionEntranceDetails.lastYearCutoffMarks}
-        onChange={formik.handleChange}
-        className="border p-2 w-full rounded"
+              <label>Last Year Cutoff Marks</label>
+              <input
+                type="number"
+                name="admissionEntranceDetails.lastYearCutoffMarks"
+                value={formik.values.admissionEntranceDetails.lastYearCutoffMarks}
+                onChange={formik.handleChange}
+                className="border p-2 w-full rounded"
 
-      />
-      {formik.errors.admissionEntranceDetails?.lastYearCutoffMarks && (
-        <div>{formik.errors.admissionEntranceDetails.lastYearCutoffMarks}</div>
-      )}
-    </div>
+              />
+              {formik.errors.admissionEntranceDetails?.lastYearCutoffMarks && (
+                <div>{formik.errors.admissionEntranceDetails.lastYearCutoffMarks}</div>
+              )}
+            </div>
 
-{/* Scholarships Available - Multi-Select */}
-<div className="mb-3">
-  <label className="block text-gray-700 font-medium mb-1">Scholarships Available</label>
-  <select
-    name="admissionEntranceDetails.scholarshipsAvailable"
-    multiple
-    value={formik.values.admissionEntranceDetails.scholarshipsAvailable}
-    onChange={(e) => {
-      const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
-      formik.setFieldValue("admissionEntranceDetails.scholarshipsAvailable", selectedValues);
-    }}
-    className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
-  >
-    {scholershipAvailable.map((option) => (
-      <option key={option} value={option}>
-        {option}
-      </option>
-    ))}
-  </select>
-  {formik.errors.admissionEntranceDetails?.scholarshipsAvailable && (
-    <div className="text-red-500 text-sm mt-1">{formik.errors.admissionEntranceDetails.scholarshipsAvailable}</div>
-  )}
-</div>
+            {/* Scholarships Available - Single Select */}
+            <div className="mb-3">
+              <label className="block text-gray-700 font-medium mb-1">
+                Scholarships Available
+              </label>
+              <select
+                name="admissionEntranceDetails.scholarshipsAvailable"
+                value={formik.values.admissionEntranceDetails.scholarshipsAvailable || ""}
+                onChange={(e) => {
+                  formik.setFieldValue("admissionEntranceDetails.scholarshipsAvailable", e.target.value);
+                }}
+                className="border p-2 w-full rounded"
+              >
+                <option value="" disabled>Select Scholarship</option>
+                {scholershipAvailable.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {formik.errors.admissionEntranceDetails?.scholarshipsAvailable && (
+                <div className="text-blue-500 text-sm mt-1">
+                  {/* {formik.errors.admissionEntranceDetails.scholarshipsAvailable} */}
+                </div>
+              )}
+            </div>
 
-{/* Quota System - Multi-Select */}
-<div className="mb-3">
-  <label className="block text-gray-700 font-medium mb-1">Quota System</label>
-  <select
-    name="admissionEntranceDetails.quotaSystem"
-    multiple
-    value={formik.values.admissionEntranceDetails.quotaSystem}
-    onChange={(e) => {
-      const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
-      formik.setFieldValue("admissionEntranceDetails.quotaSystem", selectedValues);
-    }}
-    className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
-  >
-    {quotaSystem.map((option) => (
-      <option key={option} value={option}>
-        {option}
-      </option>
-    ))}
-  </select>
-  {formik.errors.admissionEntranceDetails?.quotaSystem && (
-    <div className="text-red-500 text-sm mt-1">{formik.errors.admissionEntranceDetails.quotaSystem}</div>
-  )}
-</div>
+            {/* Quota System - Single Select */}
+            <div className="mb-3">
+              <label className="block text-gray-700 font-medium mb-1">Quota System</label>
+              <select
+                name="admissionEntranceDetails.quotaSystem"
+                value={formik.values.admissionEntranceDetails.quotaSystem || ""}
+                onChange={(e) => {
+                  formik.setFieldValue("admissionEntranceDetails.quotaSystem", e.target.value);
+                }}
+                className="border p-2 w-full rounded"
+              >
+                <option value="" disabled>Select Quota</option>
+                {quotaSystem.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {formik.errors.admissionEntranceDetails?.quotaSystem && (
+                <div className="text-red-500 text-sm mt-1">
+                  {/* {formik.errors.admissionEntranceDetails.quotaSystem} */}
+                </div>
+              )}
+            </div>
 
 
 
@@ -724,7 +729,7 @@ const MultiStepForm = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 h-4">Drag & drop images here or click to upload</p>
+                  <p className="text-gray-500 h-10">Drag & drop images here or click to upload</p>
                 )}
               </div>
               <input
