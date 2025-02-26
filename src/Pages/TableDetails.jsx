@@ -1,343 +1,253 @@
-import React, { useState } from 'react';
-import { FaEye, FaEdit, FaPauseCircle } from 'react-icons/fa';
-import CardImage from "../assets/info-card-design.jpg";  // Path to background image
-import StudentProfile from "../assets/student-profile.jpg";  // Path to profile image
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import DataTable from "react-data-table-component";
+import { FaEye, FaEdit, FaPauseCircle } from "react-icons/fa";
 
 const TableDetails = () => {
-  // Dummy data for tables (Replace with actual data)
-  const [collegeData, setCollegeData] = useState([
-    { id: 1, collegeName: 'ABC College', grade: '12th', placement: 'Good', branch: 'Science', rank: 'Top 10', fees: '50000', entranceExam: 'JEE', location: 'New York', cutoff: '85%' },
-    { id: 2, collegeName: 'XYZ College', grade: '11th', placement: 'Average', branch: 'Commerce', rank: 'Top 20', fees: '30000', entranceExam: 'None', location: 'California', cutoff: '80%' }
-  ]);
-
-  const [universityData, setUniversityData] = useState([
-    { id: 1, universityName: 'Stanford University', country: 'USA', rank: '1', established: '1891' },
-    { id: 2, universityName: 'Harvard University', country: 'USA', rank: '2', established: '1636' }
-  ]);
-
-  const [classData, setClassData] = useState([
-    { id: 1, className: 'Math 101', teacher: 'Mr. Smith', students: 30 },
-    { id: 2, className: 'Physics 101', teacher: 'Dr. Johnson', students: 25 }
-  ]);
-
-
-  // const collegeData = [
-  //   {
-  //     collegeName: 'ABC College',
-  //     grade: 'A',
-  //     placement: '95%',
-  //     branch: 'Computer Science',
-  //     rank: 1,
-  //     fees: '50000',
-  //     entranceExam: 'JEE',
-  //     location: 'City A',
-  //     cutoff: '90%',
-  //   },
-  //   {
-  //     collegeName: 'XYZ College',
-  //     grade: 'B',
-  //     placement: '85%',
-  //     branch: 'Mechanical',
-  //     rank: 10,
-  //     fees: '60000',
-  //     entranceExam: 'JEE',
-  //     location: 'City B',
-  //     cutoff: '85%',
-  //   },
-  // ];
-
-  // const universityData = [
-  //   {
-  //     universityName: 'University A',
-  //     country: 'Country X',
-  //     rank: 5,
-  //     established: '1960',
-  //   },
-  //   {
-  //     universityName: 'University B',
-  //     country: 'Country Y',
-  //     rank: 10,
-  //     established: '1980',
-  //   },
-  // ];
-
-  // const classData = [
-  //   {
-  //     className: 'Class 1',
-  //     teacher: 'Mr. A',
-  //     students: 30,
-  //   },
-  //   {
-  //     className: 'Class 2',
-  //     teacher: 'Mr. B',
-  //     students: 25,
-  //   },
-  // ];
-
-  const [selectedOption, setSelectedOption] = useState('university');
+  const [collegeData, setCollegeData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
 
-  const handleDropdownChange = (e) => {
-    setSelectedOption(e.target.value);
+  // Mapping categories and types to tag colors
+  const categoryColorMapping = {
+    "HSC": "bg-blue-200",
+    "Diploma": "bg-pink-200",
+    "Engineering": "bg-yellow-200",
+    "Pharmacy": "bg-red-200",  
   };
 
+  const typeColorMapping = {
+    "Government": "bg-green-200",
+    "Private": "bg-purple-200",
+    "Autonomous": "bg-red-200",
+   
+  };
+
+  // GET request to fetch college data
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.17:5000/api/college/all")
+      .then((response) => {
+        if (response.data.success) {
+          try {
+            const parsedData = JSON.parse(response.data.data);  // Parse the stringified data
+            setCollegeData(parsedData.colleges);  // Set the colleges data
+            setLoading(false);
+          } catch (error) {
+            console.error("Error parsing data:", error);
+            setLoading(false);
+          }
+        } else {
+          console.error("Failed to fetch colleges:", response.data.usrMsg);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching college data:", error);
+        setLoading(false);
+      });
+  }, []); // Empty array ensures this only runs once on component mount
+
+  // Modal Close Handler
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  // Open Profile Modal
   const handleViewProfile = (item) => {
     setSelectedItem(item);
     setModalOpen(true);
   };
 
-  const handleEdit = () => {
-    console.log("Edit:", item);
+  // Delete Handler
+  const handleDelete = (item) => {
+    setCollegeData(collegeData.filter((college) => college._id !== item._id));
   };
 
-  const handleDelete = (item, type) => {
-    console.log("Delete:", item, type);
-    if (type === 'college') {
-      setCollegeData(collegeData.filter(college => college.id !== item.id));
-    } else if (type === 'university') {
-      setUniversityData(universityData.filter(university => university.id !== item.id));
-    } else if (type === 'class') {
-      setClassData(classData.filter(classInfo => classInfo.id !== item.id));
-    }
-  };
+  // Filter the data based on search term
+  const filteredData = collegeData.filter((row) => {
+    return (
+      row.collegeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.affiliatedUniversity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.collegeCategory.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.collegeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${row.location.lat}, ${row.location.lng}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.contactDetails.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.websiteURL.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.establishedYear.toString().includes(searchTerm) ||
+      row.accreditation.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
+  // Table Columns with Custom Cell for Tags
+  const columns = [
+    {
+      name: "College Name",
+      selector: (row) => row.collegeName,
+      sortable: true,
+    },
+    {
+      name: "Affiliated University",
+      selector: (row) => row.affiliatedUniversity,
+      sortable: true,
+    },
+    {
+      name: "College Category",
+      selector: (row) => row.collegeCategory,
+      sortable: true,
+      cell: (row) => {
+        // Assign color based on collegeCategory value
+        const tagColor = categoryColorMapping[row.collegeCategory] || "bg-gray-200";
+        return (
+          <span
+            className={`px-3 py-1 rounded-full ${tagColor} text-sm`}
+          >
+            {row.collegeCategory}
+          </span>
+        );
+      },
+    },
+    {
+      name: "College Type",
+      selector: (row) => row.collegeType,
+      sortable: true,
+      cell: (row) => {
+        // Assign color based on collegeType value
+        const tagColor = typeColorMapping[row.collegeType] || "bg-gray-200";
+        return (
+          <span
+            className={`px-3 py-1 rounded-full ${tagColor} text-sm`}
+          >
+            {row.collegeType}
+          </span>
+        );
+      },
+    },
+    {
+      name: "Location",
+      selector: (row) => `${row.location.lat}, ${row.location.lng}`,
+      sortable: true,
+    },
+    {
+      name: "Address",
+      selector: (row) =>
+        `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`,
+      sortable: true,
+    },
+    {
+      name: "Contact",
+      selector: (row) => row.contactDetails,
+    },
+    {
+      name: "Website",
+      selector: (row) => (
+        <button
+          onClick={() => window.open(row.websiteURL, "_blank")}
+          className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md"
+        >
+          Visit Website
+        </button>
+      ),
+    },
+    {
+      name: "Established Year",
+      selector: (row) => row.establishedYear,
+    },
+    {
+      name: "Accreditation",
+      selector: (row) => row.accreditation,
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <div className="flex space-x-2">
+          <button
+            className="text-blue-600 hover:text-blue-800"
+            onClick={() => handleViewProfile(row)}
+          >
+            <FaEye size={20} />
+          </button>
+          <button
+            className="text-yellow-600 hover:text-yellow-800"
+            onClick={() => console.log("Edit:", row)}
+          >
+            <FaEdit size={20} />
+          </button>
+          <button
+            className="text-red-600 hover:text-red-800"
+            onClick={() => handleDelete(row)}
+          >
+            <FaPauseCircle size={20} />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-blue-50 py-8 px-4">
-      {/* Dropdown to select between University, Class, or College List */}
-      <div className="mb-6">
-        <select
-          className="px-4 py-2 border border-blue-300 rounded-lg"
-          value={selectedOption}
-          onChange={handleDropdownChange}
-        >
-          <option value="university">University List</option>
-          <option value="class">Class List</option>
-          <option value="college">College List</option>
-        </select>
-      </div>
+    <section>
+      <div className="bg-blue-50 py-4 px-2">
+        {/* Table Title and Search Input */}
+        <div className="flex justify-between items-center mb-6">
+          {/* College List Title */}
+          <h2 className="text-2xl font-semibold text-blue-700">College List</h2>
 
-      {/* Display different tables based on dropdown selection */}
-      {selectedOption === 'college' && (
-        <div>
-          <h2 className="text-2xl font-semibold text-center text-blue-700 mb-6">College List</h2>
-          <table className="w-full table-auto bg-white border-2 border-blue-300 shadow-lg">
-            <thead className="bg-blue-600 text-white">
-              <tr>
-                <th className="py-2 px-4">College Name</th>
-                <th className="py-2 px-4">Grade</th>
-                <th className="py-2 px-4">Placement</th>
-                <th className="py-2 px-4">Branch</th>
-                <th className="py-2 px-4">Rank</th>
-                <th className="py-2 px-4">Fees</th>
-                <th className="py-2 px-4">Entrance Exam</th>
-                <th className="py-2 px-4">Location</th>
-                <th className="py-2 px-4">Cutoff</th>
-                <th className="py-2 px-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {collegeData.map((college, index) => (
-                <tr key={index} className="text-center">
-                  <td className="py-2 px-4">{college.collegeName}</td>
-                  <td className="py-2 px-4">{college.grade}</td>
-                  <td className="py-2 px-4">{college.placement}</td>
-                  <td className="py-2 px-4">{college.branch}</td>
-                  <td className="py-2 px-4">{college.rank}</td>
-                  <td className="py-2 px-4">{college.fees}</td>
-                  <td className="py-2 px-4">{college.entranceExam}</td>
-                  <td className="py-2 px-4">{college.location}</td>
-                  <td className="py-2 px-4">{college.cutoff}</td>
-                  <td className="py-2 px-4">
-                    <button
-                      className="text-blue-600 hover:text-blue-800 mr-2"
-                      onClick={() => handleViewProfile(college)}
-                    >
-                      <FaEye size={20} />
-                    </button>
-                    <button
-                      className="text-yellow-600 hover:text-yellow-800 mr-2"
-                      onClick={handleEdit}
-                    >
-                      <FaEdit size={20} />
-                    </button>
-                    <button
-                      className="text-red-600 hover:text-red-800"
-                      onClick={() => handleDelete(college, 'college')}
-                    >
-                      <FaPauseCircle size={20} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {selectedOption === 'university' && (
-        <div>
-          <h2 className="text-2xl font-semibold text-center text-blue-700 mb-6">University List</h2>
-          <table className="w-full table-auto bg-white border-2 border-blue-300 shadow-lg">
-            <thead className="bg-blue-600 text-white">
-              <tr>
-                <th className="py-2 px-4">University Name</th>
-                <th className="py-2 px-4">Country</th>
-                <th className="py-2 px-4">Rank</th>
-                <th className="py-2 px-4">Established</th>
-                <th className="py-2 px-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {universityData.map((university, index) => (
-                <tr key={index} className="text-center">
-                  <td className="py-2 px-4">{university.universityName}</td>
-                  <td className="py-2 px-4">{university.country}</td>
-                  <td className="py-2 px-4">{university.rank}</td>
-                  <td className="py-2 px-4">{university.established}</td>
-                  <td className="py-2 px-4">
-                    <button
-                      className="text-blue-600 hover:text-blue-800 mr-2"
-                      onClick={() => handleViewProfile(university)}
-                    >
-                      <FaEye size={20} />
-                    </button>
-                    <button
-                      className="text-yellow-600 hover:text-yellow-800 mr-2"
-                      onClick={handleEdit}
-                    >
-                      <FaEdit size={20} />
-                    </button>
-                    <button
-                      className="text-red-600 hover:text-red-800"
-                      onClick={() => handleDelete(university, 'university')}
-                    >
-                      <FaPauseCircle size={20} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {selectedOption === 'class' && (
-        <div>
-          <h2 className="text-2xl font-semibold text-center text-blue-700 mb-6">Class List</h2>
-          <table className="w-full table-auto bg-white border-2 border-blue-300 shadow-lg">
-            <thead className="bg-blue-600 text-white">
-              <tr>
-                <th className="py-2 px-4">Class Name</th>
-                <th className="py-2 px-4">Teacher</th>
-                <th className="py-2 px-4">No. of Students</th>
-                <th className="py-2 px-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {classData.map((classInfo, index) => (
-                <tr key={index} className="text-center">
-                  <td className="py-2 px-4">{classInfo.className}</td>
-                  <td className="py-2 px-4">{classInfo.teacher}</td>
-                  <td className="py-2 px-4">{classInfo.students}</td>
-                  <td className="py-2 px-4">
-                    <button
-                      className="text-blue-600 hover:text-blue-800 mr-2"
-                      onClick={() => handleViewProfile(classInfo)}
-                    >
-                      <FaEye size={20} />
-                    </button>
-                    <button
-                      className="text-yellow-600 hover:text-yellow-800 mr-2"
-                      onClick={handleEdit}
-                    >
-                      <FaEdit size={20} />
-                    </button>
-                    <button
-                      className="text-red-600 hover:text-red-800"
-                      onClick={() => handleDelete(classInfo, 'class')}
-                    >
-                      <FaPauseCircle size={20} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Profile Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-10">
-          <div
-            className="bg-white p-4 rounded-lg shadow-lg w-120 h-70 flex items-center overflow-hidden border-2 border-black bg-cover justify-evenly relative"
-            style={{ backgroundImage: `url(${CardImage})` }}
-          >
-            {/* Close Button */}
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-2 right-2 text-white bg-red-600 hover:bg-red-800 px-2 py-1 rounded-full"
-            >
-              X
-            </button>
-
-            <img
-              src={StudentProfile}
-              alt="Profile"
-              className="w-30 h-30 rounded-full object-cover mr-6 border-2 border-black"
+          {/* Search Input */}
+          <div className="ml-4">
+            <input
+              type="text"
+              placeholder="Search colleges..."
+              className="px-4 py-2 border rounded-md"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-
-            <div className="flex flex-col justify-between col-7">
-              <h4 className="text-lg font-semibold text-gray-800">Profile Details</h4>
-              <hr className="my-2 border-t border-black" />
-
-              {/* Render profile based on selected data */}
-              {selectedItem && selectedItem.collegeName && (
-                <>
-                  <p className="text-sm text-gray-700">
-                    <strong>College Name:</strong> {selectedItem.collegeName}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <strong>Grade:</strong> {selectedItem.grade}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <strong>Branch:</strong> {selectedItem.branch}
-                  </p>
-                </>
-              )}
-
-              {selectedItem && selectedItem.universityName && (
-                <>
-                  <p className="text-sm text-gray-700">
-                    <strong>University Name:</strong> {selectedItem.universityName}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <strong>Country:</strong> {selectedItem.country}
-                  </p>
-                </>
-              )}
-
-              {selectedItem && selectedItem.className && (
-                <>
-                  <p className="text-sm text-gray-700">
-                    <strong>Class Name:</strong> {selectedItem.className}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <strong>Teacher:</strong> {selectedItem.teacher}
-                  </p>
-                </>
-              )}
-            </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Data Table */}
+        <DataTable
+          // title="College List"
+          columns={columns}
+          data={filteredData} // Use the filtered data
+          pagination
+          highlightOnHover
+          responsive
+          progressPending={loading} // Shows loading spinner when data is fetching
+          progressComponent={<div>Loading...</div>} // Custom loading component
+          customStyles={{
+            headRow: {
+              style: {
+                backgroundColor: "#3b82f6", // Light blue background for the header
+                color: "white",              // White text color
+              },
+            },
+            headCells: {
+              style: {
+                fontWeight: "bold",        // Bold font for header cells
+              },
+            },
+            rows: {
+              style: {
+                backgroundColor: "#f0f9ff", // Lightest blue background for rows
+                color: "#1e3a8a",           // Dark blue text for row content
+                borderBottom: "1px solid #3b82f6", // Blue border between rows
+              },
+            },
+            pagination: {
+              style: {
+                backgroundColor: "#f0f9ff", // Light blue background for pagination
+              },
+            },
+          }}
+        />
+      </div>
+    </section>
   );
 };
 
 export default TableDetails;
+
+

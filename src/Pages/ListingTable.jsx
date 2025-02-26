@@ -61,24 +61,24 @@ const ListingTable = () => {
       {/* Filter Section at Top */}
       <div className="flex space-x-4 mb-6 w-full justify-center
       ">
-  <select className="border p-2 rounded-md bg-white" onChange={handleColumnChange}>
-    <option value="">Select Column</option>
-    {columns.map((col) => (
-      <option key={col} value={col}>
-        {col}
-      </option>
-    ))}
-  </select>
-  {filterColumn && (
-    <input
-      className="border p-2 rounded-md bg-white"
-      type="text"
-      placeholder={`Filter by ${filterColumn}...`}
-      value={filterValue}
-      onChange={handleFilterChange}
-    />
-  )}
-</div>
+        <select className="border p-2 rounded-md bg-white" onChange={handleColumnChange}>
+          <option value="">Select Column</option>
+          {columns.map((col) => (
+            <option key={col} value={col}>
+              {col}
+            </option>
+          ))}
+        </select>
+        {filterColumn && (
+          <input
+            className="border p-2 rounded-md bg-white"
+            type="text"
+            placeholder={`Filter by ${filterColumn}...`}
+            value={filterValue}
+            onChange={handleFilterChange}
+          />
+        )}
+      </div>
 
 
       {/* Table at Middle */}
@@ -99,7 +99,7 @@ const ListingTable = () => {
                 {columns.map((col) => (
                   <td key={col} className="px-4 py-2 border">
                     {item[col]}
-                  </td>
+                  </td> 
                 ))}
               </tr>
             ))}

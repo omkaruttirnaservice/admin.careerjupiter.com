@@ -1,38 +1,39 @@
-import { Route, Routes } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import SideMenu from './Pages/SideMenu';
-import Login from './Pages/Login';
-import TableDetails from './Pages/TableDetails';
-import MultiStepForm from './Pages/AddNewCollege';
-import UploadExcel from './Pages/UploadExcel';
-import ReportandAnalytics from './Pages/ReportandAnalytics';
-import AdminDashboard from './Pages/AdminDashboard';
-import ProfilePage from './Pages/ProfilePage';
-import CourseForm from './Courses/CollegeCourses';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import React Router
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'; // Import React Query
+import Root from './Component/Root'; // Import Root component
+import Login from './Pages/Login'; // Import Login page
+import TableDetails from './Pages/TableDetails'; // Import TableDetails page
+import MultiStepForm from './Pages/Addnewcollege'; // Import MultiStepForm page
+import UploadExcel from './Pages/UploadExcel'; // Import UploadExcel page
+import ReportandAnalytics from './Pages/ReportandAnalytics'; // Import ReportandAnalytics page
+import AdminDashboard from './Pages/AdminDashboard'; // Import AdminDashboard page
+import ProfilePage from './Pages/ProfilePage'; // Import ProfilePage
+import CollegeCourses from './Courses/CollegeCourses'; // Import CollegeCourses page
 
-// Create a QueryClient instance and provide it to your application
 const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="flex">
-        <SideMenu />
-        <div className="flex-1 p-6">
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/colleges" element={<TableDetails />} />
-            <Route path="/add-college" element={<MultiStepForm />} />
-            <Route path="/upload-excel" element={<UploadExcel />} />
-            <Route path="/reports" element={<ReportandAnalytics />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path='/collegeCourses/:id' element={<CourseForm />} />
-          </Routes>
-        </div>
-      </div>
+    <QueryClientProvider client={queryClient}> {/* Provide React Query context */}
+      <Router>
+        <Routes>
+          {/* Define the Root route and nested routes */}
+          <Route path="/" element={<Root />} >
+            <Route index element={<Login />} /> {/* Default route */}
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="colleges" element={<TableDetails />} />
+            <Route path="add-college" element={<MultiStepForm />} />
+            <Route path="upload-excel" element={<UploadExcel />} />
+            <Route path="reports" element={<ReportandAnalytics />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="collegeCourses" element={<CollegeCourses />} />
+          </Route>
+        </Routes>
+      </Router>
     </QueryClientProvider>
   );
 }
 
 export default App;
+
+

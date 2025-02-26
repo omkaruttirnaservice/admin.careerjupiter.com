@@ -87,8 +87,12 @@ const AdminDashboard = () => {
             <Line data={chartData} />
           </div>
         </div>
+
+
+
       </div>
     </>
+
   );
 };
 
