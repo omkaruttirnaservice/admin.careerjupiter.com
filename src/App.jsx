@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import React Router
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'; // Import React Query
 import Root from './Component/Root'; // Import Root component
@@ -17,7 +18,6 @@ function App() {
     <QueryClientProvider client={queryClient}> {/* Provide React Query context */}
       <Router>
         <Routes>
-          {/* Define the Root route and nested routes */}
           <Route path="/" element={<Root />} >
             <Route index element={<Login />} /> {/* Default route */}
             <Route path="dashboard" element={<AdminDashboard />} />
@@ -26,7 +26,7 @@ function App() {
             <Route path="upload-excel" element={<UploadExcel />} />
             <Route path="reports" element={<ReportandAnalytics />} />
             <Route path="profile" element={<ProfilePage />} />
-            <Route path="collegeCourses" element={<CollegeCourses />} />
+            <Route path="colleges/courses/:collegeId" element={<CollegeCourses />} />
           </Route>
         </Routes>
       </Router>
@@ -35,5 +35,4 @@ function App() {
 }
 
 export default App;
-
 
