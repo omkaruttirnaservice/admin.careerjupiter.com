@@ -96,6 +96,3 @@ const SideMenu = () => {
 };
 
 export default SideMenu;
-
-
-//Copilot
