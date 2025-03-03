@@ -30,7 +30,7 @@ const TableDetails = () => {
   // GET request to fetch college data
   useEffect(() => {
     axios
-      .get("http://192.168.1.17:5000/api/college/all")
+      .get("http://192.168.1.132:5000/api/college/all")
       .then((response) => {
         if (response.data.success) {
           try {

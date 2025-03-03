@@ -18,6 +18,10 @@ const navigation = [
   { name: 'Reports & Analytics', href: '/reports', icon: InboxIcon, current: false },
   { name: 'View Profile', href: '/profile', icon: ChartBarIcon, current: false },
   { name: 'Courses', href: '/collegeCourses', icon: ChartBarIcon, current: false },
+  { name: 'University', href: '/university', icon: ChartBarIcon, current: false },
+  // { name: 'EditUniversity', href: '/university/:iduniversity', icon: ChartBarIcon, current: false },
+
+
 ];
 
 function classNames(...classes) {

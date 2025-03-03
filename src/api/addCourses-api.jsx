@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://192.168.1.17:5000/api//course";
+const API_BASE_URL = "http://192.168.1.5:5000/api//course";
 
 export const AddCourses = async (collegeId, courseData) => {
   try {

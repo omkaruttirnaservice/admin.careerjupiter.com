@@ -10,7 +10,8 @@ import AdminDashboard from './Pages/AdminDashboard'; // Import AdminDashboard pa
 import ProfilePage from './Pages/ProfilePage'; // Import ProfilePage
 import CollegeCourses from './Courses/CollegeCourses'; // Import CollegeCourses page
 import EditCollege from './Pages/EditCollege';
-
+import AddUniversity from './University/AddUniversity';
+import EditUniversity from './University/EditUniversity'; // Import EditUniversity component
 
 const queryClient = new QueryClient();
 
@@ -30,9 +31,8 @@ function App() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="collegeCourses" element={<CollegeCourses />} />
             <Route path="/edit-college/:id" element={<EditCollege />} />
-
-            
-
+            <Route path="university" element={<AddUniversity />} />
+            <Route path="/edit-university/:id" element={<EditUniversity />} /> {/* Added EditUniversity route */}
           </Route>
         </Routes>
       </Router>
@@ -41,5 +41,3 @@ function App() {
 }
 
 export default App;
-
-
