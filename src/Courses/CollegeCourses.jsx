@@ -18,7 +18,9 @@ const CollegeCourses = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/college/course/${collegeId}`);
+        const response = await axios.get(
+          `${API_BASE_URL}/api/college/course/${collegeId}`
+        );
         const data = JSON.parse(response.data.data); // If the data is a string, parse it
         if (data && data.courses) {
           setCourses(data.courses); // Prefill the courses if they exist
@@ -26,7 +28,9 @@ const CollegeCourses = () => {
           setCourses([]);
         }
       } catch (err) {
-        setError("Failed to fetch courses. Please check the console for more details.");
+        setError(
+          "Failed to fetch courses. Please check the console for more details."
+        );
         console.error("Error fetching courses:", err.message);
       } finally {
         setLoading(false);
@@ -55,32 +59,29 @@ const CollegeCourses = () => {
   };
 
   // Remove the course by its index and delete it from the API
-// Remove the course by its id and delete it from the API
-// const removeCourse = async (courseId) => {
-//   try {
-//     setLoading(true);
-//     await axios.delete(`${API_BASE_URL}/api/college/course/${collegeId}/${courseId}`);
-//     setCourses(courses.filter((course) => course.id !== courseId)); // Remove the course from the state
-//     alert("Course deleted successfully!");
-//     setIsUpdated(true); // Mark as updated when course is removed
-//   } catch (err) {
-//     setError("Failed to delete the course. Please check the console for more details.");
-//     console.error("Error deleting course:", err.message);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+  // Remove the course by its id and delete it from the API
+  // const removeCourse = async (courseId) => {
+  //   try {
+  //     setLoading(true);
+  //     await axios.delete(`${API_BASE_URL}/api/college/course/${collegeId}/${courseId}`);
+  //     setCourses(courses.filter((course) => course.id !== courseId)); // Remove the course from the state
+  //     alert("Course deleted successfully!");
+  //     setIsUpdated(true); // Mark as updated when course is removed
+  //   } catch (err) {
+  //     setError("Failed to delete the course. Please check the console for more details.");
+  //     console.error("Error deleting course:", err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-
-// Remove the course by its index
-const removeCourse = (courseIndex) => {
-  const updatedCourses = [...courses];
-  updatedCourses.splice(courseIndex, 1);  // Remove the course at the specified index
-  setCourses(updatedCourses);  // Update the state
-  setIsUpdated(true);  // Mark as updated
-};
-
-
+  // Remove the course by its index
+  const removeCourse = (courseIndex) => {
+    const updatedCourses = [...courses];
+    updatedCourses.splice(courseIndex, 1); // Remove the course at the specified index
+    setCourses(updatedCourses); // Update the state
+    setIsUpdated(true); // Mark as updated
+  };
 
   // Update the course field on change
   const handleChange = (e, courseIndex, field) => {
@@ -98,8 +99,12 @@ const removeCourse = (courseIndex) => {
     setError(null);
 
     // Validate that all courses have the required fields
-    const validCourses = courses.filter(course => {
-      return course.courses[0].name && course.courses[0].duration && course.courses[0].annualFees;
+    const validCourses = courses.filter((course) => {
+      return (
+        course.courses[0].name &&
+        course.courses[0].duration &&
+        course.courses[0].annualFees
+      );
     });
 
     if (validCourses.length === 0) {
@@ -120,11 +125,15 @@ const removeCourse = (courseIndex) => {
     };
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/college/course/create`, courseData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/api/college/course/create`,
+        courseData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.success) {
         alert("Courses saved successfully!");
@@ -134,7 +143,10 @@ const removeCourse = (courseIndex) => {
       }
     } catch (error) {
       setError(error.message);
-      console.error("Error saving courses:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error saving courses:",
+        error.response ? error.response.data : error.message
+      );
     } finally {
       setLoading(false);
     }
@@ -158,11 +170,15 @@ const removeCourse = (courseIndex) => {
     };
 
     try {
-      const response = await axios.put(`${API_BASE_URL}/api/college/course/${collegeId}`, courseData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.put(
+        `${API_BASE_URL}/api/college/course/${collegeId}`,
+        courseData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data.success) {
         alert("Courses updated successfully!");
@@ -171,7 +187,10 @@ const removeCourse = (courseIndex) => {
       }
     } catch (error) {
       setError(error.message);
-      console.error("Error updating courses:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error updating courses:",
+        error.response ? error.response.data : error.message
+      );
     } finally {
       setLoading(false);
     }
@@ -180,7 +199,9 @@ const removeCourse = (courseIndex) => {
   return (
     <section className="p-6 bg-light-blue rounded-xl shadow-md">
       <div className="mb-6">
-        <h3 className="text-2xl font-semibold text-blue-600">Add Courses for College ID: {collegeId}</h3>
+        <h3 className="text-2xl font-semibold text-blue-600">
+          Add Courses 
+        </h3>
       </div>
 
       {error && (
@@ -263,21 +284,19 @@ const removeCourse = (courseIndex) => {
             </div>
 
             <div className="flex justify-between mt-4">
-            <button
-  onClick={() => removeCourse(courseIndex)}  // Pass courseIndex to removeCourse
-  className="bg-red-600 text-white py-2 px-4 rounded-lg"
->
-  <Trash className="mr-2" size={20} /> Remove Course
-</button>
+              <button
+                onClick={() => removeCourse(courseIndex)} // Pass courseIndex to removeCourse
+                className="bg-red-600 text-white py-2 px-4 rounded-lg"
+              >
+                <Trash className="mr-2" size={20} /> Remove Course
+              </button>
 
-
-            {/* <button
+              {/* <button
   onClick={() => removeCourse(course.id)}  // Pass course.id to removeCourse
   className="bg-red-600 text-white py-2 px-4 rounded-lg"
 >
   <Trash className="mr-2" size={20} /> Remove Course
 </button> */}
-
             </div>
           </motion.div>
         ))}
@@ -305,5 +324,3 @@ const removeCourse = (courseIndex) => {
 };
 
 export default CollegeCourses;
-
-
