@@ -1,395 +1,198 @@
-// import { useState } from "react";
-// import { motion } from "framer-motion";
-// import { Plus, Trash, CheckCheck } from "lucide-react";
-
-// const CourseForm = () => {
-//   const [courses, setCourses] = useState([
-//     {
-//       id: Date.now(),
-//       name: "",
-//       duration: "",
-//       fees: "",
-//       category: "",
-//       eligibility: "",
-//     },
-//   ]);
-
-//   // Handle adding a new course
-//   const addCourse = () => {
-//     setCourses([
-//       ...courses,
-//       {
-//         id: Date.now(),
-//         name: "",
-//         duration: "",
-//         fees: "",
-//         category: "",
-//         eligibility: "",
-//       },
-//     ]);
-//   };
-
-//   // Handle removing a course
-//   const removeCourse = (id) => {
-//     setCourses(courses.filter((course) => course.id !== id));
-//   };
-
-//   // Handle input change for each course
-//   const handleInputChange = (id, field, value) => {
-//     setCourses(
-//       courses.map((course) =>
-//         course.id === id ? { ...course, [field]: value } : course
-//       )
-//     );
-//   };
-
-//   // Handle saving the course data
-//   const saveData = () => {
-//     // Here, you can send the data to an API, save it in local storage, or log it to the console
-//     console.log("Saved Data:", courses);
-//     alert("Courses saved successfully!");
-//   };
-
-//   return (
-//     <div className="container mx-auto px-6 py-8">
-//       <h1 className="text-3xl font-bold text-center mb-6">Add College Courses</h1>
-//       <div className="space-y-6">
-//         {courses.map((course, index) => (
-//           <motion.div
-//             key={course.id}
-//             className="bg-white shadow-md rounded-lg p-5 border border-lightblue-300 relative"
-//             initial={{ opacity: 0, y: 10 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             transition={{ duration: 0.3, delay: index * 0.1 }}
-//           >
-//             <div className="grid grid-cols-2 gap-4">
-//               <div>
-//                 <label className="block text-gray-700">Course Name</label>
-//                 <input
-//                   type="text"
-//                   value={course.name}
-//                   onChange={(e) => handleInputChange(course.id, "name", e.target.value)}
-//                   className="w-full border border-blue-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-gray-700">Category</label>
-//                 <input
-//                   type="text"
-//                   value={course.category}
-//                   onChange={(e) => handleInputChange(course.id, "category", e.target.value)}
-//                   className="w-full border border-blue-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-gray-700">Duration (years)</label>
-//                 <input
-//                   type="number"
-//                   value={course.duration}
-//                   onChange={(e) => handleInputChange(course.id, "duration", e.target.value)}
-//                   className="w-full border border-blue-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-gray-700">Eligibility</label>
-//                 <input
-//                   type="text"
-//                   value={course.eligibility}
-//                   onChange={(e) => handleInputChange(course.id, "eligibility", e.target.value)}
-//                   className="w-full border border-blue-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 />
-//               </div>
-//               <div className="col-span-2">
-//                 <label className="block text-gray-700">Annual Fees</label>
-//                 <input
-//                   type="number"
-//                   value={course.fees}
-//                   onChange={(e) => handleInputChange(course.id, "fees", e.target.value)}
-//                   className="w-full border border-blue-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                 />
-//               </div>
-//             </div>
-//             <button
-//               onClick={() => removeCourse(course.id)}
-//               className="absolute top-4 right-4 text-red-500 hover:text-red-700"
-//             >
-//               <Trash size={20} />
-//             </button>
-//           </motion.div>
-//         ))}
-//         <div className="flex justify-items-start gap-4">
-//         <button
-//           onClick={addCourse}
-//           className="flex items-center bg-blue-600 text-white px-4 py-4 rounded-lg hover:bg-blue-700"
-//         >
-//           <Plus className="mr-2" /> Add Course
-//         </button>
-
-//         {/* Save Button */}
-//         <button
-//           onClick={saveData}
-//           className="flex items-center bg-green-600 text-white px-4 py-4 rounded-lg hover:bg-green-700 "
-//         >
-//           <CheckCheck className ="mr-2" />
-//           Save Data
-//         </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CourseForm;
-
-
-// import { useState, useEffect } from "react";
-// // import axios from "axios";
-// import { motion } from "framer-motion";
-// import { Plus, Trash, CheckCheck } from "lucide-react";
-// import { useParams } from "react-router-dom"; // Import useParams
-
-// const CollegeCourse = () => {
-//   const { collegeId } = useParams(); // Access collegeId from the URL
-//   const [courses, setCourses] = useState([
-//     {
-//       id: Date.now(),
-//       name: "",
-//       duration: "",
-//       fees: "",
-//       category: "",
-//       eligibility: "",
-//     },
-//   ]);
-
-
-//   useEffect(() => {
-//     // Fetch courses for the specific collegeId
-//     const fetchCourses = async () => {
-//       const response = await fetch(`/api/colleges/${collegeId}/courses`);
-//       const data = await response.json();
-//       setCourses(data.courses);
-//     };
-
-//     fetchCourses();
-//   }, [collegeId]); 
-//   // Example useEffect to fetch data based on collegeId (if needed)
-//   // useEffect(() => {
-   
-//   //   // axios.get(`/api/courses/${collegeId}`).then(response => setCourses(response.data));
-
-//   //   console.log("Fetching courses for collegeId:", collegeId);
-//   // //  
-//   // }, [collegeId]);
-
-//   // Handle adding a new course
-//   const addCourse = () => {
-//     setCourses([
-//       ...courses,
-//       {
-//         id: Date.now(),
-//         name: "",
-//         duration: "",
-//         fees: "",
-//         category: "",
-//         eligibility: "",
-//       },
-//     ]);
-//   };
-
-//   // Handle removing a course
-//   const removeCourse = (id) => {
-//     setCourses(courses.filter((course) => course.id !== id));
-//   };
-
-//   // Handle form changes
-//   const handleChange = (e, index) => {
-//     const { name, value } = e.target;
-//     const updatedCourses = [...courses];
-//     updatedCourses[index][name] = value;
-//     setCourses(updatedCourses);
-//   };
-
-//   return (
-//     <section className="p-4 bg-white rounded-xl shadow-md">
-//       <div className="flex justify-between mb-6">
-//         <h3 className="text-xl font-semibold">Add Courses for College ID: {collegeId}</h3> {/* Display the collegeId */}
-//         <button
-//           onClick={addCourse}
-//           className="bg-blue-600 text-white px-3 py-2 rounded-lg"
-//         >
-//           <Plus className="inline mr-2" size={20} />
-//           Add Course
-//         </button>
-//       </div>
-
-//       <div className="space-y-6">
-//         {courses.map((course, index) => (
-//           <motion.div
-//             key={course.id}
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             exit={{ opacity: 0 }}
-//             className="space-y-4"
-//           >
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//               <div className="flex flex-col">
-//                 <label>Name</label>
-//                 <input
-//                   type="text"
-//                   name="name"
-//                   value={course.name}
-//                   onChange={(e) => handleChange(e, index)}
-//                   className="mt-1 px-4 py-2 border rounded-md"
-//                 />
-//               </div>
-
-//               <div className="flex flex-col">
-//                 <label>Duration</label>
-//                 <input
-//                   type="text"
-//                   name="duration"
-//                   value={course.duration}
-//                   onChange={(e) => handleChange(e, index)}
-//                   className="mt-1 px-4 py-2 border rounded-md"
-//                 />
-//               </div>
-//             </div>
-
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//               <div className="flex flex-col">
-//                 <label>Fees</label>
-//                 <input
-//                   type="text"
-//                   name="fees"
-//                   value={course.fees}
-//                   onChange={(e) => handleChange(e, index)}
-//                   className="mt-1 px-4 py-2 border rounded-md"
-//                 />
-//               </div>
-
-//               <div className="flex flex-col">
-//                 <label>Category</label>
-//                 <input
-//                   type="text"
-//                   name="category"
-//                   value={course.category}
-//                   onChange={(e) => handleChange(e, index)}
-//                   className="mt-1 px-4 py-2 border rounded-md"
-//                 />
-//               </div>
-//             </div>
-
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//               <div className="flex flex-col">
-//                 <label>Eligibility</label>
-//                 <input
-//                   type="text"
-//                   name="eligibility"
-//                   value={course.eligibility}
-//                   onChange={(e) => handleChange(e, index)}
-//                   className="mt-1 px-4 py-2 border rounded-md"
-//                 />
-//               </div>
-//             </div>
-
-//             <div className="flex justify-between mt-4">
-//               <button
-//                 onClick={() => removeCourse(course.id)}
-//                 className="bg-red-600 text-white py-2 px-4 rounded-lg"
-//               >
-//                 <Trash className="mr-2" size={20} />
-//                 Remove Course
-//               </button>
-
-//               <button className="bg-green-600 text-white py-2 px-4 rounded-lg">
-//                 <CheckCheck className="mr-2" size={20} />
-//                 Save Course
-//               </button>
-//             </div>
-//           </motion.div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default CollegeCourse;
-
-
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { Plus, Trash, CheckCheck } from "lucide-react";
 import { motion } from "framer-motion";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { API_BASE_URL } from "../Constant/constantBaseUrl"; // You should define the API_BASE_URL here
 
 const CollegeCourses = () => {
-  const { collegeId } = useParams(); // Get the collegeId from the URL
+  const { collegeId } = useParams();
   const [courses, setCourses] = useState([]);
-  const [newCourse, setNewCourse] = useState({
-    name: "",
-    duration: "",
-    fees: "",
-    category: "",
-    eligibility: "",
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isUpdated, setIsUpdated] = useState(false); // Track if any course is updated
 
-  // Fetch courses for the specific collegeId
+  // Fetch courses from the API on component mount
   useEffect(() => {
     const fetchCourses = async () => {
-      const response = await fetch(`/api/colleges/${collegeId}/courses`);
-      const data = await response.json();
-      setCourses(data.courses); // Assuming the response returns courses as an array
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/college/course/${collegeId}`);
+        const data = JSON.parse(response.data.data); // If the data is a string, parse it
+        if (data && data.courses) {
+          setCourses(data.courses); // Prefill the courses if they exist
+        } else {
+          setCourses([]);
+        }
+      } catch (err) {
+        setError("Failed to fetch courses. Please check the console for more details.");
+        console.error("Error fetching courses:", err.message);
+      } finally {
+        setLoading(false);
+      }
     };
-
     fetchCourses();
   }, [collegeId]);
 
-  // Handle adding a new course
-  const addCourse = async () => {
-    const response = await fetch(`/api/colleges/${collegeId}/courses`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  // Add an empty course when the "Add Course" button is clicked
+  const addCourse = () => {
+    setCourses([
+      ...courses,
+      {
+        courses: [
+          {
+            name: "",
+            duration: "",
+            annualFees: "",
+            category: "SSC",
+            eligibility: "",
+          },
+        ],
       },
-      body: JSON.stringify(newCourse),
-    });
-
-    const data = await response.json();
-    setCourses([...courses, data.course]); // Add the new course to the state
-    setNewCourse({ name: "", duration: "", fees: "", category: "", eligibility: "" }); // Reset form
+    ]);
+    setIsUpdated(true); // Mark as updated when new course is added
   };
 
-  // Handle removing a course
-  const removeCourse = async (courseId) => {
-    const response = await fetch(`/api/colleges/${collegeId}/courses/${courseId}`, {
-      method: 'DELETE',
+  // Remove the course by its index and delete it from the API
+// Remove the course by its id and delete it from the API
+// const removeCourse = async (courseId) => {
+//   try {
+//     setLoading(true);
+//     await axios.delete(`${API_BASE_URL}/api/college/course/${collegeId}/${courseId}`);
+//     setCourses(courses.filter((course) => course.id !== courseId)); // Remove the course from the state
+//     alert("Course deleted successfully!");
+//     setIsUpdated(true); // Mark as updated when course is removed
+//   } catch (err) {
+//     setError("Failed to delete the course. Please check the console for more details.");
+//     console.error("Error deleting course:", err.message);
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+
+// Remove the course by its index
+const removeCourse = (courseIndex) => {
+  const updatedCourses = [...courses];
+  updatedCourses.splice(courseIndex, 1);  // Remove the course at the specified index
+  setCourses(updatedCourses);  // Update the state
+  setIsUpdated(true);  // Mark as updated
+};
+
+
+
+  // Update the course field on change
+  const handleChange = (e, courseIndex, field) => {
+    const { name, value } = e.target;
+    const updatedCourses = [...courses];
+    updatedCourses[courseIndex].courses[0][name] = value; // Update the course at the dynamic index
+    setCourses(updatedCourses);
+    setIsUpdated(true); // Mark as updated when any field is changed
+  };
+
+  // Save the course data
+  const saveCourses = async () => {
+    if (loading) return;
+    setLoading(true);
+    setError(null);
+
+    // Validate that all courses have the required fields
+    const validCourses = courses.filter(course => {
+      return course.courses[0].name && course.courses[0].duration && course.courses[0].annualFees;
     });
 
-    if (response.ok) {
-      setCourses(courses.filter(course => course.id !== courseId)); // Remove course from state
+    if (validCourses.length === 0) {
+      setError("All fields (name, duration, and annual fees) are required.");
+      setLoading(false);
+      return;
+    }
+
+    const courseData = {
+      collegeId,
+      courses: validCourses.map((course) => ({
+        name: course.courses[0].name,
+        duration: Number(course.courses[0].duration), // Ensure duration is a number
+        annualFees: Number(course.courses[0].annualFees), // Ensure annualFees is a number
+        category: course.courses[0].category,
+        eligibility: course.courses[0].eligibility,
+      })),
+    };
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/college/course/create`, courseData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        alert("Courses saved successfully!");
+        setCourses([]); // Clear the courses after successful save
+      } else {
+        setError("Failed to save courses: " + response.data.message);
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error("Error saving courses:", error.response ? error.response.data : error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handle input changes for new course
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewCourse(prevState => ({ ...prevState, [name]: value }));
+  // Update courses if any changes are made
+  const updateCourses = async () => {
+    if (loading) return;
+    setLoading(true);
+    setError(null);
+
+    const courseData = {
+      collegeId,
+      courses: courses.map((course) => ({
+        name: course.courses[0].name,
+        duration: Number(course.courses[0].duration),
+        annualFees: Number(course.courses[0].annualFees),
+        category: course.courses[0].category,
+        eligibility: course.courses[0].eligibility,
+      })),
+    };
+
+    try {
+      const response = await axios.put(`${API_BASE_URL}/api/college/course/${collegeId}`, courseData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.success) {
+        alert("Courses updated successfully!");
+      } else {
+        setError("Failed to update courses.");
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error("Error updating courses:", error.response ? error.response.data : error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <section className="p-4 bg-white rounded-xl shadow-md">
-      <div className="flex justify-between mb-6">
-        <h3 className="text-xl font-semibold">Add Courses for College ID: {collegeId}</h3>
-        <button onClick={addCourse} className="bg-blue-600 text-white px-3 py-2 rounded-lg">
-          <Plus className="inline mr-2" size={20} />
-          Add Course
-        </button>
+    <section className="p-6 bg-light-blue rounded-xl shadow-md">
+      <div className="mb-6">
+        <h3 className="text-2xl font-semibold text-blue-600">Add Courses for College ID: {collegeId}</h3>
       </div>
 
+      {error && (
+        <div className="bg-red-100 text-red-600 p-4 rounded-md mb-4">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+
       <div className="space-y-6">
-        {/* Render existing courses */}
-        {courses.map((course) => (
+        {courses.map((course, courseIndex) => (
           <motion.div
-            key={course.id}
+            key={courseIndex}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -397,156 +200,110 @@ const CollegeCourses = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col">
-                <label>Name</label>
+                <label className="text-blue-600">Course Name</label>
                 <input
                   type="text"
                   name="name"
-                  value={course.name}
-                  className="mt-1 px-4 py-2 border rounded-md"
-                  disabled
+                  value={course.courses[0]?.name || ""}
+                  onChange={(e) => handleChange(e, courseIndex, "name")}
+                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-
               <div className="flex flex-col">
-                <label>Duration</label>
+                <label className="text-blue-600">Duration</label>
                 <input
                   type="text"
                   name="duration"
-                  value={course.duration}
-                  className="mt-1 px-4 py-2 border rounded-md"
-                  disabled
+                  value={course.courses[0]?.duration || ""}
+                  onChange={(e) => handleChange(e, courseIndex, "duration")}
+                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col">
-                <label>Fees</label>
+                <label className="text-blue-600">Annual Fees</label>
                 <input
                   type="text"
-                  name="fees"
-                  value={course.fees}
-                  className="mt-1 px-4 py-2 border rounded-md"
-                  disabled
+                  name="annualFees"
+                  value={course.courses[0]?.annualFees || ""}
+                  onChange={(e) => handleChange(e, courseIndex, "annualFees")}
+                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-
               <div className="flex flex-col">
-                <label>Category</label>
-                <input
-                  type="text"
+                <label className="text-blue-600">Category</label>
+                <select
                   name="category"
-                  value={course.category}
-                  className="mt-1 px-4 py-2 border rounded-md"
-                  disabled
-                />
+                  value={course.courses[0]?.category || "SSC"}
+                  onChange={(e) => handleChange(e, courseIndex, "category")}
+                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="SSC">SSC</option>
+                  <option value="HSC">HSC</option>
+                  <option value="Diploma">Diploma</option>
+                  <option value="Graduation">Graduation</option>
+                  <option value="Postgraduate">Postgraduate</option>
+                </select>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col">
-                <label>Eligibility</label>
+                <label className="text-blue-600">Eligibility</label>
                 <input
                   type="text"
                   name="eligibility"
-                  value={course.eligibility}
-                  className="mt-1 px-4 py-2 border rounded-md"
-                  disabled
+                  value={course.courses[0]?.eligibility || ""}
+                  onChange={(e) => handleChange(e, courseIndex, "eligibility")}
+                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             <div className="flex justify-between mt-4">
-              <button
-                onClick={() => removeCourse(course.id)}
-                className="bg-red-600 text-white py-2 px-4 rounded-lg"
-              >
-                <Trash className="mr-2" size={20} />
-                Remove Course
-              </button>
+            <button
+  onClick={() => removeCourse(courseIndex)}  // Pass courseIndex to removeCourse
+  className="bg-red-600 text-white py-2 px-4 rounded-lg"
+>
+  <Trash className="mr-2" size={20} /> Remove Course
+</button>
 
-              <button className="bg-green-600 text-white py-2 px-4 rounded-lg">
-                <CheckCheck className="mr-2" size={20} />
-                Save Course
-              </button>
+
+            {/* <button
+  onClick={() => removeCourse(course.id)}  // Pass course.id to removeCourse
+  className="bg-red-600 text-white py-2 px-4 rounded-lg"
+>
+  <Trash className="mr-2" size={20} /> Remove Course
+</button> */}
+
             </div>
           </motion.div>
         ))}
+      </div>
 
-        {/* Form to add new course */}
-        <div className="mt-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col">
-              <label>Name</label>
-              <input
-                type="text"
-                name="name"
-                value={newCourse.name}
-                onChange={handleChange}
-                className="mt-1 px-4 py-2 border rounded-md"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label>Duration</label>
-              <input
-                type="text"
-                name="duration"
-                value={newCourse.duration}
-                onChange={handleChange}
-                className="mt-1 px-4 py-2 border rounded-md"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col">
-              <label>Fees</label>
-              <input
-                type="text"
-                name="fees"
-                value={newCourse.fees}
-                onChange={handleChange}
-                className="mt-1 px-4 py-2 border rounded-md"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label>Category</label>
-              <input
-                type="text"
-                name="category"
-                value={newCourse.category}
-                onChange={handleChange}
-                className="mt-1 px-4 py-2 border rounded-md"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col">
-              <label>Eligibility</label>
-              <input
-                type="text"
-                name="eligibility"
-                value={newCourse.eligibility}
-                onChange={handleChange}
-                className="mt-1 px-4 py-2 border rounded-md"
-              />
-            </div>
-          </div>
-
-          <button
-            onClick={addCourse}
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4"
-          >
-            <Plus className="mr-2" size={20} />
-            Add New Course
-          </button>
-        </div>
+      <div className="mt-6 flex justify-between">
+        <button
+          onClick={addCourse}
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+        >
+          <Plus className="mr-2" size={20} /> Add Course
+        </button>
+        <button
+          onClick={isUpdated ? updateCourses : saveCourses}
+          className={`${
+            isUpdated ? "bg-green-600" : "bg-gray-400"
+          } text-white px-6 py-2 rounded-lg`}
+          disabled={!isUpdated}
+        >
+          {isUpdated ? "Update Course" : "Save Course"}
+        </button>
       </div>
     </section>
   );
 };
 
 export default CollegeCourses;
+
+

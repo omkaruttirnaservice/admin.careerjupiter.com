@@ -1,21 +1,33 @@
 import React, { useState, useRef } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useMutation } from "@tanstack/react-query";
+import { useFormik } from "formik";    //manage form data, handle validation, and submit forms
+import * as Yup from "yup";            //Validate Data 
+import { useMutation } from "@tanstack/react-query";    //handle action that modify data
 import { createCollege } from "../api/college-api";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import L from "leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";   //Handle Maps
 import "leaflet/dist/leaflet.css";
-import { toast } from "react-toastify";
-import { motion } from "framer-motion";
-import stateDistricts from "../Constant/ConstantData";
+import { toast } from "react-toastify";         //easily display notification
+import { motion } from "framer-motion";         // add animations and transitions to elements
+import stateDistricts from "../Constant/ConstantData";     //import predefined data
 import "react-toastify/dist/ReactToastify.css";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";             
 
-const defaultLocation = { lat: 19.7515, lan: 75.7139 };
+const defaultLocation = { lat: 19.7515, lan: 75.7139 };      //default geographical location with latitude and longitude 
 
-const collegeCategories = ["Diploma", "Engineering", "Pharmacy", "HSC", "SSC", "UG", "PG"];
+// categories of college
+const collegeCategories = [
+  "Diploma",
+  "Engineering",
+  "Pharmacy",
+  "HSC",
+  "SSC",
+  "UG",
+  "PG",
+];
+
+// Types of College
 const collegeTypes = ["Private", "Government", "Autonomous", "Deemed"];
+
+// Options of Accreditation
 const accreditationOptions = [
   "NAAC A++",
   "NAAC A+",
@@ -26,12 +38,26 @@ const accreditationOptions = [
   "ISO Certified",
   "NIRF Ranked",
 ];
-const scholershipAvailable = ["Merit-based", "Need-based", "Sports-based", "Other"];
-const quotaSystem = ["Management", "SC/ST", "OBC", "Genereal"];
 
+// Available Scholership
+const scholershipAvailable = [
+  "Merit-based",
+  "Need-based",
+  "Sports-based",
+  "Other",
+];
 
+//Quota System
+const quotaSystem = ["Management", "SC/ST", "OBC", "General"];
+
+//get current year from system's date & time
 const currentYear = new Date().getFullYear();
-const establishedYears = Array.from({ length: currentYear - 1980 + 1 }, (_, i) => 1980 + i);
+
+//creates array of years from 1980 to current year
+const establishedYears = Array.from(
+  { length: currentYear - 1980 + 1 },
+  (_, i) => 1980 + i
+);
 
 const LocationMarker = ({ setLocation, location, setFieldValue }) => {
   useMapEvents({
@@ -112,7 +138,9 @@ const MultiStepForm = () => {
     },
     validationSchema: Yup.object({
       collegeName: Yup.string().required("College Name is required"),
-      affiliatedUniversity: Yup.string().required("Affiliated University is required"),
+      affiliatedUniversity: Yup.string().required(
+        "Affiliated University is required"
+      ),
       contactDetails: Yup.string()
         .matches(/^\d{10}$/, "Only numbers are allowed & 10 digit")
         .required("Contact Details are required"),
@@ -120,7 +148,9 @@ const MultiStepForm = () => {
         .matches(/\d{6}/, "Pincode must be exactly 6 digits")
         .required("Pincode is required"),
       websiteURL: Yup.string().url("Website URL must be a valid URL"),
-      applicationFormURL: Yup.string().url("Application Form URL must be a valid URL"),
+      applicationFormURL: Yup.string().url(
+        "Application Form URL must be a valid URL"
+      ),
       info: Yup.string().required("Info is required"),
       image: Yup.mixed(),
       imageGallery: Yup.array(),
@@ -129,16 +159,24 @@ const MultiStepForm = () => {
       district: Yup.string().required("District is required"),
       lat: Yup.number().required("Latitude is required"),
       lan: Yup.number().required("Longitude is required"),
-      email_id: Yup.string().email("Invalid email address").required("Email ID is required"),
+      email_id: Yup.string()
+        .email("Invalid email address")
+        .required("Email ID is required"),
       keywords: Yup.array()
         .of(Yup.string().required("Keyword cannot be empty"))
         .max(5, "Maximum 5 keywords allowed"),
       admissionEntranceDetails: Yup.object({
-        admissionStartDate: Yup.date().required("Admission Start Date is required"),
+        admissionStartDate: Yup.date().required(
+          "Admission Start Date is required"
+        ),
         admissionEndDate: Yup.date().required("Admission End Date is required"),
-        lastYearCutoffMarks: Yup.number().required("Last Year Cutoff Marks is required"),
+        lastYearCutoffMarks: Yup.number().required(
+          "Last Year Cutoff Marks is required"
+        ),
         scholarshipsAvailable: Yup.array()
-          .of(Yup.string().oneOf(scholershipAvailable, "Invalid scholarship type"))
+          .of(
+            Yup.string().oneOf(scholershipAvailable, "Invalid scholarship type")
+          )
           .required("At least one scholarship type is required"),
         quotaSystem: Yup.array()
           .of(Yup.string().oneOf(quotaSystem, "Invalid quota type"))
@@ -186,11 +224,26 @@ const MultiStepForm = () => {
       });
 
       // Append admissionEntranceDetails fields
-      formData.append("admissionEntranceDetails[admissionStartDate]", values.admissionEntranceDetails.admissionStartDate);
-      formData.append("admissionEntranceDetails[admissionEndDate]", values.admissionEntranceDetails.admissionEndDate);
-      formData.append("admissionEntranceDetails[lastYearCutoffMarks]", values.admissionEntranceDetails.lastYearCutoffMarks);
-      formData.append("admissionEntranceDetails[scholarshipsAvailable]", JSON.stringify(values.admissionEntranceDetails.scholarshipsAvailable));
-      formData.append("admissionEntranceDetails[quotaSystem]", JSON.stringify(values.admissionEntranceDetails.quotaSystem));
+      formData.append(
+        "admissionEntranceDetails[admissionStartDate]",
+        values.admissionEntranceDetails.admissionStartDate
+      );
+      formData.append(
+        "admissionEntranceDetails[admissionEndDate]",
+        values.admissionEntranceDetails.admissionEndDate
+      );
+      formData.append(
+        "admissionEntranceDetails[lastYearCutoffMarks]",
+        values.admissionEntranceDetails.lastYearCutoffMarks
+      );
+      formData.append(
+        "admissionEntranceDetails[scholarshipsAvailable]",
+        JSON.stringify(values.admissionEntranceDetails.scholarshipsAvailable)
+      );
+      formData.append(
+        "admissionEntranceDetails[quotaSystem]",
+        JSON.stringify(values.admissionEntranceDetails.quotaSystem)
+      );
 
       // Log FormData entries
       for (let [key, value] of formData.entries()) {
@@ -213,18 +266,26 @@ const MultiStepForm = () => {
   const handleImageGalleryChange = (event) => {
     const files = Array.from(event.target.files);
     setGalleryImages((prevImages) => [...prevImages, ...files]);
-    formik.setFieldValue("imageGallery", [...formik.values.imageGallery, ...files]);
+    formik.setFieldValue("imageGallery", [
+      ...formik.values.imageGallery,
+      ...files,
+    ]);
   };
 
   const addKeyword = () => {
     if (keywordInput.trim() && formik.values.keywords.length < 5) {
-      formik.setFieldValue("keywords", [...formik.values.keywords, keywordInput.trim()]);
+      formik.setFieldValue("keywords", [
+        ...formik.values.keywords,
+        keywordInput.trim(),
+      ]);
       setKeywordInput("");
     }
   };
 
   const removeKeyword = (index) => {
-    const updatedKeywords = formik.values.keywords.filter((_, i) => i !== index);
+    const updatedKeywords = formik.values.keywords.filter(
+      (_, i) => i !== index
+    );
     formik.setFieldValue("keywords", updatedKeywords);
   };
 
@@ -283,7 +344,6 @@ const MultiStepForm = () => {
     }
   };
 
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -292,7 +352,9 @@ const MultiStepForm = () => {
       className="min-h-screen bg-gray-100 p-2"
     >
       <fieldset className="max-w-full mx-auto bg-white shadow-lg rounded-lg p-6">
-        <legend className="text-2xl font-bold text-center mb-4">College Registration Form</legend>
+        <legend className="text-2xl font-bold text-center mb-4">
+          College Registration Form
+        </legend>
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="mb-3">
@@ -303,7 +365,9 @@ const MultiStepForm = () => {
                 className="border p-2 w-full rounded"
               />
               {formik.touched.collegeName && formik.errors.collegeName && (
-                <p className="text-red-500 text-sm">{formik.errors.collegeName}</p>
+                <p className="text-red-500 text-sm">
+                  {formik.errors.collegeName}
+                </p>
               )}
             </div>
 
@@ -314,9 +378,12 @@ const MultiStepForm = () => {
                 {...formik.getFieldProps("affiliatedUniversity")}
                 className="border p-2 w-full rounded"
               />
-              {formik.touched.affiliatedUniversity && formik.errors.affiliatedUniversity && (
-                <p className="text-red-500 text-sm">{formik.errors.affiliatedUniversity}</p>
-              )}
+              {formik.touched.affiliatedUniversity &&
+                formik.errors.affiliatedUniversity && (
+                  <p className="text-red-500 text-sm">
+                    {formik.errors.affiliatedUniversity}
+                  </p>
+                )}
             </div>
 
             <div className="mb-3">
@@ -327,12 +394,17 @@ const MultiStepForm = () => {
               >
                 <option value="">Select Category</option>
                 {collegeCategories.map((category, index) => (
-                  <option key={index} value={category}>{category}</option>
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
                 ))}
               </select>
-              {formik.touched.collegeCategory && formik.errors.collegeCategory && (
-                <p className="text-red-500 text-sm">{formik.errors.collegeCategory}</p>
-              )}
+              {formik.touched.collegeCategory &&
+                formik.errors.collegeCategory && (
+                  <p className="text-red-500 text-sm">
+                    {formik.errors.collegeCategory}
+                  </p>
+                )}
             </div>
 
             <div className="mb-3">
@@ -343,11 +415,15 @@ const MultiStepForm = () => {
               >
                 <option value="">Select Type</option>
                 {collegeTypes.map((type, index) => (
-                  <option key={index} value={type}>{type}</option>
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
                 ))}
               </select>
               {formik.touched.collegeType && formik.errors.collegeType && (
-                <p className="text-red-500 text-sm">{formik.errors.collegeType}</p>
+                <p className="text-red-500 text-sm">
+                  {formik.errors.collegeType}
+                </p>
               )}
             </div>
 
@@ -359,7 +435,9 @@ const MultiStepForm = () => {
                 className="border p-2 w-full rounded"
               />
               {formik.touched.address_line1 && formik.errors.address_line1 && (
-                <p className="text-red-500 text-sm">{formik.errors.address_line1}</p>
+                <p className="text-red-500 text-sm">
+                  {formik.errors.address_line1}
+                </p>
               )}
             </div>
 
@@ -414,14 +492,15 @@ const MultiStepForm = () => {
               >
                 <option value="">Select District</option>
                 {formik.values.state &&
-                  stateDistricts[formik.values.state]?.map((district, index) => (
-                    <option key={index} value={district}>
-                      {district}
-                    </option>
-                  ))}
+                  stateDistricts[formik.values.state]?.map(
+                    (district, index) => (
+                      <option key={index} value={district}>
+                        {district}
+                      </option>
+                    )
+                  )}
               </select>
             </div>
-
 
             <div className="mb-3">
               <label className="block mb-1">Contact Details</label>
@@ -430,11 +509,13 @@ const MultiStepForm = () => {
                 {...formik.getFieldProps("contactDetails")}
                 className="border p-2 w-full rounded"
               />
-              {formik.touched.contactDetails && formik.errors.contactDetails && (
-                <p className="text-red-500 text-sm">{formik.errors.contactDetails}</p>
-              )}
+              {formik.touched.contactDetails &&
+                formik.errors.contactDetails && (
+                  <p className="text-red-500 text-sm">
+                    {formik.errors.contactDetails}
+                  </p>
+                )}
             </div>
-
 
             <div className="mb-3 col-span-full w-full">
               <label className="block mb-1">Description</label>
@@ -448,7 +529,6 @@ const MultiStepForm = () => {
               )}
             </div>
 
-
             <div className="mb-3">
               <label className="block mb-1">Website URL</label>
               <input
@@ -457,7 +537,9 @@ const MultiStepForm = () => {
                 className="border p-2 w-full rounded"
               />
               {formik.touched.websiteURL && formik.errors.websiteURL && (
-                <p className="text-red-500 text-sm">{formik.errors.websiteURL}</p>
+                <p className="text-red-500 text-sm">
+                  {formik.errors.websiteURL}
+                </p>
               )}
             </div>
 
@@ -469,7 +551,9 @@ const MultiStepForm = () => {
               >
                 <option value="">Select Year</option>
                 {establishedYears.map((year) => (
-                  <option key={year} value={year}>{year}</option>
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
               </select>
             </div>
@@ -482,7 +566,9 @@ const MultiStepForm = () => {
               >
                 <option value="">Select Accreditation</option>
                 {accreditationOptions.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
             </div>
@@ -503,9 +589,12 @@ const MultiStepForm = () => {
                 {...formik.getFieldProps("applicationFormURL")}
                 className="border p-2 w-full rounded"
               />
-              {formik.touched.applicationFormURL && formik.errors.applicationFormURL && (
-                <p className="text-red-500 text-sm">{formik.errors.applicationFormURL}</p>
-              )}
+              {formik.touched.applicationFormURL &&
+                formik.errors.applicationFormURL && (
+                  <p className="text-red-500 text-sm">
+                    {formik.errors.applicationFormURL}
+                  </p>
+                )}
             </div>
 
             <div className="mb-3">
@@ -555,120 +644,147 @@ const MultiStepForm = () => {
               </div>
               {/* Validation Error Message */}
               {formik.touched.keywords && formik.errors.keywords ? (
-                <div className="text-red-500 text-sm mt-1">{formik.errors.keywords}</div>
+                <div className="text-red-500 text-sm mt-1">
+                  {formik.errors.keywords}
+                </div>
               ) : null}
             </div>
 
             {/* add more fields */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-              <div >
+              <div>
                 <label>Admission Start Date</label>
                 <input
                   type="date"
                   name="admissionEntranceDetails.admissionStartDate"
-                  value={formik.values.admissionEntranceDetails.admissionStartDate}
+                  value={
+                    formik.values.admissionEntranceDetails.admissionStartDate
+                  }
                   onChange={formik.handleChange}
                   className="border p-2 w-full rounded"
-
                 />
                 {formik.errors.admissionEntranceDetails?.admissionStartDate && (
-                  <div>{formik.errors.admissionEntranceDetails.admissionStartDate}</div>
+                  <div>
+                    {formik.errors.admissionEntranceDetails.admissionStartDate}
+                  </div>
                 )}
               </div>
 
-              <div >
+              <div>
                 <label>Admission End Date</label>
                 <input
                   type="date"
                   name="admissionEntranceDetails.admissionEndDate"
-                  value={formik.values.admissionEntranceDetails.admissionEndDate}
+                  value={
+                    formik.values.admissionEntranceDetails.admissionEndDate
+                  }
                   className="border p-2 w-full rounded"
-
                   onChange={formik.handleChange}
                 />
                 {formik.errors.admissionEntranceDetails?.admissionEndDate && (
-                  <div>{formik.errors.admissionEntranceDetails.admissionEndDate}</div>
+                  <div>
+                    {formik.errors.admissionEntranceDetails.admissionEndDate}
+                  </div>
                 )}
               </div>
             </div>
 
             <div className="mb-3">
-      <label>Last Year Cutoff Marks</label>
-      <input
-        type="number"
-        name="admissionEntranceDetails.lastYearCutoffMarks"
-        value={formik.values.admissionEntranceDetails.lastYearCutoffMarks}
-        onChange={formik.handleChange}
-        className="border p-2 w-full rounded"
+              <label>Last Year Cutoff Marks</label>
+              <input
+                type="number"
+                name="admissionEntranceDetails.lastYearCutoffMarks"
+                value={
+                  formik.values.admissionEntranceDetails.lastYearCutoffMarks
+                }
+                onChange={formik.handleChange}
+                className="border p-2 w-full rounded"
+              />
+              {formik.errors.admissionEntranceDetails?.lastYearCutoffMarks && (
+                <div>
+                  {formik.errors.admissionEntranceDetails.lastYearCutoffMarks}
+                </div>
+              )}
+            </div>
 
-      />
-      {formik.errors.admissionEntranceDetails?.lastYearCutoffMarks && (
-        <div>{formik.errors.admissionEntranceDetails.lastYearCutoffMarks}</div>
-      )}
-    </div>
+            {/* Scholarships Available - Multi-Select */}
+            <div className="mb-3">
+              <label className="block text-gray-700 font-medium mb-1">
+                Scholarships Available
+              </label>
+              <select
+                name="admissionEntranceDetails.scholarshipsAvailable"
+                multiple
+                value={
+                  formik.values.admissionEntranceDetails.scholarshipsAvailable
+                }
+                onChange={(e) => {
+                  const selectedValues = Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value
+                  );
+                  formik.setFieldValue(
+                    "admissionEntranceDetails.scholarshipsAvailable",
+                    selectedValues
+                  );
+                }}
+                className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
+              >
+                {scholershipAvailable.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {formik.errors.admissionEntranceDetails
+                ?.scholarshipsAvailable && (
+                <div className="text-red-500 text-sm mt-1">
+                  {formik.errors.admissionEntranceDetails.scholarshipsAvailable}
+                </div>
+              )}
+            </div>
 
-{/* Scholarships Available - Multi-Select */}
-<div className="mb-3">
-  <label className="block text-gray-700 font-medium mb-1">Scholarships Available</label>
-  <select
-    name="admissionEntranceDetails.scholarshipsAvailable"
-    multiple
-    value={formik.values.admissionEntranceDetails.scholarshipsAvailable}
-    onChange={(e) => {
-      const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
-      formik.setFieldValue("admissionEntranceDetails.scholarshipsAvailable", selectedValues);
-    }}
-    className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
-  >
-    {scholershipAvailable.map((option) => (
-      <option key={option} value={option}>
-        {option}
-      </option>
-    ))}
-  </select>
-  {formik.errors.admissionEntranceDetails?.scholarshipsAvailable && (
-    <div className="text-red-500 text-sm mt-1">{formik.errors.admissionEntranceDetails.scholarshipsAvailable}</div>
-  )}
-</div>
-
-{/* Quota System - Multi-Select */}
-<div className="mb-3">
-  <label className="block text-gray-700 font-medium mb-1">Quota System</label>
-  <select
-    name="admissionEntranceDetails.quotaSystem"
-    multiple
-    value={formik.values.admissionEntranceDetails.quotaSystem}
-    onChange={(e) => {
-      const selectedValues = Array.from(e.target.selectedOptions, (option) => option.value);
-      formik.setFieldValue("admissionEntranceDetails.quotaSystem", selectedValues);
-    }}
-    className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
-  >
-    {quotaSystem.map((option) => (
-      <option key={option} value={option}>
-        {option}
-      </option>
-    ))}
-  </select>
-  {formik.errors.admissionEntranceDetails?.quotaSystem && (
-    <div className="text-red-500 text-sm mt-1">{formik.errors.admissionEntranceDetails.quotaSystem}</div>
-  )}
-</div>
-
-
-
-
-
-
-
+            {/* Quota System - Multi-Select */}
+            <div className="mb-3">
+              <label className="block text-gray-700 font-medium mb-1">
+                Quota System
+              </label>
+              <select
+                name="admissionEntranceDetails.quotaSystem"
+                multiple
+                value={formik.values.admissionEntranceDetails.quotaSystem}
+                onChange={(e) => {
+                  const selectedValues = Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value
+                  );
+                  formik.setFieldValue(
+                    "admissionEntranceDetails.quotaSystem",
+                    selectedValues
+                  );
+                }}
+                className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
+              >
+                {quotaSystem.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {formik.errors.admissionEntranceDetails?.quotaSystem && (
+                <div className="text-red-500 text-sm mt-1">
+                  {formik.errors.admissionEntranceDetails.quotaSystem}
+                </div>
+              )}
+            </div>
 
             {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6"> */}
             {/* College Image Upload */}
             <div className="border-2 border-dashed rounded-lg p-4 text-center">
               <label className="block font-medium mb-2">
-                College Image <span className="text-red-500">(Max: 100KB, JPG/JPEG/PNG)</span>
+                College Image{" "}
+                <span className="text-red-500">(Max: 100KB, JPG/JPEG/PNG)</span>
               </label>
               <div
                 className="border border-gray-300 p-6 rounded-lg cursor-pointer hover:border-blue-500 transition"
@@ -681,7 +797,9 @@ const MultiStepForm = () => {
                     className="w-full h-12 object-cover rounded"
                   />
                 ) : (
-                  <p className="text-gray-500">Drag & drop an image here or click to upload</p>
+                  <p className="text-gray-500">
+                    Drag & drop an image here or click to upload
+                  </p>
                 )}
               </div>
               <input
@@ -706,7 +824,8 @@ const MultiStepForm = () => {
             {/* Gallery Images Upload */}
             <div className="border-2 border-dashed rounded-lg p-4 text-center">
               <label className="block font-medium mb-2">
-                Gallery Images <span className="text-red-500"> (JPG/JPEG/PNG)</span>
+                Gallery Images{" "}
+                <span className="text-red-500"> (JPG/JPEG/PNG)</span>
               </label>
               <div
                 className="border border-gray-300 p-6 rounded-lg cursor-pointer hover:border-blue-500 transition"
@@ -724,7 +843,9 @@ const MultiStepForm = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 h-4">Drag & drop images here or click to upload</p>
+                  <p className="text-gray-500 h-4">
+                    Drag & drop images here or click to upload
+                  </p>
                 )}
               </div>
               <input
@@ -739,17 +860,19 @@ const MultiStepForm = () => {
                 }}
               />
               {formik.touched.gallery_image && formik.errors.gallery_image && (
-                <p className="text-red-500 text-sm">{formik.errors.gallery_image}</p>
+                <p className="text-red-500 text-sm">
+                  {formik.errors.gallery_image}
+                </p>
               )}
             </div>
 
-
             {/* </div> */}
-
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-medium">Select your location on the map:</label>
+            <label className="block mb-1 font-medium">
+              Select your location on the map:
+            </label>
 
             <div className="flex gap-2 mb-2">
               {/* Search Input */}
