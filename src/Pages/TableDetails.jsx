@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import { FaEye, FaEdit, FaPauseCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const TableDetails = () => {
   const [collegeData, setCollegeData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   // Mapping categories and types to tag colors
   const categoryColorMapping = {
@@ -28,7 +30,7 @@ const TableDetails = () => {
   // GET request to fetch college data
   useEffect(() => {
     axios
-      .get("http://192.168.1.17:5000/api/college/all")
+      .get("http://192.168.1.132:5000/api/college/all")
       .then((response) => {
         if (response.data.success) {
           try {
@@ -172,7 +174,7 @@ const TableDetails = () => {
           </button>
           <button
             className="text-yellow-600 hover:text-yellow-800"
-            onClick={() => console.log("Edit:", row)}
+            onClick={() => navigate(`/edit-college/${row._id}`)} // Navigate to EditCollege.jsx
           >
             <FaEdit size={20} />
           </button>
@@ -186,7 +188,6 @@ const TableDetails = () => {
       ),
     },
   ];
-
   return (
     <section>
       <div className="bg-blue-50 py-4 px-2">
