@@ -1,0 +1,253 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import DataTable from "react-data-table-component";
+import { FaEye, FaEdit, FaPauseCircle } from "react-icons/fa";
+
+const TableDetails = () => {
+  const [collegeData, setCollegeData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
+
+  // Mapping categories and types to tag colors
+  const categoryColorMapping = {
+    "HSC": "bg-blue-200",
+    "Diploma": "bg-pink-200",
+    "Engineering": "bg-yellow-200",
+    "Pharmacy": "bg-red-200",  
+  };
+
+  const typeColorMapping = {
+    "Government": "bg-green-200",
+    "Private": "bg-purple-200",
+    "Autonomous": "bg-red-200",
+   
+  };
+
+  // GET request to fetch college data
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.17:5000/api/college/all")
+      .then((response) => {
+        if (response.data.success) {
+          try {
+            const parsedData = JSON.parse(response.data.data);  // Parse the stringified data
+            setCollegeData(parsedData.colleges);  // Set the colleges data
+            setLoading(false);
+          } catch (error) {
+            console.error("Error parsing data:", error);
+            setLoading(false);
+          }
+        } else {
+          console.error("Failed to fetch colleges:", response.data.usrMsg);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching college data:", error);
+        setLoading(false);
+      });
+  }, []); // Empty array ensures this only runs once on component mount
+
+  // Modal Close Handler
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  // Open Profile Modal
+  const handleViewProfile = (item) => {
+    setSelectedItem(item);
+    setModalOpen(true);
+  };
+
+  // Delete Handler
+  const handleDelete = (item) => {
+    setCollegeData(collegeData.filter((college) => college._id !== item._id));
+  };
+
+  // Filter the data based on search term
+  const filteredData = collegeData.filter((row) => {
+    return (
+      row.collegeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.affiliatedUniversity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.collegeCategory.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.collegeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${row.location.lat}, ${row.location.lng}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.contactDetails.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.websiteURL.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.establishedYear.toString().includes(searchTerm) ||
+      row.accreditation.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  // Table Columns with Custom Cell for Tags
+  const columns = [
+    {
+      name: "College Name",
+      selector: (row) => row.collegeName,
+      sortable: true,
+    },
+    {
+      name: "Affiliated University",
+      selector: (row) => row.affiliatedUniversity,
+      sortable: true,
+    },
+    {
+      name: "College Category",
+      selector: (row) => row.collegeCategory,
+      sortable: true,
+      cell: (row) => {
+        // Assign color based on collegeCategory value
+        const tagColor = categoryColorMapping[row.collegeCategory] || "bg-gray-200";
+        return (
+          <span
+            className={`px-3 py-1 rounded-full ${tagColor} text-sm`}
+          >
+            {row.collegeCategory}
+          </span>
+        );
+      },
+    },
+    {
+      name: "College Type",
+      selector: (row) => row.collegeType,
+      sortable: true,
+      cell: (row) => {
+        // Assign color based on collegeType value
+        const tagColor = typeColorMapping[row.collegeType] || "bg-gray-200";
+        return (
+          <span
+            className={`px-3 py-1 rounded-full ${tagColor} text-sm`}
+          >
+            {row.collegeType}
+          </span>
+        );
+      },
+    },
+    {
+      name: "Location",
+      selector: (row) => `${row.location.lat}, ${row.location.lng}`,
+      sortable: true,
+    },
+    {
+      name: "Address",
+      selector: (row) =>
+        `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`,
+      sortable: true,
+    },
+    {
+      name: "Contact",
+      selector: (row) => row.contactDetails,
+    },
+    {
+      name: "Website",
+      selector: (row) => (
+        <button
+          onClick={() => window.open(row.websiteURL, "_blank")}
+          className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md"
+        >
+          Visit Website
+        </button>
+      ),
+    },
+    {
+      name: "Established Year",
+      selector: (row) => row.establishedYear,
+    },
+    {
+      name: "Accreditation",
+      selector: (row) => row.accreditation,
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <div className="flex space-x-2">
+          <button
+            className="text-blue-600 hover:text-blue-800"
+            onClick={() => handleViewProfile(row)}
+          >
+            <FaEye size={20} />
+          </button>
+          <button
+            className="text-yellow-600 hover:text-yellow-800"
+            onClick={() => console.log("Edit:", row)}
+          >
+            <FaEdit size={20} />
+          </button>
+          <button
+            className="text-red-600 hover:text-red-800"
+            onClick={() => handleDelete(row)}
+          >
+            <FaPauseCircle size={20} />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <section>
+      <div className="bg-blue-50 py-4 px-2">
+        {/* Table Title and Search Input */}
+        <div className="flex justify-between items-center mb-6">
+          {/* College List Title */}
+          <h2 className="text-2xl font-semibold text-blue-700">College List</h2>
+
+          {/* Search Input */}
+          <div className="ml-4">
+            <input
+              type="text"
+              placeholder="Search colleges..."
+              className="px-4 py-2 border rounded-md"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Data Table */}
+        <DataTable
+          // title="College List"
+          columns={columns}
+          data={filteredData} // Use the filtered data
+          pagination
+          highlightOnHover
+          responsive
+          progressPending={loading} // Shows loading spinner when data is fetching
+          progressComponent={<div>Loading...</div>} // Custom loading component
+          customStyles={{
+            headRow: {
+              style: {
+                backgroundColor: "#3b82f6", // Light blue background for the header
+                color: "white",              // White text color
+              },
+            },
+            headCells: {
+              style: {
+                fontWeight: "bold",        // Bold font for header cells
+              },
+            },
+            rows: {
+              style: {
+                backgroundColor: "#f0f9ff", // Lightest blue background for rows
+                color: "#1e3a8a",           // Dark blue text for row content
+                borderBottom: "1px solid #3b82f6", // Blue border between rows
+              },
+            },
+            pagination: {
+              style: {
+                backgroundColor: "#f0f9ff", // Light blue background for pagination
+              },
+            },
+          }}
+        />
+      </div>
+    </section>
+  );
+};
+
+export default TableDetails;
+
+
