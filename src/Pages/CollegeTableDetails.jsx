@@ -314,6 +314,6 @@ const CollegeTableDetails = () => {
 };
 
 export default CollegeTableDetails;
-\
+
 
 
