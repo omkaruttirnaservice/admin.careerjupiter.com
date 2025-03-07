@@ -41,12 +41,7 @@ const navigation = [
 		icon: ChartBarIcon,
 		current: false,
 	},
-	{
-		name: 'Courses',
-		href: '/collegeCourses',
-		icon: ChartBarIcon,
-		current: false,
-	},
+	
 ];
 
 function classNames(...classes) {
