@@ -3,7 +3,7 @@ import { Plus, Trash, CheckCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl"; // You should define the API_BASE_URL here
+import { API_BASE_URL } from "../Constant/constantBaseUrl"; 
 
 const CollegeCourses = () => {
   const { collegeId } = useParams();
@@ -21,7 +21,10 @@ const CollegeCourses = () => {
         const response = await axios.get(
           `${API_BASE_URL}/api/college/course/${collegeId}`
         );
-        const data = JSON.parse(response.data.data); // If the data is a string, parse it
+        const data =
+          typeof response.data.data === "string"
+            ? JSON.parse(response.data.data)
+            : response.data.data;
         if (data && data.courses) {
           setCourses(data.courses); // Prefill the courses if they exist
         } else {
@@ -199,9 +202,7 @@ const CollegeCourses = () => {
   return (
     <section className="p-6 bg-light-blue rounded-xl shadow-md">
       <div className="mb-6">
-        <h3 className="text-2xl font-semibold text-blue-600">
-          Add Courses 
-        </h3>
+        <h3 className="text-2xl font-semibold text-blue-600">Add Courses</h3>
       </div>
 
       {error && (
@@ -292,11 +293,11 @@ const CollegeCourses = () => {
               </button>
 
               {/* <button
-  onClick={() => removeCourse(course.id)}  // Pass course.id to removeCourse
-  className="bg-red-600 text-white py-2 px-4 rounded-lg"
->
-  <Trash className="mr-2" size={20} /> Remove Course
-</button> */}
+                onClick={() => removeCourse(course.id)} // Pass course.id to removeCourse
+                className="bg-red-600 text-white py-2 px-4 rounded-lg"
+              >
+                <Trash className="mr-2" size={20} /> Remove Course
+              </button> */}
             </div>
           </motion.div>
         ))}
