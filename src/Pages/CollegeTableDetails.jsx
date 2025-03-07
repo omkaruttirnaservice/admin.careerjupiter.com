@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
-import { FaEye, FaEdit, FaPauseCircle, FaPlus } from "react-icons/fa";
+import {
+  FaEye,
+  FaEdit,
+  FaPauseCircle,
+  FaPlus,
+  FaBuilding,
+  FaBriefcase,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import InfoCard from "../Component/InfoCard"; // Import the InfoCard component
 import EditCollegeDetails from "../Component/EditCollegeDetails"; // Import the EditCollegeDetails component
+import Infrastructure from "../Component/Infrastructure";
+import Placement from "../Component/Placement";
 
 const CollegeTableDetails = () => {
   const [collegeData, setCollegeData] = useState([]);
@@ -14,6 +23,8 @@ const CollegeTableDetails = () => {
   const [editModalOpen, setEditModalOpen] = useState(false); // Track Edit Modal
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [infraModalOpen, setInfraModalOpen] = useState(false);
+  const [placementModalOpen, setPlacementModalOpen] = useState(false);
 
   const categoryColorMapping = {
     HSC: "bg-blue-200",
@@ -35,8 +46,8 @@ const CollegeTableDetails = () => {
       .get(`${API_BASE_URL}/api/college/all`)
       .then((response) => {
         if (response.data.success) {
-          const parsedData = JSON.parse(response.data.data);
-          setCollegeData(parsedData.colleges);
+          const parsedData = typeof response.data.data === "string" ? JSON.parse(response.data.data) : response.data.data;
+          setCollegeData(parsedData.colleges);          
           setLoading(false);
         } else {
           setLoading(false);
@@ -218,30 +229,41 @@ const CollegeTableDetails = () => {
             className="text-blue-600 hover:text-blue-800"
             onClick={() => handleViewProfile(row)}
           >
-            <FaEye size={20} />
+            <FaEye size={17} />
           </button>
           <button
             className="text-yellow-600 hover:text-yellow-800"
             onClick={() => handleEdit(row)} // Open EditCollegeDetails
           >
-            <FaEdit size={20} />
+            <FaEdit size={17} />
           </button>
           <button
             className="text-red-600 hover:text-red-800"
             onClick={() => handleDelete(row)}
           >
-            <FaPauseCircle size={20} />
+            <FaPauseCircle size={17} />
           </button>
           <button
             className="text-green-600 hover:text-green-800"
             onClick={() => navigate(`/colleges/courses/${row._id}`)}
           >
-            <FaPlus size={20} />
+            <FaPlus size={17} />
+          </button>
+          <button
+            className="text-purple-600 hover:text-purple-800"
+            onClick={() => navigate(`/colleges/infrastructure/${row._id}`)}
+          >
+            <FaBuilding size={17} />
+          </button>
+          <button
+            className="text-pink-600 hover:text-pink-800"
+            onClick={() => navigate(`/colleges/placement/${row._id}`)}
+          >
+            <FaBriefcase size={17} />
           </button>
         </div>
       ),
     },
-
   ];
 
   return (
@@ -314,6 +336,3 @@ const CollegeTableDetails = () => {
 };
 
 export default CollegeTableDetails;
-
-
-
