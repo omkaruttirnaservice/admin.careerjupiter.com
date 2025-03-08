@@ -6,21 +6,35 @@ import {
 	CalendarIcon,
 	InboxIcon,
 	ChartBarIcon,
+	AcademicCapIcon,
+	OfficeBuildingIcon,
 } from '@heroicons/react/outline';
 
 // Navigation Items
 const navigation = [
-	{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
+	{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: false },
 	{
-		name: 'Manage Universities & Colleges',
+		name: 'Manage Colleges',
 		href: '/colleges',
 		icon: UsersIcon,
 		current: false,
 	},
 	{
-		name: 'Add Details',
+		name: 'Manage University',
+		href: '/university-details',
+		icon: OfficeBuildingIcon,
+		current: false,
+	},
+	{
+		name: 'Add College Details',
 		href: '/add-college',
 		icon: FolderIcon,
+		current: false,
+	},
+	{
+		name: 'Add University Details',
+		href: '/university',
+		icon: AcademicCapIcon,
 		current: false,
 	},
 	{
