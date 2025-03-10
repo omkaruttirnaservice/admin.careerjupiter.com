@@ -3,7 +3,7 @@ import React from "react";
 const InfoCard = ({ collegeData, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-50 bg-indigo-200">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto space-y-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto space-y-4 border-3 border-blue-400">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-blue-700">College Profile</h2>
           <button
@@ -13,6 +13,8 @@ const InfoCard = ({ collegeData, onClose }) => {
             &times;
           </button>
         </div>
+
+      <hr />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* College Name */}
@@ -98,20 +100,6 @@ const InfoCard = ({ collegeData, onClose }) => {
           <div>
             <strong className="text-blue-600">Accreditation:</strong>
             <p className="text-gray-700">{collegeData?.accreditation || "N/A"}</p>
-          </div>
-
-          {/* Additional Columns */}
-          <div>
-            <strong className="text-blue-600">Affiliated University:</strong>
-            <p className="text-gray-700">{collegeData?.affiliatedUniversity || "N/A"}</p>
-          </div>
-
-          {/* Other relevant columns can be added here, for example, courses */}
-          <div>
-            <strong className="text-blue-600">Courses:</strong>
-            <p className="text-gray-700">
-              {collegeData?.courses ? collegeData.courses.join(", ") : "N/A"}
-            </p>
           </div>
         </div>
       </div>
