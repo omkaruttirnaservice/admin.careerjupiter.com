@@ -9,12 +9,13 @@ import {
   FaBuilding,
   FaBriefcase,
 } from "react-icons/fa";
+import { Tooltip } from "react-tooltip";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import InfoCard from "../Component/InfoCard"; // Import the InfoCard component
 import EditCollegeDetails from "../Component/EditCollegeDetails"; // Import the EditCollegeDetails component
-import Infrastructure from "../Component/Infrastructure";
-import Placement from "../Component/Placement";
+// import Infrastructure from "../Component/Infrastructure";
+// import Placement from "../Component/Placement";
 
 const CollegeTableDetails = () => {
   const [collegeData, setCollegeData] = useState([]);
@@ -80,31 +81,63 @@ const CollegeTableDetails = () => {
   };
 
   // Handle Save from EditCollegeDetails
+  // const handleSaveEdit = (updatedData) => {
+  //   console.log("Updated Data Received:", updatedData); // ✅ Debugging Log
+  //   // Make a PATCH request to update the data in the backend
+  //   axios
+  //     .patch(
+  //       `${API_BASE_URL}/api/college/update/${updatedData._id}`,
+  //       updatedData
+  //     )
+  //     .then((response) => {
+  //       if (response.data.success) {
+  //         // Update local state with the updated college data
+  //         setCollegeData((prevData) =>
+  //           prevData.map((college) =>
+  //             college._id === updatedData._id ? updatedData : college
+  //           )
+  //         );
+  //         setEditModalOpen(false); // Close the Edit Modal
+  //       } else {
+  //         alert("Failed to update college details");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error updating college data:", error);
+  //       alert("Error updating college details");
+  //     });
+  // };
+
   const handleSaveEdit = (updatedData) => {
-    // Make a PATCH request to update the data in the backend
+    console.log("Updated Data Received:", updatedData); // ✅ Debugging Log
+  
+    if (!updatedData || !updatedData._id) {
+      alert("Error: College data is missing or invalid.");
+      return;
+    }
+  
     axios
-      .patch(
-        `${API_BASE_URL}/api/college/update/${updatedData._id}`,
-        updatedData
-      )
+      .patch(`${API_BASE_URL}/api/college/update/${updatedData._id}`, updatedData)
       .then((response) => {
+        console.log("API Response:", response.data); // ✅ Check if API returns success
+        alert("Successfully Updated");
         if (response.data.success) {
-          // Update local state with the updated college data
           setCollegeData((prevData) =>
             prevData.map((college) =>
               college._id === updatedData._id ? updatedData : college
             )
           );
-          setEditModalOpen(false); // Close the Edit Modal
+          setEditModalOpen(false);
         } else {
           alert("Failed to update college details");
         }
       })
       .catch((error) => {
-        console.error("Error updating college data:", error);
-        alert("Error updating college details");
+        console.error("Error updating college data:", error.response?.data || error);
+        alert(`Error updating college details ${error}`);
       });
   };
+  
 
   const handleDelete = (item) => {
     setCollegeData(collegeData.filter((college) => college._id !== item._id));
@@ -225,43 +258,74 @@ const CollegeTableDetails = () => {
       name: "Actions",
       cell: (row) => (
         <div className="flex space-x-2">
-          <button
-            className="text-blue-600 hover:text-blue-800"
-            onClick={() => handleViewProfile(row)}
-          >
-            <FaEye size={17} />
-          </button>
-          <button
-            className="text-yellow-600 hover:text-yellow-800"
-            onClick={() => handleEdit(row)} // Open EditCollegeDetails
-          >
-            <FaEdit size={17} />
-          </button>
-          <button
-            className="text-red-600 hover:text-red-800"
-            onClick={() => handleDelete(row)}
-          >
-            <FaPauseCircle size={17} />
-          </button>
-          <button
-            className="text-green-600 hover:text-green-800"
-            onClick={() => navigate(`/colleges/courses/${row._id}`)}
-          >
-            <FaPlus size={17} />
-          </button>
-          <button
-            className="text-purple-600 hover:text-purple-800"
-            onClick={() => navigate(`/colleges/infrastructure/${row._id}`)}
-          >
-            <FaBuilding size={17} />
-          </button>
-          <button
-            className="text-pink-600 hover:text-pink-800"
-            onClick={() => navigate(`/colleges/placement/${row._id}`)}
-          >
-            <FaBriefcase size={17} />
-          </button>
-        </div>
+        {/* View Profile */}
+        <button
+          className="text-blue-600 hover:text-blue-800"
+          data-tooltip-id="view-tooltip"
+          data-tooltip-content="View Profile"
+          onClick={() => handleViewProfile(row)}
+        >
+          <FaEye size={17} />
+        </button>
+  
+        {/* Edit */}
+        <button
+          className="text-yellow-600 hover:text-yellow-800"
+          data-tooltip-id="edit-tooltip"
+          data-tooltip-content="Edit Details"
+          onClick={() => handleEdit(row)}
+        >
+          <FaEdit size={17} />
+        </button>
+  
+        {/* Delete */}
+        <button
+          className="text-red-600 hover:text-red-800"
+          data-tooltip-id="delete-tooltip"
+          data-tooltip-content="Delete College"
+          onClick={() => handleDelete(row)}
+        >
+          <FaPauseCircle size={17} />
+        </button>
+  
+        {/* Add Courses */}
+        <button
+          className="text-green-600 hover:text-green-800"
+          data-tooltip-id="courses-tooltip"
+          data-tooltip-content="Manage Courses"
+          onClick={() => navigate(`/colleges/courses/${row._id}`)}
+        >
+          <FaPlus size={17} />
+        </button>
+  
+        {/* Manage Infrastructure */}
+        <button
+          className="text-purple-600 hover:text-purple-800"
+          data-tooltip-id="infra-tooltip"
+          data-tooltip-content="Manage Infrastructure"
+          onClick={() => navigate(`/colleges/infrastructure/${row._id}`)}
+        >
+          <FaBuilding size={17} />
+        </button>
+  
+        {/* Manage Placements */}
+        <button
+          className="text-pink-600 hover:text-pink-800"
+          data-tooltip-id="placement-tooltip"
+          data-tooltip-content="Manage Placements"
+          onClick={() => navigate(`/colleges/placement/${row._id}`)}
+        >
+          <FaBriefcase size={17} />
+        </button>
+  
+        {/* Tooltip Components */}
+        <Tooltip id="view-tooltip" place="top" />
+        <Tooltip id="edit-tooltip" place="top" />
+        <Tooltip id="delete-tooltip" place="top" />
+        <Tooltip id="courses-tooltip" place="top" />
+        <Tooltip id="infra-tooltip" place="top" />
+        <Tooltip id="placement-tooltip" place="top" />
+      </div>
       ),
     },
   ];
