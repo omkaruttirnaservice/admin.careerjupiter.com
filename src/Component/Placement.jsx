@@ -49,8 +49,8 @@ function Placement() {
             ),
             highestPackage: String(placementData.highestPackage || ""),
             topRecruiters: Array.isArray(placementData.topRecruiters)
-              ? placementData.topRecruiters.join(", ")
-              : "",
+            ? placementData.topRecruiters
+            : [], // ✅ Ensure it's always an array
             internshipOpportunities:
               placementData.internshipOpportunities || false,
           });
@@ -78,11 +78,7 @@ function Placement() {
         data: {
           collegeId,
           ...values,
-          topRecruiters: values.topRecruiters
-            ? values.topRecruiters
-                .split(", ")
-                .filter((item) => item.trim() !== "")
-            : [],
+          topRecruiters: values.topRecruiters.filter((item) => item.trim() !== ""), // ✅ Ensure it's a valid array
         },
       });
 
@@ -172,17 +168,21 @@ function Placement() {
               <label className="block text-blue-700 font-medium">
                 Top Recruiters:
               </label>
-              <Field
-                type="text"
-                name="topRecruiters"
-                className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
-                placeholder="TCS, Infosys"
-              />
-              <ErrorMessage
-                name="topRecruiters"
-                component="div"
-                className="text-red-500 text-sm"
-              />
+              <Field name="topRecruiters">
+                  {({ field, form }) => (
+                    <input
+                      type="text"
+                      value={field.value.join(", ")} // ✅ Convert array to a comma-separated string
+                      onChange={(e) => {
+                        const recruitersArray = e.target.value.split(",").map((item) => item.trim());
+                        form.setFieldValue("topRecruiters", recruitersArray); // ✅ Update as an array
+                      }}
+                      className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+                      placeholder="Infosys, TCS, Bosch"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage name="topRecruiters" component="div" className="text-red-500 text-sm" />
             </div>
 
             {/* Buttons */}
