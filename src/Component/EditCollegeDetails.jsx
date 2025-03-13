@@ -1,30 +1,101 @@
 import React, { useState, useEffect } from "react";
 
+const scholarshipOptions = ["Merit based", "Need based", "Sports", "Minority"];
+const quotaOptions = ["General", "OBC", "SC", "ST", "EWS"];
+
+
 const EditCollegeDetails = ({ collegeData, onSave, onCancel }) => {
-  const [formData, setFormData] = useState({ ...collegeData });
+  const [formData, setFormData] = useState({
+    ...collegeData,
+    admissionEntranceDetails: {
+      ...collegeData.admissionEntranceDetails,
+      scholarshipsAvailable:
+        collegeData.admissionEntranceDetails?.scholarshipsAvailable || [],
+      quotaSystem: collegeData.admissionEntranceDetails?.quotaSystem || [],
+      admissionStartDate:
+        collegeData.admissionEntranceDetails?.admissionStartDate || "", // Keep as YYYY-MM-DD
+      admissionEndDate:
+        collegeData.admissionEntranceDetails?.admissionEndDate || "",
+    },
+  });
 
   useEffect(() => {
-    setFormData({ ...collegeData });
+    if (collegeData) {
+      console.log("Setting Form Data:", collegeData);
+      setFormData({
+        ...collegeData,
+        admissionEntranceDetails: {
+          ...collegeData.admissionEntranceDetails,
+          scholarshipsAvailable:
+            collegeData.admissionEntranceDetails?.scholarshipsAvailable || [],
+          quotaSystem: collegeData.admissionEntranceDetails?.quotaSystem || [],
+          admissionStartDate:
+            collegeData.admissionEntranceDetails?.admissionStartDate || "",
+          admissionEndDate:
+            collegeData.admissionEntranceDetails?.admissionEndDate || "",
+        },
+      });
+    }
   }, [collegeData]);
 
-  // Handle input change
+  // ✅ Handle Input Change (Works with Nested Objects)
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    setFormData((prevData) => {
+      const keys = name.split(".");
+      if (keys.length === 2) {
+        return {
+          ...prevData,
+          [keys[0]]: {
+            ...prevData[keys[0]],
+            [keys[1]]: value,
+          },
+        };
+      }
+      return { ...prevData, [name]: value };
+    });
+  };
+
+  // ✅ Handle Checkbox Change
+  const handleCheckboxChange = (e, field) => {
+    const { value, checked } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      admissionEntranceDetails: {
+        ...prevData.admissionEntranceDetails,
+        [field]: checked
+          ? [...prevData.admissionEntranceDetails[field], value]
+          : prevData.admissionEntranceDetails[field].filter(
+              (item) => item !== value
+            ),
+      },
     }));
   };
 
   // Handle form submission (Save)
   const handleSave = (e) => {
     e.preventDefault();
-    onSave(formData);
+
+    // Ensure the correct date format "YYYY-MM-DD"
+    const formattedData = {
+      ...formData,
+      admissionEntranceDetails: {
+        ...formData.admissionEntranceDetails,
+        admissionStartDate:
+          formData.admissionEntranceDetails.admissionStartDate, // Already in YYYY-MM-DD
+        admissionEndDate: formData.admissionEntranceDetails.admissionEndDate, // Already in YYYY-MM-DD
+      },
+    };
+
+    console.log("📢 Final Payload to API:", formattedData);
+    onSave(formattedData);
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-50 bg-indigo-200">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto space-y-6 mt-8 mb-8">
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto space-y-6 mt-8 mb-8 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-blue-700">Edit College</h2>
           <button
@@ -52,7 +123,9 @@ const EditCollegeDetails = ({ collegeData, onSave, onCancel }) => {
 
             {/* Affiliated University */}
             <div className="col-span-2">
-              <label className="block text-blue-600">Affiliated University</label>
+              <label className="block text-blue-600">
+                Affiliated University
+              </label>
               <input
                 type="text"
                 name="affiliatedUniversity"
@@ -121,6 +194,100 @@ const EditCollegeDetails = ({ collegeData, onSave, onCancel }) => {
                 onChange={handleChange}
                 className="w-full px-4 py-2 border rounded-md shadow-sm"
               />
+            </div>
+
+            {/* Admission Start Date */}
+            <div>
+              <label className="block text-blue-600">
+                Admission Start Date
+              </label>
+              <input
+                type="date"
+                name="admissionEntranceDetails.admissionStartDate"
+                value={
+                  formData.admissionEntranceDetails.admissionStartDate?.split(
+                    "T"
+                  )[0] || ""
+                }
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-md shadow-sm"
+              />
+            </div>
+
+            {/* Admission End Date */}
+            <div>
+              <label className="block text-blue-600">Admission End Date</label>
+              <input
+                type="date"
+                name="admissionEntranceDetails.admissionEndDate"
+                value={
+                  formData.admissionEntranceDetails.admissionEndDate?.split(
+                    "T"
+                  )[0] || ""
+                }
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-md shadow-sm"
+              />
+            </div>
+
+            {/* Last Year Cutoff Marks */}
+            <div>
+              <label className="block text-blue-600">
+                Last Year Cutoff Marks
+              </label>
+              <input
+                type="number"
+                name="admissionEntranceDetails.lastYearCutoffMarks"
+                value={
+                  formData.admissionEntranceDetails.lastYearCutoffMarks || ""
+                }
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-md shadow-sm"
+              />
+            </div>
+
+            {/* Scholarships Available (Checkbox) */}
+            <div>
+              <label className="block text-blue-600">
+                Scholarships Available:
+              </label>
+              <div className="flex flex-wrap gap-4">
+                {scholarshipOptions.map((option) => (
+                  <label key={option} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      value={option}
+                      checked={formData.admissionEntranceDetails.scholarshipsAvailable.includes(
+                        option
+                      )}
+                      onChange={(e) =>
+                        handleCheckboxChange(e, "scholarshipsAvailable")
+                      }
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Quota System (Checkbox) */}
+            <div>
+              <label className="block text-blue-600">Quota System:</label>
+              <div className="flex flex-wrap gap-4">
+                {quotaOptions.map((option) => (
+                  <label key={option} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      value={option}
+                      checked={formData.admissionEntranceDetails.quotaSystem.includes(
+                        option
+                      )}
+                      onChange={(e) => handleCheckboxChange(e, "quotaSystem")}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
             </div>
 
             {/* Website URL */}

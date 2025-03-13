@@ -1,19 +1,35 @@
 import React, { useState, useRef } from "react";
-import { useFormik } from "formik";    //manage form data, handle validation, and submit forms
-import * as Yup from "yup";            //Validate Data 
-import { useMutation } from "@tanstack/react-query";    //handle action that modify data
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useMutation } from "@tanstack/react-query";
 import { createCollege } from "../api/college-api";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";   //Handle Maps
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { toast } from "react-toastify";         //easily display notification
-import { motion } from "framer-motion";         // add animations and transitions to elements
-import stateDistricts from "../Constant/ConstantData";     //import predefined data
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import stateDistricts from "../Constant/ConstantData";
 import "react-toastify/dist/ReactToastify.css";
-import { FaPlus } from "react-icons/fa";             
+import { FaPlus } from "react-icons/fa";
+// toast.configure();
 
-const defaultLocation = { lat: 19.7515, lan: 75.7139 };      //default geographical location with latitude and longitude 
+const defaultLocation = { lat: 19.076, lan: 72.8777 };
 
-// categories of college
+{
+  /* <stateDistricts />;  */
+}
+
+// const DropdownComponent = ({ formik }) => {
+//   const [selectedState, setSelectedState] = useState("Maharashtra");
+
+//   const handleStateChange = (event) => {
+//     const selectedState = event.target.value;
+//     setSelectedState(selectedState);
+//     formik.setFieldValue("state", selectedState);
+//     formik.setFieldValue("district", ""); // Reset district when state changes
+//   };
+// };
+// const maharashtraDistricts = ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad", "Solapur"];
 const collegeCategories = [
   "Diploma",
   "Engineering",
@@ -23,11 +39,7 @@ const collegeCategories = [
   "UG",
   "PG",
 ];
-
-// Types of College
 const collegeTypes = ["Private", "Government", "Autonomous", "Deemed"];
-
-// Options of Accreditation
 const accreditationOptions = [
   "NAAC A++",
   "NAAC A+",
@@ -38,22 +50,14 @@ const accreditationOptions = [
   "ISO Certified",
   "NIRF Ranked",
 ];
-
-// Available Scholership
 const scholershipAvailable = [
   "Merit-based",
   "Need-based",
   "Sports-based",
   "Other",
 ];
-
-//Quota System
 const quotaSystem = ["Management", "SC/ST", "OBC", "General"];
-
-//get current year from system's date & time
 const currentYear = new Date().getFullYear();
-
-//creates array of years from 1980 to current year
 const establishedYears = Array.from(
   { length: currentYear - 1980 + 1 },
   (_, i) => 1980 + i
@@ -62,231 +66,391 @@ const establishedYears = Array.from(
 const LocationMarker = ({ setLocation, location, setFieldValue }) => {
   useMapEvents({
     click(e) {
-      const newLocation = { lat: e.latlng.lat, lan: e.latlng.lng };
-      console.log("Map Click Location:", newLocation); // Debugging line
-
-      // Update location state
-      setLocation(newLocation);
-
-      // Update Formik values
-      setFieldValue("lat", newLocation.lat);
-      setFieldValue("lan", newLocation.lan);
+    
+      
+      const { lat, lan } = e.latlng;
+      setLocation({ lat, lan });
+      setFieldValue("lat", lat);
+      setFieldValue("lan", lan);
     },
   });
-
-  // Render the marker if location is set
   return location.lat && location.lan ? (
-    <Marker position={[location.lat, location.lan]} />
+    <Marker
+      // key={`${location.lat}-${location.lan}`} // ✅ Forces re-render
+      position={[location.lat, location.lan]}
+    />
   ) : null;
 };
 
-const MultiStepForm = () => {
+const AddNewCollege = () => {
   const [location, setLocation] = useState(defaultLocation);
   const [searchQuery, setSearchQuery] = useState("");
   const [image, setImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
   const [keywordInput, setKeywordInput] = useState("");
-  const mapRef = useRef(); // Ref for the map
+  const mapRef = useRef(null);
 
   const mutation = useMutation({
     mutationFn: createCollege,
-    onMutate: () => {
-      toast.info("Submitting college details...");
-    },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("College created successfully!");
+      alert("College Created Successfully");
+      console.log("API Response:", data);
       formik.resetForm();
       setLocation(defaultLocation);
+      setImage(null); // ✅ Reset image
+      setGalleryImages([]); // ✅ Reset gallery images
+      setKeywordInput(""); // ✅ Reset keyword input
     },
     onError: (error) => {
-      console.error("API Error:", error);
-      toast.error(`Something went wrong: ${error.message}`);
+      console.error("API Error:", error.response?.data || error.message); // ✅ Debug errors
+      toast.error(
+        `Something went wrong: ${
+          error.response?.data?.message || error.message
+        }`
+      );
+      alert(
+        `Submission Failed: ${error.response?.data?.message || error.message}`
+      );
     },
   });
 
   const formik = useFormik({
     initialValues: {
-      collegeName: "",
-      affiliatedUniversity: "",
+      collegeName: "deepak",
+      affiliatedUniversity: "abc",
       collegeCategory: "",
       collegeType: "",
       lat: location.lat,
       lan: location.lan,
-      address_line1: "",
-      address_line2: "",
-      pincode: "",
+      address_line1: "sample",
+      address_line2: "sakple",
+      pincode: "422101",
       state: "Maharashtra",
       district: "Mumbai",
-      contactDetails: "",
-      info: "",
-      websiteURL: "",
-      establishedYear: "",
+      contactDetails: "8989898989",
+      info: { description: "" },
+      keywords: [""],
+      email_id: "deeepakkumar.shinde0@gmail.com",
+      websiteURL: "http://google.com",
+      establishedYear: "2020",
       accreditation: "",
-      admissionProcess: "",
-      applicationFormURL: "",
+      admissionProcess: "online",
+      applicationFormURL: "http://google.com",
       image: null,
       imageGallery: [],
-      email_id: "",
-      keywords: [],
       admissionEntranceDetails: {
-        admissionStartDate: "",
-        admissionEndDate: "",
-        lastYearCutoffMarks: "",
-        scholarshipsAvailable: [],
-        quotaSystem: [],
+        // ✅ Admission Entrance Details
+        admissionStartDate: "2020-12-12",
+        admissionEndDate: "2020-12-24",
+        lastYearCutoffMarks: 0,
+
+        scholarshipsAvailable: [], // ✅ Ensure this is an array
+        quotaSystem: ["General"], // ✅ Ensure this is an array
       },
     },
-    validationSchema: Yup.object({
-      collegeName: Yup.string().required("College Name is required"),
-      affiliatedUniversity: Yup.string().required(
-        "Affiliated University is required"
-      ),
-      contactDetails: Yup.string()
-        .matches(/^\d{10}$/, "Only numbers are allowed & 10 digit")
-        .required("Contact Details are required"),
-      pincode: Yup.string()
-        .matches(/\d{6}/, "Pincode must be exactly 6 digits")
-        .required("Pincode is required"),
-      websiteURL: Yup.string().url("Website URL must be a valid URL"),
-      applicationFormURL: Yup.string().url(
-        "Application Form URL must be a valid URL"
-      ),
-      info: Yup.string().required("Info is required"),
-      image: Yup.mixed(),
-      imageGallery: Yup.array(),
-      address_line1: Yup.string().required("Address Line 1 is required"),
-      state: Yup.string().required("State is required"),
-      district: Yup.string().required("District is required"),
-      lat: Yup.number().required("Latitude is required"),
-      lan: Yup.number().required("Longitude is required"),
-      email_id: Yup.string()
-        .email("Invalid email address")
-        .required("Email ID is required"),
-      keywords: Yup.array()
-        .of(Yup.string().required("Keyword cannot be empty"))
-        .max(5, "Maximum 5 keywords allowed"),
-      admissionEntranceDetails: Yup.object({
-        admissionStartDate: Yup.date().required(
-          "Admission Start Date is required"
-        ),
-        admissionEndDate: Yup.date().required("Admission End Date is required"),
-        lastYearCutoffMarks: Yup.number().required(
-          "Last Year Cutoff Marks is required"
-        ),
-        scholarshipsAvailable: Yup.array()
-          .of(
-            Yup.string().oneOf(scholershipAvailable, "Invalid scholarship type")
-          )
-          .required("At least one scholarship type is required"),
-        quotaSystem: Yup.array()
-          .of(Yup.string().oneOf(quotaSystem, "Invalid quota type"))
-          .required("At least one quota type is required"),
-      }),
-    }),
-    onSubmit: (values) => {
-      console.log("Form submitted with values:", values);
 
-      const formData = new FormData();
+    // validationSchema: Yup.object().shape({
+    //   collegeName: Yup.string().required("College Name is required"),
 
-      // Append flat fields
-      formData.append("collegeName", values.collegeName);
-      formData.append("affiliatedUniversity", values.affiliatedUniversity);
-      formData.append("collegeCategory", values.collegeCategory);
-      formData.append("collegeType", values.collegeType);
-      formData.append("contactDetails", values.contactDetails);
-      formData.append("info", values.info);
-      formData.append("websiteURL", values.websiteURL);
-      formData.append("establishedYear", values.establishedYear);
-      formData.append("accreditation", values.accreditation);
-      formData.append("admissionProcess", values.admissionProcess);
-      formData.append("applicationFormURL", values.applicationFormURL);
-      formData.append("email_id", values.email_id);
-      formData.append("keywords", JSON.stringify(values.keywords));
+    //   affiliatedUniversity: Yup.string().required(
+    //     "Affiliated University is required"
+    //   ),
 
-      // Append nested address fields
-      formData.append("address[line1]", values.address_line1);
-      formData.append("address[line2]", values.address_line2);
-      formData.append("address[pincode]", values.pincode);
-      formData.append("address[state]", values.state);
-      formData.append("address[dist]", values.district);
+    //   contactDetails: Yup.string()
+    //     .matches(/\d{10}/, "Contact number must be exactly 10 digits")
+    //     .required("Contact Details are required"),
 
-      // Append nested location fields
-      formData.append("location[lat]", values.lat);
-      formData.append("location[lan]", values.lan);
+    //   websiteURL: Yup.string().url("Website URL must be a valid URL"),
 
-      // Append image and gallery images
-      if (values.image) {
-        formData.append("image", values.image);
+    //   applicationFormURL: Yup.string().url(
+    //     "Application Form URL must be a valid URL"
+    //   ),
+
+    //   info: Yup.string().required("Info is required"),
+
+    //   // Image
+    //   image: Yup.mixed()
+    //     .required("Image is required")
+    //     .test("fileType", "Unsupported file format", (value) => {
+    //       if (value) {
+    //         return ["image/jpeg", "image/png", "image/jpg"].includes(
+    //           value.type
+    //         );
+    //       }
+    //       return true;
+    //     }),
+
+    //   // Image Gallery
+    //   imageGallery: Yup.array()
+    //     .of(
+    //       Yup.mixed().test("fileType", "Unsupported file format", (value) => {
+    //         if (value) {
+    //           return ["image/jpeg", "image/png", "image/jpg"].includes(
+    //             value.type
+    //           );
+    //         }
+    //         return true;
+    //       })
+    //     )
+    //     .min(1, "At least one image is required"),
+
+    //   email_id: Yup.string()
+    //     .email("Invalid email")
+    //     .required("Email is required"),
+
+    //   lat: Yup.number()
+    //     .required("Latitude is required")
+    //     .typeError("Latitude must be a number"),
+    //   lan: Yup.number()
+    //     .required("Longitude is required")
+    //     .typeError("Longitude must be a number"),
+
+    //   // Address Details
+    //   address_line1: Yup.string().required("Address Line 1 is required"),
+    //   address_line2: Yup.string().optional(), // Optional field
+    //   pincode: Yup.string()
+    //     .required("Pincode is required")
+    //     .matches(/^\d{6}$/, "Pincode must be 6 digits"),
+
+    //   state: Yup.string().required("State is required"),
+    //   district: Yup.string().required("District is required"),
+
+    //   // Keywords
+    //   keywords: Yup.array()
+    //     .of(Yup.string())
+    //     .min(1, "At least one keyword is required"),
+
+    //   // Established Year
+    //   establishedYear: Yup.number()
+    //     .required("Established Year is required")
+    //     .min(1800, "Established Year must be after 1800")
+    //     .max(
+    //       new Date().getFullYear(),
+    //       "Established Year cannot be in the future"
+    //     ),
+
+    //   // Accreditation
+    //   accreditation: Yup.string().required("Accreditation is required"),
+
+    //   // Admission Process
+    //   admissionProcess: Yup.string().required("Admission Process is required"),
+
+    //   admissionEntranceDetails: Yup.object({
+    //     admissionStartDate: Yup.date().required("Start date is required"),
+
+    //     admissionEndDate: Yup.date()
+    //       .required("End date is required")
+    //       .min(
+    //         Yup.ref("admissionStartDate"),
+    //         "End Date must be after Start Date"
+    //       ),
+    //     lastYearCutoffMarks: Yup.number().required("Cutoff marks are required"),
+    //     // ✅ Change from string() to array()
+
+    //     scholarshipsAvailable: Yup.array()
+    //       .min(1, "Select at least one scholarship") // ✅ At least 1 required
+    //       .required("Scholarship is required"),
+
+    //     quotaSystem: Yup.array()
+    //       .min(1, "Select at least one quota system") // ✅ At least 1 required
+    //       .required("Quota system is required"),
+    //   }),
+    // }),
+
+    onSubmit: async (values) => {
+      // alert("Form Submitted Successfully!");
+      console.log("Submitting Form Data:", values);
+
+      try {
+        // console.log("🚀 Submitting Form Data:", values); // ✅ Debugging
+
+        const formData = new FormData();
+
+        // Append flat fields
+        formData.append("collegeName", values.collegeName);
+        formData.append("affiliatedUniversity", values.affiliatedUniversity);
+        // formData.append("collegeCategory", values.collegeCategory || "General");
+        formData.append("Category", values.collegeCategory || "General"); // ✅ Ensure correct field
+        formData.append("collegeType", values.collegeType);
+        formData.append("email_id", values.email_id || "example@email.com"); // ✅ Default email
+        // formData.append("keywords", (values.keywords.map(String))); // ✅ Keywords
+        formData.append("contactDetails", values.contactDetails);
+        formData.append("info[description]", values.info);
+        formData.append("websiteURL", values.websiteURL);
+        formData.append("establishedYear", values.establishedYear);
+
+        formData.append(
+          "accreditation",
+          accreditationOptions.includes(values.accreditation)
+            ? values.accreditation
+            : "NAAC A+"
+        );
+        formData.append("admissionProcess", values.admissionProcess);
+        formData.append("applicationFormURL", values.applicationFormURL);
+
+        // ✅ Convert Dates to YYYY-MM-DD Format
+        const formattedStartDate =
+          values.admissionEntranceDetails.admissionStartDate.split("T")[0];
+        const formattedEndDate =
+          values.admissionEntranceDetails.admissionEndDate.split("T")[0];
+
+        // Ensure multi-select values are correctly formatted
+        formData.append(
+          "admissionEntranceDetails",
+          JSON.stringify({
+            admissionStartDate: formattedStartDate,
+            admissionEndDate: formattedEndDate,
+            lastYearCutoffMarks:
+              values.admissionEntranceDetails.lastYearCutoffMarks,
+            scholarshipsAvailable:
+              values.admissionEntranceDetails.scholarshipsAvailable,
+            quotaSystem: values.admissionEntranceDetails.quotaSystem,
+          })
+        );
+
+        // Append nested address fields
+        formData.append("address[line1]", values.address_line1);
+        formData.append("address[line2]", values.address_line2);
+        formData.append("address[pincode]", values.pincode);
+        formData.append("address[state]", values.state);
+        formData.append("address[dist]", values.district);
+
+        // Append nested location fields
+        formData.append("location[lat]", values.lat);
+        formData.append("location[lan]", values.lan);
+
+        // Append image and gallery images
+        if (values.image) {
+          formData.append("image", values.image);
+        }
+
+        values.imageGallery.forEach((file, index) => {
+          formData.append(`imageGallery[${index}]`, file);
+          // formData.append(`imageGallery`, file);
+        });
+
+        // ✅ Debugging: Print FormData before sending
+        console.log(
+          "📢 Final FormData being sent:",
+          Object.fromEntries(formData)
+        );
+
+        const response = await createCollege(formData);
+
+        console.log("API Response:", response);
+        // ✅ Debugging: Print FormData before sending
+        console.log("📢 Final FormData:", formData);
+
+        if (response.success) {
+          alert("College Created Successfully!");
+          formik.resetForm(); // Reset form after submission
+        } else {
+          alert(`❌ Submission Failed: ${response.message}`);
+        }
+        // ✅ Send the form data using Axios
+        // const response = await axios.post(
+        //   `${API_BASE_URL}/api/college/create`,
+        //   formData,
+        //   {
+        //     headers: {
+        //       "Content-Type": "multipart/form-data",
+        //     },
+        //   }
+        // );
+
+        // // ✅ Log the response for debugging
+        // console.log("API Response:", response.data);
+
+        // // ✅ Show success alert
+        // alert("College Created Successfully! ✅");
+
+        // // ✅ Reset the form after submission
+        // formik.resetForm();
+
+        // console.log("Final FormData being sent:", formData);
+
+        // mutation.mutate(formData);
+      } catch (error) {
+        console.error("API Error:", error.response?.data || error.message);
+        alert(
+          `❌ Submission Failed: ${
+            error.response?.data?.message || "Something went wrong"
+          }`
+        );
+
+        if (error.response?.data?.errors) {
+          console.log("Validation Errors:", error.response.data.errors);
+          alert("Validation Errors: " + error.response.data.errors.join(","));
+        }
       }
 
-      values.imageGallery.forEach((file, index) => {
-        formData.append(`imageGallery[${index}]`, file);
-      });
-
-      // Append admissionEntranceDetails fields
-      formData.append(
-        "admissionEntranceDetails[admissionStartDate]",
-        values.admissionEntranceDetails.admissionStartDate
-      );
-      formData.append(
-        "admissionEntranceDetails[admissionEndDate]",
-        values.admissionEntranceDetails.admissionEndDate
-      );
-      formData.append(
-        "admissionEntranceDetails[lastYearCutoffMarks]",
-        values.admissionEntranceDetails.lastYearCutoffMarks
-      );
-      formData.append(
-        "admissionEntranceDetails[scholarshipsAvailable]",
-        JSON.stringify(values.admissionEntranceDetails.scholarshipsAvailable)
-      );
-      formData.append(
-        "admissionEntranceDetails[quotaSystem]",
-        JSON.stringify(values.admissionEntranceDetails.quotaSystem)
-      );
-
-      // Log FormData entries
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
-
-      console.log("Submitting FormData:", formData);
-      mutation.mutate(formData);
+      // console.log("Submitting FormData:", formData);
+      // mutation.mutate(formData);
     },
   });
+
+  // const [formData, setFormData] = useState({
+  //   admissionStartDate: "",
+  //   admissionEndDate: "",
+  //   lastYearCutoffMarks: "",
+  //   scholarshipsAvailable: [],
+  //   quotaSystem: [],
+  // });
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setImage(file);
+      // setImage(file);
       formik.setFieldValue("image", file);
     }
   };
 
   const handleImageGalleryChange = (event) => {
     const files = Array.from(event.target.files);
-    setGalleryImages((prevImages) => [...prevImages, ...files]);
+    // setGalleryImages([...formik.values.imageGallery, ...files]);
     formik.setFieldValue("imageGallery", [
       ...formik.values.imageGallery,
       ...files,
     ]);
   };
 
+  // const addKeyword = () => {
+  //   const trimmedKeyword = keywordInput.trim();  // ✅ Remove spaces
+
+  //   if (trimmedKeyword && !formik.values.keywords.includes(trimmedKeyword)) {
+  //     if (formik.values.keywords.length < 5) {
+  //       formik.setFieldValue("keywords", [
+  //         ...formik.values.keywords,
+  //         trimmedKeyword,
+  //       ]);
+  //       setKeywordInput(""); // ✅ Reset input
+  //     } else {
+  //       alert("You can add a maximum of 5 keywords!"); // ✅ Alert when limit is reached
+  //     }
+  //   }
+  // };
+
   const addKeyword = () => {
-    if (keywordInput.trim() && formik.values.keywords.length < 5) {
-      formik.setFieldValue("keywords", [
-        ...formik.values.keywords,
-        keywordInput.trim(),
-      ]);
-      setKeywordInput("");
+    const trimmedKeyword = keywordInput.trim();
+    if (trimmedKeyword && !formik.values.keywords.includes(trimmedKeyword)) {
+      if (formik.values.keywords.length < 5) {
+        formik.setFieldValue("keywords", [
+          ...formik.values.keywords,
+          trimmedKeyword,
+        ]);
+        setKeywordInput("");
+      } else {
+        alert("You can add a max of 5 keywords!");
+      }
     }
   };
 
   const removeKeyword = (index) => {
-    const updatedKeywords = formik.values.keywords.filter(
-      (_, i) => i !== index
+    formik.setFieldValue(
+      "keywords",
+      formik.values.keywords.filter((_, i) => i !== index)
     );
-    formik.setFieldValue("keywords", updatedKeywords);
   };
 
   const handleSearch = async () => {
@@ -344,14 +508,27 @@ const MultiStepForm = () => {
     }
   };
 
+  const handleCheckboxChange = (event, field) => {
+    const { value, checked } = event.target;
+
+    formik.setFieldValue(
+      `admissionEntranceDetails.${field}`,
+      checked
+        ? [...(formik.values.admissionEntranceDetails[field] || []), value] // ✅ Add if checked
+        : formik.values.admissionEntranceDetails[field].filter(
+            (item) => item !== value
+          ) // ❌ Remove if unchecked
+    );
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gray-100 p-2"
+      className="min-h-screen bg-blue-100 p-2"
     >
-      <fieldset className="max-w-full mx-auto bg-white shadow-lg rounded-lg p-6">
+      <fieldset className="max-w-full mx-auto bg-blue-200 shadow-lg rounded-lg p-6">
         <legend className="text-2xl font-bold text-center mb-4">
           College Registration Form
         </legend>
@@ -362,7 +539,7 @@ const MultiStepForm = () => {
               <input
                 type="text"
                 {...formik.getFieldProps("collegeName")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
               {formik.touched.collegeName && formik.errors.collegeName && (
                 <p className="text-red-500 text-sm">
@@ -376,7 +553,7 @@ const MultiStepForm = () => {
               <input
                 type="text"
                 {...formik.getFieldProps("affiliatedUniversity")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
               {formik.touched.affiliatedUniversity &&
                 formik.errors.affiliatedUniversity && (
@@ -390,7 +567,7 @@ const MultiStepForm = () => {
               <label className="block mb-1">College Category</label>
               <select
                 {...formik.getFieldProps("collegeCategory")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               >
                 <option value="">Select Category</option>
                 {collegeCategories.map((category, index) => (
@@ -399,6 +576,7 @@ const MultiStepForm = () => {
                   </option>
                 ))}
               </select>
+
               {formik.touched.collegeCategory &&
                 formik.errors.collegeCategory && (
                   <p className="text-red-500 text-sm">
@@ -411,7 +589,7 @@ const MultiStepForm = () => {
               <label className="block mb-1">College Type</label>
               <select
                 {...formik.getFieldProps("collegeType")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               >
                 <option value="">Select Type</option>
                 {collegeTypes.map((type, index) => (
@@ -432,7 +610,7 @@ const MultiStepForm = () => {
               <input
                 type="text"
                 {...formik.getFieldProps("address_line1")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
               {formik.touched.address_line1 && formik.errors.address_line1 && (
                 <p className="text-red-500 text-sm">
@@ -446,7 +624,7 @@ const MultiStepForm = () => {
               <input
                 type="text"
                 {...formik.getFieldProps("address_line2")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
             </div>
 
@@ -455,7 +633,7 @@ const MultiStepForm = () => {
               <input
                 type="text"
                 {...formik.getFieldProps("pincode")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
               {formik.touched.pincode && formik.errors.pincode && (
                 <p className="text-red-500 text-sm">{formik.errors.pincode}</p>
@@ -466,7 +644,7 @@ const MultiStepForm = () => {
               <label className="block mb-1">Select State</label>
               <select
                 {...formik.getFieldProps("state")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
                 onChange={(e) => {
                   const selectedState = e.target.value;
                   formik.setFieldValue("state", selectedState);
@@ -487,7 +665,7 @@ const MultiStepForm = () => {
               <label className="block mb-1">Select District</label>
               <select
                 {...formik.getFieldProps("district")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
                 disabled={!formik.values.state} // Disable if no state is selected
               >
                 <option value="">Select District</option>
@@ -501,13 +679,14 @@ const MultiStepForm = () => {
                   )}
               </select>
             </div>
+            
 
             <div className="mb-3">
               <label className="block mb-1">Contact Details</label>
               <input
                 type="text"
                 {...formik.getFieldProps("contactDetails")}
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
               {formik.touched.contactDetails &&
                 formik.errors.contactDetails && (
@@ -517,11 +696,24 @@ const MultiStepForm = () => {
                 )}
             </div>
 
+            {/* Email Field */}
+            <div className="mb-3">
+              <label className="block mb-1">Email</label>
+              <input
+                type="email"
+                {...formik.getFieldProps("email_id")}
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+              />
+              {formik.touched.email_id && formik.errors.email_id && (
+                <p className="text-red-500 text-sm">{formik.errors.email_id}</p>
+              )}
+            </div>
+
             <div className="mb-3 col-span-full w-full">
               <label className="block mb-1">Description</label>
               <textarea
-                {...formik.getFieldProps("info")}
-                className="border p-2 w-full rounded"
+                {...formik.getFieldProps("info.description")}
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
                 rows="4"
               />
               {formik.touched.info && formik.errors.info && (
@@ -530,90 +722,14 @@ const MultiStepForm = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Website URL</label>
-              <input
-                type="text"
-                {...formik.getFieldProps("websiteURL")}
-                className="border p-2 w-full rounded"
-              />
-              {formik.touched.websiteURL && formik.errors.websiteURL && (
-                <p className="text-red-500 text-sm">
-                  {formik.errors.websiteURL}
-                </p>
-              )}
-            </div>
-
-            <div className="mb-3">
-              <label className="block mb-1">Established Year</label>
-              <select
-                {...formik.getFieldProps("establishedYear")}
-                className="border p-2 w-full rounded"
-              >
-                <option value="">Select Year</option>
-                {establishedYears.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-3">
-              <label className="block mb-1">Accreditation</label>
-              <select
-                {...formik.getFieldProps("accreditation")}
-                className="border p-2 w-full rounded"
-              >
-                <option value="">Select Accreditation</option>
-                {accreditationOptions.map((option, index) => (
-                  <option key={index} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-3">
-              <label className="block mb-1">Admission Process</label>
-              <input
-                type="text"
-                {...formik.getFieldProps("admissionProcess")}
-                className="border p-2 w-full rounded"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="block mb-1">Application Form URL</label>
-              <input
-                type="text"
-                {...formik.getFieldProps("applicationFormURL")}
-                className="border p-2 w-full rounded"
-              />
-              {formik.touched.applicationFormURL &&
-                formik.errors.applicationFormURL && (
-                  <p className="text-red-500 text-sm">
-                    {formik.errors.applicationFormURL}
-                  </p>
-                )}
-            </div>
-
-            <div className="mb-3">
-              <label className="block mb-1">emial</label>
-              <input
-                type="email"
-                {...formik.getFieldProps("email_id")}
-                className="border p-2 w-full rounded"
-              />
-            </div>
-            <div className="mb-3">
               <label className="block mb-1">Keywords (Max 5)</label>
               <div className="flex items-center">
                 <input
                   type="text"
                   value={keywordInput}
                   onChange={(e) => setKeywordInput(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addKeyword()}
-                  className="border p-2 w-full rounded"
+                  onKeyDown={(e) => e.key === "Enter" && addKeyword(e)}
+                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
                 />
                 {/* Add Keyword Icon Button */}
                 <button
@@ -650,188 +766,178 @@ const MultiStepForm = () => {
               ) : null}
             </div>
 
-            {/* add more fields */}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label>Admission Start Date</label>
-                <input
-                  type="date"
-                  name="admissionEntranceDetails.admissionStartDate"
-                  value={
-                    formik.values.admissionEntranceDetails.admissionStartDate
-                  }
-                  onChange={formik.handleChange}
-                  className="border p-2 w-full rounded"
-                />
-                {formik.errors.admissionEntranceDetails?.admissionStartDate && (
-                  <div>
-                    {formik.errors.admissionEntranceDetails.admissionStartDate}
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label>Admission End Date</label>
-                <input
-                  type="date"
-                  name="admissionEntranceDetails.admissionEndDate"
-                  value={
-                    formik.values.admissionEntranceDetails.admissionEndDate
-                  }
-                  className="border p-2 w-full rounded"
-                  onChange={formik.handleChange}
-                />
-                {formik.errors.admissionEntranceDetails?.admissionEndDate && (
-                  <div>
-                    {formik.errors.admissionEntranceDetails.admissionEndDate}
-                  </div>
-                )}
-              </div>
-            </div>
-
             <div className="mb-3">
-              <label>Last Year Cutoff Marks</label>
+              <label className="block mb-1">Website URL</label>
               <input
-                type="number"
-                name="admissionEntranceDetails.lastYearCutoffMarks"
-                value={formik.values.admissionEntranceDetails.lastYearCutoffMarks}
-                onChange={formik.handleChange}
-                className="border p-2 w-full rounded"
-
+                type="text"
+                {...formik.getFieldProps("websiteURL")}
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
-              {formik.errors.admissionEntranceDetails?.lastYearCutoffMarks && (
-                <div>{formik.errors.admissionEntranceDetails.lastYearCutoffMarks}</div>
+              {formik.touched.websiteURL && formik.errors.websiteURL && (
+                <p className="text-red-500 text-sm">
+                  {formik.errors.websiteURL}
+                </p>
               )}
             </div>
 
-            {/* Scholarships Available - Single Select */}
             <div className="mb-3">
-              <label className="block text-gray-700 font-medium mb-1">
-                Scholarships Available
-              </label>
+              <label className="block mb-1">Established Year</label>
               <select
-                name="admissionEntranceDetails.scholarshipsAvailable"
-                value={formik.values.admissionEntranceDetails.scholarshipsAvailable || ""}
-                onChange={(e) => {
-                  formik.setFieldValue("admissionEntranceDetails.scholarshipsAvailable", e.target.value);
-                }}
-                className="border p-2 w-full rounded"
+                {...formik.getFieldProps("establishedYear")}
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               >
-                <option value="" disabled>Select Scholarship</option>
-                {scholershipAvailable.map((option) => (
-                  <option key={option} value={option}>
+                <option value="">Select Year</option>
+                {establishedYears.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-3">
+              <label className="block mb-1">Accreditation</label>
+              <select
+                {...formik.getFieldProps("accreditation")}
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+              >
+                <option value="">Select Accreditation</option>
+                {accreditationOptions.map((option, index) => (
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
-              {formik.errors.admissionEntranceDetails?.scholarshipsAvailable && (
-                <div className="text-blue-500 text-sm mt-1">
-                  {/* {formik.errors.admissionEntranceDetails.scholarshipsAvailable} */}
-                </div>
-              )}
             </div>
 
-            {/* Quota System - Single Select */}
             <div className="mb-3">
-              <label className="block text-gray-700 font-medium mb-1">Quota System</label>
-              <select
-                name="admissionEntranceDetails.quotaSystem"
-                value={formik.values.admissionEntranceDetails.quotaSystem || ""}
-                onChange={(e) => {
-                  formik.setFieldValue("admissionEntranceDetails.quotaSystem", e.target.value);
-                }}
-                className="border p-2 w-full rounded"
-              >
-                <option value="" disabled>Select Quota</option>
-                {quotaSystem.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              {formik.errors.admissionEntranceDetails?.quotaSystem && (
-                <div className="text-red-500 text-sm mt-1">
-                  {/* {formik.errors.admissionEntranceDetails.quotaSystem} */}
-                </div>
-              )}
+              <label className="block mb-1">Admission Process</label>
+              <input
+                type="text"
+                {...formik.getFieldProps("admissionProcess")}
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+              />
             </div>
 
-
-
-
-
-
-            {/* Scholarships Available - Multi-Select */}
             <div className="mb-3">
-              <label className="block text-gray-700 font-medium mb-1">
-                Scholarships Available
-              </label>
-              <select
-                name="admissionEntranceDetails.scholarshipsAvailable"
-                multiple
-                value={
-                  formik.values.admissionEntranceDetails.scholarshipsAvailable
-                }
-                onChange={(e) => {
-                  const selectedValues = Array.from(
-                    e.target.selectedOptions,
-                    (option) => option.value
-                  );
-                  formik.setFieldValue(
-                    "admissionEntranceDetails.scholarshipsAvailable",
-                    selectedValues
-                  );
-                }}
-                className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
-              >
-                {scholershipAvailable.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              {formik.errors.admissionEntranceDetails
-                ?.scholarshipsAvailable && (
-                <div className="text-red-500 text-sm mt-1">
-                  {formik.errors.admissionEntranceDetails.scholarshipsAvailable}
-                </div>
-              )}
+              <label className="block mb-1">Application Form URL</label>
+              <input
+                type="text"
+                {...formik.getFieldProps("applicationFormURL")}
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+              />
+              {formik.touched.applicationFormURL &&
+                formik.errors.applicationFormURL && (
+                  <p className="text-red-500 text-sm">
+                    {formik.errors.applicationFormURL}
+                  </p>
+                )}
             </div>
 
-            {/* Quota System - Multi-Select */}
-            <div className="mb-3">
-              <label className="block text-gray-700 font-medium mb-1">
-                Quota System
-              </label>
-              <select
-                name="admissionEntranceDetails.quotaSystem"
-                multiple
-                value={formik.values.admissionEntranceDetails.quotaSystem}
-                onChange={(e) => {
-                  const selectedValues = Array.from(
-                    e.target.selectedOptions,
-                    (option) => option.value
-                  );
-                  formik.setFieldValue(
-                    "admissionEntranceDetails.quotaSystem",
-                    selectedValues
-                  );
-                }}
-                className="border p-2 w-full rounded focus:ring focus:ring-blue-200"
-              >
-                {quotaSystem.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              {formik.errors.admissionEntranceDetails?.quotaSystem && (
-                <div className="text-red-500 text-sm mt-1">
-                  {formik.errors.admissionEntranceDetails.quotaSystem}
-                </div>
-              )}
+            {/* <section className="flex flex-row"> */}
+              
+        
+            <div className="col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Admission Details */}
+              <div className="mb-3">
+                <label className="block mb-1">Admission Start Date</label>
+                <input
+                  type="date"
+                  {...formik.getFieldProps(
+                    "admissionEntranceDetails.admissionStartDate"
+                  )}
+                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                />
+                {formik.touched.admissionEntranceDetails?.admissionStartDate &&
+                  formik.errors.admissionEntranceDetails
+                    ?.admissionStartDate && (
+                    <p className="text-red-500 text-sm">
+                      {
+                        formik.errors.admissionEntranceDetails
+                          .admissionStartDate
+                      }
+                    </p>
+                  )}
+              </div>
+
+              <div className="mb-3">
+                <label className="block mb-1">Admission End Date</label>
+                <input
+                  type="date"
+                  {...formik.getFieldProps(
+                    "admissionEntranceDetails.admissionEndDate"
+                  )}
+                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="block mb-1">Last Year Cutoff Marks</label>
+                <input
+                  type="number"
+                  {...formik.getFieldProps(
+                    "admissionEntranceDetails.lastYearCutoffMarks"
+                  )}
+                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                />
+              </div>
             </div>
+            </div>
+
+            {/* <div className="grid grid-cols-1 md:grid-cols gap-4"> */}
+              {/* Scholarships Available (Checkboxes) */}
+              <div className="mb-3 ">
+                <label className="block text-blue-600">
+                  Scholarships Available:
+                </label>
+                <div className="flex gap-4 flex-wrap">
+                  {["Merit based", "Need based", "Sports", "Minority"].map(
+                    (option) => (
+                      <label
+                        key={option}
+                        className="flex items-center space-x-2"
+                      >
+                        <input
+                          type="checkbox"
+                          // name="admissionEntranceDetails.scholarshipsAvailable"
+                          value={option}
+                          checked={formik.values.admissionEntranceDetails.scholarshipsAvailable.includes(
+                            option
+                          )}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "scholarshipsAvailable")
+                          }
+                        />
+                        <span>{option}</span>
+                      </label>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {/* Quota System (Checkboxes) */}
+              <div className="mb-3">
+                <label className="block text-blue-600">Quota System:</label>
+                <div className="flex gap-4 flex-wrap">
+                  {quotaSystem.map((option) => (
+                    <label key={option} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        //  name="admissionEntranceDetails.quotaSystem"
+                        value={option}
+                        checked={formik.values.admissionEntranceDetails.quotaSystem.includes(
+                          option
+                        )}
+                        onChange={(e) => handleCheckboxChange(e, "quotaSystem")}
+                      />
+                      <span>{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            {/* </div> */}
+            {/* </section> */}
 
             {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6"> */}
             {/* College Image Upload */}
@@ -861,15 +967,9 @@ const MultiStepForm = () => {
                 id="collegeImage"
                 accept="image/jpeg,image/jpg,image/png"
                 className="hidden"
-                onChange={(event) => {
-                  const file = event.currentTarget.files[0];
-                  if (file && file.size <= 102400) {
-                    formik.setFieldValue("image", file);
-                  } else {
-                    toast.error("Image must be JPG/JPEG/PNG and under 100KB");
-                  }
-                }}
+                onChange={handleImageChange} // ✅ Now calling the function
               />
+
               {formik.touched.image && formik.errors.image && (
                 <p className="text-red-500 text-sm">{formik.errors.image}</p>
               )}
@@ -897,7 +997,9 @@ const MultiStepForm = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 h-10">Drag & drop images here or click to upload</p>
+                  <p className="text-gray-500 h-10">
+                    Drag & drop images here or click to upload
+                  </p>
                 )}
               </div>
               <input
@@ -907,8 +1009,8 @@ const MultiStepForm = () => {
                 multiple
                 className="hidden"
                 onChange={(event) => {
-                  const files = Array.from(event.currentTarget.files);
-                  formik.setFieldValue("gallery_image", files);
+                  const files = Array.from(event.target.files); // ✅ Convert FileList to Array
+                  formik.setFieldValue("gallery_image", files); // ✅ Set as an array
                 }}
               />
               {formik.touched.gallery_image && formik.errors.gallery_image && (
@@ -931,15 +1033,18 @@ const MultiStepForm = () => {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  console.log("Updates Search:", e.target.value);
+                }}
                 placeholder="Search location"
-                className="border p-2 w-full rounded"
+                className="border-2 p-2 w-full rounded bg-white border-blue-600"
               />
 
               {/* Search Button */}
               <button
                 type="button"
-                onClick={handleSearch}
+                onClick={handleSearch} // ✅ Use the function directly
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 Search
@@ -958,9 +1063,10 @@ const MultiStepForm = () => {
             {/* Leaflet Map */}
             <MapContainer
               center={[location.lat, location.lan]}
-              zoom={8}
+              zoom={10}
               style={{ height: "300px", width: "100%" }}
-              ref={mapRef} // Pass the ref to the MapContainer
+              ref={mapRef}
+              // whenCreated={(map) => (mapRef.current = map)}
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <LocationMarker
@@ -968,6 +1074,7 @@ const MultiStepForm = () => {
                 location={location}
                 setFieldValue={formik.setFieldValue}
               />
+              {/* <Marker position={[location.lat, location.lan]} /> */}
             </MapContainer>
           </div>
 
@@ -975,11 +1082,12 @@ const MultiStepForm = () => {
             <motion.button
               type="submit"
               className="bg-blue-500 text-white p-3 rounded w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-              whileHover={!mutation.isLoading ? { scale: 1.05 } : {}}
-              whileTap={!mutation.isLoading ? { scale: 0.95 } : {}}
-              disabled={mutation.isLoading}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={mutation.isPending} // Button disabled while submitting
+              // onClick={formik.handleSubmit} // ✅ Calls Formik's submit function
             >
-              {mutation.isLoading ? "Submitting..." : "Submit"}
+              {mutation.isPending ? "Submitting..." : "Submit"}
             </motion.button>
           </div>
         </form>
@@ -988,4 +1096,4 @@ const MultiStepForm = () => {
   );
 };
 
-export default MultiStepForm;
+export default AddNewCollege;

@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useFormik } from "formik"; // ✅ Import Formik
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Placement() {
   const defaultValues = {
-    placementPercentage: 0,
-    highestPackage: 0,
+    placementPercentage: "",
+    highestPackage: "",
     internshipOpportunities: false,
     topRecruiters: [],
   };
+
+  const formik = useFormik({
+    initialValues: defaultValues,  });
+
   const { collegeId } = useParams();
   const [initialValues, setInitialValues] = useState(defaultValues);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate(); // Initialize navigation
 
   //Validation Schema using Yup
   const validationSchema = Yup.object().shape({
@@ -95,14 +102,43 @@ function Placement() {
     }
   };
 
-  const handleClearForm = (resetForm) => {
-    resetForm({ values: defaultValues }); 
-    setInitialValues(defaultValues);
-    alert("Form cleared successfully!");
+  const handleDelete = async (resetForm) => {
+    if (!collegeId) {
+      alert("College ID is missing!");
+      return;
+    }
+  
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this placement data?"
+    );
+    if (!confirmDelete) return;
+  
+    try {
+      // No API call needed, just clearing the form
+      alert("Placement details deleted!");
+  
+      // Clear form using Formik
+   resetForm();
+  
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error deleting placement details:", error);
+      alert("Failed to delete placement details.");
+    }
   };
+  
 
   return (
-    <div className="max-w-4xl mx-auto bg-blue-100 p-6 mt-10 rounded-lg shadow-lg">
+    <div className="flex justify-center">
+    <div className="relative w-[90%] max-w-[1200px] mx-auto bg-blue-100 p-6 mt-10 rounded-lg shadow-lg">
+       {/* Close Button (X) */}
+    <button
+      onClick={() => navigate("/colleges")}
+      className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold"
+    >
+      &times; {/* Unicode 'X' symbol */}
+    </button>
+    
       <h2 className="text-2xl font-semibold text-blue-800 mb-4">
         {isEditing ? "Edit Placement Details" : "Add Placement Details"}
       </h2>
@@ -125,7 +161,7 @@ function Placement() {
                 type="number"
                 name="placementPercentage"
                 className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
-                placeholder="50"
+                placeholder="0"
               />
               <ErrorMessage
                 name="placementPercentage"
@@ -143,7 +179,7 @@ function Placement() {
                 type="number"
                 name="highestPackage"
                 className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
-                placeholder="8.2"
+                placeholder="eg. 8.2"
               />
               <ErrorMessage
                 name="highestPackage"
@@ -178,7 +214,7 @@ function Placement() {
                         form.setFieldValue("topRecruiters", recruitersArray); // ✅ Update as an array
                       }}
                       className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
-                      placeholder="Infosys, TCS, Bosch"
+                      placeholder="eg. Infosys, TCS, Bosch"
                     />
                   )}
                 </Field>
@@ -199,7 +235,7 @@ function Placement() {
               {/* Clear Button (Resets Form) */}
               <button
                 type="button"
-                onClick={() => handleClearForm(resetForm, setInitialValues)}
+                onClick={() => handleDelete(resetForm) }
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
               >
                 Clear
@@ -208,6 +244,7 @@ function Placement() {
           </Form>
         )}
       </Formik>
+    </div>
     </div>
   );
 }

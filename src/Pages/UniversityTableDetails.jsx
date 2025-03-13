@@ -93,13 +93,18 @@ const UniversityTableDetails = () => {
   // Handle Save from EdituniversityDetails
   const handleSaveEdit = (updatedData) => {
     console.log("Sending Update Request:", updatedData); // Log the data before sending
+
+     // Remove fields not required by API
+  const { _id, createdAt, updatedAt, __v, ...filteredData } = updatedData;
+
     // Make a put request to update the data in the backend
     axios
-      .put(`${API_BASE_URL}/api/university/${updatedData._id}`, updatedData, {
+      .put(`${API_BASE_URL}/api/university/${updatedData._id}`, filteredData, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
         console.log("API Response:", response.data); // Log the API response
+        alert("🎉 Successfully Updated")
 
         if (response.data.success) {
           // Update local state with the updated university data
@@ -107,7 +112,7 @@ const UniversityTableDetails = () => {
             prevData.map(
               (university) =>
                 university._id === updatedData._id
-                  ? { ...university, ...updatedData }
+                  ? { ...university, ...filteredData }
                   : university
               // updatedData : university
             )
@@ -127,10 +132,16 @@ const UniversityTableDetails = () => {
   };
 
   const handleDelete = (item) => {
-    setUniversityData(
-      universityData.filter((university) => university._id !== item._id)
-    );
+    const isConfirmed = window.confirm("Are you sure you want to delete this university?");
+    
+    if (isConfirmed) {
+      setUniversityData(
+        universityData.filter((university) => university._id !== item._id)
+      );
+      alert("University deleted successfully! ✅");
+    }
   };
+  
 
   const filteredData = universityData.filter((row) => {
     return (

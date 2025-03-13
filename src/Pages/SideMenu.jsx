@@ -38,8 +38,8 @@ const navigation = [
 		current: false,
 	},
 	{
-		name: 'Excel Data Upload',
-		href: '/upload-excel',
+		name: 'IQ Test',
+		href: '/iq-test',
 		icon: CalendarIcon,
 		current: false,
 	},

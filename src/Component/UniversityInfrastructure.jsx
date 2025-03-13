@@ -6,8 +6,8 @@ import * as Yup from "yup";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-function Infrastructure() {
-  const { collegeId } = useParams();
+function UniversityInfrastructure() {
+  const { universityId } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate(); // Initialize navigation
 
@@ -24,9 +24,9 @@ function Infrastructure() {
 
     hostelAvailability: Yup.boolean().required("Select hostel availability"),
 
-     hostelDetails: Yup.string().nullable(), // ✅ No longer required when hostelAvailability is true
+    hostelDetails: Yup.string().nullable(), // ✅ No longer required when hostelAvailability is true
     // hostelDetails: Yup.string().when("hostelAvailability", {
-    //   is: "true", // Change to true if `hostelAvailability` is a boolean
+    //   is: true,
     //   then: (schema) => schema.required("Provide hostel details"),
     // }),
 
@@ -36,15 +36,14 @@ function Infrastructure() {
 
     medicalFacilities: Yup.boolean().required("Select medical facilities"),
 
-     
-        library: Yup.string().required("Library details are required"), // ✅ Validation added
+    library: Yup.string().required("Library details are required"), // ✅ Validation added
   });
 
   const formik = useFormik({
     initialValues: {
       campusArea: "",
-      numberOfClassrooms: "", // Will convert to number on submit
-      numberOfLabs: "", // Will convert to number on submit
+      numberOfClassrooms: "",
+      numberOfLabs: "",
       sportsFacilities: [],
       hostelAvailability: false,
       hostelDetails: "",
@@ -58,60 +57,66 @@ function Infrastructure() {
 
     onSubmit: async (values) => {
       try {
-        if (!collegeId) {
-          alert("Error: College ID is missing.");
+        if (!universityId) {
+          alert("Error: University ID is missing.");
           return;
         }
 
-        
         // Prepare formatted data
-    const formattedData = {
-      collegeId,
-      campusArea: values.campusArea || "",
-      numberOfClassrooms: parseInt(values.numberOfClassrooms) || 0,
-      numberOfLabs: parseInt(values.numberOfLabs) || 0,
-      sportsFacilities: values.sportsFacilities || [],
-      hostelAvailability: values.hostelAvailability,
-      canteenAndFoodServices: values.canteenAndFoodServices,
-      medicalFacilities: values.medicalFacilities,
-      transportFacility: values.transportFacility || [],
-      library: { size: values.library || "" },
-    };
+        const formattedData = {
+          universityId,
+          campusArea: values.campusArea || "",
+          numberOfClassrooms: parseInt(values.numberOfClassrooms) || 0,
+          numberOfLabs: parseInt(values.numberOfLabs) || 0,
+          sportsFacilities: values.sportsFacilities || [],
+          hostelAvailability: values.hostelAvailability,
+          canteenAndFoodServices: values.canteenAndFoodServices,
+          medicalFacilities: values.medicalFacilities,
+          transportFacility: values.transportFacility || [],
+          library: { size: values.library || "" },
+        };
 
-// ✅ Remove hostelDetails if hostelAvailability is false OR empty
-if (values.hostelAvailability && values.hostelDetails) {
-  formattedData.hostelDetails = values.hostelDetails;
-}
+        // ✅ Remove hostelDetails if hostelAvailability is false OR empty
+        if (values.hostelAvailability && values.hostelDetails) {
+          formattedData.hostelDetails = values.hostelDetails;
+        }
 
-const isUpdating = isEditing;
+        const isUpdating = isEditing;
         const url = isUpdating
-          ? `${API_BASE_URL}/api/college/infrastructure/${collegeId}`
-          : `${API_BASE_URL}/api/college/infrastructure`;
+          ? `${API_BASE_URL}/api/university/infrastructure/${universityId}`
+          : `${API_BASE_URL}/api/university/infrastructure/`;
 
         const methodType = isUpdating ? "put" : "post";
 
-         const response = await axios({
+        const response = await axios({
           method: methodType,
           url,
-          data:formattedData,
+          data: formattedData,
         });
 
         console.log("✅ Infrastructure details saved:", response.data);
         alert("Infrastructure details saved!");
       } catch (error) {
-        console.error("Error saving infrastructure:", error.response?.data || error.message);
-        alert(`Failed to save infrastructure details. Please try again. ${error.response?.data?.message || "Unknown error"}`);
+        console.error(
+          "Error saving infrastructure:",
+          error.response?.data || error.message
+        );
+        alert(
+          `Failed to save infrastructure details. Please try again. ${
+            error.response?.data?.message || "Unknown error"
+          }`
+        );
       }
     },
   });
 
   useEffect(() => {
-    if (!collegeId) return;
+    if (!universityId) return;
 
     const fetchInfrastructure = async () => {
       try {
         const { data } = await axios.get(
-          `${API_BASE_URL}/api/college/infrastructure/${collegeId}`
+          `${API_BASE_URL}/api/university/infrastructure/${universityId}`
         );
 
         if (data?.usrMsg) {
@@ -124,8 +129,7 @@ const isUpdating = isEditing;
             sportsFacilities: infraData.sportsFacilities || [],
             hostelAvailability: infraData.hostelAvailability || false,
             hostelDetails: infraData.hostelDetails || "",
-            canteenAndFoodServices:
-              infraData.canteenAndFoodServices || false,
+            canteenAndFoodServices: infraData.canteenAndFoodServices || false,
             medicalFacilities: infraData.medicalFacilities || false,
             transportFacility: infraData.transportFacility || [],
             library: infraData.library?.size || "", // ✅ Fetching library data
@@ -142,11 +146,11 @@ const isUpdating = isEditing;
     };
 
     fetchInfrastructure();
-  }, [collegeId]);
+  }, [universityId]);
 
   const handleDelete = async () => {
-    if (!collegeId) {
-      alert("College ID is missing!");
+    if (!universityId) {
+      alert("University ID is missing!");
       return;
     }
 
@@ -179,41 +183,35 @@ const isUpdating = isEditing;
       alert("Failed to delete infrastructure details.");
     }
   };
-
   return (
-    <div className="flex justify-center">
-    <div className="relative w-[90%] max-w-[1200px] bg-blue-100 p-4 md:p-6 mt-6 md:mt-10 rounded-lg shadow-lg">
-      {/* Close Button (X) */}
-      <button
-        onClick={() => navigate("/colleges")} // Navigate to CollegeTableDetails page
+    <div className="flex justify-center ">
+    <div className="relative w-[90%] max-w-[1200px] bg-blue-100 p-6 mt-10 rounded-lg shadow-lg">
+       {/* Close Button (X) */}
+       <button
+        onClick={() => navigate("/university-details")} // Navigate to CollegeTableDetails page
         className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold"
       >
         &times; {/* Unicode 'X' symbol */}
       </button>
+
       <h2 className="text-2xl font-semibold text-blue-900 mb-4">
         {isEditing
-          ? "Edit Infrastructure Details"
-          : "Add Infrastructure Details"}
+          ? "Edit University Infrastructure"
+          : "Add University Infrastructure"}
       </h2>
-
+       
       <form onSubmit={formik.handleSubmit} className="space-y-4">
-        {/* Campus Area */}
         <div>
-          <label
-            // htmlFor="campusArea"
-            className="block text-blue-700 font-medium"
-          >
+          <label className="block text-blue-700 font-medium">
             Campus Area:
           </label>
           <input
-            id="campusArea"
             type="text"
             name="campusArea"
             value={formik.values.campusArea}
             onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="w-full p-2 border border-blue-300 rounded-lg bg-blue-50 focus:ring focus:ring-blue-300 focus:border-blue-500"
-            placeholder="eg. 250+ Acres"
+            className="w-full p-2 border border-blue-300 rounded-lg"
+            placeholder="eg. 250 Acres"
           />
           {formik.touched.campusArea && formik.errors.campusArea && (
             <p className="text-red-500 text-sm mt-1">
@@ -222,23 +220,17 @@ const isUpdating = isEditing;
           )}
         </div>
 
-        {/* Classrooms & Labs */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label
-              // htmlFor="numberOfClassrooms"
-              className="block text-blue-700 font-medium"
-            >
-              Number of Classrooms:
+            <label className="block text-blue-700 font-medium">
+              Classrooms:
             </label>
             <input
-              id="numberOfClassrooms"
               type="number"
               name="numberOfClassrooms"
               value={formik.values.numberOfClassrooms}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+              className="w-full p-2 border rounded-lg"
               placeholder="0"
             />
             {formik.touched.numberOfClassrooms &&
@@ -249,22 +241,14 @@ const isUpdating = isEditing;
               )}
           </div>
 
-          {/* Number of Labs */}
           <div>
-            <label
-              // htmlFor="numberOfLabs"
-              className="block text-blue-700 font-medium"
-            >
-              Number of Labs:
-            </label>
+            <label className="block text-blue-700 font-medium">Labs:</label>
             <input
-              id="numberOfLabs"
               type="number"
               name="numberOfLabs"
               value={formik.values.numberOfLabs}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+              className="w-full p-2 border rounded-lg"
               placeholder="0"
             />
             {formik.touched.numberOfLabs && formik.errors.numberOfLabs && (
@@ -275,72 +259,8 @@ const isUpdating = isEditing;
           </div>
         </div>
 
-        {/* Sports Facilities */}
+        {/* Library Section */}
         <div>
-          <label
-            // htmlFor="sportsFacilities"
-            className="block text-blue-700 font-medium"
-          >
-            Sports Facilities Available:
-          </label>
-          <div className="flex gap-4">
-            <label>
-              <input
-                id="sportsFacilities"
-                type="checkbox"
-                name="sportsFacilities"
-                value="Indoor"
-                checked={formik.values.sportsFacilities.includes("Indoor")}
-                onChange={() => {
-                  formik.setFieldValue(
-                    "sportsFacilities",
-                    formik.values.sportsFacilities.includes("Indoor")
-                      ? formik.values.sportsFacilities.filter(
-                          (item) => item !== "Indoor"
-                        )
-                      : [...formik.values.sportsFacilities, "Indoor"]
-                  );
-                }}
-                // checked={
-                //   Array.isArray(formData.sportsFacilities) &&
-                //   formData.sportsFacilities.includes("Indoor")
-                // }
-                // onChange={handleChange}
-              />
-              <span className="ml-2">Indoor</span>
-            </label>
-
-       
-
-            <label>
-              <input
-                type="checkbox"
-                name="sportsFacilities"
-                value="Outdoor"
-                checked={formik.values.sportsFacilities.includes("Outdoor")}
-                onChange={() => {
-                  formik.setFieldValue(
-                    "sportsFacilities",
-                    formik.values.sportsFacilities.includes("Outdoor")
-                      ? formik.values.sportsFacilities.filter(
-                          (item) => item !== "Outdoor"
-                        )
-                      : [...formik.values.sportsFacilities, "Outdoor"]
-                  );
-                }}
-              />
-              <span className="ml-2">Outdoor</span>
-            </label>
-          </div>
-          {formik.touched.sportsFacilities && formik.errors.sportsFacilities ? (
-            <div className="text-red-500 text-sm mt-1">
-              {formik.errors.sportsFacilities}
-            </div>
-          ) : null}
-        </div>
-
-{/* Library Section */}
-<div>
           <label className="block text-blue-700 font-medium">Library:</label>
           <input
             type="text"
@@ -355,27 +275,56 @@ const isUpdating = isEditing;
           )}
         </div>
 
-        {/* Hostel Availability */}
+        {/* Sports Facilities */}
         <div>
-          <label
-            // htmlFor="hostelAvailability"
-            className="block text-blue-700 font-medium"
-          >
+          <label className="block text-blue-700 font-medium">
+            Sports Facilities:
+          </label>
+          <div className="flex gap-4">
+            {["Indoor", "Outdoor"].map((option) => (
+              <label key={option}>
+                <input
+                  type="checkbox"
+                  value={option}
+                  checked={formik.values.sportsFacilities.includes(option)}
+                  onChange={() => {
+                    const updatedFacilities =
+                      formik.values.sportsFacilities.includes(option)
+                        ? formik.values.sportsFacilities.filter(
+                            (item) => item !== option
+                          )
+                        : [...formik.values.sportsFacilities, option];
+                    formik.setFieldValue("sportsFacilities", updatedFacilities);
+                  }}
+                />
+                <span className="ml-2">{option}</span>
+              </label>
+            ))}
+          </div>
+          {formik.touched.sportsFacilities && formik.errors.sportsFacilities ? (
+            <div className="text-red-500 text-sm mt-1">
+              {formik.errors.sportsFacilities}
+            </div>
+          ) : null}
+        </div>
+
+        <div>
+          <label className="block text-blue-700 font-medium">
             Hostel Availability:
           </label>
           <select
-            id="hostelAvailability"
             name="hostelAvailability"
-            value={formik.values.hostelAvailability}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+            value={formik.values.hostelAvailability.toString()}
+            onChange={(e) =>
+              formik.setFieldValue(
+                "hostelAvailability",
+                e.target.value === "true"
+              )
+            }
+            className="w-full p-2 border rounded-lg"
           >
-            <option value="" disabled hidden>
-              Select
-            </option>
-            <option value="true">Yes</option>
             <option value="false">No</option>
+            <option value="true">Yes</option>
           </select>
           {formik.touched.hostelAvailability &&
             formik.errors.hostelAvailability && (
@@ -385,23 +334,17 @@ const isUpdating = isEditing;
             )}
         </div>
 
-        {/* Hostel Details */}
-        {formik.values.hostelAvailability === "true" && (
+        {formik.values.hostelAvailability && (
           <div>
-            <label
-              // htmlFor="hostelDetails"
-              className="block text-blue-700 font-medium"
-            >
+            <label className="block text-blue-700 font-medium">
               Hostel Details:
             </label>
             <input
-              id="hostelDetails"
               type="text"
               name="hostelDetails"
               value={formik.values.hostelDetails}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+              className="w-full p-2 border rounded-lg"
               placeholder="eg. Separate for Boys & Girls"
             />
             {formik.touched.hostelDetails && formik.errors.hostelDetails && (
@@ -412,24 +355,23 @@ const isUpdating = isEditing;
           </div>
         )}
 
-        {/* Canteen & Medical Facilities */}
         <div>
-          <label
-            // htmlFor="canteenAndFoodServices"
-            className="block text-blue-700 font-medium"
-          >
-            Canteen and Food Services:
+          <label className="block text-blue-700 font-medium">
+            Canteen Availability:
           </label>
           <select
             name="canteenAndFoodServices"
-            {...formik.getFieldProps("canteenAndFoodServices")}
-            className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+            value={formik.values.canteenAndFoodServices.toString()}
+            onChange={(e) =>
+              formik.setFieldValue(
+                "canteenAndFoodServices",
+                e.target.value === "true"
+              )
+            }
+            className="w-full p-2 border rounded-lg"
           >
-            <option value="" disabled hidden>
-              Select
-            </option>
-            <option value="true">Available</option>
-            <option value="false">Not Available</option>
+            <option value="false">No</option>
+            <option value="true">Yes</option>
           </select>
           {formik.touched.canteenAndFoodServices &&
           formik.errors.canteenAndFoodServices ? (
@@ -439,23 +381,24 @@ const isUpdating = isEditing;
           ) : null}
         </div>
 
+        {/* Medical Facilities */}
         <div>
-          <label
-            // htmlFor="medicalFacilities"
-            className="block text-blue-700 font-medium"
-          >
+          <label className="block text-blue-700 font-medium">
             Medical Facilities:
           </label>
           <select
             name="medicalFacilities"
-            {...formik.getFieldProps("medicalFacilities")}
-            className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+            value={formik.values.medicalFacilities.toString()}
+            onChange={(e) =>
+              formik.setFieldValue(
+                "medicalFacilities",
+                e.target.value === "true"
+              )
+            }
+            className="w-full p-2 border rounded-lg"
           >
-            <option value="" disabled hidden>
-              Select
-            </option>
-            <option value="true">Available</option>
-            <option value="false">Not Available</option>
+            <option value="false">No</option>
+            <option value="true">Yes</option>
           </select>
           {formik.touched.medicalFacilities &&
           formik.errors.medicalFacilities ? (
@@ -464,34 +407,27 @@ const isUpdating = isEditing;
             </div>
           ) : null}
         </div>
-        
+
         {/* Transport Facility */}
         <div>
-          <label
-            // htmlFor="transportFacility"
-            className="block text-blue-700 font-medium"
-          >
+          <label className="block text-blue-700 font-medium">
             Transport Facilities:
           </label>
           <div className="flex gap-4">
             {["University Bus", "Public Transport Nearby"].map((option) => (
               <label key={option}>
                 <input
-                  id="transportFacility"
                   type="checkbox"
-                  name="transportFacility"
                   value={option}
                   checked={formik.values.transportFacility.includes(option)}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    formik.setFieldValue(
-                      "transportFacility",
-                      formik.values.transportFacility.includes(value)
+                  onChange={() => {
+                    const updatedTransport =
+                      formik.values.transportFacility.includes(option)
                         ? formik.values.transportFacility.filter(
-                            (item) => item !== value
+                            (item) => item !== option
                           )
-                        : [...formik.values.transportFacility, value]
-                    );
+                        : [...formik.values.transportFacility, option];
+                    formik.setFieldValue("transportFacility", updatedTransport);
                   }}
                 />
                 <span className="ml-2">{option}</span>
@@ -507,12 +443,11 @@ const isUpdating = isEditing;
         </div>
 
         <div className="flex mt-4 justify-end gap-5">
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+            className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg"
           >
-            {isEditing ? "Update" : "Add "}
+            {isEditing ? "Update" : "Add"}
           </button>
 
           <button
@@ -524,9 +459,9 @@ const isUpdating = isEditing;
           </button>
         </div>
       </form>
-      </div>
+     </div>
     </div>
   );
 }
 
-export default Infrastructure;
+export default UniversityInfrastructure;

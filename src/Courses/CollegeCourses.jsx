@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl"; 
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const CollegeCourses = () => {
   const { collegeId } = useParams();
@@ -11,6 +12,7 @@ const CollegeCourses = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isUpdated, setIsUpdated] = useState(false); // Track if any course is updated
+  const navigate = useNavigate(); // Initialize navigation
 
   // Fetch courses from the API on component mount
   useEffect(() => {
@@ -200,7 +202,15 @@ const CollegeCourses = () => {
   };
 
   return (
-    <section className="p-6 bg-light-blue rounded-xl shadow-md">
+    <section className="p-6 bg-light-blue rounded-xl shadow-md relative">
+      {/* Close Button (X) */}
+      <button
+        onClick={() => navigate("/colleges")} // Navigate to CollegeTableDetails page
+        className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold"
+      >
+        &times; {/* Unicode 'X' symbol */}
+      </button>  
+
       <div className="mb-6">
         <h3 className="text-2xl font-semibold text-blue-600">Add Courses</h3>
       </div>

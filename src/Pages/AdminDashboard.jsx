@@ -23,7 +23,7 @@ const AdminDashboard = () => {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
-        label: "New Students",
+        label: "New College",
         data: [50, 70, 120, 150, 200, 250],
         borderColor: "#2563eb",
         backgroundColor: "rgba(37, 99, 235, 0.5)",
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
           <div className="bg-blue-600 text-white p-5 rounded-xl flex items-center shadow-lg">
             <FaUsers className="text-4xl mr-4" />
             <div>
-              <h2 className="text-xl font-semibold">Total Students</h2>
+              <h2 className="text-xl font-semibold">Total College</h2>
               <p className="text-2xl font-bold">{stats.students}</p>
             </div>
           </div>
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
           {/* Chart */}
           <div className="bg-white p-5 rounded-xl shadow-lg">
             <h2 className="text-xl font-semibold text-blue-700 mb-3">
-              New Students Trend
+              New College Registered
             </h2>
             <Line data={chartData} />
           </div>

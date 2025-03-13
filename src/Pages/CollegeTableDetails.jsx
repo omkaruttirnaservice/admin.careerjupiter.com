@@ -9,6 +9,7 @@ import {
   FaBuilding,
   FaBriefcase,
 } from "react-icons/fa";
+// import Swal from "sweetalert2";
 import { Tooltip } from "react-tooltip";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
@@ -47,8 +48,11 @@ const CollegeTableDetails = () => {
       .get(`${API_BASE_URL}/api/college/all`)
       .then((response) => {
         if (response.data.success) {
-          const parsedData = typeof response.data.data === "string" ? JSON.parse(response.data.data) : response.data.data;
-          setCollegeData(parsedData.colleges);          
+          const parsedData =
+            typeof response.data.data === "string"
+              ? JSON.parse(response.data.data)
+              : response.data.data;
+          setCollegeData(parsedData.colleges);
           setLoading(false);
         } else {
           setLoading(false);
@@ -76,72 +80,131 @@ const CollegeTableDetails = () => {
 
   // Handle Edit click
   const handleEdit = (item) => {
-    setSelectedItem(item);
-    setEditModalOpen(true);
+    try {
+      const formattedItem = {
+        ...item,
+        admissionEntranceDetails: {
+          ...item.admissionEntranceDetails,
+          // Ensure scholarshipsAvailable is always an array of strings
+          scholarshipsAvailable: Array.isArray(
+            item.admissionEntranceDetails.scholarshipsAvailable
+          )
+            ? item.admissionEntranceDetails.scholarshipsAvailable
+            : [],
+
+          // Ensure quotaSystem is always an array of strings
+          quotaSystem: Array.isArray(item.admissionEntranceDetails.quotaSystem)
+            ? item.admissionEntranceDetails.quotaSystem
+            : [],
+        },
+      };
+
+      console.log("✅ Parsed Data for Editing:", formattedItem);
+      setSelectedItem(formattedItem);
+      setEditModalOpen(true);
+    } catch (error) {
+      console.error("❌ Error parsing JSON in handleEdit:", error);
+      alert("Error processing college data. Please check the format.");
+    }
   };
 
-  // Handle Save from EditCollegeDetails
-  // const handleSaveEdit = (updatedData) => {
-  //   console.log("Updated Data Received:", updatedData); // ✅ Debugging Log
-  //   // Make a PATCH request to update the data in the backend
-  //   axios
-  //     .patch(
-  //       `${API_BASE_URL}/api/college/update/${updatedData._id}`,
-  //       updatedData
-  //     )
-  //     .then((response) => {
-  //       if (response.data.success) {
-  //         // Update local state with the updated college data
-  //         setCollegeData((prevData) =>
-  //           prevData.map((college) =>
-  //             college._id === updatedData._id ? updatedData : college
-  //           )
-  //         );
-  //         setEditModalOpen(false); // Close the Edit Modal
-  //       } else {
-  //         alert("Failed to update college details");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error updating college data:", error);
-  //       alert("Error updating college details");
-  //     });
-  // };
-
   const handleSaveEdit = (updatedData) => {
-    console.log("Updated Data Received:", updatedData); // ✅ Debugging Log
-  
+    console.log("📢 Updated Data Before Formatting:", updatedData);
+
     if (!updatedData || !updatedData._id) {
-      alert("Error: College data is missing or invalid.");
+      alert("❌ Error: College data is missing or invalid.");
       return;
     }
-  
+
+    const { _id, createAt, updateAt, __v, ...cleanData } = updatedData;
+
+    // ✅ Convert dates to "YYYY-MM-DD" format before sending
+    const formattedData = {
+      collegeName: cleanData.collegeName || "",
+      affiliatedUniversity: cleanData.affiliatedUniversity || "",
+      Category: cleanData.Category || "",
+      collegeType: cleanData.collegeType || "",
+      location: cleanData.location || { lat: "", lng: "" },
+      address: cleanData.address || {
+        line1: "",
+        line2: "",
+        pincode: "",
+        state: "",
+        dist: "",
+      },
+      contactDetails: cleanData.contactDetails || "",
+      establishedYear: cleanData.establishedYear || "",
+      admissionProcess: cleanData.admissionProcess || "",
+      email_id: cleanData.email_id || "",
+      admissionEntranceDetails: JSON.stringify({
+        admissionStartDate: cleanData.admissionEntranceDetails
+          .admissionStartDate
+          ? cleanData.admissionEntranceDetails.admissionStartDate.split("T")[0] // Remove Time Part
+          : "",
+
+        admissionEndDate: cleanData.admissionEntranceDetails.admissionEndDate
+          ? cleanData.admissionEntranceDetails.admissionEndDate.split("T")[0] // Remove Time Part
+          : "",
+
+        lastYearCutoffMarks:
+          Number(cleanData.admissionEntranceDetails.lastYearCutoffMarks) || 0, // Ensure it's a number
+
+        scholarshipsAvailable: Array.isArray(
+          cleanData.admissionEntranceDetails.scholarshipsAvailable
+        )
+          ? cleanData.admissionEntranceDetails.scholarshipsAvailable.filter(
+              (item) => typeof item === "string"
+            )
+          : [], // Ensure proper format
+
+        quotaSystem: Array.isArray(
+          cleanData.admissionEntranceDetails.quotaSystem
+        )
+          ? cleanData.admissionEntranceDetails.quotaSystem.filter(
+              (item) => typeof item === "string"
+            )
+          : [], // Ensure proper format
+      }),
+    };
+
+    console.log("📢 Final Payload to API:", formattedData);
+
     axios
-      .patch(`${API_BASE_URL}/api/college/update/${updatedData._id}`, updatedData)
+      .patch(`${API_BASE_URL}/api/college/update/${_id}`, formattedData)
       .then((response) => {
-        console.log("API Response:", response.data); // ✅ Check if API returns success
-        alert("Successfully Updated");
+        console.log("✅ API Response:", response.data);
+        alert("🎉 Successfully Updated");
+
         if (response.data.success) {
           setCollegeData((prevData) =>
             prevData.map((college) =>
-              college._id === updatedData._id ? updatedData : college
+              college._id === _id ? { ...college, ...formattedData } : college
             )
           );
           setEditModalOpen(false);
         } else {
-          alert("Failed to update college details");
+          alert("❌ Failed to update college details");
         }
       })
       .catch((error) => {
-        console.error("Error updating college data:", error.response?.data || error);
-        alert(`Error updating college details ${error}`);
+        console.error(
+          "❌ Error updating college data:",
+          error.response?.data || error
+        );
+        alert(`❌ Error updating college details: ${error}`);
       });
   };
-  
 
   const handleDelete = (item) => {
-    setCollegeData(collegeData.filter((college) => college._id !== item._id));
+    const isConfirmed = window.confirm("Are you sure you want to delete this college?");
+    
+    if (isConfirmed) {
+      setCollegeData(collegeData.filter((college) => college._id !== item._id));
+      alert("College deleted successfully! ✅");
+    }
   };
+  
+  
 
   const filteredData = collegeData.filter((row) => {
     return (
@@ -258,74 +321,74 @@ const CollegeTableDetails = () => {
       name: "Actions",
       cell: (row) => (
         <div className="flex space-x-2">
-        {/* View Profile */}
-        <button
-          className="text-blue-600 hover:text-blue-800"
-          data-tooltip-id="view-tooltip"
-          data-tooltip-content="View Profile"
-          onClick={() => handleViewProfile(row)}
-        >
-          <FaEye size={17} />
-        </button>
-  
-        {/* Edit */}
-        <button
-          className="text-yellow-600 hover:text-yellow-800"
-          data-tooltip-id="edit-tooltip"
-          data-tooltip-content="Edit Details"
-          onClick={() => handleEdit(row)}
-        >
-          <FaEdit size={17} />
-        </button>
-  
-        {/* Delete */}
-        <button
-          className="text-red-600 hover:text-red-800"
-          data-tooltip-id="delete-tooltip"
-          data-tooltip-content="Delete College"
-          onClick={() => handleDelete(row)}
-        >
-          <FaPauseCircle size={17} />
-        </button>
-  
-        {/* Add Courses */}
-        <button
-          className="text-green-600 hover:text-green-800"
-          data-tooltip-id="courses-tooltip"
-          data-tooltip-content="Manage Courses"
-          onClick={() => navigate(`/colleges/courses/${row._id}`)}
-        >
-          <FaPlus size={17} />
-        </button>
-  
-        {/* Manage Infrastructure */}
-        <button
-          className="text-purple-600 hover:text-purple-800"
-          data-tooltip-id="infra-tooltip"
-          data-tooltip-content="Manage Infrastructure"
-          onClick={() => navigate(`/colleges/infrastructure/${row._id}`)}
-        >
-          <FaBuilding size={17} />
-        </button>
-  
-        {/* Manage Placements */}
-        <button
-          className="text-pink-600 hover:text-pink-800"
-          data-tooltip-id="placement-tooltip"
-          data-tooltip-content="Manage Placements"
-          onClick={() => navigate(`/colleges/placement/${row._id}`)}
-        >
-          <FaBriefcase size={17} />
-        </button>
-  
-        {/* Tooltip Components */}
-        <Tooltip id="view-tooltip" place="top" />
-        <Tooltip id="edit-tooltip" place="top" />
-        <Tooltip id="delete-tooltip" place="top" />
-        <Tooltip id="courses-tooltip" place="top" />
-        <Tooltip id="infra-tooltip" place="top" />
-        <Tooltip id="placement-tooltip" place="top" />
-      </div>
+          {/* View Profile */}
+          <button
+            className="text-blue-600 hover:text-blue-800"
+            data-tooltip-id="view-tooltip"
+            data-tooltip-content="View Profile"
+            onClick={() => handleViewProfile(row)}
+          >
+            <FaEye size={17} />
+          </button>
+
+          {/* Edit */}
+          <button
+            className="text-yellow-600 hover:text-yellow-800"
+            data-tooltip-id="edit-tooltip"
+            data-tooltip-content="Edit Details"
+            onClick={() => handleEdit(row)}
+          >
+            <FaEdit size={17} />
+          </button>
+
+          {/* Delete */}
+          <button
+            className="text-red-600 hover:text-red-800"
+            data-tooltip-id="delete-tooltip"
+            data-tooltip-content="Delete College"
+            onClick={() => handleDelete(row)}
+          >
+            <FaPauseCircle size={17} />
+          </button>
+
+          {/* Add Courses */}
+          <button
+            className="text-green-600 hover:text-green-800"
+            data-tooltip-id="courses-tooltip"
+            data-tooltip-content="Manage Courses"
+            onClick={() => navigate(`/colleges/courses/${row._id}`)}
+          >
+            <FaPlus size={17} />
+          </button>
+
+          {/* Manage Infrastructure */}
+          <button
+            className="text-purple-600 hover:text-purple-800"
+            data-tooltip-id="infra-tooltip"
+            data-tooltip-content="Manage Infrastructure"
+            onClick={() => navigate(`/colleges/infrastructure/${row._id}`)}
+          >
+            <FaBuilding size={17} />
+          </button>
+
+          {/* Manage Placements */}
+          <button
+            className="text-pink-600 hover:text-pink-800"
+            data-tooltip-id="placement-tooltip"
+            data-tooltip-content="Manage Placements"
+            onClick={() => navigate(`/colleges/placement/${row._id}`)}
+          >
+            <FaBriefcase size={17} />
+          </button>
+
+          {/* Tooltip Components */}
+          <Tooltip id="view-tooltip" place="top" />
+          <Tooltip id="edit-tooltip" place="top" />
+          <Tooltip id="delete-tooltip" place="top" />
+          <Tooltip id="courses-tooltip" place="top" />
+          <Tooltip id="infra-tooltip" place="top" />
+          <Tooltip id="placement-tooltip" place="top" />
+        </div>
       ),
     },
   ];

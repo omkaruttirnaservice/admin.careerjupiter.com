@@ -1,79 +1,3 @@
-import React, { useEffect, useState } from 'react';
-
-const CollegeTable = () => {
-  const [collegeData, setCollegeData] = useState(null);
-
-  // Fetch the JSON data when the component mounts
-  useEffect(() => {
-    fetch('./src/assets/collegeData.json')  // Adjust the path based on your actual folder structure
-      .then((response) => response.json())
-      .then((data) => setCollegeData(data))
-      .catch((error) => console.error('Error fetching JSON:', error));
-  }, []);
-
-  if (!collegeData) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
-        College Details
-      </h1>
-      <div className="overflow-x-auto bg-white border-2 border-blue-300 shadow-lg rounded-lg">
-        <table className="min-w-full table-auto">
-          <thead className="bg-blue-600 text-white">
-            <tr>
-              <th className="py-2 px-4">College Name</th>
-              <th className="py-2 px-4">Affiliated University</th>
-              <th className="py-2 px-4">College Category</th>
-              <th className="py-2 px-4">College Type</th>
-              <th className="py-2 px-4">Location</th>
-              <th className="py-2 px-4">Address</th>
-              <th className="py-2 px-4">Contact</th>
-              <th className="py-2 px-4">Website</th>
-              <th className="py-2 px-4">Established Year</th>
-              <th className="py-2 px-4">Accreditation</th>
-              <th className="py-2 px-4">Admission Process</th>
-              <th className="py-2 px-4">Application Form</th>
-              <th className="py-2 px-4">Description</th>
-            </tr>
-          </thead>
-          <tbody className="text-center">
-            <tr>
-              <td className="py-2 px-4">{collegeData.collegeName}</td>
-              <td className="py-2 px-4">{collegeData.affiliatedUniversity}</td>
-              <td className="py-2 px-4">{collegeData.collegeCategory}</td>
-              <td className="py-2 px-4">{collegeData.collegeType}</td>
-              <td className="py-2 px-4">{collegeData.location.lat}, {collegeData.location.lan}</td>
-              <td className="py-2 px-4">
-                {collegeData.address.line1}, {collegeData.address.line2}, {collegeData.address.dist}, {collegeData.address.state} - {collegeData.address.pincode}
-              </td>
-              <td className="py-2 px-4">{collegeData.contactDetails}</td>
-              <td className="py-2 px-4">
-                <a href={collegeData.websiteURL} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-                  {collegeData.websiteURL}
-                </a>
-              </td>
-              <td className="py-2 px-4">{collegeData.establishedYear}</td>
-              <td className="py-2 px-4">{collegeData.accreditation}</td>
-              <td className="py-2 px-4">{collegeData.admissionProcess}</td>
-              <td className="py-2 px-4">
-                <a href={collegeData.applicationFormURL} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-                  Apply Here
-                </a>
-              </td>
-              <td className="py-2 px-4">{collegeData.info.description}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-export default CollegeTable;
-
 
 
 //Filly accessible Login Page
@@ -2447,3 +2371,1299 @@ export default CollegeTable;
 
 // export default TableDetails;
 
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import { API_BASE_URL } from "../Constant/constantBaseUrl"; // Ensure this constant is correctly defined
+
+// const Infrastructure = () => {
+//   const { collegeId } = useParams();
+//   const [formData, setFormData] = useState({
+//     campusArea: "",
+//     numberOfClassrooms: "",
+//     numberOfLabs: "",
+//     sportsFacilities: [],
+//     hostelAvailability: "",
+//     hostelDetails: "",
+//     canteenAndFoodServices: "",
+//     medicalFacilities: "",
+//     transportFacility: [],
+//   });
+
+//   const [isEditing, setIsEditing] = useState(false);
+
+//   // Fetch infrastructure details
+//   useEffect(() => {
+//     const fetchInfrastructure = async () => {
+//       try {
+//         const response = await axios.get(
+//           `${API_BASE_URL}/api/college/infrastructure/${collegeId}`
+//         );
+//         if (response.data) {
+//           setFormData({
+//             ...response.data,
+//             sportsFacilities: response.data.sportsFacilities || [],
+//             transportFacility: response.data.transportFacility || [],
+//             hostelDetails: response.data.hostelDetails || "", // Ensure it remains controlled
+//           });
+//           setIsEditing(true);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching infrastructure data:", error);
+//       }
+//     };
+
+//     fetchInfrastructure();
+//   }, [collegeId]);
+
+//   // Handle form input change
+//   const handleChange = (e) => {
+//     const { name, value, type, checked } = e.target;
+
+//     if (type === "checkbox") {
+//       setFormData((prev) => ({
+//         ...prev,
+//         [name]: checked
+//           ? [...prev[name], value]
+//           : prev[name].filter((item) => item !== value),
+//       }));
+//     } else {
+//       setFormData({ ...formData, [name]: value });
+//     }
+//   };
+
+//   const navigate = useNavigate();
+
+//   // Function to handle update
+//   const handleUpdate = async () => {
+//     try {
+//       await axios.put(
+//         `${API_BASE_URL}/api/college/infrastructure/${collegeId}`,
+//         formData
+//       );
+//       alert("Infrastructure updated successfully!");
+//     } catch (error) {
+//       console.error("Error updating infrastructure:", error);
+//       alert("Failed to update infrastructure.");
+//     }
+//   };
+
+//   // Function to handle delete
+//   const handleDelete = async () => {
+//     if (
+//       window.confirm("Are you sure you want to delete this infrastructure?")
+//     ) {
+//       try {
+//         await axios.delete(
+//           `${API_BASE_URL}/api/college/infrastructure/${collegeId}`
+//         );
+//         alert("Infrastructure deleted successfully!");
+//         navigate("/"); // Redirect after delete
+//       } catch (error) {
+//         console.error("Error deleting infrastructure:", error);
+//         alert("Failed to delete infrastructure.");
+//       }
+//     }
+//   };
+
+//   // Handle form submission
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       if (isEditing) {
+//         await axios.put(
+//           `${API_BASE_URL}/api/college/infrastructure/${collegeId}`,
+//           formData
+//         );
+//         alert("Infrastructure updated successfully!");
+//       } else {
+//         await axios.post(`${API_BASE_URL}/api/college/infrastructure/`, {
+//           ...formData,
+//           collegeId,
+//         });
+//         alert("Infrastructure added successfully!");
+//         setIsEditing(true);
+//       }
+//     } catch (error) {
+//       console.error("Error saving infrastructure data:", error);
+//       alert("Failed to save infrastructure details.");
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-4xl mx-auto bg-blue-100 p-6 mt-10 rounded-lg shadow-md">
+//       <h2 className="text-2xl font-semibold text-blue-800 mb-4">
+//         {isEditing
+//           ? "Edit Infrastructure Details"
+//           : "Add Infrastructure Details"}
+//       </h2>
+//       <form onSubmit={handleSubmit} className="space-y-4">
+//         {/* Campus Area */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">
+//             Campus Area:
+//           </label>
+//           <input
+//             type="text"
+//             name="campusArea"
+//             value={formData.campusArea}
+//             onChange={handleChange}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             required
+//             placeholder="250+ Acres"
+//           />
+//         </div>
+
+//         {/* Classrooms & Labs */}
+//         <div className="grid grid-cols-2 gap-4">
+//           <div>
+//             <label className="block text-blue-700 font-medium">
+//               Number of Classrooms:
+//             </label>
+//             <input
+//               type="number"
+//               name="numberOfClassrooms"
+//               value={formData.numberOfClassrooms}
+//               onChange={handleChange}
+//               className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//               required
+//               placeholder="100"
+//             />
+//           </div>
+//           <div>
+//             <label className="block text-blue-700 font-medium">
+//               Number of Labs:
+//             </label>
+//             <input
+//               type="number"
+//               name="numberOfLabs"
+//               value={formData.numberOfLabs}
+//               onChange={handleChange}
+//               className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//               required
+//               placeholder="50"
+//             />
+//           </div>
+//         </div>
+
+//         {/* Sports Facilities */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">
+//             Sports Facilities Available:
+//           </label>
+//           <div className="flex gap-4">
+//             <label>
+//               <input
+//                 type="checkbox"
+//                 name="sportsFacilities"
+//                 value="Indoor"
+//                 checked={Array.isArray(formData.sportsFacilities) && formData.sportsFacilities.includes("Indoor")}
+//                 onChange={handleChange}
+//               />
+//               <span className="ml-2">Indoor</span>
+//             </label>
+//             <label>
+//               <input
+//                 type="checkbox"
+//                 name="sportsFacilities"
+//                 value="Outdoor"
+//                 checked={Array.isArray(formData.sportsFacilities) && formData.sportsFacilities.includes("Outdoor")}
+//                 onChange={handleChange}
+//               />
+//               <span className="ml-2">Outdoor</span>
+//             </label>
+//           </div>
+//         </div>
+
+//         {/* Hostel Availability */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">
+//             Hostel Availability:
+//           </label>
+//           <select
+//             name="hostelAvailability"
+//             value={formData.hostelAvailability}
+//             onChange={handleChange}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             required
+//           >
+//             <option value="">Select</option>
+//             <option value="true">Yes</option>
+//             <option value="false">No</option>
+//           </select>
+//         </div>
+
+//         {/* Hostel Details */}
+//         {formData.hostelAvailability === "true" && (
+//           <div>
+//             <label className="block text-blue-700 font-medium">
+//               Hostel Details:
+//             </label>
+//             <input
+//               type="text"
+//               name="hostelDetails"
+//               value={formData.hostelDetails}
+//               onChange={handleChange}
+//               className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//               required
+//               placeholder="Separate for Boys & Girls"
+//             />
+//           </div>
+//         )}
+
+//         {/* Canteen & Medical Facilities */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">
+//             Canteen and Food Services:
+//           </label>
+//           <select
+//             name="canteenAndFoodServices"
+//             value={formData.canteenAndFoodServices}
+//             onChange={handleChange}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             required
+//           >
+//             <option value="">Select</option>
+//             <option value="true">Available</option>
+//             <option value="false">Not Available</option>
+//           </select>
+//         </div>
+
+//         <div>
+//           <label className="block text-blue-700 font-medium">
+//             Medical Facilities:
+//           </label>
+//           <select
+//             name="medicalFacilities"
+//             value={formData.medicalFacilities}
+//             onChange={handleChange}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             required
+//           >
+//             <option value="">Select</option>
+//             <option value="true">Available</option>
+//             <option value="false">Not Available</option>
+//           </select>
+//         </div>
+
+//         {/* Transport Facility */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">
+//             Transport Facilities:
+//           </label>
+//           <div className="flex gap-4">
+//             <label>
+//               <input
+//                 type="checkbox"
+//                 name="transportFacility"
+//                 value="University Bus"
+//                 checked={Array.isArray(formData.transportFacility) && formData.transportFacility.includes("University Bus")}
+//                 onChange={handleChange}
+//               />
+//               <span className="ml-2">University Bus</span>
+//             </label>
+//             <label>
+//               <input
+//                 type="checkbox"
+//                 name="transportFacility"
+//                 value="Public Transport Nearby"
+//                 checked={Array.isArray(formData.transportFacility) && formData.transportFacility.includes("Public Transport Nearby")}
+//                 onChange={handleChange}
+//               />
+//               <span className="ml-2">Public Transport Nearby</span>
+//             </label>
+//           </div>
+//         </div>
+
+//         <div className="flex mt-4 justify-end gap-5">
+//         {/* Submit Button */}
+//         <button
+//           type="submit"
+//           className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+//         >
+//           {isEditing ? "Update" : "Add "}
+//         </button>
+
+//         {/* <button
+//           onClick={handleUpdate}
+//           className="bg-yellow-500 text-white w-25 px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-300"
+//         >
+//           Update
+//         </button> */}
+
+//         <button
+//           onClick={handleDelete}
+//           className="bg-red-500 text-white w-25 px-4 py-2 rounded-lg justify-end hover:bg-red-600 transition duration-300"
+//         >
+//           Delete
+//         </button>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default Infrastructure;
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import { API_BASE_URL } from "../Constant/constantBaseUrl"; // Ensure this constant is correctly defined
+
+// const Infrastructure = () => {
+//   const { collegeId } = useParams();
+  
+//   const navigate = useNavigate();
+
+//   const [formData, setFormData] = useState({
+//     campusArea: "",
+//     numberOfClassrooms: "0",
+//     numberOfLabs: "0",
+//     sportsFacilities: [],
+//     hostelAvailability: "false",
+//     hostelDetails: "",
+//     canteenAndFoodServices: "false",
+//     medicalFacilities: "false",
+//     transportFacility: [],
+//   });
+
+//   const [isEditing, setIsEditing] = useState(false);
+
+//   // Fetch infrastructure details
+//   useEffect(() => {
+//     const fetchInfrastructure = async () => {
+//       try {
+//         const response = await axios.get(
+//           `${API_BASE_URL}/api/college/infrastructure/${collegeId}`
+//         );
+//         if (response.data) {
+//           setFormData({
+//             campusArea: response.data.campusArea || "",
+//             numberOfClassrooms: String(response.data.numberOfClassrooms || "0"),
+//             numberOfLabs: String(response.data.numberOfLabs || "0"),
+//             sportsFacilities: response.data.sportsFacilities || [],
+//             hostelAvailability: response.data.hostelAvailability || "false",
+//             hostelDetails: response.data.hostelDetails || "",
+//             canteenAndFoodServices: response.data.canteenAndFoodServices || "false",
+//             medicalFacilities: response.data.medicalFacilities || "false",
+//             transportFacility: response.data.transportFacility || [],
+//           });
+//           setIsEditing(true);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching infrastructure data:", error);
+//       }
+//     };
+
+//     fetchInfrastructure();
+//   }, [collegeId]);
+
+//   // Handle form input change
+//   const handleChange = (e) => {
+//     const { name, value, type, checked } = e.target;
+
+//     if (type === "checkbox") {
+//       setFormData((prev) => ({
+//         ...prev,
+//         [name]: checked
+//           ? [...prev[name], value]
+//           : prev[name].filter((item) => item !== value),
+//       }));
+//     } else {
+//       setFormData({ ...formData, [name]: value });
+//     }
+//   };
+
+//   // Handle submit (Add / Update)
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       if (isEditing) {
+//         await axios.put(
+//           `${API_BASE_URL}/api/college/infrastructure/${collegeId}`,
+//           formData
+//         );
+//         alert("Infrastructure updated successfully!");
+//       } else {
+//         await axios.post(`${API_BASE_URL}/api/college/infrastructure/`, {
+//           ...formData,
+//           collegeId,
+//         });
+//         alert("Infrastructure added successfully!");
+//         setIsEditing(true);
+//       }
+//     } catch (error) {
+//       console.error("Error saving infrastructure data:", error);
+//       alert("Failed to save infrastructure details.");
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-4xl mx-auto bg-blue-100 p-6 mt-10 rounded-lg shadow-md">
+//       <h2 className="text-2xl font-semibold text-blue-800 mb-4">
+//         {isEditing ? "Edit Infrastructure Details" : "Add Infrastructure Details"}
+//       </h2>
+//       <form onSubmit={handleSubmit} className="space-y-4">
+//         {/* Campus Area */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">
+//             Campus Area:
+//           </label>
+//           <input
+//             type="text"
+//             name="campusArea"
+//             value={formData.campusArea}
+//             onChange={handleChange}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             placeholder="250+ Acres"
+//           />
+//         </div>
+
+//         {/* Classrooms & Labs */}
+//         <div className="grid grid-cols-2 gap-4">
+//           <div>
+//             <label className="block text-blue-700 font-medium">
+//               Number of Classrooms:
+//             </label>
+//             <input
+//               type="number"
+//               name="numberOfClassrooms"
+//               value={formData.numberOfClassrooms}
+//               onChange={handleChange}
+//               className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//               placeholder="100"
+//             />
+//           </div>
+//           <div>
+//             <label className="block text-blue-700 font-medium">
+//               Number of Labs:
+//             </label>
+//             <input
+//               type="number"
+//               name="numberOfLabs"
+//               value={formData.numberOfLabs}
+//               onChange={handleChange}
+//               className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//               placeholder="50"
+//             />
+//           </div>
+//         </div>
+
+//         {/* Submit Button */}
+//         <div className="flex mt-4 justify-end gap-5">
+//           <button
+//             type="submit"
+//             className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+//           >
+//             {isEditing ? "Update" : "Add "}
+//           </button>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default Infrastructure;
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
+// import axios from "axios";
+// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+
+// function Placement() {
+//   const { collegeId } = useParams();
+//   const [formData, setFormData] = useState({
+//     placementPercentage: 0,
+//     topRecruiters: [],
+//     highestPackage: 0,
+//     internshipOpportunities: false,
+//   });
+//   const [isEditing, setIsEditing] = useState(false);
+
+//   useEffect(() => {
+//     if (!collegeId) return;
+
+//     const fetchPlacement = async () => {
+//       try {
+//         const response = await axios.get(`${API_BASE_URL}/api/college/placement/${collegeId}`);
+//         if (response.data && response.data.usrMsg) {
+//           const placementData = response.data.usrMsg;
+//           setFormData({
+//             placementPercentage: placementData.placementPercentage || 0,
+//             topRecruiters: placementData.topRecruiters || [],
+//             highestPackage: placementData.highestPackage || 0,
+//             internshipOpportunities: placementData.internshipOpportunities || false,
+//           });
+//           setIsEditing(true);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching placement data:", error);
+//       }
+//     };
+
+//     fetchPlacement();
+//   }, [collegeId]);
+
+//   const handleChange = (e) => {
+//     const { name, value, type, checked } = e.target;
+//     if (type === "checkbox") {
+//       setFormData((prevData) => ({
+//         ...prevData,
+//         [name]: checked,
+//       }));
+//     } else {
+//       setFormData((prevData) => ({
+//         ...prevData,
+//         [name]: type === "number" ? parseFloat(value) : value,
+//       }));
+//     }
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const url = isEditing
+//         ? `${API_BASE_URL}/api/college/placement/${collegeId}`
+//         : `${API_BASE_URL}/api/college/placement/`;
+
+//       const method = isEditing ? "put" : "post";
+
+//       const response = await axios({
+//         method,
+//         url,
+//         data: { collegeId, ...formData },
+//       });
+
+//       console.log("Placement details saved successfully:", response.data);
+//       alert("Placement details saved!");
+//     } catch (error) {
+//       console.error("Error saving placement details:", error);
+//     }
+//   };
+
+//   const handleDelete = () => {
+//     const confirmRemove = window.confirm("Are you sure you want to clear the form?");
+//     if (!confirmRemove) return;
+//     setFormData({
+//       placementPercentage: "",
+//       topRecruiters: [],
+//       highestPackage: "",
+//       internshipOpportunities: false,
+//     });
+//     setIsEditing(false);
+//   };
+
+//   return (
+//     <div className="max-w-4xl mx-auto bg-blue-100 p-6 mt-10 rounded-lg shadow-lg">
+//       <h2 className="text-2xl font-semibold text-blue-800 mb-4">
+//         {isEditing ? "Edit Placement Details" : "Add Placement Details"}
+//       </h2>
+//       <form onSubmit={handleSubmit} className="space-y-4">
+//         {/* Placement Percentage */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">Placement Percentage:</label>
+//           <input
+//             type="number"
+//             name="placementPercentage"
+//             value={formData.placementPercentage}
+//             onChange={handleChange}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             required
+//             placeholder="50"
+//           />
+//         </div>
+
+//         {/* Highest Package */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">Highest Package (LPA):</label>
+//           <input
+//             type="number"
+//             name="highestPackage"
+//             value={formData.highestPackage}
+//             onChange={handleChange}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             required
+//             placeholder="8.2"
+//           />
+//         </div>
+
+//         {/* Internship Opportunities */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">Internship Opportunities:</label>
+//           <input
+//             type="checkbox"
+//             name="internshipOpportunities"
+//             checked={formData.internshipOpportunities}
+//             onChange={handleChange}
+//           />
+//           <span className="ml-2">Available</span>
+//         </div>
+
+//         {/* Top Recruiters */}
+//         <div>
+//           <label className="block text-blue-700 font-medium">Top Recruiters:</label>
+//           <input
+//             type="text"
+//             name="topRecruiters"
+//             value={formData.topRecruiters.join(", ")}
+//             onChange={(e) => setFormData({ ...formData, topRecruiters: e.target.value.split(", ") })}
+//             className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//             required
+//             placeholder="TCS, Infosys"
+//           />
+//         </div>
+
+//         <div className="flex mt-4 justify-end gap-5">
+//           {/* Submit Button */}
+//           <button
+//             type="submit"
+//             className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+//           >
+//             {isEditing ? "Update" : "Add"}
+//           </button>
+//           <button type="button" onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">
+//             Delete
+//           </button>
+
+//         </div>
+//       </form>
+//     </div>
+//   );
+// }
+
+// export default Placement;
+
+// import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
+// import axios from "axios";
+// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import { Formik, Form, Field, ErrorMessage } from "formik";
+// import * as Yup from "yup";
+
+// const PlacementSchema = Yup.object().shape({
+//   placementPercentage: Yup.number()
+//     .min(0, "Must be at least 0%")
+//     .max(100, "Cannot exceed 100%")
+//     .required("Placement Percentage is required"),
+//   highestPackage: Yup.number()
+//     .min(0, "Must be a positive number")
+//     .required("Highest Package is required"),
+//   topRecruiters: Yup.string()
+//     .required("At least two recruiters are required")
+//     .test("is-valid-list", "Enter at least two recruiters, separated by commas", (value) => {
+//       return value.split(",").map((r) => r.trim()).filter(Boolean).length >= 2;
+//     }),
+//   internshipOpportunities: Yup.boolean(),
+// });
+
+// function Placement() {
+//   const { collegeId } = useParams();
+//   const [initialValues, setInitialValues] = useState({
+//     placementPercentage: "",
+//     highestPackage: "",
+//     topRecruiters: "",
+//     internshipOpportunities: false,
+//   });
+//   const [isEditing, setIsEditing] = useState(false);
+
+//   useEffect(() => {
+//     if (!collegeId) return;
+
+//     const fetchPlacement = async () => {
+//       try {
+//         const response = await axios.get(`${API_BASE_URL}/api/college/placement/${collegeId}`);
+//         if (response.data && response.data.usrMsg) {
+//           const placementData = response.data.usrMsg;
+//           setInitialValues({
+//             placementPercentage: placementData.placementPercentage || "",
+//             highestPackage: placementData.highestPackage || "",
+//             topRecruiters: placementData.topRecruiters ? placementData.topRecruiters.join(", ") : "",
+//             internshipOpportunities: placementData.internshipOpportunities || false,
+//           });
+//           setIsEditing(true);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching placement data:", error);
+//       }
+//     };
+
+//     fetchPlacement();
+//   }, [collegeId]);
+
+//   const handleSubmit = async (values, { setSubmitting }) => {
+//     try {
+//       const url = isEditing
+//         ? `${API_BASE_URL}/api/college/placement/${collegeId}`
+//         : `${API_BASE_URL}/api/college/placement/`;
+
+//       const method = isEditing ? "put" : "post";
+
+//       const response = await axios({
+//         method,
+//         url,
+//         data: {
+//           collegeId,
+//           ...values,
+//           topRecruiters: values.topRecruiters.split(",").map((r) => r.trim()), // Convert to array
+//         },
+//       });
+
+//       console.log("Placement details saved successfully:", response.data);
+//       alert("Placement details saved!");
+//     } catch (error) {
+//       console.error("Error saving placement details:", error);
+//     } finally {
+//       setSubmitting(false);
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-4xl mx-auto bg-blue-100 p-6 mt-10 rounded-lg shadow-lg">
+//       <h2 className="text-2xl font-semibold text-blue-800 mb-4">
+//         {isEditing ? "Edit Placement Details" : "Add Placement Details"}
+//       </h2>
+
+//       <Formik
+//         initialValues={initialValues}
+//         enableReinitialize
+//         validationSchema={PlacementSchema}
+//         onSubmit={handleSubmit}
+//       >
+//         {({ isSubmitting }) => (
+//           <Form className="space-y-4">
+//             {/* Placement Percentage */}
+//             <div>
+//               <label className="block text-blue-700 font-medium">Placement Percentage:</label>
+//               <Field
+//                 type="number"
+//                 name="placementPercentage"
+//                 className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//               />
+//               <ErrorMessage name="placementPercentage" component="div" className="text-red-500 text-sm mt-1" />
+//             </div>
+
+//             {/* Highest Package */}
+//             <div>
+//               <label className="block text-blue-700 font-medium">Highest Package (LPA):</label>
+//               <Field
+//                 type="number"
+//                 name="highestPackage"
+//                 className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//               />
+//               <ErrorMessage name="highestPackage" component="div" className="text-red-500 text-sm mt-1" />
+//             </div>
+
+//             {/* Internship Opportunities */}
+//             <div className="flex items-center">
+//               <Field type="checkbox" name="internshipOpportunities" className="mr-2" />
+//               <label className="text-blue-700 font-medium">Internship Opportunities Available</label>
+//             </div>
+
+//             {/* Top Recruiters */}
+//             <div>
+//               <label className="block text-blue-700 font-medium">Top Recruiters:</label>
+//               <Field
+//                 type="text"
+//                 name="topRecruiters"
+//                 className="w-full p-2 border rounded-lg bg-blue-50 focus:ring focus:ring-blue-300"
+//                 placeholder="TCS, Infosys"
+//               />
+//               <ErrorMessage name="topRecruiters" component="div" className="text-red-500 text-sm mt-1" />
+//             </div>
+
+//             {/* Buttons */}
+//             <div className="flex mt-4 justify-end gap-5">
+//             <button
+//   type="button"
+//   onClick={(e, { resetForm }) => resetForm({
+//     values: {
+//       placementPercentage: "",
+//       highestPackage: "",
+//       topRecruiters: "",
+//       internshipOpportunities: false,
+//     }
+//   })}
+//   className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+// >
+//   Clear
+// </button>
+
+//               {/* <button
+//                 type="submit"
+//                 disabled={isSubmitting}
+//                 className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+//               >
+//                 {isSubmitting ? "Saving..." : isEditing ? "Update" : "Add"}
+//               </button> */}
+//               <button
+//                 type="reset"
+//                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+//               >
+//                 Clear
+//               </button>
+//             </div>
+//           </Form>
+//         )}
+//       </Formik>
+//     </div>
+//   );
+// }
+
+// export default Placement;
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import DataTable from "react-data-table-component";
+// import {
+//   FaEye,
+//   FaEdit,
+//   FaPauseCircle,
+//   FaPlus,
+//   FaBuilding,
+//   FaBriefcase,
+// } from "react-icons/fa";
+// import { useNavigate } from "react-router-dom";
+// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import InfoCard from "../Component/InfoCard";
+// import EditCollegeDetails from "../Component/EditCollegeDetails";
+// import Infrastructure from "../Component/Infrastructure";
+// import Placement from "../Component/Placement";
+
+// const CollegeTableDetails = () => {
+//   const [collegeData, setCollegeData] = useState([]);
+//   const [selectedItem, setSelectedItem] = useState(null);
+//   const [modalOpen, setModalOpen] = useState(false);
+//   const [editModalOpen, setEditModalOpen] = useState(false);
+//   const [infraModalOpen, setInfraModalOpen] = useState(false);
+//   const [placementModalOpen, setPlacementModalOpen] = useState(false);
+//   const [loading, setLoading] = useState(true);
+//   const [searchTerm, setSearchTerm] = useState("");
+
+//   useEffect(() => {
+//     axios
+//       .get(`${API_BASE_URL}/api/college/all`)
+//       .then((response) => {
+//         if (response.data.success) {
+//           // const parsedData = JSON.parse();
+//           setCollegeData(response.data.data.colleges);
+//         }
+//         setLoading(false);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching college data:", error);
+//         setLoading(false);
+//       });
+//   }, []);
+
+//   const navigate = useNavigate();
+
+//   const handleEdit = (item) => {
+//     setSelectedItem(item);
+//     setEditModalOpen(true);
+//   };
+
+//   const handleSaveEdit = (updatedData) => {
+//     axios
+//       .patch(
+//         `${API_BASE_URL}/api/college/update/${updatedData._id}`,
+//         updatedData
+//       )
+//       .then((response) => {
+//         if (response.data.success) {
+//           setCollegeData((prevData) =>
+//             prevData.map((college) =>
+//               college._id === updatedData._id ? updatedData : college
+//             )
+//           );
+//           setEditModalOpen(false);
+//         } else {
+//           alert("Failed to update college details");
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Error updating college data:", error);
+//         alert("Error updating college details");
+//       });
+//   };
+
+//   const columns = [
+//     {
+//       name: "College Name",
+//       selector: (row) => row.collegeName,
+//       sortable: true,
+//     },
+//     {
+//       name: "Affiliated University",
+//       selector: (row) => row.affiliatedUniversity,
+//       sortable: true,
+//     },
+//     {
+//       name: "Location",
+//       selector: (row) => `${row.location.lat}, ${row.location.lng}`,
+//       sortable: true,
+//     },
+//     {
+//       name: "Address",
+//       selector: (row) =>
+//         `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`,
+//       sortable: true,
+//     },
+//     { name: "Contact", selector: (row) => row.contactDetails, sortable: true },
+//     {
+//       name: "Website",
+//       selector: (row) =>
+//         row.websiteURL ? (
+//           <a
+//             href={row.websiteURL}
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             className="text-blue-600"
+//           >
+//             Visit
+//           </a>
+//         ) : (
+//           "N/A"
+//         ),
+//     },
+//     {
+//       name: "Established Year",
+//       selector: (row) => row.establishedYear,
+//       sortable: true,
+//     },
+//     {
+//       name: "Accreditation",
+//       selector: (row) => row.accreditation,
+//       sortable: true,
+//     },
+//     {
+//       name: "Actions",
+//       cell: (row) => (
+//         <div className="flex space-x-2">
+//           <button className="text-blue-600" onClick={() => handleEdit(row)}>
+//             <FaEdit size={20} />
+//           </button>
+//           <button
+//             className="text-green-600"
+//             onClick={() => navigate(`/colleges/courses/${row._id}`)}
+//           >
+//             <FaPlus size={20} />
+//           </button>
+//           <button
+//             className="text-purple-600"
+//             onClick={() => {
+//               setSelectedItem(row);
+//               setInfraModalOpen(true);
+//             }}
+//           >
+//             <FaBuilding size={20} />
+//           </button>
+//           <button
+//             className="text-orange-600"
+//             onClick={() => {
+//               setSelectedItem(row);
+//               setPlacementModalOpen(true);
+//             }}
+//           >
+//             <FaBriefcase size={20} />
+//           </button>
+//         </div>
+//       ),
+//     },
+//   ];
+
+//   return (
+//     <section>
+//       <div className="bg-blue-50 py-4 px-2">
+//         <div className="flex justify-between items-center mb-6">
+//           <h2 className="text-2xl font-semibold text-blue-700">College List</h2>
+//           <input
+//             type="text"
+//             placeholder="Search colleges..."
+//             className="px-4 py-2 rounded-md border-blue-600 border-2"
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//           />
+//         </div>
+//         <DataTable
+//           columns={columns}
+//           data={collegeData}
+//           pagination
+//           highlightOnHover
+//           responsive
+//           progressPending={loading}
+//           progressComponent={<div>Loading...</div>}
+//         />
+//         {editModalOpen && (
+//           <EditCollegeDetails
+//             collegeData={selectedItem}
+//             onSave={handleSaveEdit}
+//             onCancel={() => setEditModalOpen(false)}
+//           />
+//         )}
+//         {infraModalOpen && (
+//           <Infrastructure
+//             collegeId={selectedItem._id}
+//             onClose={() => setInfraModalOpen(false)}
+//           />
+//         )}
+//         {placementModalOpen && (
+//           <Placement
+//             collegeId={selectedItem._id}
+//             onClose={() => setPlacementModalOpen(false)}
+//           />
+//         )}
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default CollegeTableDetails;
+
+
+
+
+
+// import { Link } from 'react-router-dom';
+// import { 
+//     HomeIcon, 
+//     UsersIcon, 
+//     FolderIcon, 
+//     CalendarIcon, 
+//     InboxIcon, 
+//     ChartBarIcon, 
+//     OfficeBuildingIcon, 
+//     BriefcaseIcon 
+// } from '@heroicons/react/outline';
+
+// // Navigation Items
+// const navigation = [
+//     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, current: true },
+//     { name: 'Manage Universities & Colleges', href: '/colleges', icon: UsersIcon, current: false },
+//     { name: 'Add Details', href: '/add-college', icon: FolderIcon, current: false },
+//     { name: 'Excel Data Upload', href: '/upload-excel', icon: CalendarIcon, current: false },
+//     { name: 'Reports & Analytics', href: '/reports', icon: InboxIcon, current: false },
+//     { name: 'View Profile', href: '/profile', icon: ChartBarIcon, current: false },
+//     { name: 'Infrastructure', href: '/infrastructure', icon: OfficeBuildingIcon, current: false },
+//     { name: 'Placement', href: '/placement', icon: BriefcaseIcon, current: false },
+// ];
+
+// function classNames(...classes) {
+//     return classes.filter(Boolean).join(' ');
+// }
+
+// const SideMenu = () => {
+//     return (
+//         <>
+//             <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+//                 <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto bg-indigo-700">
+//                     <div className="flex items-center flex-shrink-0 px-4">
+//                         {/* Logo */}
+//                         <img
+//                             className="h-10 w-10"
+//                             src="https://cdn-icons-png.flaticon.com/128/4345/4345672.png"
+//                             alt="Logo"
+//                         />
+//                     </div>
+
+//                     <nav className="mt-5 flex-1 px-2 space-y-1">
+//                         {/* Navigation SideMenu */}
+//                         {navigation.map((item) => (
+//                             <Link
+//                                 key={item.name}
+//                                 to={item.href}
+//                                 className={classNames(
+//                                     item.current
+//                                         ? 'bg-indigo-800 text-white'
+//                                         : 'text-white hover:bg-indigo-600 hover:bg-opacity-75',
+//                                     'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+//                                 )}
+//                             >
+//                                 <item.icon
+//                                     className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+//                                     aria-hidden="true"
+//                                 />
+//                                 {item.name}
+//                             </Link>
+//                         ))}
+//                     </nav>
+//                 </div>
+//             </div>
+//         </>
+//     );
+// };
+
+// export default SideMenu;
+
+
+
+// import React from "react";
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Import React Router
+// import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // Import React Query
+// import Root from "./Component/Root"; // Import Root component
+// import Login from "./Pages/Login"; // Import Login page
+// import CollegeTableDetails from "./Pages/CollegeTableDetails"; // Import TableDetails page
+// import MultiStepForm from "./Pages/AddNewCollege";
+// import UploadExcel from "./Pages/UploadExcel"; // Import UploadExcel page
+// import ReportandAnalytics from "./Pages/ReportandAnalytics"; // Import ReportandAnalytics page
+// import AdminDashboard from "./Pages/AdminDashboard"; // Import AdminDashboard page
+// import ProfilePage from "./Pages/ProfilePage"; // Import ProfilePage
+// import CollegeCourses from "./Courses/CollegeCourses"; // Import CollegeCourses page
+// import EditCollegeDetails from "../src/Component/EditCollegeDetails";
+// import AddUniversity from "./University/AddUniversity";
+// import EditUniversity from "./University/EditUniversity"; // Import EditUniversity component
+
+// const queryClient = new QueryClient();
+
+// function App() {
+//   return (
+//     <QueryClientProvider client={queryClient}>
+//       <Router>
+//         <Routes>
+//           <Route path="/" element={<Root />}>
+//             <Route index element={<Login />} /> {/* Default route */}
+//             <Route path="dashboard" element={<AdminDashboard />} />
+//             <Route path="colleges" element={<CollegeTableDetails />} />
+//             <Route path="add-college" element={<MultiStepForm />} />
+//             <Route path="upload-excel" element={<UploadExcel />} />
+//             <Route path="reports" element={<ReportandAnalytics />} />
+//             <Route path="profile" element={<ProfilePage />} />
+//             <Route path="colleges/courses/:collegeId" element={<CollegeCourses />} />
+//             <Route path="collegeCourses" element={<CollegeCourses />} />
+//             <Route path="/edit-college/:id" element={<EditCollegeDetails />} />
+//             <Route path="university" element={<AddUniversity />} />
+//             <Route path="/edit-university/:id" element={<EditUniversity />} />
+//           </Route>
+//         </Routes>
+//       </Router>
+//     </QueryClientProvider>
+//   );
+// }
+
+// export default App;
+
+
+
+
+
+  // const handleCheckboxChange = (e, field) => {
+  //   const { value, checked } = e.target;
+  //   formik.setFieldValue(
+  //     field,
+  //     checked
+  //       ? [...formik.values[field], value] // Add value if checked
+  //       : formik.values[field].filter((item) => item !== value) // Remove if unchecked
+  //   );
+  // };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   const payload = {
+  //     admissionStartDate: formData.admissionStartDate,
+  //     admissionEndDate: formData.admissionEndDate,
+  //     lastYearCutoffMarks: parseInt(formData.lastYearCutoffMarks) || 0,
+  //     scholarshipsAvailable: formData.scholarshipsAvailable, // Array
+  //     quotaSystem: formData.quotaSystem // Array
+  //   };
+
+  //   console.log("📢 Final Payload to API:", payload);
+
+  //   axios.post(`${API_BASE_URL}/api/college/create`, payload)
+  //     .then(response => {
+  //       console.log("✅ College Created Successfully", response.data);
+  //       alert("🎉 College Created Successfully!");
+
+  //           // Reset Form After Success
+  //     setFormData({
+  //       admissionStartDate: "",
+  //       admissionEndDate: "",
+  //       lastYearCutoffMarks: "",
+  //       scholarshipsAvailable: [],
+  //       quotaSystem: []
+  //     });
+  //     })
+  //     .catch(error => {
+  //       console.error("❌ Error Creating College", error.response?.data || error);
+  //       // ❌ Show Error Alert
+  //     alert(`❌ Error: ${error.response?.data?.message || "Failed to create college"}`);
+
+  //     });
+  // };
+
+  //   const handleSubmit = async (values) => {
+  //     // Ensure all required fields are present
+  //     const validData = {
+  //       name: values.name || "", // Add default values if empty
+  //       email_id: values.email_id || "",
+  //       Category: values.Category || "General",
+  //       collegeType: values.collegeType || "Private",
+  //       establishedYear: values.establishedYear || new Date().getFullYear(),
+  //       accreditation: values.accreditation || "NAAC A+", // Check allowed values
+  //       admissionProcess: values.admissionProcess || "Online",
+  //       admissionEntranceDetails: {
+  //         lastYearCutoffMarks:
+  //           values.admissionEntranceDetails?.lastYearCutoffMarks || 0,
+  //         admissionStartDate:
+  //           values.admissionEntranceDetails?.admissionStartDate || "",
+  //         admissionEndDate:
+  //           values.admissionEntranceDetails?.admissionEndDate || "",
+  //       },
+  //       image: typeof values.image === "string" ? values.image : "", // Ensure it's a string
+  //     };
+
+  //     // Check if any required field is empty
+  //     if (!validData.email_id || !validData.name || !validData.Category) {
+  //       toast.error("Please fill all required fields.");
+  //       return;
+  //     }
+  //     // ✅ Append Gallery Images (if present)
+  // if (values.imageGallery && values.imageGallery.length > 0) {
+  //   values.imageGallery.forEach((file, index) => {
+  //     if (file instanceof File) {
+  //       formData.append(`imageGallery`, file); // ✅ Sends multiple images
+  //     }
+  //   });
+  // }
+
+  //     try {
+  //       await createCollege(validData);
+  //       toast.success("College created successfully!");
+  //     } catch (error) {
+  //       toast.error("Failed to create college. Check form fields.");
+  //       console.error("Submit Error:", error);
+  //     }
+  //   };
+
+  // const mutation = useMutation({
+  //   mutationFn: createCollege,
+  //   onMutate: () => {
+  //     toast.info("Submitting college details...");
+  //   },
+  //   onSuccess: () => {
+  //     toast.success("College created successfully!");
+  //     alert("Successfully saved");
+  //     formik.resetForm();
+  //     setLocation(defaultLocation);
+  //   },
+  //   onError: (error) => {
+  //     toast.error(error.response?.data?.message || "Submission failed");
+  //   },
+  // });
+
+  // const searchLocation = (locationName) => {
+  //   if (!locationName) {
+  //     toast.error("Please enter a location to search");
+  //     return;
+  //   }
