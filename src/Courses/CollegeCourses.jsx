@@ -202,17 +202,17 @@ const CollegeCourses = () => {
   };
 
   return (
-    <section className="p-6 bg-light-blue rounded-xl shadow-md relative">
+    <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
       {/* Close Button (X) */}
       <button
         onClick={() => navigate("/colleges")} // Navigate to CollegeTableDetails page
-        className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold"
+        className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold"
       >
         &times; {/* Unicode 'X' symbol */}
       </button>  
 
-      <div className="mb-6">
-        <h3 className="text-2xl font-semibold text-blue-600">Add Courses</h3>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-3xl font-bold text-blue-800 flex items-center">📚 Add Courses</h3>
       </div>
 
       {error && (
@@ -225,52 +225,52 @@ const CollegeCourses = () => {
         {courses.map((course, courseIndex) => (
           <motion.div
             key={courseIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="space-y-4"
+            initial={{ opacity: 0, y:10}}
+            animate={{ opacity: 1, y:10 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-white p-5 rounded-lg shadow-md border border-gray-200 space-y-4"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col">
-                <label className="text-blue-600">Course Name</label>
+                <label className="text-blue-700">Course Name</label>
                 <input
                   type="text"
                   name="name"
                   value={course.courses[0]?.name || ""}
                   onChange={(e) => handleChange(e, courseIndex, "name")}
-                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-blue-600">Duration</label>
+                <label className="text-blue-700">Duration</label>
                 <input
                   type="text"
                   name="duration"
                   value={course.courses[0]?.duration || ""}
                   onChange={(e) => handleChange(e, courseIndex, "duration")}
-                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col">
-                <label className="text-blue-600">Annual Fees</label>
+                <label className="text-blue-700">Annual Fees</label>
                 <input
                   type="text"
                   name="annualFees"
                   value={course.courses[0]?.annualFees || ""}
                   onChange={(e) => handleChange(e, courseIndex, "annualFees")}
-                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-blue-600">Category</label>
+                <label className="text-blue-700">Category</label>
                 <select
                   name="category"
                   value={course.courses[0]?.category || "SSC"}
                   onChange={(e) => handleChange(e, courseIndex, "category")}
-                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
                 >
                   <option value="SSC">SSC</option>
                   <option value="HSC">HSC</option>
@@ -283,21 +283,21 @@ const CollegeCourses = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col">
-                <label className="text-blue-600">Eligibility</label>
+                <label className="text-blue-700">Eligibility</label>
                 <input
                   type="text"
                   name="eligibility"
                   value={course.courses[0]?.eligibility || ""}
                   onChange={(e) => handleChange(e, courseIndex, "eligibility")}
-                  className="mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
                 />
               </div>
             </div>
 
-            <div className="flex justify-between mt-4">
+            <div>
               <button
                 onClick={() => removeCourse(courseIndex)} // Pass courseIndex to removeCourse
-                className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                className="flex items-center bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded-lg shadow-md transition duration-300"
               >
                 <Trash className="mr-2" size={20} /> Remove Course
               </button>
@@ -316,18 +316,18 @@ const CollegeCourses = () => {
       <div className="mt-6 flex justify-between">
         <button
           onClick={addCourse}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+          className="flex items-center bg-blue-600 hover:bg-blue-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300"
         >
           <Plus className="mr-2" size={20} /> Add Course
         </button>
         <button
           onClick={isUpdated ? updateCourses : saveCourses}
-          className={`${
-            isUpdated ? "bg-green-600" : "bg-gray-400"
-          } text-white px-6 py-2 rounded-lg`}
+          className={`px-6 py-2 rounded-lg shadow-lg transition duration-300 ${
+            isUpdated ? "bg-green-600 hover:bg-green-800 text-white" : "bg-gray-400text-gray-200 cursor-not-allowed"
+          }`}
           disabled={!isUpdated}
         >
-          {isUpdated ? "Update Course" : "Save Course"}
+          {isUpdated ? "✅ Update Course" : "💾 Save Course"}
         </button>
       </div>
     </section>

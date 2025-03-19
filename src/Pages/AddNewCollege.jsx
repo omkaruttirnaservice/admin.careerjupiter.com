@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import stateDistricts from "../Constant/ConstantData";
 import "react-toastify/dist/ReactToastify.css";
 import { FaPlus } from "react-icons/fa";
+import { FaMapMarkerAlt, FaUniversity, FaImage, FaGlobe } from "react-icons/fa";
 // toast.configure();
 
 const defaultLocation = { lat: 19.076, lan: 72.8777 };
@@ -526,20 +527,25 @@ const AddNewCollege = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-blue-100 p-2"
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200 px-6"
     >
-      <fieldset className="max-w-full mx-auto bg-blue-200 shadow-lg rounded-lg p-6">
-        <legend className="text-2xl font-bold text-center mb-4">
-          College Registration Form
-        </legend>
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="mb-3">
-              <label className="block mb-1">College Name</label>
+      <div className="w-full max-w-6xl bg-white shadow-xl rounded-xl p-8 border border-blue-300">
+      <div className="flex justify-between items-center bg-gradient-to-r from-blue-700 to-blue-500 text-white p-5 rounded-t-lg shadow-lg">
+  <h2 className="text-3xl font-bold flex items-center gap-4">
+    <FaUniversity className="text-black bg-white p-2 rounded- shadow-md" size={40} /> 
+    Add New College
+  </h2>
+</div>
+
+
+        <form onSubmit={formik.handleSubmit} className="space-y-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div >
+              <label className="text-blue-700 font-semibold">College Name</label>
               <input
                 type="text"
                 {...formik.getFieldProps("collegeName")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border  shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.collegeName && formik.errors.collegeName && (
                 <p className="text-red-500 text-sm">
@@ -548,12 +554,12 @@ const AddNewCollege = () => {
               )}
             </div>
 
-            <div className="mb-3">
-              <label className="block mb-1">Affiliated University</label>
+            <div>
+              <label className="text-blue-700 font-semibold">Affiliated University</label>
               <input
                 type="text"
                 {...formik.getFieldProps("affiliatedUniversity")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border  shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.affiliatedUniversity &&
                 formik.errors.affiliatedUniversity && (
@@ -564,10 +570,10 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">College Category</label>
+              <label className="text-blue-700 font-medium">College Category</label>
               <select
                 {...formik.getFieldProps("collegeCategory")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Category</option>
                 {collegeCategories.map((category, index) => (
@@ -586,10 +592,10 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">College Type</label>
+              <label className="text-blue-700 font-medium">College Type</label>
               <select
                 {...formik.getFieldProps("collegeType")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Type</option>
                 {collegeTypes.map((type, index) => (
@@ -606,11 +612,11 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Address 1</label>
+              <label className="text-blue-700 font-medium">Address 1</label>
               <input
                 type="text"
                 {...formik.getFieldProps("address_line1")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.address_line1 && formik.errors.address_line1 && (
                 <p className="text-red-500 text-sm">
@@ -620,20 +626,20 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Address 2</label>
+              <label className="text-blue-700 font-medium">Address 2</label>
               <input
                 type="text"
                 {...formik.getFieldProps("address_line2")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Pincode</label>
+              <label className="text-blue-700 font-medium">Pincode</label>
               <input
                 type="text"
                 {...formik.getFieldProps("pincode")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.pincode && formik.errors.pincode && (
                 <p className="text-red-500 text-sm">{formik.errors.pincode}</p>
@@ -641,10 +647,10 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Select State</label>
+              <label className="text-blue-700 font-medium">Select State</label>
               <select
                 {...formik.getFieldProps("state")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 onChange={(e) => {
                   const selectedState = e.target.value;
                   formik.setFieldValue("state", selectedState);
@@ -662,10 +668,10 @@ const AddNewCollege = () => {
 
             {/* District Dropdown */}
             <div className="mb-3">
-              <label className="block mb-1">Select District</label>
+              <label className="text-blue-700 font-medium">Select District</label>
               <select
                 {...formik.getFieldProps("district")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 disabled={!formik.values.state} // Disable if no state is selected
               >
                 <option value="">Select District</option>
@@ -682,11 +688,11 @@ const AddNewCollege = () => {
             
 
             <div className="mb-3">
-              <label className="block mb-1">Contact Details</label>
+              <label className="text-blue-700 font-medium">Contact Details</label>
               <input
                 type="text"
                 {...formik.getFieldProps("contactDetails")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.contactDetails &&
                 formik.errors.contactDetails && (
@@ -698,11 +704,11 @@ const AddNewCollege = () => {
 
             {/* Email Field */}
             <div className="mb-3">
-              <label className="block mb-1">Email</label>
+              <label className="text-blue-700 font-medium">Email</label>
               <input
                 type="email"
                 {...formik.getFieldProps("email_id")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.email_id && formik.errors.email_id && (
                 <p className="text-red-500 text-sm">{formik.errors.email_id}</p>
@@ -710,10 +716,10 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3 col-span-full w-full">
-              <label className="block mb-1">Description</label>
+              <label className="text-blue-700 font-medium">Description</label>
               <textarea
                 {...formik.getFieldProps("info.description")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 rows="4"
               />
               {formik.touched.info && formik.errors.info && (
@@ -722,14 +728,14 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Keywords (Max 5)</label>
+              <label className="text-blue-700 font-medium">Keywords (Max 5)</label>
               <div className="flex items-center">
                 <input
                   type="text"
                   value={keywordInput}
                   onChange={(e) => setKeywordInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addKeyword(e)}
-                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                  className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 />
                 {/* Add Keyword Icon Button */}
                 <button
@@ -767,11 +773,11 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Website URL</label>
+              <label className="text-blue-700 font-medium">Website URL</label>
               <input
                 type="text"
                 {...formik.getFieldProps("websiteURL")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.websiteURL && formik.errors.websiteURL && (
                 <p className="text-red-500 text-sm">
@@ -781,10 +787,10 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Established Year</label>
+              <label className="text-blue-700 font-medium">Established Year</label>
               <select
                 {...formik.getFieldProps("establishedYear")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Year</option>
                 {establishedYears.map((year) => (
@@ -796,10 +802,10 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Accreditation</label>
+              <label className="text-blue-700 font-medium">Accreditation</label>
               <select
                 {...formik.getFieldProps("accreditation")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Accreditation</option>
                 {accreditationOptions.map((option, index) => (
@@ -811,20 +817,20 @@ const AddNewCollege = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Admission Process</label>
+              <label className="text-blue-700 font-medium">Admission Process</label>
               <input
                 type="text"
                 {...formik.getFieldProps("admissionProcess")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1">Application Form URL</label>
+              <label className="text-blue-700 font-medium">Application Form URL</label>
               <input
                 type="text"
                 {...formik.getFieldProps("applicationFormURL")}
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.applicationFormURL &&
                 formik.errors.applicationFormURL && (
@@ -841,13 +847,13 @@ const AddNewCollege = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Admission Details */}
               <div className="mb-3">
-                <label className="block mb-1">Admission Start Date</label>
+                <label className="text-blue-700 font-medium">Admission Start Date</label>
                 <input
                   type="date"
                   {...formik.getFieldProps(
                     "admissionEntranceDetails.admissionStartDate"
                   )}
-                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                  className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 />
                 {formik.touched.admissionEntranceDetails?.admissionStartDate &&
                   formik.errors.admissionEntranceDetails
@@ -862,24 +868,24 @@ const AddNewCollege = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block mb-1">Admission End Date</label>
+                <label className="text-blue-700 font-medium">Admission End Date</label>
                 <input
                   type="date"
                   {...formik.getFieldProps(
                     "admissionEntranceDetails.admissionEndDate"
                   )}
-                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                  className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="mb-3">
-                <label className="block mb-1">Last Year Cutoff Marks</label>
+                <label className="text-blue-700 font-medium">Last Year Cutoff Marks</label>
                 <input
                   type="number"
                   {...formik.getFieldProps(
                     "admissionEntranceDetails.lastYearCutoffMarks"
                   )}
-                  className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                  className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -887,8 +893,8 @@ const AddNewCollege = () => {
 
             {/* <div className="grid grid-cols-1 md:grid-cols gap-4"> */}
               {/* Scholarships Available (Checkboxes) */}
-              <div className="mb-3 ">
-                <label className="block text-blue-600">
+              <div className="mb-5 p-4 border rounded-lg shadow-md bg-white ">
+                <label className="text-blue-800 font-semibold block mb-2">
                   Scholarships Available:
                 </label>
                 <div className="flex gap-4 flex-wrap">
@@ -896,7 +902,7 @@ const AddNewCollege = () => {
                     (option) => (
                       <label
                         key={option}
-                        className="flex items-center space-x-2"
+                        className="flex items-center space-x-2 bg-blue-50 px-3 py-2 rounded-md shadow-sm hover:bg-blue-100 transition"
                       >
                         <input
                           type="checkbox"
@@ -908,8 +914,9 @@ const AddNewCollege = () => {
                           onChange={(e) =>
                             handleCheckboxChange(e, "scholarshipsAvailable")
                           }
+                           className="accent-blue-600"
                         />
-                        <span>{option}</span>
+                        <span className="text-gray-700 font-medium">{option}</span>
                       </label>
                     )
                   )}
@@ -917,11 +924,11 @@ const AddNewCollege = () => {
               </div>
 
               {/* Quota System (Checkboxes) */}
-              <div className="mb-3">
-                <label className="block text-blue-600">Quota System:</label>
+              <div className="mb-5 p-4 border rounded-lg shadow-md bg-white">
+                <label className="text-blue-800 font-semibold block mb-2">Quota System:</label>
                 <div className="flex gap-4 flex-wrap">
                   {quotaSystem.map((option) => (
-                    <label key={option} className="flex items-center space-x-2">
+                    <label key={option} className="flex items-center space-x-2 bg-green-50 px-3 py-2 rounded-md shadow-sm hover:bg-green-100 transition">
                       <input
                         type="checkbox"
                         //  name="admissionEntranceDetails.quotaSystem"
@@ -930,8 +937,9 @@ const AddNewCollege = () => {
                           option
                         )}
                         onChange={(e) => handleCheckboxChange(e, "quotaSystem")}
+                         className="accent-green-600"
                       />
-                      <span>{option}</span>
+                      <span className="text-gray-700 font-medium">{option}</span>
                     </label>
                   ))}
                 </div>
@@ -941,20 +949,20 @@ const AddNewCollege = () => {
 
             {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6"> */}
             {/* College Image Upload */}
-            <div className="border-2 border-dashed rounded-lg p-4 text-center">
-              <label className="block font-medium mb-2">
+            <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
+              <label className="block font-semibold text-blue-800 mb-2">
                 College Image{" "}
                 <span className="text-red-500">(Max: 100KB, JPG/JPEG/PNG)</span>
               </label>
               <div
-                className="border border-gray-300 p-6 rounded-lg cursor-pointer hover:border-blue-500 transition"
+                className="border border-gray-300 p-6 rounded-lg cursor-pointer  hover:bg-blue-50 transition"
                 onClick={() => document.getElementById("collegeImage").click()}
               >
                 {formik.values.image ? (
                   <img
                     src={URL.createObjectURL(formik.values.image)}
                     alt="Preview"
-                    className="w-full h-12 object-cover rounded"
+                    className="w-full h-24 object-cover rounded-lg shadow-md"
                   />
                 ) : (
                   <p className="text-gray-500">
@@ -976,13 +984,13 @@ const AddNewCollege = () => {
             </div>
 
             {/* Gallery Images Upload */}
-            <div className="border-2 border-dashed rounded-lg p-4 text-center">
-              <label className="block font-medium mb-2">
-                Gallery Images{" "}
+            <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
+              <label className="block font-semibold text-blue-800 mb-2">
+              Gallery Images{" "}
                 <span className="text-red-500"> (JPG/JPEG/PNG)</span>
               </label>
               <div
-                className="border border-gray-300 p-6 rounded-lg cursor-pointer hover:border-blue-500 transition"
+                className="border border-gray-300 p-6 rounded-lg cursor-pointer hover:bg-blue-50 transition"
                 onClick={() => document.getElementById("galleryImages").click()}
               >
                 {formik.values.gallery_image?.length > 0 ? (
@@ -992,12 +1000,12 @@ const AddNewCollege = () => {
                         key={index}
                         src={URL.createObjectURL(file)}
                         alt={`Preview ${index + 1}`}
-                        className="w-20 h-12 object-cover rounded"
+                        className="w-20 h-16 object-cover rounded-lg shadow-md"
                       />
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 h-10">
+                  <p className="text-gray-500 ">
                     Drag & drop images here or click to upload
                   </p>
                 )}
@@ -1024,8 +1032,8 @@ const AddNewCollege = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-medium">
-              Select your location on the map:
+            <label className="text-blue-700 flex items-center gap-2 font-medium">
+            <FaMapMarkerAlt /> Select Location
             </label>
 
             <div className="flex gap-2 mb-2">
@@ -1038,7 +1046,7 @@ const AddNewCollege = () => {
                   console.log("Updates Search:", e.target.value);
                 }}
                 placeholder="Search location"
-                className="border-2 p-2 w-full rounded bg-white border-blue-600"
+                className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
               />
 
               {/* Search Button */}
@@ -1064,7 +1072,7 @@ const AddNewCollege = () => {
             <MapContainer
               center={[location.lat, location.lan]}
               zoom={10}
-              style={{ height: "300px", width: "100%" }}
+              style={{ height: "300px", width: "100%", border: "1px solid #3b82f6"}}
               ref={mapRef}
               // whenCreated={(map) => (mapRef.current = map)}
             >
@@ -1078,10 +1086,10 @@ const AddNewCollege = () => {
             </MapContainer>
           </div>
 
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4 flex justify-end gap-4">
             <motion.button
               type="submit"
-              className="bg-blue-500 text-white p-3 rounded w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-blue-600 text-white   hover:bg-blue-700 transition"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               disabled={mutation.isPending} // Button disabled while submitting
@@ -1091,7 +1099,7 @@ const AddNewCollege = () => {
             </motion.button>
           </div>
         </form>
-      </fieldset>
+      </div>
     </motion.div>
   );
 };

@@ -29,13 +29,13 @@ const UniversityTableDetails = () => {
 
   const categoryColorMapping = {
     Government: "bg-blue-200",
-    Private: "bg-green-200",
+    Private: "bg-blue-200",
     Autonomous: "bg-yellow-200",
     Deemed: "bg-red-200",
   };
 
   // const typeColorMapping = {
-  //   Government: "bg-green-200",
+  //   Government: "bg-blue-200",
   //   Private: "bg-purple-200",
   //   Autonomous: "bg-red-200",
   //   Deemed: "bg-pink-200",
@@ -97,9 +97,20 @@ const UniversityTableDetails = () => {
      // Remove fields not required by API
   const { _id, createdAt, updatedAt, __v, ...filteredData } = updatedData;
 
+   // **Check if _id exists before making a request**
+   if (!_id) {
+    alert("Error: University ID is missing. Cannot update.");
+    return;
+  }
+
+  // Construct the API URL
+  const apiUrl = `${API_BASE_URL}/api/university/update/${_id}`;
+  console.log("📢 API Request URL:", apiUrl);
+  console.log("📢 Final Payload:", filteredData);
+
     // Make a put request to update the data in the backend
     axios
-      .put(`${API_BASE_URL}/api/university/${updatedData._id}`, filteredData, {
+      .put(apiUrl, filteredData, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
@@ -107,6 +118,7 @@ const UniversityTableDetails = () => {
         alert("🎉 Successfully Updated")
 
         if (response.data.success) {
+          alert("🎉 Successfully Updated")
           // Update local state with the updated university data
           setUniversityData((prevData) =>
             prevData.map(
@@ -259,10 +271,13 @@ const UniversityTableDetails = () => {
 
     {
       name: "Actions",
+      selector: (row) => row._id, // Helps maintain column width
+      sortable: false,
+      width: "250px", // ✅ Set Fixed Width
       cell: (row) => (
-        <div className="flex space-x-2">
+        <div className="flex text-center space-x- min-w-[250px] gap-1">
           <button
-            className="text-blue-600 hover:text-blue-800"
+            className="bg-blue-600 hover:bg-blue-800 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
             onClick={() => handleViewProfile(row)}
             data-tooltip-id="view-tooltip"
             data-tooltip-content="View Profile"
@@ -270,7 +285,7 @@ const UniversityTableDetails = () => {
             <FaEye size={17} />
           </button>
           <button
-            className="text-yellow-600 hover:text-yellow-800"
+            className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
             onClick={() => handleEdit(row)} // Open EdituniversityDetails
             data-tooltip-id="edit-tooltip"
             data-tooltip-content="Edit University"
@@ -278,7 +293,7 @@ const UniversityTableDetails = () => {
             <FaEdit size={17} />
           </button>
           <button
-            className="text-red-600 hover:text-red-800"
+            className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
             onClick={() => handleDelete(row)}
             data-tooltip-id="delete-tooltip"
             data-tooltip-content="Delete University"
@@ -286,7 +301,7 @@ const UniversityTableDetails = () => {
             <FaPauseCircle size={17} />
           </button>
           <button
-            className="text-purple-600 hover:text-purple-800"
+            className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
             onClick={() => navigate(`/university/infrastructure/${row._id}`)}
             data-tooltip-id="infra-tooltip"
             data-tooltip-content="University Infrastructure"
@@ -294,7 +309,7 @@ const UniversityTableDetails = () => {
             <FaBuilding size={17} />
           </button>
           <button
-            className="text-pink-600 hover:text-pink-800"
+            className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
             onClick={() => navigate(`/university/placement/${row._id}`)}
             data-tooltip-id="placement-tooltip"
             data-tooltip-content="Placement Details"
@@ -314,16 +329,16 @@ const UniversityTableDetails = () => {
 
   return (
     <section>
-      <div className="bg-blue-50 py-4 px-2">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-blue-700">
-            university List
+      <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-6 shadow-lg rounded-lg">
+        <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-4">
+          <h2 className="text-3xl font-semibold text-blue-800">
+          🏛 University List
           </h2>
           <div className="ml-4">
             <input
               type="text"
-              placeholder="Search universities..."
-              className="px-4 py-2 rounded-md border-blue-600 border-2"
+              placeholder="🔍 Search universities..."
+              className="px-4 py-2 rounded-md border-blue-600 border-2 focus:ring focus:ring-blue-300 outline-none shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -341,25 +356,32 @@ const UniversityTableDetails = () => {
           customStyles={{
             headRow: {
               style: {
-                backgroundColor: "#3b82f6",
-                color: "white",
+                backgroundColor: "#2563eb",
+          color: "white",
+          fontSize: "16px",
+          fontWeight: "bold",
               },
             },
             headCells: {
               style: {
-                fontWeight: "bold",
+                padding: "12px",
+                textTransform: "uppercase",
               },
             },
             rows: {
               style: {
+                fontSize: "16px", // Increase Row Text Size
                 backgroundColor: "#f0f9ff",
                 color: "#1e3a8a",
                 borderBottom: "1px solid #3b82f6",
+                padding: "10px",
               },
             },
             pagination: {
               style: {
-                backgroundColor: "#f0f9ff",
+                backgroundColor: "#ffffff",
+                borderTop: "1px solid #ddd",
+                padding: "8px",
               },
             },
           }}

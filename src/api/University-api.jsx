@@ -45,7 +45,10 @@ const getUniversityById = async (id) => {
 // Update university details
 const updateUniversity = async (id, data) => {
   try {
-    const response = await api.put(`/api/university/update/${id}`, data);
+    if (!id) throw new Error("❌ Error: University ID is missing");
+
+    const response = await api.put(`/api/university/update/${id}`, data); // ✅ Corrected URL
+    console.log("✅ University updated successfully:", response.data);
     return response.data;
   } catch (error) {
     console.error("❌ Update Error:", error.response?.data || error);
