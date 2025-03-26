@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { FaMobileAlt, FaLock, FaSms } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
-const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
+const ADMIN_MOBILE = "1212121212"; // ✅ Hardcoded Admin Mobile Number
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");

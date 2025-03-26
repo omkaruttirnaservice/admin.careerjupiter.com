@@ -57,7 +57,7 @@ function App() {
             <Route index element={<Login />} />
 
             {/* ✅ Only show Admin pages if logged in as Admin */}
-            {/* {role === "ADMIN" && ( */}
+            {role === "ADMIN" && (
               <>
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="colleges" element={<CollegeTableDetails />} />
@@ -107,7 +107,7 @@ function App() {
                   element={<EditUniversity />}
                 />
               </>
-             {/* )}  */}
+              )}  
 
             
 
