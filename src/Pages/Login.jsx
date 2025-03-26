@@ -6,6 +6,7 @@ import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { setAuthCookies } from "../Utlis/cookieHelper";
 import Swal from "sweetalert2";
 import { FaMobileAlt, FaLock, FaSms } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
 const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
 
@@ -51,164 +52,6 @@ const Login = () => {
     }
   };
 
-  
- 
-  // const verifyOtp = async () => {
-  //   if (!otp || !referenceId) {
-  //     Swal.fire("Error!", "OTP and Reference ID are required.", "error");
-  //     return;
-  //   }
-  
-  //   try {
-  //     setLoading(true);
-  
-  //     console.log("📌 Sending OTP Verification Request:", {
-  //       mobile_no: mobileNo,
-  //       reference_id: referenceId,
-  //       otp: otp,
-  //     });
-  
-  //     const response = await axios.post(`${API_BASE_URL}/api/auth/verify-otp`, {
-  //       mobile_no: mobileNo,
-  //       reference_id: referenceId,
-  //       otp: otp,
-  //     });
-  
-  //     console.log("📌 Full OTP Verification Response:", response.data);
-  
-  //     if (response.data.success) {
-  //       Swal.fire("Success!", "OTP Verified Successfully!", "success");
-  
-  //       // ✅ Check if API returned user details
-  //       if (!response.data.data) {
-  //         console.warn("⚠️ API response is missing user details! Fetching manually...");
-          
-  //         // 🔹 Fetch user details manually (assuming class exists)
-  //         const classResponse = await axios.get(`${API_BASE_URL}/api/class/all`);
-  //         if (classResponse.data.success && classResponse.data.data.classes) {
-  //           const matchedClass = classResponse.data.data.classes.find(cls => cls.contactDetails === mobileNo);
-  //           if (matchedClass) {
-  //             console.log("📌 Matched Class Found:", matchedClass);
-              
-  //             // ✅ Store Auth Details
-  //             setAuthCookies({
-  //               token: "manual-token", // If backend doesn’t return token, store a placeholder
-  //               role: "VENDOR",
-  //               subrole: "Class",
-  //               userId: matchedClass._id,
-  //               classId: matchedClass._id,
-  //             });
-  
-  //             navigate("/vendor-class/class-dashboard");
-  //             return;
-  //           }
-  //         }
-  
-  //         Swal.fire("User Not Found!", "Please register first.", "warning").then(() => {
-  //           navigate("/register-class");
-  //         });
-  //         return;
-  //       }
-  
-  //       // ✅ Store Token & Role from API Response
-  //       const { token, role, userId } = response.data.data;
-  //       setAuthCookies({ token, role, userId });
-  
-  //       navigate("/vendor-class/class-dashboard");
-  //     } else {
-  //       Swal.fire("Failed!", "OTP Verification Failed!", "error");
-  //     }
-  //   } catch (error) {
-  //     console.error("❌ OTP Verification Error:", error.response?.data || error.message);
-  //     Swal.fire("Error!", error.response?.data?.message || "Invalid OTP. Try again.", "error");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
-  // const verifyOtp = async () => {
-  //   if (!otp || !referenceId) {
-  //     Swal.fire("Error!", "OTP and Reference ID are required.", "error");
-  //     return;
-  //   }
-  
-  //   try {
-  //     setLoading(true);
-  //     console.log("📌 Sending OTP Verification Request:", { mobile_no: mobileNo, reference_id: referenceId, otp });
-  
-  //     let response;
-  
-  //     // ✅ Admin Login API
-  //     if (mobileNo === ADMIN_MOBILE) {
-  //       console.log("📌 Admin Login Detected! Using Admin API...");
-  //       response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=ADMIN`, {
-  //         mobile_no: mobileNo,
-  //         reference_id: referenceId,
-  //         otp: otp,
-  //       });
-  //     }
-  //     // ✅ Vendor Login API
-  //     else {
-  //       console.log("📌 Vendor Login Detected! Using Vendor API...");
-  //       response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`, {
-  //         mobile_no: mobileNo,
-  //         reference_id: referenceId,
-  //         otp: otp,
-  //       });
-  //     }
-  
-  //     console.log("📌 Full OTP Verification Response:", response.data);
-  
-  //     if (response.data.success) {
-  //       // ✅ Show Success Popup
-  //       Swal.fire("Success!", response.data.usrMsg || "OTP Verified Successfully!", "success");
-  
-  //       // ✅ Extract Data
-  //       let { token, role, subrole, userId, classId } = response.data.data || {};
-  
-  //       // ✅ Fix: Override role if Admin is logging in
-  //       if (mobileNo === ADMIN_MOBILE) {
-  //         role = "ADMIN";
-  //         subrole = undefined; // Admin doesn't need subrole
-  //         classId = undefined; // Admin doesn't need classId
-  //       }
-  
-  //       // ✅ If API doesn’t return a token, set a placeholder token
-  //       const authToken = token || "manual-token";
-  
-  //       // ✅ Prepare Auth Details
-  //       let authDetails = {
-  //         token: authToken,
-  //         role,
-  //         userId,
-  //       };
-  
-  //       // ✅ If role is Vendor, add subrole & classId
-  //       if (role === "VENDOR") {
-  //         authDetails.subrole = subrole || "Class";
-  //         authDetails.classId = classId || null;
-  //       }
-  
-  //       // ✅ Store Authentication Details
-  //       setAuthCookies(authDetails);
-  
-  //       // ✅ Navigate Based on Role
-  //       if (role === "ADMIN") {
-  //         navigate("/admin-dashboard");
-  //       } else {
-  //         navigate("/vendor-class/class-dashboard");
-  //       }
-  //     } else {
-  //       Swal.fire("Failed!", response.data.usrMsg || "OTP Verification Failed!", "error");
-  //     }
-  //   } catch (error) {
-  //     console.error("❌ OTP Verification Error:", error.response?.data || error.message);
-  //     Swal.fire("Error!", error.response?.data?.message || "Invalid OTP. Try again.", "error");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const verifyOtp = async () => {
     if (!otp || !referenceId) {
       Swal.fire("Error!", "OTP and Reference ID are required.", "error");
@@ -319,8 +162,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-  
-  
   
 
   return (
