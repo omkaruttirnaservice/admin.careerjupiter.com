@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { FaMobileAlt, FaLock, FaSms } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
-const ADMIN_MOBILE = "1212121212"; // ✅ Hardcoded Admin Mobile Number
+const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
@@ -51,6 +51,118 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  // const verifyOtp = async () => {
+  //   if (!otp || !referenceId) {
+  //     Swal.fire("Error!", "OTP and Reference ID are required.", "error");
+  //     return;
+  //   }
+  
+  //   try {
+  //     setLoading(true);
+  
+  //     console.log("📌 Sending OTP Verification Request:", {
+  //       mobile_no: mobileNo,
+  //       reference_id: referenceId,
+  //       otp: otp,
+  //     });
+  
+  //     let response;
+  
+  //     // ✅ Admin Login Handling
+  //     if (mobileNo === ADMIN_MOBILE) {
+  //       console.log("📌 Admin Login Detected! Using Admin API...");
+  //       response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=ADMIN`, {
+  //         mobile_no: mobileNo,
+  //         reference_id: referenceId,
+  //         otp: otp,
+  //       });
+  //     } 
+  //     // ✅ Vendor Login Handling
+  //     else {
+  //       console.log("📌 Vendor Login Detected! Using Vendor API...");
+  //       response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`, {
+  //         mobile_no: mobileNo,
+  //         reference_id: referenceId,
+  //         otp: otp,
+  //       });
+  //     }
+  
+  //     console.log("📌 Full OTP Verification Response:", response.data);
+  
+  //     if (response.data.success) {
+  //       Swal.fire("Success!", response.data.usrMsg || "OTP Verified Successfully!", "success");
+  
+  //       // ✅ Extract Data
+  //       let { token, role, subrole, userId, classId } = response.data.data || {};
+  
+  //       // ✅ Override Role for Admin
+  //       if (mobileNo === ADMIN_MOBILE) {
+  //         role = "ADMIN";
+  //         subrole = undefined; // Remove subrole for Admin
+  //         classId = undefined; // Remove classId for Admin
+  //       }
+  
+  //       // ✅ Store Authentication Details
+  //       setAuthCookies({
+  //         token: token || "manual-token",
+  //         role,
+  //         userId,
+  //         ...(role === "VENDOR" ? { subrole, classId } : {}), // ✅ Only include subrole/classId if Vendor
+  //       });
+  
+  //       // ✅ Navigation Based on Role
+  //       if (role === "ADMIN") {
+  //         navigate("/dashboard");
+  //         return;
+  //       }
+  
+  //       // ✅ If Vendor, Check Registration
+  //       console.log("📌 Checking Vendor Registration...");
+  //       const classResponse = await axios.get(`${API_BASE_URL}/api/class/all`);
+  
+  //       if (classResponse.data.success && classResponse.data.data.classes) {
+  //         const matchedClass = classResponse.data.data.classes.find(cls => cls.contactDetails === mobileNo);
+  
+  //         if (matchedClass) {
+  //           console.log("📌 Matched Vendor Class Found:", matchedClass);
+  
+  //           // ✅ Store Class Details
+  //           setAuthCookies({
+  //             token,
+  //             role: "VENDOR",
+  //             subrole: "Class",
+  //             userId,
+  //             classId: matchedClass._id,
+  //           });
+  
+  //           navigate("/vendor-class/class-dashboard");
+  //           return;
+  //         }
+  //       }
+  
+  //       // ✅ If No Vendor Found, Redirect to Registration
+  //       Swal.fire({
+  //         title: "User Not Found!",
+  //         text: "No registered class found. Please register first.",
+  //         icon: "warning",
+  //         confirmButtonText: "Register Now",
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           navigate("/register-class");
+  //         }
+  //       });
+  //     } else {
+  //       Swal.fire("Failed!", response.data.usrMsg || "OTP Verification Failed!", "error");
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ OTP Verification Error:", error.response?.data || error.message);
+  //     Swal.fire("Error!", error.response?.data?.message || "Invalid OTP. Try again.", "error");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
 
   const verifyOtp = async () => {
     if (!otp || !referenceId) {
@@ -111,13 +223,13 @@ const Login = () => {
           ...(role === "VENDOR" ? { subrole, classId } : {}), // ✅ Only include subrole/classId if Vendor
         });
   
-        // ✅ Navigation Based on Role
+        // ✅ Redirect Admin to Dashboard
         if (role === "ADMIN") {
-          navigate("/dashboard");
+          window.location.href = "/dashboard"; // ✅ Ensure full reload for Admin
           return;
         }
   
-        // ✅ If Vendor, Check Registration
+        // ✅ Vendor: Check if Registered in GET API
         console.log("📌 Checking Vendor Registration...");
         const classResponse = await axios.get(`${API_BASE_URL}/api/class/all`);
   
@@ -127,7 +239,7 @@ const Login = () => {
           if (matchedClass) {
             console.log("📌 Matched Vendor Class Found:", matchedClass);
   
-            // ✅ Store Class Details
+            // ✅ Store Vendor Class Details
             setAuthCookies({
               token,
               role: "VENDOR",
@@ -136,7 +248,7 @@ const Login = () => {
               classId: matchedClass._id,
             });
   
-            navigate("/vendor-class/class-dashboard");
+            window.location.href = "/vendor-class/class-dashboard"; // ✅ Redirect Vendor
             return;
           }
         }
@@ -149,7 +261,7 @@ const Login = () => {
           confirmButtonText: "Register Now",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/register-class");
+            window.location.href = "/register-class"; // ✅ Redirect to Register Page
           }
         });
       } else {
