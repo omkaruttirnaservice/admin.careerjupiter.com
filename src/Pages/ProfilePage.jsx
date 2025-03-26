@@ -59,11 +59,11 @@ const ProfilePage = () => {
       <div className="mt-6 flex justify-end gap-3">
         {isEditing ? (
           <>
-            <button onClick={() => setIsEditing(false)} className="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-            <button onClick={() => setIsEditing(false)} className="px-4 py-2 bg-blue-500 text-white rounded">Save</button>
+            <button onClick={() => setIsEditing(false)} className="px-4 py-2 bg-gray-300 rounded cursor-pointer">Cancel</button>
+            <button onClick={() => setIsEditing(false)} className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer">Save</button>
           </>
         ) : (
-          <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-green-500 text-white rounded">Edit Profile</button>
+          <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-green-500 text-white rounded cursor-pointer">Edit Profile</button>
         )}
       </div>
     </div>
