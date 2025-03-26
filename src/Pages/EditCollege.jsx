@@ -95,7 +95,7 @@ const EditCollege = () => {
         <input type="number" name="establishedYear" placeholder="Established Year" {...formik.getFieldProps("establishedYear")} className="w-full p-2 border rounded" />
 
         {/* Submit Button */}
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
+        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded cursor-pointer">
           {mutation.isLoading ? "Updating..." : "Update College"}
         </button>
       </form>

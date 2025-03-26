@@ -109,13 +109,13 @@ const ListingTable = () => {
 
       {/* Pagination at Bottom */}
       <div className="flex space-x-2">
-        <button onClick={goToPrevPage} disabled={currentPage === 1} className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300">
+        <button onClick={goToPrevPage} disabled={currentPage === 1} className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 cursor-pointer">
           Prev
         </button>
         <span className="text-gray-700">
           Page {currentPage} of {totalPages}
         </span>
-        <button onClick={goToNextPage} disabled={currentPage === totalPages} className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300">
+        <button onClick={goToNextPage} disabled={currentPage === totalPages} className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 cursor-pointer">
           Next
         </button>
       </div>

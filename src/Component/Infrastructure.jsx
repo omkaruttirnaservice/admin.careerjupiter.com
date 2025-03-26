@@ -190,7 +190,7 @@ function Infrastructure() {
         {/* Close Button (X) */}
         <button
           onClick={() => navigate("/colleges")} // Navigate to CollegeTableDetails page
-          className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold transition-transform transform hover:scale-110"
+          className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold transition-transform transform hover:scale-110 cursor-pointer"
         >
           &times; {/* Unicode 'X' symbol */}
         </button>
@@ -519,7 +519,7 @@ function Infrastructure() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+              className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300 cursor-pointer"
             >
               {isEditing ? "Update" : "Add "}
             </button>
@@ -527,7 +527,7 @@ function Infrastructure() {
             <button
               type="button"
               onClick={handleDelete}
-              className="bg-red-500 text-white w-25 px-4 py-2 rounded-lg justify-end hover:bg-red-600 transition duration-300"
+              className="bg-red-500 text-white w-25 px-4 py-2 rounded-lg justify-end hover:bg-red-600 transition duration-300 cursor-pointer"
             >
               Delete
             </button>

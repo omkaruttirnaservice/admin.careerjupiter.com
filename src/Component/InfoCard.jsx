@@ -8,7 +8,7 @@ const InfoCard = ({ collegeData, onClose }) => {
           <h2 className="text-3xl font-semibold">🎓 College Profile</h2>
           <button
             onClick={onClose}
-            className="text-white text-3xl hover:text-red-600 transition-all duration-300"
+            className="text-white text-3xl hover:text-red-600 transition-all duration-300 cursor-pointer"
           >
             &times;
           </button>

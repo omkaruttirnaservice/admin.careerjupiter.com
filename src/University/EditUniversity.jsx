@@ -129,7 +129,7 @@ const EditUniversity = () => {
           />
           {image && <img src={image} alt="University" className="mt-2 w-32 h-32 object-cover" />}
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Update University</button>
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Update University</button>
       </form>
     </div>
   );

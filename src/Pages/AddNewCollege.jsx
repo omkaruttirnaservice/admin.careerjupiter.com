@@ -17,7 +17,7 @@ import { FaMapMarkerAlt, FaUniversity, FaImage, FaGlobe } from "react-icons/fa";
 const defaultLocation = { lat: 19.076, lan: 72.8777 };
 
 {
-  /* <stateDistricts />;  */
+   <stateDistricts />;  
 }
 
 // const DropdownComponent = ({ formik }) => {
@@ -37,14 +37,15 @@ const collegeCategories = [
   "Pharmacy",
   "HSC",
   "SSC",
-  "UG",
-  "PG",
+  "Under Graduate",
+  "Post Graduate",
 ];
 const collegeTypes = ["Private", "Government", "Autonomous", "Deemed"];
 const accreditationOptions = [
   "NAAC A++",
   "NAAC A+",
   "NAAC A",
+  "NDA",
   "NBA Accredited",
   "UGC Approved",
   "AICTE Approved",
@@ -741,7 +742,7 @@ const AddNewCollege = () => {
                 <button
                   type="button"
                   onClick={addKeyword}
-                  className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
                 >
                   <FaPlus className="w-5 h-5" /> {/* Plus icon */}
                 </button>
@@ -757,7 +758,7 @@ const AddNewCollege = () => {
                     <button
                       type="button"
                       onClick={() => removeKeyword(index)}
-                      className="ml-2 text-red-500 hover:text-red-700"
+                      className="ml-2 text-red-500 hover:text-red-700 cursor-pointer"
                     >
                       ×
                     </button>
@@ -843,10 +844,10 @@ const AddNewCollege = () => {
             {/* <section className="flex flex-row"> */}
               
         
-            <div className="col-span-2">
+            {/* <div className="col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Admission Details */}
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label className="text-blue-700 font-medium">Admission Start Date</label>
                 <input
                   type="date"
@@ -865,8 +866,8 @@ const AddNewCollege = () => {
                       }
                     </p>
                   )}
-              </div>
-
+              </div> */}
+{/* 
               <div className="mb-3">
                 <label className="text-blue-700 font-medium">Admission End Date</label>
                 <input
@@ -876,9 +877,9 @@ const AddNewCollege = () => {
                   )}
                   className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 />
-              </div>
+              </div> */}
 
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label className="text-blue-700 font-medium">Last Year Cutoff Marks</label>
                 <input
                   type="number"
@@ -887,13 +888,13 @@ const AddNewCollege = () => {
                   )}
                   className="w-full px-4 py-2 border   shadow-sm focus:ring-2 focus:ring-blue-500"
                 />
-              </div>
-            </div>
-            </div>
+              </div> */}
+            {/* </div>
+            </div> */} 
 
             {/* <div className="grid grid-cols-1 md:grid-cols gap-4"> */}
               {/* Scholarships Available (Checkboxes) */}
-              <div className="mb-5 p-4 border rounded-lg shadow-md bg-white ">
+              {/* <div className="mb-5 p-4 border rounded-lg shadow-md bg-white ">
                 <label className="text-blue-800 font-semibold block mb-2">
                   Scholarships Available:
                 </label>
@@ -921,10 +922,10 @@ const AddNewCollege = () => {
                     )
                   )}
                 </div>
-              </div>
+              </div> */}
 
               {/* Quota System (Checkboxes) */}
-              <div className="mb-5 p-4 border rounded-lg shadow-md bg-white">
+              {/* <div className="mb-5 p-4 border rounded-lg shadow-md bg-white">
                 <label className="text-blue-800 font-semibold block mb-2">Quota System:</label>
                 <div className="flex gap-4 flex-wrap">
                   {quotaSystem.map((option) => (
@@ -943,7 +944,7 @@ const AddNewCollege = () => {
                     </label>
                   ))}
                 </div>
-              </div>
+              </div> */}
             {/* </div> */}
             {/* </section> */}
 
@@ -1053,7 +1054,7 @@ const AddNewCollege = () => {
               <button
                 type="button"
                 onClick={handleSearch} // ✅ Use the function directly
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
               >
                 Search
               </button>
@@ -1062,7 +1063,7 @@ const AddNewCollege = () => {
               <button
                 type="button"
                 onClick={handleCurrentLocation}
-                className="bg-green-500 text-white px-4 py-2 font-medium rounded"
+                className="bg-green-500 text-white px-4 py-2 font-medium rounded cursor-pointer"
               >
                 Current
               </button>

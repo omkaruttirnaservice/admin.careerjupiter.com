@@ -225,10 +225,10 @@ finalQuestions = Array.from(uniqueQuestions);
               {fileName && <p className="text-gray-500 text-sm">Selected File: {fileName}</p>}
 
               <div className="flex justify-between mt-4 gap-12">
-                <button type="submit" disabled={isSubmitting} className="bg-blue-500 text-white px-2 py-2 rounded-md hover:bg-blue-600 transition-all w-1/2">
+                <button type="submit" disabled={isSubmitting} className="bg-blue-500 text-white px-2 py-2 rounded-md hover:bg-blue-600 transition-all w-1/2 cursor-pointer">
                   {isSubmitting ? "Saving..." : "Save"}
                 </button>
-                <button type="button" onClick={onClose} className="bg-gray-400 text-white px-2 py-2 rounded-md hover:bg-gray-500 transition-all w-1/2">
+                <button type="button" onClick={onClose} className="bg-gray-400 text-white px-2 py-2 rounded-md hover:bg-gray-500 transition-all w-1/2 cursor-pointer">
                   Close
                 </button>
               </div>

@@ -134,7 +134,7 @@ const EditUniversityDetails = ({ universityData, onSave, onCancel }) => {
       <div className="bg-gradient-to-br from-blue-50 to-white p-6  shadow-lg border-3 border-blue-600 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4  bg-gradient-to-r from-blue-600 to-blue-400 text-white  py-3 px-6 rounded-t-lg">
           <h2 className="text-2xl font-semibold "> 🏛 Edit University</h2>
-          <button onClick={onCancel} className="text-red-600 hover:text-red-800 text-3xl transition duration-300">
+          <button onClick={onCancel} className="text-red-600 hover:text-red-800 text-3xl transition duration-300 cursor-pointer">
             &times;
           </button>
         </div>
@@ -283,13 +283,13 @@ const EditUniversityDetails = ({ universityData, onSave, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2 bg-gray-300 rounded-lg text-blue-700 hover:bg-gray-400 transition duration-300"
+              className="px-6 py-2 bg-gray-300 rounded-lg text-blue-700 hover:bg-gray-400 transition duration-300 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 cursor-pointer"
             >
               Save
             </button>

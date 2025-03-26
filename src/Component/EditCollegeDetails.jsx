@@ -100,7 +100,7 @@ const EditCollegeDetails = ({ collegeData, onSave, onCancel }) => {
           <h2 className="text-2xl font-semibold ">🎓 Edit College</h2>
           <button
             onClick={onCancel}
-            className="text-red-600 hover:text-red-800 text-3xl transition duration-300"
+            className="text-red-600 hover:text-red-800 text-3xl transition duration-300 cursor-pointer"
           >
             &times;
           </button>
@@ -336,13 +336,13 @@ const EditCollegeDetails = ({ collegeData, onSave, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2 bg-gray-300 rounded-lg text-blue-700 hover:bg-gray-400 transition duration-300"
+              className="px-6 py-2 bg-gray-300 rounded-lg text-blue-700 hover:bg-gray-400 transition duration-300 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 cursor-pointer"
             >
               Save
             </button>

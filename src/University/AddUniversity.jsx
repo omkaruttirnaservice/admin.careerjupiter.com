@@ -121,132 +121,133 @@ const AddUniversity = () => {
         quotaSystem: [],
       },
     },
-    validationSchema: Yup.object().shape({
-      // University Name
-      universityName: Yup.string()
-        .required("University Name is required")
-        .min(3, "University Name must be at least 3 characters"),
+    // validationSchema: Yup.object().shape({
+    //   // University Name
+    //   universityName: Yup.string()
+    //     .required("University Name is required")
+    //     .min(3, "University Name must be at least 3 characters"),
 
-      // Category
-      universityCategory: Yup.string().required(
-        "University Category is required"
-      ),
+    //   // Category
+    //   universityCategory: Yup.string().required(
+    //     "University Category is required"
+    //   ),
 
-      // Location (Latitude and Longitude)
-      lat: Yup.number()
-        .required("Latitude is required")
-        .typeError("Latitude must be a number"),
-      lan: Yup.number()
-        .required("Longitude is required")
-        .typeError("Longitude must be a number"),
+    //   // Location (Latitude and Longitude)
+    //   lat: Yup.number()
+    //     .required("Latitude is required")
+    //     .typeError("Latitude must be a number"),
+    //   lan: Yup.number()
+    //     .required("Longitude is required")
+    //     .typeError("Longitude must be a number"),
 
-      // Address Details
-      address_line1: Yup.string().required("Address Line 1 is required"),
-      address_line2: Yup.string().optional(), // Optional field
-      pincode: Yup.string()
-        .required("Pincode is required")
-        .matches(/^\d{6}$/, "Pincode must be 6 digits"),
-      state: Yup.string().required("State is required"),
-      dist: Yup.string().required("District is required"),
+    //   // Address Details
+    //   address_line1: Yup.string().required("Address Line 1 is required"),
+    //   address_line2: Yup.string().optional(), // Optional field
+    //   pincode: Yup.string()
+    //     .required("Pincode is required")
+    //     .matches(/^\d{6}$/, "Pincode must be 6 digits"),
+    //   state: Yup.string().required("State is required"),
+    //   dist: Yup.string().required("District is required"),
 
-      // Contact Details
-      contactDetails: Yup.string()
-        .required("Contact Details are required")
-        .matches(/^\d{10}$/, "Contact Details must be a 10-digit number"),
+    //   // Contact Details
+    //   contactDetails: Yup.string()
+    //     .required("Contact Details are required")
+    //     .matches(/^\d{10}$/, "Contact Details must be a 10-digit number"),
 
-      // General Information
-      info: Yup.string()
-        .required("Information is required")
-        .min(10, "Information must be at least 10 characters"),
+    //   // General Information
+    //   info: Yup.string()
+    //     .required("Information is required")
+    //     .min(10, "Information must be at least 10 characters"),
 
-      // Website URL
-      websiteURL: Yup.string()
-        .url("Invalid URL format")
-        .required("Website URL is required"),
+    //   // Website URL
+    //   websiteURL: Yup.string()
+    //     .url("Invalid URL format")
+    //     .required("Website URL is required"),
 
-      // Established Year
-      establishedYear: Yup.number()
-        .required("Established Year is required")
-        .min(1800, "Established Year must be after 1800")
-        .max(
-          new Date().getFullYear(),
-          "Established Year cannot be in the future"
-        ),
+    //   // Established Year
+    //   establishedYear: Yup.number()
+    //     .required("Established Year is required")
+    //     .min(1800, "Established Year must be after 1800")
+    //     .max(
+    //       new Date().getFullYear(),
+    //       "Established Year cannot be in the future"
+    //     ),
 
-      // Accreditation
-      accreditation: Yup.string().required("Accreditation is required"),
+    //   // Accreditation
+    //   accreditation: Yup.string().required("Accreditation is required"),
 
-      // Admission Process
-      admissionProcess: Yup.string().required("Admission Process is required"),
+    //   // Admission Process
+    //   admissionProcess: Yup.string().required("Admission Process is required"),
 
-      // Application Form URL
-      applicationFormURL: Yup.string()
-        .url("Invalid URL format")
-        .required("Application Form URL is required"),
+    //   // Application Form URL
+    //   applicationFormURL: Yup.string()
+    //     .url("Invalid URL format")
+    //     .required("Application Form URL is required"),
 
-      // Email ID
-      email_id: Yup.string()
-        .email("Invalid email format")
-        .required("Email is required"),
+    //   // Email ID
+    //   email_id: Yup.string()
+    //     .email("Invalid email format")
+    //     .required("Email is required"),
 
-      // Facilities
-      facilities: Yup.string().required("Facilities are required"),
+    //   // Facilities
+    //   facilities: Yup.string().required("Facilities are required"),
 
-      // Keywords
-      keywords: Yup.array()
-        .of(Yup.string())
-        .min(1, "At least one keyword is required"),
+    //   // Keywords
+    //   keywords: Yup.array()
+    //     .of(Yup.string())
+    //     .min(1, "At least one keyword is required"),
 
-      // Image
-      image: Yup.mixed()
-        .required("Image is required")
-        .test("fileType", "Unsupported file format", (value) => {
-          if (value) {
-            return ["image/jpeg", "image/png", "image/jpg"].includes(
-              value.type
-            );
-          }
-          return true;
-        }),
+    //   // Image
+    //   image: Yup.mixed()
+    //     .required("Image is required")
+    //     .test("fileType", "Unsupported file format", (value) => {
+    //       if (value) {
+    //         return ["image/jpeg", "image/png", "image/jpg"].includes(
+    //           value.type
+    //         );
+    //       }
+    //       return true;
+    //     }),
 
-      // Image Gallery
-      imageGallery: Yup.array()
-        .of(
-          Yup.mixed().test("fileType", "Unsupported file format", (value) => {
-            if (value) {
-              return ["image/jpeg", "image/png", "image/jpg"].includes(
-                value.type
-              );
-            }
-            return true;
-          })
-        )
-        .min(1, "At least one image is required"),
+    //   // Image Gallery
+    //   imageGallery: Yup.array()
+    //     .of(
+    //       Yup.mixed().test("fileType", "Unsupported file format", (value) => {
+    //         if (value) {
+    //           return ["image/jpeg", "image/png", "image/jpg"].includes(
+    //             value.type
+    //           );
+    //         }
+    //         return true;
+    //       })
+    //     )
+    //     .min(1, "At least one image is required"),
 
-      // Admission Entrance Details
-      admissionEntranceDetails: Yup.object().shape({
-        admissionStartDate: Yup.date()
-          .required("Admission Start Date is required")
-          .typeError("Invalid date format"),
-        admissionEndDate: Yup.date()
-          .required("Admission End Date is required")
-          .typeError("Invalid date format")
-          .min(
-            Yup.ref("admissionStartDate"),
-            "End Date must be after Start Date"
-          ),
-        lastYearCutoffMarks: Yup.number()
-          .required("Last Year Cutoff Marks are required")
-          .min(0, "Cutoff Marks cannot be negative")
-          .max(100, "Cutoff Marks cannot exceed 100"),
-        scholarshipsAvailable: Yup.array()
-          .of(Yup.string())
-          .min(1, "At least one scholarship is required"),
-        quotaSystem: Yup.array()
-          .of(Yup.string())
-          .min(1, "At least one quota is required"),
-      }),
-    }),
+    //   // Admission Entrance Details
+    //   admissionEntranceDetails: Yup.object().shape({
+    //     admissionStartDate: Yup.date()
+    //       .required("Admission Start Date is required")
+    //       .typeError("Invalid date format"),
+    //     admissionEndDate: Yup.date()
+    //       .required("Admission End Date is required")
+    //       .typeError("Invalid date format")
+    //       .min(
+    //         Yup.ref("admissionStartDate"),
+    //         "End Date must be after Start Date"
+    //       ),
+    //     lastYearCutoffMarks: Yup.number()
+    //       .required("Last Year Cutoff Marks are required")
+    //       .min(0, "Cutoff Marks cannot be negative")
+    //       .max(100, "Cutoff Marks cannot exceed 100"),
+    //     scholarshipsAvailable: Yup.array()
+    //       .of(Yup.string())
+    //       .min(1, "At least one scholarship is required"),
+    //     quotaSystem: Yup.array()
+    //       .of(Yup.string())
+    //       .min(1, "At least one quota is required"),
+    //   }),
+    // }),
+    
     onSubmit: (values) => {
       console.log("Form submitted:", values);
       // Handle form submission
@@ -689,7 +690,7 @@ const AddUniversity = () => {
                 <button
                   type="button"
                   onClick={addKeyword}
-                  className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
                 >
                   <FaPlus className="w-5 h-5" /> {/* Plus icon */}
                 </button>
@@ -705,7 +706,7 @@ const AddUniversity = () => {
                     <button
                       type="button"
                       onClick={() => removeKeyword(index)}
-                      className="ml-2 text-red-500 hover:text-red-700"
+                      className="ml-2 text-red-500 hover:text-red-700 cursor-pointer"
                     >
                       ×
                     </button>
@@ -932,7 +933,7 @@ const AddUniversity = () => {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
               >
                 Search
               </button>
@@ -941,7 +942,7 @@ const AddUniversity = () => {
               <button
                 type="button"
                 onClick={handleCurrentLocation}
-                className="bg-green-500 text-white px-4 py-2 font-medium rounded"
+                className="bg-green-500 text-white px-4 py-2 font-medium rounded cursor-pointer"
               >
                 Current
               </button>

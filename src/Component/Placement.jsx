@@ -134,7 +134,7 @@ function Placement() {
        {/* Close Button (X) */}
     <button
       onClick={() => navigate("/colleges")}
-      className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold"
+      className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold cursor-pointer"
     >
       &times; {/* Unicode 'X' symbol */}
     </button>
@@ -227,7 +227,7 @@ function Placement() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300"
+                className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg hover:bg-blue-700 transition duration-300 cursor-pointer"
               >
                 {isSubmitting ? "Saving..." : isEditing ? "Update" : "Add"}
               </button>
@@ -236,7 +236,7 @@ function Placement() {
               <button
                 type="button"
                 onClick={() => handleDelete(resetForm) }
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 cursor-pointer"
               >
                 Clear
               </button>

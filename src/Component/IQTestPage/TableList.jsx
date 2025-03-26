@@ -285,7 +285,7 @@ const TableList = () => {
           {category} IQ Tests 🧠
         </h2>
         <button
-          className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-all"
+          className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-all cursor-pointer"
           onClick={() => setShowModal(true)}
         >
           + Add Test
@@ -322,7 +322,7 @@ const TableList = () => {
                 <td className="p-3">{test.totalMarks || "N/A"}</td>
                 <td className="p-3">
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-all"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-all cursor-pointer"
                     onClick={() => navigate(`/view-excel/${test._id}`)}
                   >
                     📂 View 

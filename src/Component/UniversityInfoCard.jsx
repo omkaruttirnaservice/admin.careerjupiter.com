@@ -10,7 +10,7 @@ const UniversityInfoCard = ({ universityData, onClose }) => {
           </h2>
           <button
             onClick={onClose}
-            className="text-white text-3xl hover:text-red-600 transition-all duration-300"
+            className="text-white text-3xl hover:text-red-600 transition-all duration-300 cursor-pointer"
           >
             &times;
           </button>

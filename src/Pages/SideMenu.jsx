@@ -209,19 +209,27 @@ import {
   ChartBarIcon,
   AcademicCapIcon,
   OfficeBuildingIcon,
+  LibraryIcon,
+  PlusCircleIcon,
+  BookOpenIcon,
+  ClipboardListIcon,
+  PresentationChartBarIcon,
+  UserCircleIcon,
 } from "@heroicons/react/solid"; // Using solid icons
 import { useState } from "react";
 
 // Navigation Items with Custom Colors
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon, color: "text-blue-400" },
-  { name: "Manage Colleges", href: "/colleges", icon: UsersIcon, color: "text-green-400" },
+  { name: "Manage Colleges", href: "/colleges", icon: LibraryIcon, color: "text-green-400" },
   { name: "Manage University", href: "/university-details", icon: OfficeBuildingIcon, color: "text-purple-400" },
-  { name: "Add New College", href: "/add-college", icon: FolderIcon, color: "text-yellow-400" },
+  { name: "Add New College", href: "/add-college", icon: PlusCircleIcon, color: "text-yellow-400" },
   { name: "Add New University", href: "/university", icon: AcademicCapIcon, color: "text-red-400" },
-  { name: "IQ Test", href: "/iq-test", icon: CalendarIcon, color: "text-indigo-400" },
-  { name: "Reports & Analytics", href: "/reports", icon: InboxIcon, color: "text-teal-400" },
-  { name: "View Profile", href: "/profile", icon: ChartBarIcon, color: "text-pink-400" },
+  { name: "Manage Classes", href: "/class-list", icon: BookOpenIcon, color: "text-blue-500" },
+  // { name: "Add Class", href: "/register-class", icon: ClipboardListIcon, color: "text-orange-400" },
+  { name: "IQ Test", href: "/iq-test", icon: PresentationChartBarIcon, color: "text-indigo-400" },
+  { name: "Reports & Analytics", href: "/reports", icon: ChartBarIcon, color: "text-teal-400" },
+  { name: "View Profile", href: "/profile", icon: UserCircleIcon, color: "text-pink-400" },
 ];
 
 const SideMenu = () => {
@@ -253,7 +261,7 @@ const SideMenu = () => {
                   setActiveLink(item.href);
                   navigate(item.href);
                 }}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 
+                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300  cursor-pointer
                 ${
                   isActive
                     ? "bg-blue-500 text-white shadow-md transform scale-105"

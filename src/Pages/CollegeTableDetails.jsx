@@ -168,7 +168,7 @@ const CollegeTableDetails = () => {
     console.log("📢 Final Payload to API:", formattedData);
 
     axios
-      .patch(`${API_BASE_URL}/api/college/update/${_id}`, formattedData)
+      .put(`${API_BASE_URL}/api/college/update/${_id}`, formattedData)
       .then((response) => {
         console.log("✅ API Response:", response.data);
         alert("🎉 Successfully Updated");
@@ -204,26 +204,58 @@ const CollegeTableDetails = () => {
   
   
 
+  // const filteredData = collegeData.filter((row) => {
+  //   return (
+  //     row.collegeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     row.affiliatedUniversity
+  //       .toLowerCase()
+  //       .includes(searchTerm.toLowerCase()) ||
+  //     row.Category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     row.collegeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     `${row.location.lat}, ${row.location.lng}`
+  //       .toLowerCase()
+  //       .includes(searchTerm.toLowerCase()) ||
+  //     `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`
+  //       .toLowerCase()
+  //       .includes(searchTerm.toLowerCase()) ||
+  //     row.contactDetails.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     row.websiteURL.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     row.establishedYear.toString().includes(searchTerm) ||
+  //     row.accreditation.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  // });
+
   const filteredData = collegeData.filter((row) => {
     return (
-      row.collegeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.affiliatedUniversity
+      row.collegeName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.affiliatedUniversity?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  
+      // ✅ Fix: `Category` is an array, check if **any** item matches the search term
+      row.Category?.some((cat) => cat.toLowerCase().includes(searchTerm.toLowerCase())) ||
+  
+      row.collegeType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  
+      // ✅ Fix: `location` uses `lat` and `lan`, not `lng`
+      `${row.location?.lat || 0}, ${row.location?.lan || 0}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      row.Category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.collegeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${row.location.lat}, ${row.location.lng}`
+  
+      // ✅ Fix: Handle `null` address fields
+      `${row.address?.line1 || ""}, ${row.address?.line2 || ""}, ${row.address?.dist || ""}, ${row.address?.state || ""} - ${row.address?.pincode || ""}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      row.contactDetails.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.websiteURL.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.establishedYear.toString().includes(searchTerm) ||
-      row.accreditation.toLowerCase().includes(searchTerm.toLowerCase())
+  
+      row.contactDetails?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  
+      row.websiteURL?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  
+      // ✅ Fix: Handle `null` establishedYear
+      (row.establishedYear ? row.establishedYear.toString().includes(searchTerm) : false) ||
+  
+      row.accreditation?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+  
 
   const columns = [
     {
@@ -292,7 +324,7 @@ const CollegeTableDetails = () => {
           {row.websiteURL && row.websiteURL.trim() !== "" ? (
             <button
               onClick={() => window.open(row.websiteURL, "_blank")}
-              className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md"
+              className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer"
             >
               Visit Website
             </button>
@@ -324,7 +356,7 @@ const CollegeTableDetails = () => {
         <div className="flex text-center space-x- min-w-[250px] gap-1">
           {/* View Profile */}
           <button
-            className="bg-blue-600 hover:bg-blue-800 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-blue-600 hover:bg-blue-800 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             data-tooltip-id="view-tooltip"
             data-tooltip-content="View Profile"
             onClick={() => handleViewProfile(row)}
@@ -334,7 +366,7 @@ const CollegeTableDetails = () => {
 
           {/* Edit */}
           <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             data-tooltip-id="edit-tooltip"
             data-tooltip-content="Edit Details"
             onClick={() => handleEdit(row)}
@@ -344,7 +376,7 @@ const CollegeTableDetails = () => {
 
           {/* Delete */}
           <button
-            className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             data-tooltip-id="delete-tooltip"
             data-tooltip-content="Delete College"
             onClick={() => handleDelete(row)}
@@ -354,7 +386,7 @@ const CollegeTableDetails = () => {
 
           {/* Add Courses */}
           <button
-            className="bg-green-500 hover:bg-green-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-green-500 hover:bg-green-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             data-tooltip-id="courses-tooltip"
             data-tooltip-content="Manage Courses"
             onClick={() => navigate(`/colleges/courses/${row._id}`)}
@@ -364,7 +396,7 @@ const CollegeTableDetails = () => {
 
           {/* Manage Infrastructure */}
           <button
-            className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             data-tooltip-id="infra-tooltip"
             data-tooltip-content="Manage Infrastructure"
             onClick={() => navigate(`/colleges/infrastructure/${row._id}`)}
@@ -374,7 +406,7 @@ const CollegeTableDetails = () => {
 
           {/* Manage Placements */}
           <button
-            className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             data-tooltip-id="placement-tooltip"
             data-tooltip-content="Manage Placements"
             onClick={() => navigate(`/colleges/placement/${row._id}`)}

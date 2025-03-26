@@ -246,7 +246,7 @@ const UniversityTableDetails = () => {
           {row.websiteURL && row.websiteURL.trim() !== "" ? (
             <button
               onClick={() => window.open(row.websiteURL, "_blank")}
-              className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md"
+              className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md  cursor-pointer"
             >
               Visit Website
             </button>
@@ -277,7 +277,7 @@ const UniversityTableDetails = () => {
       cell: (row) => (
         <div className="flex text-center space-x- min-w-[250px] gap-1">
           <button
-            className="bg-blue-600 hover:bg-blue-800 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-blue-600 hover:bg-blue-800 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             onClick={() => handleViewProfile(row)}
             data-tooltip-id="view-tooltip"
             data-tooltip-content="View Profile"
@@ -285,7 +285,7 @@ const UniversityTableDetails = () => {
             <FaEye size={17} />
           </button>
           <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             onClick={() => handleEdit(row)} // Open EdituniversityDetails
             data-tooltip-id="edit-tooltip"
             data-tooltip-content="Edit University"
@@ -293,7 +293,7 @@ const UniversityTableDetails = () => {
             <FaEdit size={17} />
           </button>
           <button
-            className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             onClick={() => handleDelete(row)}
             data-tooltip-id="delete-tooltip"
             data-tooltip-content="Delete University"
@@ -301,7 +301,7 @@ const UniversityTableDetails = () => {
             <FaPauseCircle size={17} />
           </button>
           <button
-            className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             onClick={() => navigate(`/university/infrastructure/${row._id}`)}
             data-tooltip-id="infra-tooltip"
             data-tooltip-content="University Infrastructure"
@@ -309,7 +309,7 @@ const UniversityTableDetails = () => {
             <FaBuilding size={17} />
           </button>
           <button
-            className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300"
+            className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
             onClick={() => navigate(`/university/placement/${row._id}`)}
             data-tooltip-id="placement-tooltip"
             data-tooltip-content="Placement Details"

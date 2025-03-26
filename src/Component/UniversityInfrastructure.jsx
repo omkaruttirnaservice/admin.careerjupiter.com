@@ -189,7 +189,7 @@ function UniversityInfrastructure() {
        {/* Close Button (X) */}
        <button
         onClick={() => navigate("/university-details")} // Navigate to CollegeTableDetails page
-        className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold"
+        className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-xl font-bold cursor-pointer"
       >
         &times; {/* Unicode 'X' symbol */}
       </button>
@@ -445,7 +445,7 @@ function UniversityInfrastructure() {
         <div className="flex mt-4 justify-end gap-5">
           <button
             type="submit"
-            className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg"
+            className="w-30 bg-blue-600 text-white font-semibold p-2 rounded-lg cursor-pointer"
           >
             {isEditing ? "Update" : "Add"}
           </button>
@@ -453,7 +453,7 @@ function UniversityInfrastructure() {
           <button
             type="button"
             onClick={handleDelete}
-            className="bg-red-500 text-white w-25 px-4 py-2 rounded-lg justify-end hover:bg-red-600 transition duration-300"
+            className="bg-red-500 text-white w-25 px-4 py-2 rounded-lg justify-end hover:bg-red-600 transition duration-300 cursor-pointer"
           >
             Delete
           </button>

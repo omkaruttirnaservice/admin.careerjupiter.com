@@ -59,7 +59,7 @@ const updateUniversity = async (id, data) => {
 // Create a new university
 const createUniversity = async (data) => {
   try {
-    const response = await api.post("/api/university/", data);
+    const response = await api.post("/api/university/create/", data);
     return response.data;
   } catch (error) {
     console.error("❌ Create Error:", error.response?.data || error);
