@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { setAuthCookies } from "../Utlis/cookieHelper";
 import Swal from "sweetalert2";
-import { FaMobileAlt, FaLock, FaSms } from "react-icons/fa";
+import { FaMobileAlt, FaLock, FaSms, FaBook, FaGraduationCap, FaLightbulb} from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
 
@@ -277,63 +278,103 @@ const Login = () => {
   
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-200 to-gray-100 p-6">
-      <div className="w-full max-w-md bg-white/30 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-300">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+    <div className="relative flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-orange-500">
+      {/* 🔹 Floating Education Icons */}
+      <div className="absolute inset-0 flex flex-wrap">
+        {[FaBook, FaGraduationCap, FaLightbulb, FaBook, FaGraduationCap].map((Icon, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 0.3, y: 0 }}
+            transition={{ duration: 1, delay: i * 0.3 }}
+            className="absolute text-white opacity-20"
+            style={{
+              fontSize: `${Math.random() * 3 + 2}rem`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+          >
+            <Icon />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* 🔹 Solid Login Box */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative w-full max-w-md p-8 rounded-xl shadow-2xl bg-white text-gray-900 border-2 border-gray-300"
+      >
+      
+      {/* <div className="w-full max-w-md bg-white/30 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-300"> */}
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold text-purple-800">
           {step === 1 ? "Login with Mobile" : "Enter OTP"}
         </h2>
+        <p className="text-gray-700 mt-1">Your journey towards success starts here!</p>
+        </div>
 
         {step === 1 && (
           <>
-            <label className="block text-gray-700 text-lg font-medium mb-2">
+            <label className=" text-gray-700 text-lg font-medium mb-2 flex items-center">
               Mobile Number
             </label>
-            <div className="flex items-center bg-white shadow-md p-3 rounded-lg border border-gray-300">
-              {/* <FaMobileAlt className="text-gray-500 mr-3" /> */}
+            <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 focus-within:ring-2 focus-within:ring-purple-600">
+            <FaMobileAlt className="text-purple-600 mr-2" />
               <input
                 type="text"
-                className="w-full outline-none bg-transparent"
+                className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
                 placeholder="Enter Mobile Number"
                 value={mobileNo}
                 onChange={(e) => setMobileNo(e.target.value)}
               />
             </div>
-            <button
-              onClick={sendOtp}
+            {/* Send OTP Button */}
+            <motion.button 
+              whileHover={{ scale: 1.05 }} 
+              whileTap={{ scale: 0.95 }} 
+              onClick={sendOtp} 
               disabled={loading}
-              className="w-full mt-4 bg-gray-800 hover:bg-gray-900 text-white py-3 rounded-lg font-semibold shadow-lg transition"
+              className="w-full mt-6 bg-gradient-to-br from-purple-700 to-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
             >
-              
-              <FaSms /> {loading ? "Sending..." : "Send OTP"}
-            </button>
+              <FaSms className="mr-2" /> {loading ? "Sending..." : "Send OTP"}
+            </motion.button>
           </>
         )}
 
         {step === 2 && (
           <>
-            <label className="block text-gray-700 text-lg font-medium mb-2">
+            <label className=" text-gray-700 text-lg font-medium mb-2 flex items-center">
               Enter OTP
             </label>
-            <div className="flex items-center bg-white shadow-md p-3 rounded-lg border border-gray-300">
-              {/* <FaLock className="text-gray-500 mr-3" /> */}
+            <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 focus-within:ring-2 focus-within:ring-green-500">
+            <FaLock className="text-green-600 mr-3" />
               <input
                 type="text"
-                className="w-full outline-none bg-transparent"
+                className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
                 placeholder="Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
               />
             </div>
-            <button
-              onClick={verifyOtp}
+            <motion.button 
+              whileHover={{ scale: 1.05 }} 
+              whileTap={{ scale: 0.95 }} 
+              onClick={verifyOtp} 
               disabled={loading}
-              className="w-full mt-4 bg-green-600 hover:bg-green-700 cursor-pointer text-white py-3 rounded-lg font-semibold shadow-lg transition"
+              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
             >
-              <FaLock /> {loading ? "Verifying..." : "Verify OTP"}
-            </button>
+              <FaLock className="mr-2" /> {loading ? "Verifying..." : "Verify OTP"}
+            </motion.button>
           </>
         )}
-      </div>
+         {/* Bottom Decorative Elements */}
+         <div className="absolute top-0 left-0 w-20 h-20 bg-blue-500 opacity-10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-0 right-0 w-24 h-24 bg-purple-500 opacity-10 rounded-full blur-xl"></div>
+
+        </motion.div>
+      {/* </div> */}
     </div>
   );
 };

@@ -83,14 +83,15 @@ function App() {
                 <Route path="class-dashboard" element={<ClassVendorDashboard />} />
                 <Route path="edit-vendor-class" element={<ManageClass />} />
               </Route>
-            ) : null}
+             ) : null} 
 
-            {/* ✅ Registration Route for Vendors */}
-            <Route path="/register-class" element={<ClassForm />} />
+            
 
             {/* ❌ Redirect Unauthenticated Users to Login */}
             {!token && <Route path="*" element={<Navigate to="/" replace />} />}
           </Route>
+          {/* ✅ Registration Route for Vendors */}
+          <Route path="/register-class" element={<ClassForm />} />
         </Routes>
       </Router>
     </QueryClientProvider>

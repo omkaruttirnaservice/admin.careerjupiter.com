@@ -154,6 +154,7 @@
 // export default ContactWithOTP;
 
 import React, { useState } from "react";
+import { FaCheckCircle, FaSms } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
@@ -165,6 +166,10 @@ const ContactWithOTP = ({ formik }) => {
   const [referenceId, setReferenceId] = useState(""); // ✅ Stores reference ID
   const [otp, setOtp] = useState(""); // ✅ Stores OTP input
   const [loading, setLoading] = useState(false); // ✅ Loading state for buttons
+  // const [isVerified, setIsVerified] = useState(false);
+
+    // ✅ Use Formik value for isVerified
+    const isVerified = formik.values.isVerified;
 
   // ✅ Send OTP Function
   const sendOtp = async () => {
@@ -194,19 +199,12 @@ const ContactWithOTP = ({ formik }) => {
         Swal.fire({
           icon: "success",
           title: "OTP Sent!",
-          html: `<p>Your OTP has been sent to <strong>${formik.values.contactDetails}</strong></p>
-                   <p><strong>OTP:</strong> ${response.data.data.otp}</p>`, // ✅ Show OTP here
+          html: `<p>Your OTP has been sent to <strong>${formik.values.contactDetails}</strong></p>`,
           confirmButtonColor: "#3085d6",
         });
-
-        console.log("📌 Stored Reference ID:", response.data.data.reference_id); // ✅ Debugging
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Failed!",
-          text: "OTP could not be sent. Try again!",
-          confirmButtonColor: "#d33",
-        });
+        console.log("📌 Stored Reference ID:", response.data.data.reference_id); // ✅ Debugging
+        Swal.fire("Failed!", response.data.usrMsg || "Could not send OTP.", "error");
       }
     } catch (error) {
       console.error("❌ Error sending OTP:", error.response?.data || error.message);
@@ -237,7 +235,7 @@ const ContactWithOTP = ({ formik }) => {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Reference ID is missing. Please request a new OTP.",
+        text: "Please request a new OTP.",
       });
       return;
     }
@@ -260,18 +258,18 @@ const ContactWithOTP = ({ formik }) => {
           text: "Your OTP has been successfully verified.",
           confirmButtonColor: "#3085d6",
         });
+        // setIsVerified(true);
+       
 
         // ✅ Store OTP and Reference ID in Formik before submitting
       formik.setFieldValue("otp", otp);
       formik.setFieldValue("reference_id", referenceId);
       formik.setFieldValue("isVerified", true);
-    
 
-        setOtpSent(false); // ✅ Hide OTP field after verification
-        setOtp(""); // ✅ Clear OTP input
-
+      setOtpSent(false);
+      setOtp("");
         // ✅ Disable mobile number input after successful verification
-        formik.setFieldValue("isVerified", true);
+        // formik.setFieldValue("isVerified", true);
       } else {
         Swal.fire({
           icon: "error",
@@ -303,10 +301,19 @@ const ContactWithOTP = ({ formik }) => {
           name="contactDetails"
           placeholder="Enter Mobile Number"
           formik={formik}
-          disabled={formik.values.isVerified} // ✅ Disable after verification
+          disabled={isVerified} // ✅ Disable after verification
         />
-        <ButtonComponent onClick={sendOtp} loading={loading} text="Send OTP" disabled={formik.values.isVerified} />
-      </div>
+  {/* ✅ If verified, show green tick instead of Send OTP button */}
+  {isVerified ? (
+          <div className="flex items-center gap-2 text-green-600 font-semibold">
+            <FaCheckCircle size={20} />
+            <span>Mobile No Verified</span>
+          </div>
+        ) : (
+
+        <ButtonComponent onClick={sendOtp} loading={loading} text="Send OTP" disabled={isVerified} />
+        )}
+        </div>
 
       {/* 🔹 OTP Input + Verify OTP Button (Visible after OTP is Sent) */}
       {otpSent && (

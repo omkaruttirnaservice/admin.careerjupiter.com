@@ -63,19 +63,19 @@ const ClassVendorDashboard = () => {
   }, [classId]);
 
   return (
-    <div className="flex bg-gradient-to-br from-blue-100 to-blue-50 min-h-screen">
+    <div className="flex flex-col md:flex-row bg-gradient-to-br from-indigo-100 to-purple-50 min-h-screen">
       {/* ✅ Sidebar */}
       <ClassVendorSideMenu />
 
       {/* ✅ Main Content */}
       <div className="flex-1 p-8">
         {/* ✅ Profile Section */}
-        <div className="bg-white shadow-md p-6 rounded-xl flex items-center gap-6 mb-6">
+        <div className="bg-white shadow-md p-6 rounded-xl flex flex-col sm:flex-row items-center gap-6 mb-6">
           <div className="w-24 h-24 flex items-center justify-center rounded-full bg-blue-500 shadow-lg">
-            <FaUserCircle className="text-white text-6xl" />
+            <FaUserCircle className="text-white text-5xl sm:text-6xl" />
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+          <div className="text-center sm:text-left">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 animate-fade-in">
               Welcome, {classDetails?.ownerOrInstituteName || "Vendor"} 👋
             </h2>
             <p className="text-blue-600 text-lg font-semibold">{classDetails?.className || "Your Class Name"}</p>
@@ -89,9 +89,9 @@ const ClassVendorDashboard = () => {
           </h3>
 
           {/* ✅ Class Details Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {/* 🔹 Class Name */}
-            <div className="bg-blue-100 p-4 rounded-lg shadow-md flex items-center gap-4">
+            <div className="bg-blue-100 p-4 rounded-lg shadow-md flex items-center gap-4 transition-all hover:scale-105">
               <FaChalkboardTeacher className="text-blue-600 text-3xl" />
               <div>
                 <h3 className="text-lg font-bold">Class Name</h3>
@@ -100,7 +100,7 @@ const ClassVendorDashboard = () => {
             </div>
 
             {/* 🔹 Owner/Institute Name */}
-            <div className="bg-green-100 p-4 rounded-lg shadow-md flex items-center gap-4">
+            <div className="bg-green-100 p-4 rounded-lg shadow-md flex items-center gap-4 transition-all hover:scale-105">
               <FaGraduationCap className="text-green-600 text-3xl" />
               <div>
                 <h3 className="text-lg font-bold">Owner/Institute</h3>
@@ -109,7 +109,7 @@ const ClassVendorDashboard = () => {
             </div>
 
             {/* 🔹 Teaching Medium */}
-            <div className="bg-yellow-100 p-4 rounded-lg shadow-md flex items-center gap-4">
+            <div className="bg-yellow-100 p-4 rounded-lg shadow-md flex items-center gap-4 transition-all hover:scale-105">
               <FaLanguage className="text-yellow-600 text-3xl" />
               <div>
                 <h3 className="text-lg font-bold">Teaching Medium</h3>
@@ -121,13 +121,15 @@ const ClassVendorDashboard = () => {
           {/* ✅ Images Section */}
           <div className="mt-6">
             <h3 className="text-lg font-bold text-gray-800">Class Images</h3>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              {classDetails?.image && (
+            <div className="grid grid-cols-2  sm:grid-cols-2 gap-4 mt-4">
+              {classDetails?.image ? (
                 <img
                   src={`${API_BASE_URL}${classDetails.image}`}
                   alt="Class"
                   className="w-full h-40 object-cover rounded-lg shadow-md"
                 />
+              ) : (
+                <p className="text-gray-500 italic">No image available</p>
               )}
             </div>
           </div>

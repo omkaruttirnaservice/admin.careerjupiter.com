@@ -6,6 +6,7 @@ import {
   CogIcon,
   LogoutIcon,
   UserCircleIcon,
+  MenuIcon
 } from "@heroicons/react/solid"; // ✅ HeroIcons
 
 const navigation = [
@@ -14,7 +15,7 @@ const navigation = [
   // { name: "Settings", href: "/settings", icon: CogIcon, color: "text-yellow-400" },
 ];
 
-const ClassVendorSideMenu = () => {
+const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(location.pathname);
@@ -29,8 +30,20 @@ const ClassVendorSideMenu = () => {
       };
 
   return (
-    <div className="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-blue-800 shadow-lg z-50 h-screen">
+    <div
+      className={`fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-700 to-blue-900 shadow-lg z-50 h-screen transition-transform duration-300 ${
+        isMenuOpen ? "translate-x-0" : "-translate-x-64"
+      } md:translate-x-0`}
+    >
       <div className="flex flex-col pt-5 pb-4 overflow-y-auto h-full">
+        
+                {/* ✅ Mobile Menu Close Button */}
+                <button
+          className="absolute top-4 right-4 text-white md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <MenuIcon className="w-8 h-8" />
+        </button>
 
         {/* ✅ Profile Section */}
         <div className="flex flex-col items-center text-white mb-6">
@@ -47,7 +60,9 @@ const ClassVendorSideMenu = () => {
             return (
               <button
                 key={item.name}
-                onClick={() => navigate(item.href)}
+                onClick={() => {navigate(item.href);
+                  setIsMenuOpen(false);
+                }}
                 className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300
                 ${isActive ? "bg-blue-500 text-white shadow-md transform scale-105" : "text-gray-300 hover:bg-blue-600 hover:text-white"}`}
               >

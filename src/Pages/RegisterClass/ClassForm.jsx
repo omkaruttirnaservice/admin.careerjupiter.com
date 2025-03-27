@@ -24,7 +24,6 @@ import MapComponent from "./MapComponent";
 
 const ClassForm = ({ onClose }) => {
   const [position, setPosition] = useState({ lat: 19.076, lan: 72.8777 });
-
   const navigate = useNavigate();
 
   <stateDistricts />;
@@ -42,7 +41,7 @@ const ClassForm = ({ onClose }) => {
   const formik = useFormik({
     initialValues: {
       className: "",
-      ownerOrInstituteName: "Sample",
+      ownerOrInstituteName: "",
       typeOfClass: [],
       category: [],
       subjectsOrCourses: [],
@@ -64,6 +63,7 @@ const ClassForm = ({ onClose }) => {
       imageGallery: [],
       location: [{ lat: position.lat, lan: position.lan }], // ✅ Store lat/lng
       keywords: [],
+      
     },
 
     // validationSchema: Yup.object({
@@ -125,79 +125,7 @@ const ClassForm = ({ onClose }) => {
     //   //     .min(1, "At least one keyword must be added"),
     // }),
 
-    //  onSubmit : async (values, { setSubmitting, resetForm }) => {
-    //   try {
-    //     const formData = new FormData();
-
-    //     // Append form values
-    //     Object.keys(values).forEach((key) => {
-    //       if (key === "image" && values.image) {
-    //         formData.append("image", values.image);
-    //       } else if (key === "imageGallery" && values.imageGallery.length > 0) {
-    //         values.imageGallery.forEach((file) => {
-    //           formData.append("imageGallery", file);
-    //         });
-    //       } else if (Array.isArray(values[key])) {
-    //         formData.append(key, JSON.stringify(values[key]));
-    //       } else if (typeof values[key] === "object") {
-    //         formData.append(key, JSON.stringify(values[key]));
-    //       } else {
-    //         formData.append(key, values[key]);
-    //       }
-    //     });
-
-    //     // ✅ 1. Submit ClassForm Data
-    //     const classResponse = await axios.post(`${API_BASE_URL}/api/class/create`, formData, {
-    //       headers: { "Content-Type": "multipart/form-data" },
-    //     });
-
-    //     console.log("Class Created Successfully:", classResponse.data);
-
-    //     // ✅ 2. Extract Class ID & Mobile No
-    //     const classId = classResponse.data?.data?.class?._id;
-    //     const mobile_no = values.contactDetails;
-    //     console.log("Extracted Class ID:", classId);
-
-    //     if (!classId) {
-    //       throw new Error("Class ID is missing in API response");
-    //     }
-
-    //     // ✅ 3. Store Class ID in Cookies
-    //     Cookies.set("classId", classId, { expires: 1 / 24 }); // ✅ Store classId in cookies
-    //     console.log("Stored Class ID in cookies:", Cookies.get("classId"));
-
-    //     // ✅ 3. Call Auth API for Vendor Signup
-    //     const authResponse = await axios.post(`${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`, {
-    //       mobile_no,
-    //     });
-
-    //     console.log("Auth Response:", authResponse.data);
-
-    //     // ✅ 4. Store in Cookies using `setAuthCookies`
-    //     if (authResponse.data.success) {
-    //       const { token, role, subrole, userId } = authResponse.data.data;
-
-    //       Cookies.set("token", token, { expires: 1 / 24 });
-    //       Cookies.set("role", role, { expires: 1 / 24 });
-    //       Cookies.set("subrole", subrole, { expires: 1 / 24 });
-    //       Cookies.set("userId", userId, { expires: 1 / 24 });
-    //       console.log("Stored Class ID in cookies:", classId);
-
-    //       console.log("Successfully");
-
-    //       alert("Registration Successful! Redirecting to dashboard...");
-    //       resetForm();
-
-    //       // ✅ 5. Redirect to Dashboard
-    //       window.location.href = "/vendor-class/class-dashboard";
-    //     }
-    //   } catch (error) {
-    //     console.error("Error submitting form:", error.response?.data || error.message);
-    //     alert("Error submitting form. Please try again.");
-    //   } finally {
-    //     setSubmitting(false);
-    //   }
-    // },
+   
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
@@ -227,7 +155,7 @@ const ClassForm = ({ onClose }) => {
         console.log("✅ Formatted Data Before Sending:", formattedData);
 
         formData.append("typeOfClass", JSON.stringify(formattedData.typeOfClass)); 
-formData.append("category", JSON.stringify(formattedData.category)); 
+    formData.append("category", JSON.stringify(formattedData.category)); 
 
         
         
@@ -466,7 +394,7 @@ formData.append("category", JSON.stringify(formattedData.category));
               options={["Online", "Offline", "Hybrid"]}
               formik={formik}
             />
-            <div className="grid grid-cols-2 space-x-3 col-span-full">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:space-x-3 lg:col-span-full">
               {/* Single Image Upload */}
               <FileUpload label="College Image" name="image" formik={formik} />
 
