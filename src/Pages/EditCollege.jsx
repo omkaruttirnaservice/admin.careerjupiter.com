@@ -2,11 +2,12 @@ import { useFormik } from "formik";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
 
-const API_URL = "http://192.168.1.132:5000/api/college";
+// const API_URL = "http://192.168.1.9:5000/api/college";
 
 const fetchCollege = async (id) => {
-  const response = await axios.get(`${API_URL}/${id}`);
+  const response = await axios.get(`${API_BASE_URL}/${id}`);
   if (response.data.success) {
     return response.data.data;
   } else {
@@ -15,7 +16,7 @@ const fetchCollege = async (id) => {
 };
 
 const updateCollege = async ({ id, updatedData }) => {
-  const response = await axios.put(`${API_URL}/${id}`, updatedData);
+  const response = await axios.put(`${API_BASE_URL}/${id}`, updatedData);
   return response.data;
 };
 

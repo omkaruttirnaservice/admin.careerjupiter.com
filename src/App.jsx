@@ -36,6 +36,8 @@ import Cookies from "js-cookie";
 import ManageClass from "./Pages/ManageClass.jsx";
 import VendorLayout from "./Pages/VendorLayout.jsx";
 import ClassTableDetails from "./Pages/ClassTableDetails.jsx";
+import FacultyManagement from "./Pages/FacultyManagement.jsx";
+import ClassCourses from "./Pages/ClassCourses.jsx";
 
 const queryClient = new QueryClient();
 
@@ -82,8 +84,10 @@ function App() {
                 <Route index element={<ClassVendorDashboard />} />
                 <Route path="class-dashboard" element={<ClassVendorDashboard />} />
                 <Route path="edit-vendor-class" element={<ManageClass />} />
+                <Route path="class-faculty" element={<FacultyManagement />} />
+                <Route path="class-courses" element={<ClassCourses/>}/>
               </Route>
-             ) : null} 
+              ) : null}  
 
             
 

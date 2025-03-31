@@ -6,13 +6,16 @@ import {
   CogIcon,
   LogoutIcon,
   UserCircleIcon,
-  MenuIcon
+  MenuIcon,
+  UserAddIcon
 } from "@heroicons/react/solid"; // ✅ HeroIcons
+import { BookAIcon } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/vendor-class/class-dashboard", icon: HomeIcon, color: "text-blue-400" },
   { name: "Manage Class", href: "/vendor-class/edit-vendor-class", icon: ClipboardCheckIcon, color: "text-green-400" },
-  // { name: "Settings", href: "/settings", icon: CogIcon, color: "text-yellow-400" },
+  // { name: "Faculty", href: "/vendor-class/class-faculty", icon: UserAddIcon, color: "text-yellow-400" },
+  // { name: "Course", href: "/vendor-class/class-courses", icon: BookAIcon, color: "text-teal-400" },
 ];
 
 const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {

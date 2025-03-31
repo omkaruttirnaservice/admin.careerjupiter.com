@@ -28,7 +28,7 @@ const ClassForm = ({ onClose }) => {
 
   <stateDistricts />;
 
-  const collegeCategories = [
+  const classCategories = [
     "SSC",
     "HSC",
     "Diploma",
@@ -38,12 +38,29 @@ const ClassForm = ({ onClose }) => {
     "Post Graduate",
   ];
 
+  const typeOfClass = [
+    "8th",
+    "9th",
+    "10th",
+    "SSC",
+    "HSC",
+    "CBSE",
+    "ICSE",
+    "NDA",
+    "11th",
+    "12th",
+    "Hobbies Class",
+    "Home Coaching",
+    "Training Institute",
+    "Tutions",
+  ];
+
   const formik = useFormik({
     initialValues: {
       className: "",
       ownerOrInstituteName: "",
       typeOfClass: [],
-      category: [],
+      Category: [],
       subjectsOrCourses: [],
       teachingMedium: [],
       modeOfTeaching: [],
@@ -61,71 +78,83 @@ const ClassForm = ({ onClose }) => {
       websiteURL: "",
       image: null,
       imageGallery: [],
-      location: [{ lat: position.lat, lan: position.lan }], // ✅ Store lat/lng
+      locations: [], // ✅ Store lat/lng
       keywords: [],
-      
     },
 
-    // validationSchema: Yup.object({
-    //   className: Yup.string().required("Class Name is required"),
-    //   ownerOrInstituteName: Yup.string().required(
-    //     "Owner/Institute Name is required"
-    //   ),
-    //   typeOfClass: Yup.string().required("Select a class type"),
-    //   category: Yup.string().required("Category is required"),
-    //   subjectsOrCourses: Yup.array()
-    //     .of(Yup.string().required("Subject is required"))
-    //     .min(1, "At least one subject must be selected"),
-    //   teachingMedium: Yup.array()
-    //     .of(Yup.string().required("Teaching Medium is required"))
-    //     .min(1, "Select at least one teaching medium"),
-    //   // modeOfTeaching: Yup.array()
-    //   //   .of(Yup.string().required("Mode of Teaching is required"))
-    //   //   .min(1, "Select at least one mode of teaching"),
-    //   franchiseOrIndependent: Yup.string().required("Select an option"),
-    //   // yearEstablished: Yup.number()
-    //   //   .required("Year Established is required")
-    //   //   .min(1900, "Enter a valid year")
-    //   //   .max(new Date().getFullYear(), "Year cannot be in the future"),
-    //     address: Yup.object().shape({
-    //   //     line1: Yup.string().required("Address Line 1 is required"),
-    //       pincode: Yup.string()
-    //         .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
-    //         .required("Pincode is required"),
-    //       state: Yup.string().required("State is required"),
-    //       dist: Yup.string().required("District is required"),
-    //     }),
-    //     contactDetails: Yup.string()
-    //       .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
-    //       .required("Contact Details are required"),
-    //   //   info: Yup.object().shape({
-    //   //     description: Yup.string()
-    //   //       .min(10, "Description must be at least 10 characters")
-    //   //       .required("Description is required"),
-    //   //   }),
-    //   //   // websiteURL: Yup.string()
-    //   //   //   .url("Enter a valid website URL")
-    //   //   //   .nullable(),
-    //   //   // image: Yup.mixed().required("Image is required"),
-    //   //   // imageGallery: Yup.array()
-    //   //   //   .of(Yup.mixed())
-    //   //   //   .min(1, "At least one image must be uploaded"),
-    //   //   // location: Yup.object().shape({
-    //   //   //   lat: Yup.number()
-    //   //   //     .required("Latitude is required")
-    //   //   //     .min(-90, "Invalid latitude")
-    //   //   //     .max(90, "Invalid latitude"),
-    //   //   //   lan: Yup.number()
-    //   //   //     .required("Longitude is required")
-    //   //   //     .min(-180, "Invalid longitude")
-    //   //   //     .max(180, "Invalid longitude"),
-    //   //   // }),
-    //   //   keywords: Yup.array()
-    //   //     .of(Yup.string().required("Keyword is required"))
-    //   //     .min(1, "At least one keyword must be added"),
-    // }),
+    validationSchema: Yup.object({
+      className: Yup.string().required("Class Name is required"),
+      ownerOrInstituteName: Yup.string().required(
+        "Owner/Institute Name is required"
+      ),
+      franchiseOrIndependent: Yup.string().required("Select an option"),
+      yearEstablished: Yup.number()
+        .required("Year Established is required")
+        .min(1900, "Enter a valid year")
+        .max(new Date().getFullYear(), "Year cannot be in the future"),
+      address: Yup.object().shape({
+        line1: Yup.string().required("Address Line 1 is required"),
+        pincode: Yup.string()
+          .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
+          .required("Pincode is required"),
+        state: Yup.string().required("State is required"),
+        dist: Yup.string().required("District is required"),
+      }),
+      contactDetails: Yup.string()
+        .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
+        .required("Contact Details are required"),
 
-   
+      websiteURL: Yup.string().url("Enter a valid website URL").nullable(),
+      // description: Yup.string()
+      // .min(100, "Description must be at least 100 characters long")
+      // .max(1000, "Description cannot exceed 1000 characters")
+      // .required("Description is required"),
+      keywords: Yup.array()
+      .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
+      .min(1, "At least one keyword is required")
+      .max(10, "You can add up to 10 keywords only")
+      .required("Keywords are required"),
+      imageGallery: Yup.array()
+      .min(1, "At least one image is required")
+      .max(2, "You can upload up to 2 images only")
+      .of(
+        Yup.mixed()
+          .test("fileType", "Only JPG, JPEG, or PNG files are allowed", (file) =>
+            file ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type) : true
+          )
+          .test("fileSize", "Image size must be less than 100KB", (file) =>
+            file ? file.size <= 102400 : true
+          )
+      )
+      .required("Image gallery is required"),
+      image: Yup.mixed()
+      .test("fileType", "Only JPG, JPEG, or PNG files are allowed", (file) =>
+        file ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type) : true
+      )
+      .test("fileSize", "Image size must be less than 100KB", (file) =>
+        file ? file.size <= 102400 : true
+      )
+      .required("Image is required"),
+      typeOfClass: Yup.array()
+      .of(Yup.string().oneOf(typeOfClass, "Invalid selection"))
+      .min(1, "At least one class type must be selected")
+      .required("Type of class is required"),
+      Category: Yup.array()
+      .of(Yup.string().oneOf(classCategories, "Invalid category selected"))
+      .min(1, "At least one category must be selected")
+      .required("Category is required"),
+      teachingMedium: Yup.array()
+    .of(Yup.string().min(1, "Each teaching medium must have at least 1 character"))
+    .min(1, "At least one teaching medium is required")
+    // .max(5, "You can add up to 5 teaching mediums only")
+    .required("Teaching medium is required"),
+
+  subjectsOrCourses: Yup.array()
+    .of(Yup.string().min(1, "Each subject or course must have at least 1 character"))
+    .min(1, "At least one subject or course is required")
+    // .max(20, "You can add up to 20 subjects or courses only")
+    .required("Subjects or courses are required"),
+    }),
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
@@ -133,32 +162,81 @@ const ClassForm = ({ onClose }) => {
 
         console.log("🚀 Original Form Values:", values); // ✅ Debugging
 
+        
+
         // ✅ Properly format `address` and `info`
         const formattedData = {
           ...values,
-          typeOfClass: Array.isArray(values.typeOfClass) ? values.typeOfClass : [],
-          category: Array.isArray(values.category) ? values.category : [],
-          yearEstablished: values.yearEstablished ? Number(values.yearEstablished) : "",
-          
+          yearEstablished: values.yearEstablished
+            ? Number(values.yearEstablished)
+            : "",
+
           address: {
-            line1: values.address?.line1 || "",
-            line2: values.address?.line2 || "",
-            pincode: values.address?.pincode || "",
-            state: values.address?.state || "",
-            dist: values.address?.dist || "",
-          },
-          info: {
-            description: values.info?.description || "",
+            ...values.address,
           },
         };
 
         console.log("✅ Formatted Data Before Sending:", formattedData);
 
-        formData.append("typeOfClass", JSON.stringify(formattedData.typeOfClass)); 
-    formData.append("category", JSON.stringify(formattedData.category)); 
 
+        //
+        formData.append("address[line1]", values.address?.line1);
+        formData.append("address[line2]", values.address?.line2);
+        formData.append("address[pincode]", values.address?.pincode);
+        formData.append("address[state]", values.address?.state);
+        formData.append("address[dist]", values.address?.dist);
+
+        // const formattedInfo = { description: values.info }; // ✅ Ensure correct structure
+        // formData.append("info", JSON.stringify(values.info)); // ✅ Converts object correctly
+        formData.append("info[description]", values.info?.description);
         
+      
+        values.locations.forEach((loc, index) => {
+          formData.append(`locations[${index}][lat]`, loc.lat);
+          formData.append(`locations[${index}][lan]`, loc.lan);
+        });
         
+        console.log("📌 Address Data:", values.address);
+        console.log(
+          "📌 FormData Sent:",
+          Object.fromEntries(formData.entries())
+        );
+
+        // formData.append("className", formattedData.className);
+        // formData.append("ownerOrInstituteName", formattedData.ownerOrInstituteName);
+
+        formattedData.Category.forEach((cat) => {
+          formData.append("Category", cat);
+        });
+        
+        // formData.append("subjectsOrCourses", JSON.stringify(formattedData.subjectsOrCourses || []));
+        formattedData.modeOfTeaching.forEach((mode) => {
+          formData.append("modeOfTeaching", mode);
+        });
+        
+        formattedData.typeOfClass.forEach((type) => {
+          formData.append("typeOfClass", type);
+        });
+        
+        // / Append imageGallery one by one
+        formattedData.imageGallery.forEach((file) => {
+          formData.append("imageGallery", file);
+        });
+
+        // Append keywords one by one
+        formattedData.keywords.forEach((keyword) => {
+          formData.append("keywords", keyword);
+        });
+
+        // Append subjectsOrCourses one by one
+        formattedData.subjectsOrCourses.forEach((subject) => {
+          formData.append("subjectsOrCourses", subject);
+        });
+
+        // Append teachingMedium one by one
+        formattedData.teachingMedium.forEach((medium) => {
+          formData.append("teachingMedium", medium);
+        });
         // ✅ Append formatted data correctly to FormData
         Object.keys(formattedData).forEach((key) => {
           if (key === "image" && formattedData.image) {
@@ -170,16 +248,18 @@ const ClassForm = ({ onClose }) => {
             formattedData.imageGallery.forEach((file) => {
               formData.append("imageGallery", file);
             });
-          } else if (typeof formattedData[key] === "object"  && !Array.isArray(formattedData[key])) {
+          } else if (
+            typeof formattedData[key] === "object" &&
+            !Array.isArray(formattedData[key])
+          ) {
             formData.append(key, JSON.stringify(formattedData[key])); // ✅ Convert objects to JSON
           } else if (!Array.isArray(formattedData[key])) {
             formData.append(key, formattedData[key]);
           }
         });
 
-         
         console.log(
-          "📌 Final FormData Sent:",
+          "📌**************************************Final FormData Sent:",
           Object.fromEntries(formData.entries())
         );
 
@@ -192,8 +272,10 @@ const ClassForm = ({ onClose }) => {
           }
         );
 
-        console.log("📌 Class Created Successfully:", response.data);
-        
+        console.log(
+          "Class Created Successfully:",
+          response.data
+        );
 
         // ✅ Extract Class ID
         const classId = response.data?.data?.class?._id;
@@ -207,7 +289,7 @@ const ClassForm = ({ onClose }) => {
           `${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`,
           {
             mobile_no: values.contactDetails,
-            otp: values.otp,               // ✅ Now sending OTP
+            otp: values.otp, // ✅ Now sending OTP
             reference_id: values.reference_id, // ✅ Now sending Reference ID
           }
         );
@@ -225,7 +307,7 @@ const ClassForm = ({ onClose }) => {
 
           alert("✅ Registration Successful! Redirecting...");
           resetForm();
-          console.log("Navigating to Vendor Dashboard")
+          console.log("Navigating to Vendor Dashboard");
           navigate("/vendor-class/class-dashboard");
         } else {
           console.error("❌ Signup failed:", authResponse.data);
@@ -243,16 +325,14 @@ const ClassForm = ({ onClose }) => {
     },
   });
 
-  
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-indigo-200 p-6">
-      <div className="w-full max-w-6xl bg-white shadow-2xl  p-10 relative border border-blue-500">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200">
+      <div className="w-full max-w-4xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6">
         {/* Form Title */}
-        <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-t-3xl shadow-md">
-          <h2 className="text-4xl font-bold flex items-center gap-4">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-t-md text-center">
+          <h2 className="text-2xl font-bold flex items-center justify-center gap-3">
             <FaUniversity
-              className="text-black bg-white p-3 rounded-full shadow-md"
+              className="text-black bg-white p-2 rounded-full shadow-md"
               size={50}
             />
             Register Class
@@ -260,8 +340,8 @@ const ClassForm = ({ onClose }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={formik.handleSubmit} className="space-y-8 mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <form onSubmit={formik.handleSubmit} className="space-y-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
               label="Class Name"
               type="text"
@@ -330,29 +410,14 @@ const ClassForm = ({ onClose }) => {
             <MultiSelectDropdown
               label="Type of Class"
               name="typeOfClass"
-              options={[
-                "8th",
-                "9th",
-                "10th",
-                "SSC",
-                "HSC",
-                "CBSE",
-                "ICSE",
-                "NDA",
-                "11th",
-                "12th",
-                "Hobbies Class",
-                "Home Coaching",
-                "Training Institute",
-                "Tutions",
-              ]}
+              options={typeOfClass}
               formik={formik}
             />
 
             <MultiSelectDropdown
               label="Category"
-              name="category"
-              options={collegeCategories}
+              name="Category"
+              options={classCategories}
               formik={formik}
             />
             {/* <InputField label="Address Line 1" type="text" name="address.line1" formik={formik} />
@@ -382,6 +447,7 @@ const ClassForm = ({ onClose }) => {
                 />
               </div>
             </div>
+            
             <RadioGroup
               label="Franchise or Independent"
               name="franchiseOrIndependent"
@@ -391,32 +457,38 @@ const ClassForm = ({ onClose }) => {
             <CheckboxGroup
               label="Mode of Teaching"
               name="modeOfTeaching"
-              options={["Online", "Offline", "Hybrid"]}
+              options={["Online", "Offline"]}
               formik={formik}
             />
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:space-x-3 lg:col-span-full">
-              {/* Single Image Upload */}
-              <FileUpload label="College Image" name="image" formik={formik} />
+            <div className="col-span-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Single Image Upload */}
+                <FileUpload
+                  label="College Image"
+                  name="image"
+                  formik={formik}
+                />
 
-              {/* Multiple Image Upload (Gallery) */}
-              <FileUpload
-                label="Gallery Images"
-                name="gallery_image"
-                multiple
-                formik={formik}
-              />
+                {/* Multiple Image Upload (Gallery) */}
+                <FileUpload
+                  label="Gallery Images"
+                  name="imageGallery"
+                  multiple
+                  formik={formik}
+                />
+              </div>
             </div>
 
             {/* Map & Search */}
-            <div className="mb-4 col-span-full">
+            <div className="mt-4 col-span-full">
               <MapComponent formik={formik} />
             </div>
 
             {/* Submit Button */}
-            <div className="mt-6 flex justify-end">
+            <div className="text-center mt-2">
               <button
                 type="submit"
-                className="bg-gradient-to-r  cursor-pointer from-indigo-600 to-blue-500 text-white px-6 py-3 text-lg font-semibold rounded-lg shadow-lg hover:scale-105 transition"
+                className="w-full cursor-pointer bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition sm:w-full"
               >
                 Submit
               </button>

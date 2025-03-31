@@ -119,36 +119,36 @@ const AddNewCollege = () => {
 
   const formik = useFormik({
     initialValues: {
-      collegeName: "deepak",
-      affiliatedUniversity: "abc",
+      collegeName: "",
+      affiliatedUniversity: "",
       collegeCategory: "",
       collegeType: "",
       lat: location.lat,
       lan: location.lan,
-      address_line1: "sample",
-      address_line2: "sakple",
-      pincode: "422101",
-      state: "Maharashtra",
-      district: "Mumbai",
-      contactDetails: "8989898989",
+      address_line1: "",
+      address_line2: "",
+      pincode: "",
+      state: "",
+      district: "",
+      contactDetails: "",
       info: { description: "" },
       keywords: [""],
-      email_id: "deeepakkumar.shinde0@gmail.com",
-      websiteURL: "http://google.com",
-      establishedYear: "2020",
+      email_id: "",
+      websiteURL: "",
+      establishedYear: "",
       accreditation: "",
-      admissionProcess: "online",
-      applicationFormURL: "http://google.com",
+      admissionProcess: "",
+      applicationFormURL: "",
       image: null,
       imageGallery: [],
       admissionEntranceDetails: {
         // ✅ Admission Entrance Details
-        admissionStartDate: "2020-12-12",
-        admissionEndDate: "2020-12-24",
+        admissionStartDate: "",
+        admissionEndDate: "",
         lastYearCutoffMarks: 0,
 
         scholarshipsAvailable: [], // ✅ Ensure this is an array
-        quotaSystem: ["General"], // ✅ Ensure this is an array
+        quotaSystem: [], // ✅ Ensure this is an array
       },
     },
 

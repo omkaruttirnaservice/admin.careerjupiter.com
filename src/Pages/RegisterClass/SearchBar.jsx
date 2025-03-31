@@ -101,26 +101,37 @@ const SearchBar = ({ onSearch }) => {
   };
 
   return (
-    <div className="flex flex-col gap-3 bg-white p-3 rounded-lg shadow-md border border-gray-300">
+    <div className="flex flex-col gap-3 bg-white p-3 rounded-lg shadow-md border border-gray-300 col-span-full">
       {/* 🔍 Search Input */}
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <input
           type="text"
           placeholder="🔍 Search location..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition-all"
+          className="w-full px-1 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition-all text-sm sm:text-base"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={handleKeyDown} // ✅ Prevent Enter from submitting form
         />
 
         {/* 🔵 Search Button */}
-        <button
+        {/* <button
         type="button"
           onClick={handleSearch}
           className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-5 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer"
         >
           🔎 Search
-        </button>
+        </button> */}
+
+<button
+      type="button"
+      onClick={handleSearch}
+      className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all 
+                 flex items-center justify-center lg:px-1 px-2 py-3 sm:px-4 sm:py-2 sm:w-10 sm:h-10 rounded-md lg:rounded-md lg:w-sm cursor-pointer" 
+    >
+      <span className="hidden sm:inline">🔎 Search</span>
+      <span className="sm:hidden">🔍</span>
+    </button>
+    
 
          {/* 📍 Current Location Button INSIDE Search Bar */}
          <CurrentLocationButton onGetLocation={onSearch} />
