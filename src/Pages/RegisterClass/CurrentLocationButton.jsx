@@ -92,13 +92,27 @@ const CurrentLocationButton = ({ onGetLocation }) => {
   };
 
   return (
+    // <button
+    //   type="button"
+    //   onClick={getCurrentLocation}
+    //   className="bg-green-500 text-white px-4 py-2 font-medium rounded shadow-lg hover:scale-105 transition-all cursor-pointer"
+    // >
+    //   📍 Use Current Location
+    // </button>
+
     <button
-      type="button"
-      onClick={getCurrentLocation}
-      className="bg-green-500 text-white px-4 py-2 font-medium rounded shadow-lg hover:scale-105 transition-all cursor-pointer"
-    >
-      📍 Use Current Location
-    </button>
+    type="button"
+    onClick={getCurrentLocation}
+    className="bg-green-500 text-white font-medium shadow-lg hover:scale-105 transition-all cursor-pointer rounded-lg
+               flex items-center justify-center
+               px-2 py-2 sm:w-5 sm:h-10 sm:px-0 sm:py-0 lg:rounded-md lg:px-1 lg:py-3 lg:w-sm"
+  >
+    <span className="hidden lg:inline">📍 Current Location</span>
+    <span className="sm:inline lg:hidden">📍</span>
+  </button>
+  
+  
+
   );
 };
 

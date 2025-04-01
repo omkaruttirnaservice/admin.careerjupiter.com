@@ -171,17 +171,17 @@ const ManageClass = () => {
   }, [formik.values]);
 
   return (
-    <div className="flex-1 flex items-center justify-center min-h-screen p-8">
+    <div className="flex flex-col md:flex-row min-h-screen p-4 md:p-8">
 
       {/* ✅ Sidebar */}
       {/* <ClassVendorSideMenu /> */}
 
       {/* ✅ Main Content */}
-      <div className="flex-1 flex items-center justify-center min-h-screen p-8">
-        <div className="w-full max-w-7xl bg-white shadow-2xl p-12 border border-blue-500 rounded-lg">
+      <div className="flex-1 flex justify-center">
+        <div className="w-full max-w-5xl bg-white shadow-2xl p-6 md:p-12 border border-blue-500 rounded-lg">
           {/* ✅ Form Title */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-t-3xl shadow-md">
-            <h2 className="text-4xl font-bold text-center">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-t-3xl shadow-md text-center">
+            <h2 className="text-3xl md:text-4xl font-bold">
               Update Class Details
             </h2>
           </div>
@@ -189,7 +189,7 @@ const ManageClass = () => {
           {/* ✅ Form */}
           <form
             onSubmit={formik.handleSubmit}
-            className="space-y-8 mt-6 w-full"
+            className="space-y-6 mt-6"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
               {/* 🔹 Basic Details */}
@@ -276,6 +276,7 @@ const ManageClass = () => {
                 formik={formik}
               />
 
+{/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
               <MultiSelectDropdown
                 label="Type of Class"
                 name="typeOfClass"
@@ -304,13 +305,14 @@ const ManageClass = () => {
                 options={collegeCategories}
                 formik={formik}
               />
+              </div>
               {/* <TextAreaField
                 label="Description"
                 name="info.description"
                 formik={formik}
               /> */}
               <div className="col-span-full">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full ">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
                   <MultiSelectField
                     label="Subjects or Courses"
                     name="subjectsOrCourses"
@@ -327,8 +329,9 @@ const ManageClass = () => {
                     formik={formik}
                   />
                 </div>
-              </div>
+              {/* </div> */}
 
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
               <RadioGroup
                 label="Franchise or Independent"
                 name="franchiseOrIndependent"
@@ -342,6 +345,7 @@ const ManageClass = () => {
                 options={["Online", "Offline"]}
                 formik={formik}
               />
+              
 
               {/* <div className="grid grid-cols-2 space-x-3 col-span-full">
                 {/* Single Image Upload */}
@@ -380,6 +384,7 @@ const ManageClass = () => {
               </div> */}
             </div>
 
+            <div className="flex justify-center">
             <button
               type="submit"
               onClick={formik.handleSubmit} // ✅ Ensure API is called on click
@@ -387,6 +392,7 @@ const ManageClass = () => {
             >
               Update Class
             </button>
+            </div>
           </form>
         </div>
       </div>

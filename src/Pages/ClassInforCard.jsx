@@ -1,44 +1,3 @@
-// import React from "react";
-
-// const ClassInfoCard = ({ classData, onClose }) => {
-//   return (
-//     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-//         <h2 className="text-xl font-bold text-gray-800 mb-4">Class Details</h2>
-
-//         <p>
-//           <span className="font-semibold">Class Name:</span> {classData.className}
-//         </p>
-//         <p>
-//           <span className="font-semibold">Owner:</span> {classData.ownerOrInstituteName}
-//         </p>
-//         <p>
-//           <span className="font-semibold">Contact:</span> {classData.contactDetails}
-//         </p>
-//         <p>
-//           <span className="font-semibold">Website:</span>{" "}
-//           {classData.websiteURL ? (
-//             <a href={classData.websiteURL} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-//               Visit Website
-//             </a>
-//           ) : (
-//             "N/A"
-//           )}
-//         </p>
-
-//         <div className="flex justify-end mt-4">
-//           <button onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded cursor-pointer">
-//             Close
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ClassInfoCard;
-
-
 import React from "react";
 
 const ClassInfoCard = ({ classData, onClose }) => {
@@ -61,19 +20,67 @@ const ClassInfoCard = ({ classData, onClose }) => {
           {/* Class Name */}
           <div>
             <strong className="text-blue-700">🏫 Class Name:</strong>
-            <p className="text-gray-800 font-medium">{classData?.className || "N/A"}</p>
+            <p className="text-gray-800 font-medium">
+              {classData?.className || "N/A"}
+            </p>
           </div>
 
           {/* Owner Name */}
           <div>
             <strong className="text-blue-700">👤 Owner:</strong>
-            <p className="text-gray-800 font-medium">{classData?.ownerOrInstituteName || "N/A"}</p>
+            <p className="text-gray-800 font-medium">
+              {classData?.ownerOrInstituteName || "N/A"}
+            </p>
           </div>
 
           {/* Contact Details */}
           <div>
             <strong className="text-blue-700">📞 Contact:</strong>
-            <p className="text-gray-800 font-medium">{classData?.contactDetails || "N/A"}</p>
+            <p className="text-gray-800 font-medium">
+              {classData?.contactDetails || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700"> Established Year:</strong>
+            <p className="text-gray-800 font-medium">
+              {classData?.yearEstablished || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700">Tpyes Of Class:</strong>
+            <p className="text-gray-800 font-medium">
+              {classData?.typeOfClass?.join(", ") || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700">Category:</strong>
+            <p className="text-gray-800 font-medium">
+              {classData?.Category?.join(", ") || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700">Franchise/Independent:</strong>
+            <p className="text-gray-800 font-medium">
+              {classData?.franchiseOrIndependent || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700">Mobile No:</strong>
+            <p className="text-gray-800 font-medium">
+              {classData?.contactDetails || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700">Teaching Medium:</strong>
+            <p className="text-gray-800 font-medium">
+              {classData?.teachingMedium?.join(", ") || "N/A"}
+            </p>
           </div>
 
           {/* Website URL */}

@@ -84,15 +84,27 @@ const ClassTableDetails = () => {
 
   // ✅ Delete Class
   const handleDelete = (item) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this class?"
-    );
-
-    if (isConfirmed) {
-      setClassData(classData.filter((classItem) => classItem._id !== item._id));
-      alert("✅ Class deleted successfully!");
-    }
+    const isConfirmed = window.confirm("Are you sure you want to delete this class?");
+    
+    if (!isConfirmed) return;
+  
+    axios
+      .delete(`${API_BASE_URL}/api/class/delete/${item._id}`)
+      .then((response) => {
+        if (response.data.success) {
+          // ✅ Remove class from state
+          setClassData((prevData) => prevData.filter((classItem) => classItem._id !== item._id));
+          alert("✅ Class deleted successfully!");
+        } else {
+          alert("❌ Failed to delete class.");
+        }
+      })
+      .catch((error) => {
+        console.error("❌ Error deleting class:", error);
+        alert("❌ Error deleting class!");
+      });
   };
+  
 
   // ✅ Search Functionality
 // ✅ Search Functionality - Filters Across All Columns
@@ -102,8 +114,8 @@ const filteredData = classData.filter((row) => {
   return (
     row.className?.toLowerCase().includes(searchLower) ||
     row.ownerOrInstituteName?.toLowerCase().includes(searchLower) ||
-    // row.Category?.toLowerCase().includes(searchLower) ||
-    // row.modeOfTeaching?.toLowerCase().includes(searchLower) ||
+    row.Category?.some((cat) => cat.toLowerCase().includes(searchLower)) ||
+    row.modeOfTeaching?.some((mode) => mode.toLowerCase().includes(searchLower)) ||
     row.contactDetails?.toLowerCase().includes(searchLower) 
     // (`Lat: ${row.location?.lat}, Lng: ${row.location?.lan}`.toLowerCase().includes(searchLower))
   );
@@ -122,32 +134,66 @@ const filteredData = classData.filter((row) => {
       selector: (row) => row.ownerOrInstituteName || "N/A",
       sortable: true,
     },
-    {
-      name: "Category",
-      selector: (row) => row.Category || "N/A",
-      sortable: true,
-      cell: (row) => (
-        <span className="px-3 py-1 rounded-full bg-blue-200 text-blue-800 text-sm">
-          {row.Category}
-        </span>
-      ),
+    { 
+      name: "Category", 
+      selector: (row) => row.Category?.join(", ") || "N/A", 
+      sortable: true 
     },
-    {
-      name: "Mode of Teaching",
-      selector: (row) => row.modeOfTeaching || "N/A",
-      sortable: true,
+    { 
+      name: "Mode of Teaching", 
+      selector: (row) => row.modeOfTeaching?.join(", ") || "N/A", 
+      sortable: true 
     },
     {
       name: "Contact",
       selector: (row) => row.contactDetails || "N/A",
       sortable: true,
     },
-    {
-      name: "Location",
-      selector: (row) =>
-        `Lat: ${row.location?.lat || "N/A"}, Lng: ${row.location?.lan || "N/A"}`,
-      sortable: true,
+    { 
+      name: "Locations", 
+      selector: (row) => row.locations?.map(loc => `(${loc.lat}, ${loc.lan})`).join(", ") || "N/A", 
+      sortable: true 
     },
+    { 
+  name: "Teaching Medium", 
+  selector: (row) => row.teachingMedium?.join(", ") || "N/A", 
+  sortable: true 
+},
+{ 
+  name: "Types Of Classes", 
+  selector: (row) => row.typeOfClass?.join(", ") || "N/A", 
+  sortable: true 
+},
+{ 
+  name: "Keywords", 
+  selector: (row) => row.keywords?.join(", ") || "N/A", 
+  sortable: true 
+},
+{
+  name: "Address",
+  selector: (row) => row.address?.line1 || "N/A",
+  sortable: true,
+},
+{
+  name: "State",
+  selector: (row) => row.address?.state || "N/A",
+  sortable: true,
+},
+{
+  name: "District",
+  selector: (row) => row.address?.dist || "N/A", // Use "dist" instead of "district" based on API response
+  sortable: true,
+},
+{
+  name: "Pincode",
+  selector: (row) => row.address?.pincode || "N/A",
+  sortable: true,
+},
+
+    // { name: "Teaching Medium", selector: (row) => row.teachingMedium || "N/A", sortable: true },
+    { name: "Year Established", selector: (row) => row.yearEstablished || "N/A", sortable: true },
+    { name: "Website", selector: (row) => row.websiteURL || "N/A", sortable: true },
+    { name: "Franchise/Independent", selector: (row) => row.franchiseOrIndependent || "N/A", sortable: true },
     {
       name: "Actions",
       cell: (row) => (

@@ -1,13 +1,26 @@
 import React from "react";
 
 const FileUpload = ({ label, name, multiple = false, formik }) => {
+  // const handleFileChange = (event) => {
+  //   const files = multiple ? Array.from(event.target.files) : event.target.files[0];
+  //   formik.setFieldValue(name, files);
+  // };
+
   const handleFileChange = (event) => {
-    const files = multiple ? Array.from(event.target.files) : event.target.files[0];
+    let files = multiple ? Array.from(event.target.files) : event.target.files[0];
+  
+    // Apply the limit only for multiple uploads
+    if (multiple && files.length > 5) {
+      alert("You can upload up to 5 images only.");
+      files = files.slice(0, 5);
+    }
+  
     formik.setFieldValue(name, files);
   };
+  
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 ">
       {/* Single Image Upload */}
       {!multiple ? (
         <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
