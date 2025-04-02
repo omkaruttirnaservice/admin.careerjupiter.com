@@ -22,7 +22,8 @@ import SideMenu from "../Pages/SideMenu"; // Import the SideMenu component
 
 const Root = () => {
   const location = useLocation();
-  const isLoginPage = location.pathname === "/"; // ✅ Check if the current path is Login page
+  const isLoginPage = location.pathname === "/login" || location.pathname === "/";
+
 
   return (
     <div className="flex">

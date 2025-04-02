@@ -1,37 +1,3 @@
-// import axios from "axios";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl"; 
-
-// const api = axios.create({
-//   baseURL: API_BASE_URL, 
-// });
-
-// export const createCollege = (data) => {
-//   return api.post("/api/college/create/", data);
-// };
-
-
-
-// import axios from "axios";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl"; 
-
-// const api = axios.create({
-//   baseURL: API_BASE_URL,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// // Function to create a college with better error handling
-// export const createCollege = async (data) => {
-//   try {
-//     const response = await api.post("/api/college/create/", data);
-//     return response.data; // Ensure only relevant data is returned
-//   } catch (error) {
-//     console.error("API Error:", error.response?.data || error.message);
-//     throw error; // Ensure errors are properly caught in frontend
-//   }
-// };
-
 
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
@@ -63,14 +29,24 @@ export const createCollege = async (collegeData) => {
   } catch (error) {
     console.error("API Error:", error.response?.data || error.message);
 
+    // Extract error message from backend response
+    const errorMessage =
+      error.response?.data?.message || // First check usrMsg
+      error.response?.data?.usrMsg || // Then check message
+      "An error occurred while creating the college."; // Fallback message
+
+    console.error("🔴 Error Message:", errorMessage);
+
 
     if (error.response?.data?.errors) {
       console.error("🔴 Validation Errors:", error.response.data.errors);
       alert("Validation Errors: " + error.response.data.errors.join(", "));
+    }else {
+      alert(errorMessage); // Show the extracted error message
     }
 
     
-    throw error.response?.data || new Error("An unknown error occurred");
+    throw error.response?.data || new Error(errorMessage);
   }
 };
 

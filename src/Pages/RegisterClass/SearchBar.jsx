@@ -1,60 +1,3 @@
-// import React, { useState } from "react";
-
-// const SearchBar = ({ onSearch }) => {
-//   const [searchQuery, setSearchQuery] = useState("");
-
-//   // const handleSearch = async () => {
-//   //   if (!searchQuery) return alert("Please enter a location!");
-//   //   const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`);
-//   //   const data = await response.json();
-//   //   if (data.length > 0) {
-//   //     onSearch({ lat: parseFloat(data[0].lat), lan: parseFloat(data[0].lon) });
-//   //   } else {
-//   //     alert("Location not found!");
-//   //   }
-//   // };
-
-//   const handleSearch = async () => {
-//     if (!searchQuery) return alert("Please enter a location!");
-//     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`);
-//     const data = await response.json();
-    
-//     if (data.length > 0) {
-//       const newPosition = { lat: parseFloat(data[0].lat), lan: parseFloat(data[0].lon) };
-//       console.log("🔍 Location Found:", newPosition);
-  
-//       onSearch(newPosition);
-//     } else {
-//       alert("❌ Location not found!");
-//     }
-//   };
-  
-
-//   return (
-//     <div className="flex gap-3 mb-3 bg-white p-2 rounded-lg shadow-md border border-gray-300">
-//   {/* 🔍 Styled Input Field */}
-//   <input
-//     type="text"
-//     placeholder="🔍 Search location..."
-//     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition-all"
-//     value={searchQuery}
-//     onChange={(e) => setSearchQuery(e.target.value)}
-//   />
-
-//   {/* 🔵 Styled Search Button */}
-//   <button
-//     onClick={handleSearch}
-//     className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-5 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all flex items-center gap-2"
-//   >
-//     🔎 Search
-//   </button>
-// </div>
-
-//   );
-// };
-
-// export default SearchBar;
-
 
 import React, { useState } from "react";
 import axios from "axios";
@@ -113,14 +56,7 @@ const SearchBar = ({ onSearch }) => {
           onKeyDown={handleKeyDown} // ✅ Prevent Enter from submitting form
         />
 
-        {/* 🔵 Search Button */}
-        {/* <button
-        type="button"
-          onClick={handleSearch}
-          className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-5 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer"
-        >
-          🔎 Search
-        </button> */}
+
 
 <button
       type="button"

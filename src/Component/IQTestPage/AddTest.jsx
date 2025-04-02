@@ -35,6 +35,8 @@ const AddTest = ({ onClose }) => {
       .min(1, "Must be at least 1"),
   });
 
+  
+
   const handleExcelUpload = (event, setFieldValue) => {
     const file = event.target.files[0];
     if (file) {
@@ -97,7 +99,7 @@ const AddTest = ({ onClose }) => {
       onClose();
     } catch (error) {
       console.error("Error adding test:", error);
-      alert("Failed to add test");
+      alert(error.response?.data?.usrMsg || error.response?.data?.message ||"Failed to add test");
     } finally {
       setSubmitting(false);
     }
@@ -144,13 +146,15 @@ const AddTest = ({ onClose }) => {
                     className="w-full border p-2 rounded-md focus:outline-blue-500"
                   >
                     <option value="">Select</option>
-                    <option value="Diploma">Diploma</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Pharmacy">Pharmacy</option>
-                    <option value="HSC">HSC</option>
-                    <option value="UG">UG</option>
                     <option value="SSC">SSC</option>
-                    <option value="PG">PG</option>
+                    <option value="HSC">HSC</option>
+                    <option value="Diploma">Diploma</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="UG">Under Graduate</option>
+                    <option value="PG">Post Graduate</option>
+                    <option value="Begineer">Begineer</option>
+                    <option value="Basic">Basic</option>
                   </Field>
                   <ErrorMessage
                     name="category"

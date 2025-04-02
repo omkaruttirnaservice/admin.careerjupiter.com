@@ -85,7 +85,7 @@ const AddUniversity = () => {
     },
     onError: (error) => {
       console.error("API Error:",error.response?.data || error.message);
-      toast.error(`Something went wrong: ${error.response?.data?.message ||error.message}`);
+      toast.error(` ${error.response?.data?.message ||error.message} ||Something went wrong:`);
       alert(`Submission Failed: ${error.response?.data?.message || error.message}`)
     },
   });

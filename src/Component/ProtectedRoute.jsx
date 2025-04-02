@@ -1,0 +1,19 @@
+
+
+
+import React, { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import Cookies from "js-cookie";
+
+const ProtectedRoute = ({ roleRequired, subroleRequired }) => {
+
+  const token = Cookies.get("token");
+  const role = Cookies.get("role");
+  const subrole = Cookies.get("subrole");
+
+
+  // If the user is authenticated, render the children (protected content); 
+  return token && role  ? <Outlet /> : <Navigate to="/" replace /> ;
+};
+
+export default ProtectedRoute;

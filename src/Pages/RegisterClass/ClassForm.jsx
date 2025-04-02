@@ -105,10 +105,12 @@ const ClassForm = ({ onClose }) => {
         .required("Contact Details are required"),
 
       websiteURL: Yup.string().url("Enter a valid website URL").nullable(),
-      // description: Yup.string()
-      // .min(100, "Description must be at least 100 characters long")
-      // .max(1000, "Description cannot exceed 1000 characters")
-      // .required("Description is required"),
+      info: Yup.object().shape({
+        description: Yup.string()
+          .min(100, "Minimum 100 characters required.")
+          .max(1000, "Maximum 1000 characters allowed.")
+          .required("Description is required."),
+      }),
       keywords: Yup.array()
       .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
       .min(1, "At least one keyword is required")
@@ -241,13 +243,13 @@ const ClassForm = ({ onClose }) => {
         Object.keys(formattedData).forEach((key) => {
           if (key === "image" && formattedData.image) {
             formData.append("image", formattedData.image);
-          } else if (
-            key === "imageGallery" &&
-            formattedData.imageGallery.length > 0
-          ) {
-            formattedData.imageGallery.forEach((file) => {
-              formData.append("imageGallery", file);
-            });
+          // } else if (
+          //   key === "imageGallery" &&
+          //   formattedData.imageGallery.length > 0
+          // ) {
+          //   formattedData.imageGallery.forEach((file) => {
+          //     formData.append("imageGallery", file);
+          //   });
           } else if (
             typeof formattedData[key] === "object" &&
             !Array.isArray(formattedData[key])
@@ -318,7 +320,7 @@ const ClassForm = ({ onClose }) => {
           "❌ Error submitting form:",
           error.response?.data || error.message
         );
-        alert("❌ Error submitting form. Try again.");
+        alert(error.response?.data?.usrMsg || error.response?.data?.message ||"❌ Error submitting form. Try again.");
       } finally {
         setSubmitting(false);
       }
@@ -326,8 +328,11 @@ const ClassForm = ({ onClose }) => {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200">
-      <div className="w-full max-w-4xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6">
+    // <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200 background-image">
+    <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
+  <div className="absolute inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm"></div> 
+
+      <div className="w-full max-w-4xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
         {/* Form Title */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-t-md text-center">
           <h2 className="text-2xl font-bold flex items-center justify-center gap-3">
@@ -497,6 +502,7 @@ const ClassForm = ({ onClose }) => {
         </form>
       </div>
     </div>
+
   );
 };
 

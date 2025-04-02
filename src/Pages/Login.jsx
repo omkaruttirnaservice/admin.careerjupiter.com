@@ -1,13 +1,14 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { setAuthCookies } from "../Utlis/cookieHelper";
 import Swal from "sweetalert2";
 import { FaMobileAlt, FaLock, FaSms, FaBook, FaGraduationCap, FaLightbulb} from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import Cookies from "js-cookie";
 
 const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
 
@@ -30,7 +31,7 @@ const Login = () => {
       setLoading(true);
       console.log("📌 Sending OTP to:", mobileNo);
 
-      const response = await axios.post(`${API_BASE_URL}/api/auth/send-otp`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/otp`, {
         mobile_no: mobileNo,
       });
 
@@ -47,127 +48,22 @@ const Login = () => {
       }
     } catch (error) {
       console.error("❌ Error sending OTP:", error.response?.data || error.message);
-      Swal.fire("Error!", "Something went wrong. Try again later.", "error");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Warning',
+        text: error.response?.data?.message ||error.response?.data?.usrMsg || "Something went wrong. Please try again.",
+      });
+      
+    
     } finally {
       setLoading(false);
     }
   };
 
-  // const verifyOtp = async () => {
-  //   if (!otp || !referenceId) {
-  //     Swal.fire("Error!", "OTP and Reference ID are required.", "error");
-  //     return;
-  //   }
-  
-  //   try {
-  //     setLoading(true);
-  
-  //     console.log("📌 Sending OTP Verification Request:", {
-  //       mobile_no: mobileNo,
-  //       reference_id: referenceId,
-  //       otp: otp,
-  //     });
-  
-  //     let response;
-  
-  //     // ✅ Admin Login Handling
-  //     if (mobileNo === ADMIN_MOBILE) {
-  //       console.log("📌 Admin Login Detected! Using Admin API...");
-  //       response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=ADMIN`, {
-  //         mobile_no: mobileNo,
-  //         reference_id: referenceId,
-  //         otp: otp,
-  //       });
-  //     } 
-  //     // ✅ Vendor Login Handling
-  //     else {
-  //       console.log("📌 Vendor Login Detected! Using Vendor API...");
-  //       response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`, {
-  //         mobile_no: mobileNo,
-  //         reference_id: referenceId,
-  //         otp: otp,
-  //       });
-  //     }
-  
-  //     console.log("📌 Full OTP Verification Response:", response.data);
-  
-  //     if (response.data.success) {
-  //       Swal.fire("Success!", response.data.usrMsg || "OTP Verified Successfully!", "success");
-  
-  //       // ✅ Extract Data
-  //       let { token, role, subrole, userId, classId } = response.data.data || {};
-  
-  //       // ✅ Override Role for Admin
-  //       if (mobileNo === ADMIN_MOBILE) {
-  //         role = "ADMIN";
-  //         subrole = undefined; // Remove subrole for Admin
-  //         classId = undefined; // Remove classId for Admin
-  //       }
-  
-  //       // ✅ Store Authentication Details
-  //       setAuthCookies({
-  //         token: token || "manual-token",
-  //         role,
-  //         userId,
-  //         ...(role === "VENDOR" ? { subrole, classId } : {}), // ✅ Only include subrole/classId if Vendor
-  //       });
-  
-  //       // ✅ Navigation Based on Role
-  //       if (role === "ADMIN") {
-  //         navigate("/dashboard");
-  //         return;
-  //       }
-  
-  //       // ✅ If Vendor, Check Registration
-  //       console.log("📌 Checking Vendor Registration...");
-  //       const classResponse = await axios.get(`${API_BASE_URL}/api/class/all`);
-  
-  //       if (classResponse.data.success && classResponse.data.data.classes) {
-  //         const matchedClass = classResponse.data.data.classes.find(cls => cls.contactDetails === mobileNo);
-  
-  //         if (matchedClass) {
-  //           console.log("📌 Matched Vendor Class Found:", matchedClass);
-  
-  //           // ✅ Store Class Details
-  //           setAuthCookies({
-  //             token,
-  //             role: "VENDOR",
-  //             subrole: "Class",
-  //             userId,
-  //             classId: matchedClass._id,
-  //           });
-  
-  //           navigate("/vendor-class/class-dashboard");
-  //           return;
-  //         }
-  //       }
-  
-  //       // ✅ If No Vendor Found, Redirect to Registration
-  //       Swal.fire({
-  //         title: "User Not Found!",
-  //         text: "No registered class found. Please register first.",
-  //         icon: "warning",
-  //         confirmButtonText: "Register Now",
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           navigate("/register-class");
-  //         }
-  //       });
-  //     } else {
-  //       Swal.fire("Failed!", response.data.usrMsg || "OTP Verification Failed!", "error");
-  //     }
-  //   } catch (error) {
-  //     console.error("❌ OTP Verification Error:", error.response?.data || error.message);
-  //     Swal.fire("Error!", error.response?.data?.message || "Invalid OTP. Try again.", "error");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  
-
+ 
   const verifyOtp = async () => {
     if (!otp || !referenceId) {
-      Swal.fire("Error!", "OTP and Reference ID are required.", "error");
+      Swal.fire(error.response?.data?.usrMsg || error.response?.data?.message ||"Error!", "OTP and Reference ID are required.", "error");
       return;
     }
   
@@ -266,18 +162,34 @@ const Login = () => {
           }
         });
       } else {
-        Swal.fire("Failed!", response.data.usrMsg || "OTP Verification Failed!", "error");
+        Swal.fire("Failed!", response.data.usrMsg|| response.data.message || "OTP Verification Failed!", "error");
       }
     } catch (error) {
       console.error("❌ OTP Verification Error:", error.response?.data || error.message);
-      Swal.fire("Error!", error.response?.data?.message || "Invalid OTP. Try again.", "error");
+      Swal.fire("Error!", error.response?.data?.message || error.response?.data?.usrMsg || "Invalid OTP. Try again.", "error");
     } finally {
       setLoading(false);
     }
   };
   
 
+  useEffect(()=>{
+    Cookies.remove("token");
+    Cookies.remove("role");
+   Cookies.remove("subrole");
+   Cookies.remove("userId");
+   Cookies.remove("classId");
+   
+  },[])
+
+
+
+  // If the user is authenticated, render the children (protected content); 
+
+
+
   return (
+    <>
     <div className="relative flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-orange-500">
       {/* 🔹 Floating Education Icons */}
       <div className="absolute inset-0 flex flex-wrap">
@@ -376,10 +288,16 @@ const Login = () => {
         </motion.div>
       {/* </div> */}
     </div>
+    </>
   );
 };
 
 export default Login;
+
+
+
+
+
 
 
 

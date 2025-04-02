@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCheckCircle, FaSms } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert
@@ -12,9 +12,21 @@ const ContactWithOTP = ({ formik }) => {
   const [otp, setOtp] = useState(""); // ✅ Stores OTP input
   const [loading, setLoading] = useState(false); // ✅ Loading state for buttons
   // const [isVerified, setIsVerified] = useState(false);
+  const [lastContactDetails, setLastContactDetails] = useState(""); // ✅ Track last mobile number
+
 
     // ✅ Use Formik value for isVerified
     const isVerified = formik.values.isVerified;
+
+    // Track changes in the mobile number field
+  useEffect(() => {
+    if (formik.values.contactDetails !== lastContactDetails) {
+      setOtpSent(false); // Hide OTP section
+      setOtp(""); // Clear OTP input
+      setReferenceId(""); // Clear reference ID
+      setLastContactDetails(formik.values.contactDetails); // Update last contact details
+    }
+  }, [formik.values.contactDetails, lastContactDetails]);
 
   // ✅ Send OTP Function
   const sendOtp = async () => {
@@ -31,7 +43,7 @@ const ContactWithOTP = ({ formik }) => {
       setLoading(true); // ✅ Show loading
       console.log("📌 Sending OTP to:", formik.values.contactDetails);
 
-      const response = await axios.post(`${API_BASE_URL}/api/auth/send-otp`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/otp`, {
         mobile_no: formik.values.contactDetails, // ✅ Takes mobile number from form
       });
 
@@ -56,7 +68,7 @@ const ContactWithOTP = ({ formik }) => {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Something went wrong. Please try again.",
+        text: error.response?.data?.usrMsg ||error.response?.data?.message || "Something went wrong. Please try again.",
         confirmButtonColor: "#d33",
       });
     } finally {
@@ -80,7 +92,7 @@ const ContactWithOTP = ({ formik }) => {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Please request a new OTP.",
+        text: error.response?.data?.usrMsg ||error.response?.data?.message,
       });
       return;
     }
@@ -119,7 +131,7 @@ const ContactWithOTP = ({ formik }) => {
         Swal.fire({
           icon: "error",
           title: "Invalid OTP!",
-          text: "Please enter the correct OTP.",
+          text: response.data.usrMsg || response.data?.message || "Please enter the correct OTP.",
           confirmButtonColor: "#d33",
         });
       }
@@ -128,7 +140,7 @@ const ContactWithOTP = ({ formik }) => {
       Swal.fire({
         icon: "error",
         title: "Verification Failed!",
-        text: "Invalid OTP or Reference ID.",
+        text: error.response?.data?.usrMsg || error.response?.data?.message || "Invalid OTP or Reference ID.",
         confirmButtonColor: "#d33",
       });
     } finally {
@@ -137,131 +149,64 @@ const ContactWithOTP = ({ formik }) => {
   };
 
   return (
-    <div className="p-4 col-span-full grid md:grid-cols-2 sm:grid-col-2 gap-4">
-      {/* 🔹 Contact Details Input + Send OTP Button */}
-      <div className="flex flex-col md:flex-row gap-4 items-center w-full">
-        <InputField
-          label="Enter Mobile Number"
-          type="text"
-          name="contactDetails"
-          placeholder="Enter Mobile Number"
-          formik={formik}
-          disabled={isVerified} // ✅ Disable after verification
-          className="w-full md:w-auto"
-        />
-        {isVerified ? (
-          <div className="flex items-center gap-2 text-green-600 font-semibold">
-            <FaCheckCircle size={20} />
-            <span>Mobile No Verified</span>
-          </div>
-        ) : (
-          <ButtonComponent onClick={sendOtp} loading={loading} text="Send OTP" disabled={isVerified} className="w-full md:w-auto text-sm py-2 px-3" />
-        )}
-      </div>
-
-      {otpSent && (
-        <div className="flex flex-col md:flex-row gap-4 items-center mt-4 w-full">
-          <InputField
-            label="Enter OTP"
+    <div className="p-4 col-span-full grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+      {/* Contact Details Input + Send OTP Button */}
+      <div className="w-full flex items-center mb-2">
+        <div className="relative flex-grow">
+          <input
             type="text"
-            name="otp"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            className="w-full md:w-auto"
+            className="form-input pl-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter Mobile Number"
+            value={formik.values.contactDetails}
+            onChange={(e) => formik.setFieldValue("contactDetails", e.target.value)}
+            disabled={isVerified} // Disable after verification
           />
-          <ButtonComponent onClick={verifyOtp} loading={loading} text="Verify OTP" className="w-full md:w-auto text-sm py-2 px-3 " />
+          <div className="absolute inset-y-0 right-0 flex items-center">
+            {isVerified ? (
+              <div className="flex items-center gap-2 text-green-600 font-semibold">
+                <FaCheckCircle size={20} />
+                <span>Mobile No Verified</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={sendOtp}
+                disabled={isVerified}
+                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Send OTP
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+  
+      {otpSent && (
+        <div className="flex items-center pr-2 w-full">
+          <div className="relative flex-grow">
+            <input
+              type="text"
+              className="form-input pl-4 pr-12 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center ">
+              <button
+                type="button"
+                onClick={verifyOtp}
+                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Verify OTP
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
+  
+  
 };
 
 export default ContactWithOTP;
-
-// import React, { useState } from "react";
-// import axios from "axios";
-// import Swal from "sweetalert2";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
-// import InputField from "./InputField";
-// import ButtonComponent from "./Button";
-// import { useNavigate } from "react-router-dom";
-
-// const ContactWithOTP = ({ mobileNumber, onClose, onSuccess }) => {
-//   const [otp, setOtp] = useState("");
-//   const [referenceId, setReferenceId] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const navigate = useNavigate();
-
-//   // Send OTP when popup opens
-//   React.useEffect(() => {
-//     sendOtp();
-//   }, []);
-
-//   const sendOtp = async () => {
-//     try {
-//       setLoading(true);
-//       const response = await axios.post(`${API_BASE_URL}/api/auth/send-otp`, {
-//         mobile_no: mobileNumber,
-//       });
-//       if (response.data.success) {
-//         setReferenceId(response.data.data.reference_id);
-//         Swal.fire("OTP Sent!", `OTP sent to ${mobileNumber}`, "success");
-//       } else {
-//         Swal.fire("Failed!", response.data.usrMsg || "Could not send OTP.", "error");
-//       }
-//     } catch (error) {
-//       Swal.fire("Error!", "Something went wrong. Please try again.", "error");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const verifyOtp = async () => {
-//     if (!otp || otp.length !== 6) {
-//       Swal.fire("Enter OTP!", "Please enter the 6-digit OTP.", "warning");
-//       return;
-//     }
-//     try {
-//       setLoading(true);
-//       const response = await axios.post(`${API_BASE_URL}/api/auth/verify-otp`, {
-//         mobile_no: mobileNumber,
-//         reference_id: referenceId,
-//         otp: otp,
-//       });
-//       if (response.data.success) {
-//         Swal.fire("Success!", "OTP Verified!", "success");
-//         onSuccess(); // Call parent function to proceed with registration
-//         navigate("/vendor-dashboard"); // Redirect to vendor dashboard
-//       } else {
-//         Swal.fire("Invalid OTP!", "Please enter the correct OTP.", "error");
-//       }
-//     } catch (error) {
-//       Swal.fire("Verification Failed!", "Invalid OTP or Reference ID.", "error");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-//       <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-//         <h2 className="text-lg font-semibold mb-4">Enter OTP</h2>
-//         <InputField
-//           label="OTP"
-//           type="text"
-//           value={otp}
-//           onChange={(e) => setOtp(e.target.value)}
-//           placeholder="Enter 6-digit OTP"
-//         />
-//         <div className="flex justify-between mt-4">
-//           <ButtonComponent text="Verify OTP" onClick={verifyOtp} loading={loading} />
-//           <ButtonComponent text="Cancel" onClick={onClose} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ContactWithOTP;
-

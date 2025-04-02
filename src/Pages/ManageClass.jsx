@@ -154,7 +154,7 @@ const ManageClass = () => {
         alert("✅ Class updated successfully!");
       } catch (error) {
         console.error("❌ Error updating class:", error);
-        alert("❌ Failed to update class.");
+        alert(error.response?.data?.usrMsg || error.response?.data?.message ||"❌ Failed to update class.");
       } finally {
         setSubmitting(false);
       }
@@ -323,11 +323,11 @@ const ManageClass = () => {
                     name="teachingMedium"
                     formik={formik}
                   />
-                  <MultiSelectField
+                  {/* <MultiSelectField
                     label="Keywords"
                     name="keywords"
                     formik={formik}
-                  />
+                  /> */}
                 </div>
               {/* </div> */}
 
