@@ -186,8 +186,6 @@ const Login = () => {
 
   // If the user is authenticated, render the children (protected content); 
 
-
-
   return (
     <>
     <div className="relative flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-orange-500">
