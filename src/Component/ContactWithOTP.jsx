@@ -58,6 +58,7 @@ const ContactWithOTP = ({ formik }) => {
           title: "OTP Sent!",
           html: `<p>Your OTP has been sent to <strong>${formik.values.contactDetails}</strong></p>`,
           confirmButtonColor: "#3085d6",
+          confirmButtonText: '<span class="cursor-pointer">OK</span>', // ✅ Tailwind class applied
         });
       } else {
         console.log("📌 Stored Reference ID:", response.data.data.reference_id); // ✅ Debugging
@@ -114,6 +115,7 @@ const ContactWithOTP = ({ formik }) => {
           title: "OTP Verified!",
           text: "Your OTP has been successfully verified.",
           confirmButtonColor: "#3085d6",
+          confirmButtonText: '<span class="cursor-pointer">OK</span>', // ✅ Tailwind class applied
         });
         // setIsVerified(true);
        
@@ -149,13 +151,13 @@ const ContactWithOTP = ({ formik }) => {
   };
 
   return (
-    <div className="p-4 col-span-full grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+    <div className="p-1 col-span-full grid md:grid-cols-2 sm:grid-cols-1 gap-4">
       {/* Contact Details Input + Send OTP Button */}
       <div className="w-full flex items-center mb-2">
         <div className="relative flex-grow">
           <input
             type="text"
-            className="form-input pl-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="form-input pl-4 py-2 w-full border border-gray-300 focus:ring-2 focus:ring-blue-500"
             placeholder="Enter Mobile Number"
             value={formik.values.contactDetails}
             onChange={(e) => formik.setFieldValue("contactDetails", e.target.value)}
@@ -163,7 +165,7 @@ const ContactWithOTP = ({ formik }) => {
           />
           <div className="absolute inset-y-0 right-0 flex items-center">
             {isVerified ? (
-              <div className="flex items-center gap-2 text-green-600 font-semibold">
+              <div className="flex  items-center gap-2 text-green-600 font-semibold">
                 <FaCheckCircle size={20} />
                 <span>Mobile No Verified</span>
               </div>
@@ -172,7 +174,7 @@ const ContactWithOTP = ({ formik }) => {
                 type="button"
                 onClick={sendOtp}
                 disabled={isVerified}
-                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
               >
                 Send OTP
               </button>
@@ -182,11 +184,11 @@ const ContactWithOTP = ({ formik }) => {
       </div>
   
       {otpSent && (
-        <div className="flex items-center pr-2 w-full">
+        <div className="flex items-center w-full">
           <div className="relative flex-grow">
             <input
               type="text"
-              className="form-input pl-4 pr-12 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="form-input pl-4 pr-12 py-2 w-full border border-gray-300  focus:ring-2 focus:ring-blue-500"
               placeholder="Enter OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
@@ -195,7 +197,7 @@ const ContactWithOTP = ({ formik }) => {
               <button
                 type="button"
                 onClick={verifyOtp}
-                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
               >
                 Verify OTP
               </button>
