@@ -76,7 +76,7 @@ const CollegeImageUpload = () => {
                 className="w-full h-12 object-cover rounded"
               />
               <button
-                className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                className="absolute cursor-pointer top-0 right-0 bg-red-500 text-white rounded-full p-1"
                 onClick={(e) => {
                   e.stopPropagation();
                   removeImage();

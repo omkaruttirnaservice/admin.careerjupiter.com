@@ -10,7 +10,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 
-const ADMIN_MOBILE = "9890060633"; // ✅ Hardcoded Admin Mobile Number
+const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
@@ -155,7 +155,7 @@ const Login = () => {
           title: "User Not Found!",
           text: "No registered class found. Please register first.",
           icon: "warning",
-          confirmButtonText: "Register Now",
+          confirmButtonText: '<span class="cursor-pointer">Register Now</span>', 
         }).then((result) => {
           if (result.isConfirmed) {
             window.location.href = "/register-class"; // ✅ Redirect to Register Page
@@ -246,7 +246,7 @@ const Login = () => {
               whileTap={{ scale: 0.95 }} 
               onClick={sendOtp} 
               disabled={loading}
-              className="w-full mt-6 bg-gradient-to-br from-purple-700 to-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
+              className="w-full mt-6 bg-gradient-to-br from-purple-700 to-orange-500 hover:bg-orange-600 text-white cursor-pointer py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
             >
               <FaSms className="mr-2" /> {loading ? "Sending..." : "Send OTP"}
             </motion.button>
@@ -273,7 +273,7 @@ const Login = () => {
               whileTap={{ scale: 0.95 }} 
               onClick={verifyOtp} 
               disabled={loading}
-              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
+              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold shadow-md cursor-pointer flex items-center justify-center transition"
             >
               <FaLock className="mr-2" /> {loading ? "Verifying..." : "Verify OTP"}
             </motion.button>
