@@ -37,15 +37,14 @@ const TextAreaField = ({ label, name, formik }) => {
         {fieldValue.length}/{maxLength}
       </div>
 
-      {formik.touched[name] && formik.errors[name] && (
+      {formik.touched[name] && formik.errors[name] ? (
   <p className="text-red-500 text-sm mt-2">{formik.errors[name]}</p>
-)}
+) : fieldValue.length < minLength ? (
+  <p className="text-red-500 text-sm mt-1">
+    Minimum {minLength} characters required.
+  </p>
+) : null}
 
-      {/* {fieldValue.length < minLength && (
-        <p className="text-yellow-500 text-sm mt-1">
-          Minimum {minLength} characters required.
-        </p>
-      )} */}
     </div>
   );
 };

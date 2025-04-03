@@ -10,7 +10,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 
-const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
+const ADMIN_MOBILE = "9890060633"; // ✅ Hardcoded Admin Mobile Number
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
@@ -220,7 +220,7 @@ const Login = () => {
       {/* <div className="w-full max-w-md bg-white/30 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-300"> */}
       <div className="text-center mb-6">
         <h2 className="text-3xl font-bold text-purple-800">
-          {step === 1 ? "Login with Mobile" : "Enter OTP"}
+          {step === 1 ? "Login" : "Enter OTP"}
         </h2>
         <p className="text-gray-700 mt-1">Your journey towards success starts here!</p>
         </div>
