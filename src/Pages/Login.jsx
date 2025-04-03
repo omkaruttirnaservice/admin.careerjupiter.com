@@ -10,7 +10,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 
-const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
+const ADMIN_MOBILE = "9890060633"; // ✅ Hardcoded Admin Mobile Number
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
