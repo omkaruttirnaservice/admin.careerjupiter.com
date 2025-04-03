@@ -35,8 +35,6 @@ const AddTest = ({ onClose }) => {
       .min(1, "Must be at least 1"),
   });
 
-  
-
   const handleExcelUpload = (event, setFieldValue) => {
     const file = event.target.files[0];
     if (file) {
@@ -100,7 +98,11 @@ const AddTest = ({ onClose }) => {
       onClose();
     } catch (error) {
       console.error("Error adding test:", error);
-      alert(error.response?.data?.usrMsg || error.response?.data?.message ||"Failed to add test");
+      alert(
+        error.response?.data?.usrMsg ||
+          error.response?.data?.message ||
+          "Failed to add test"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -269,29 +271,29 @@ const AddTest = ({ onClose }) => {
               </div>
 
               <div>
-  <label className="block text-md font-semibold text-gray-600">
-    Upload Excel:
-  </label>
-  <div className="flex items-center gap-4">
-              <input
-                type="file"
-                accept=".xlsx, .xls"
-                className="border p-2 rounded-md"
-                onChange={(e) => handleExcelUpload(e, setFieldValue)}
-              />
-              <a
-      href="/IQTest_Sample.xlsx" // Path to your sample file
-      download="sample.xlsx"
-      className="text-blue-500 hover:underline text-sm"
-    >
-      Download Sample Excel
-    </a>
-  </div>
-              {fileName && (
-                <p className="text-gray-500 text-sm">
-                  Selected File: {fileName}
-                </p>
-              )}
+                <label className="block text-md font-semibold text-gray-600">
+                  Upload Excel:
+                </label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="file"
+                    accept=".xlsx, .xls"
+                    className="border p-2 rounded-md"
+                    onChange={(e) => handleExcelUpload(e, setFieldValue)}
+                  />
+                  <a
+                    href="/IQTest_Sample.xlsx" // Path to your sample file
+                    download="sample.xlsx"
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    Download Sample Excel
+                  </a>
+                </div>
+                {fileName && (
+                  <p className="text-gray-500 text-sm">
+                    Selected File: {fileName}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-between mt-4 gap-12">
