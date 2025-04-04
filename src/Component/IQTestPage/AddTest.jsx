@@ -60,53 +60,99 @@ const AddTest = ({ onClose }) => {
     }
   };
 
+  // const handleSubmit = async (values, { setSubmitting }) => {
+  //   let finalQuestions = selectedQuestions;
+  //   const totalQ = Number(values.totalQuestions);
+
+  //   if (values.randomQuestions && selectedQuestions.length > totalQ) {
+  //     const uniqueQuestions = new Set();
+
+  //     // Keep selecting random questions until Set reaches required size
+  //     while (uniqueQuestions.size < totalQ) {
+  //       const randomIndex = Math.floor(
+  //         Math.random() * selectedQuestions.length
+  //       );
+  //       uniqueQuestions.add(selectedQuestions[randomIndex]);
+  //     }
+
+  //     finalQuestions = Array.from(uniqueQuestions);
+  //   } else {
+  //     finalQuestions = selectedQuestions.slice(0, totalQ);
+  //   }
+
+  //   const requestData = {
+  //     title: values.testName,
+  //     testLevel: values.category,
+  //     testDuration: Number(values.duration),
+  //     // passingMarks: Number(values.passingMarks), // ✅ Convert to Number
+  //     totalMarks: Number(values.totalMarks),
+  //     questions: finalQuestions,
+  //     userType: Number(values.userType), // Convert to number (0 for Visitor, 1 for Member)
+  //   };
+
+  //   console.log("Sending requestData to API:", requestData);
+
+  //   try {
+  //     await axios.post(`${API_BASE_URL}/api/iqtest/`, requestData);
+  //     alert("Test added successfully!");
+  //     onClose();
+  //   } catch (error) {
+  //     console.error("Error adding test:", error);
+  //     alert(
+  //       error.response?.data?.usrMsg ||
+  //         error.response?.data?.message ||
+  //         "Failed to add test"
+  //     );
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
+
   const handleSubmit = async (values, { setSubmitting }) => {
     let finalQuestions = selectedQuestions;
     const totalQ = Number(values.totalQuestions);
-
+  
     if (values.randomQuestions && selectedQuestions.length > totalQ) {
       const uniqueQuestions = new Set();
-
-      // Keep selecting random questions until Set reaches required size
+  
       while (uniqueQuestions.size < totalQ) {
-        const randomIndex = Math.floor(
-          Math.random() * selectedQuestions.length
-        );
+        const randomIndex = Math.floor(Math.random() * selectedQuestions.length);
         uniqueQuestions.add(selectedQuestions[randomIndex]);
       }
-
+  
       finalQuestions = Array.from(uniqueQuestions);
     } else {
       finalQuestions = selectedQuestions.slice(0, totalQ);
     }
-
+  
     const requestData = {
       title: values.testName,
       testLevel: values.category,
-      testDuration: Number(values.duration),
-      // passingMarks: Number(values.passingMarks), // ✅ Convert to Number
+      testDuration: {
+        minutes: Math.floor(Number(values.duration)),
+        seconds: 0,
+      },
       totalMarks: Number(values.totalMarks),
+      userType: String(values.userType), // Ensure it is sent as a string
       questions: finalQuestions,
-      userType: Number(values.userType), // Convert to number (0 for Visitor, 1 for Member)
     };
-
+  
     console.log("Sending requestData to API:", requestData);
-
+    return 
     try {
-      await axios.post(`${API_BASE_URL}/api/iqtest/`, requestData);
+      const response = await axios.post(`${API_BASE_URL}/api/iqtest/`, requestData);
+      console.log("API Response:", response.data); // Log full response
       alert("Test added successfully!");
       onClose();
     } catch (error) {
-      console.error("Error adding test:", error);
-      alert(
-        error.response?.data?.usrMsg ||
-          error.response?.data?.message ||
-          "Failed to add test"
-      );
+      console.error("API Error:", error.response?.data || error.message);
+      alert(error.response?.data?.usrMsg || error.response?.data?.message || "Failed to add test");
+    
     } finally {
       setSubmitting(false);
     }
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-black/50 backdrop-blur-sm overflow-y-auto z-50">

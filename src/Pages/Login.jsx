@@ -10,7 +10,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 
-const ADMIN_MOBILE = "9890060633"; // ✅ Hardcoded Admin Mobile Number
+// const ADMIN_MOBILE = "9890060633"; // ✅ Hardcoded Admin Mobile Number
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
@@ -77,9 +77,10 @@ const Login = () => {
       });
   
       let response;
+      let role;
   
       // ✅ Admin Login Handling
-      if (mobileNo === ADMIN_MOBILE) {
+      if (role === "ADMIN") {
         console.log("📌 Admin Login Detected! Using Admin API...");
         response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=ADMIN`, {
           mobile_no: mobileNo,
@@ -106,11 +107,11 @@ const Login = () => {
         let { token, role, subrole, userId, classId } = response.data.data || {};
   
         // ✅ Override Role for Admin
-        if (mobileNo === ADMIN_MOBILE) {
-          role = "ADMIN";
-          subrole = undefined; // Remove subrole for Admin
-          classId = undefined; // Remove classId for Admin
-        }
+        // if (mobileNo === ADMIN_MOBILE) {
+        //   role = "ADMIN";
+        //   subrole = undefined; // Remove subrole for Admin
+        //   classId = undefined; // Remove classId for Admin
+        // }
   
         // ✅ Store Authentication Details
         setAuthCookies({
