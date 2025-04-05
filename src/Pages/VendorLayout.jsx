@@ -11,7 +11,8 @@ const VendorLayout = () => {
     {/* // <div className="flex h-screen"> */}
       {/* ✅ Mobile Menu Button */}
       <button
-        className="fixed top-4 left-4 z-50 bg-blue-600 text-white p-3 rounded-full shadow-lg md:hidden  cursor-pointer"
+        className="fixed top-5 left-4 p-3 rounded-full shadow-md md:hidden transition-all duration-300 transform hover:scale-110 active:scale-95
+                     bg-gradient-to-r from-blue-500 to-blue-700 opacity-60 hover:opacity-1000 text-white z-80"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         <MdMenu size={24} />
@@ -32,7 +33,7 @@ const VendorLayout = () => {
 
       {/* ✅ Main Content (Expands when Sidebar Closes) */}
       {/* <div className={`flex-1 p-6 bg-gray-100 overflow-auto transition-all duration-300 ${isMenuOpen ? "ml-0" : "ml-64"} md:ml-64`}> */}
-      <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300 md:p-2 lg:p-6 sm:p-0"
+      <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300 md:p-0 lg:p-0 sm:p-0"
   >
 
         <Outlet />
@@ -41,7 +42,7 @@ const VendorLayout = () => {
       {/* ✅ Overlay (For Mobile) */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 bg-opacity-70 z-30 md:hidden"
           onClick={() => setIsMenuOpen(false)}
         ></div>
       )}

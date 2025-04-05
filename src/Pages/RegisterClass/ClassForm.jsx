@@ -21,6 +21,7 @@ import { setAuthCookies } from "../../Utlis/cookieHelper";
 import ContactWithOTP from "../../Component/ContactWithOTP";
 import MultiSelectDropdown from "../../Component/MultiSelectDropdown";
 import MapComponent from "./MapComponent";
+import Swal from "sweetalert2";
 
 const ClassForm = ({ onClose }) => {
   const [position, setPosition] = useState({ lat: 19.076, lan: 72.8777 });
@@ -212,6 +213,8 @@ const ClassForm = ({ onClose }) => {
         formData.append("address[pincode]", values.address?.pincode);
         formData.append("address[state]", values.address?.state);
         formData.append("address[dist]", values.address?.dist);
+        formData.append("franchiseOrIndependent", formattedData.franchiseOrIndependent);
+
 
         // const formattedInfo = { description: values.info }; // ✅ Ensure correct structure
         // formData.append("info", JSON.stringify(values.info)); // ✅ Converts object correctly
@@ -272,29 +275,10 @@ const ClassForm = ({ onClose }) => {
         formattedData.teachingMedium.forEach((medium) => {
           formData.append("teachingMedium", medium);
         });
-        // ✅ Append formatted data correctly to FormData
-        // Object.keys(formattedData).forEach((key) => {
-        //   if (key === "image" && formattedData.image) {
-        //     formData.append("image", formattedData.image);
-        //     // } else if (
-        //     //   key === "imageGallery" &&
-        //     //   formattedData.imageGallery.length > 0
-        //     // ) {
-        //     //   formattedData.imageGallery.forEach((file) => {
-        //     //     formData.append("imageGallery", file);
-        //     //   });
-        //   } else if (
-        //     typeof formattedData[key] === "object" &&
-        //     !Array.isArray(formattedData[key])
-        //   ) {
-        //     formData.append(key, JSON.stringify(formattedData[key])); // ✅ Convert objects to JSON
-        //   } else if (!Array.isArray(formattedData[key])) {
-        //     formData.append(key, formattedData[key]);
-        //   }
-        // });
+       
 
         console.log(
-          "📌**************************************Final FormData Sent:",
+          "📌Final FormData Sent:",
           Object.fromEntries(formData.entries())
         );
 
@@ -310,43 +294,6 @@ const ClassForm = ({ onClose }) => {
         console.log("Class Created Successfully:", response.data);
 
         // ✅ Extract Class ID
-        // const classId = response.data?.data?.class?._id;
-        // if (!classId) throw new Error("❌ Class ID missing in API response");
-
-        // // ✅ Store Class ID in Cookies
-        // Cookies.set("classId", classId, { expires: 1 / 24 });
-
-        // // ✅ Vendor Signup API
-        // const authResponse = await axios.post(
-        //   `${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`,
-        //   {
-        //     mobile_no: values.contactDetails,
-        //     otp: values.otp, // ✅ Now sending OTP
-        //     reference_id: values.reference_id, // ✅ Now sending Reference ID
-        //   }
-        // );
-
-        // console.log("📌 Auth Response:", authResponse.data);
-
-        // if (authResponse.data.success) {
-        //   setAuthCookies({
-        //     token: authResponse.data.data.token,
-        //     role: authResponse.data.data.role,
-        //     subrole: authResponse.data.data.subrole,
-        //     userId: authResponse.data.data.userId,
-        //     classId,
-        //   });
-
-        //   alert("✅ Registration Successful! Redirecting...");
-        //   resetForm();
-        //   console.log("Navigating to Vendor Dashboard");
-        //   navigate("/vendor-class/class-dashboard");
-        // } else {
-        //   console.error("❌ Signup failed:", authResponse.data);
-        //   alert("❌ Signup failed! Try again.");
-        // }
-
-        // ✅ Extract Class ID
   const classId = response.data?.data?.class?._id;
   if (!classId) {
     throw new Error("❌ Class ID missing in API response");
@@ -356,10 +303,24 @@ const ClassForm = ({ onClose }) => {
   Cookies.set("classId", classId, { expires: 1 / 24 });
 
   // ✅ Show Success Message & Redirect to Vendor Dashboard
-  alert("✅ Class Created Successfully! Redirecting...");
+  // alert("✅ Class Created Successfully!");
+  Swal.fire({
+    title: "🎉 Success!",
+    text: "Class has been added to the system.",
+    icon: "success",
+    timer:3000,
+    background: "#f9f9f9", // Light background
+    showClass: {
+      popup: "animate__animated animate__fadeInDown",
+    },
+    hideClass: {
+      popup: "animate__animated animate__fadeOutUp",
+    },
+  });
+  
   resetForm();
   console.log("Navigating to Vendor Dashboard");
-  navigate("/vendor-class/class-dashboard");
+  navigate("/");
       } catch (error) {
         console.error(
           "❌ Error submitting form:",
@@ -381,7 +342,7 @@ const ClassForm = ({ onClose }) => {
     <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
       <div className="absolute inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm"></div>
 
-      <div className="w-full max-w-4xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
+      <div className="w-full max-w-5xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
         {/* Form Title */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-t-md text-center">
           <h2 className="text-2xl font-bold flex items-center justify-center gap-3">

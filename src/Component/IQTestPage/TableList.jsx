@@ -95,7 +95,7 @@ const TableList = () => {
                 }`}
               >
                 <td className="p-3">{test.title}</td>
-                <td className="p-3">{test.testDuration || "N/A"}</td>
+                <td className="p-3">{test.testDuration.minutes || "N/A"}</td>
                 {/* <td className="p-3">{test.passingMarks || "--"}</td> */}
                 <td className="p-3">{test.totalMarks || "N/A"}</td>
                 <td className="p-3">

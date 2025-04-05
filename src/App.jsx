@@ -39,6 +39,7 @@ import ClassTableDetails from "./Pages/ClassTableDetails.jsx";
 import FacultyManagement from "./Pages/FacultyManagement.jsx";
 import ClassCourses from "./Pages/ClassCourses.jsx";
 import ProtectedRoute from "./Component/ProtectedRoute"; // Import the ProtectedRoute
+import AddAdmin from "./Pages/AddAdmin.jsx";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ function App() {
         <Route path="/" element={<Root />}>
             {/* Public Route */}
             <Route index element={<Login />} />
+            <Route path="/add-admin" element={<AddAdmin />}/>
             
             {/* Protected Routes for Admin */}
             <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
