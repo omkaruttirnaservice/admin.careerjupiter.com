@@ -1,5 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { getCookie } from "../Utlis/cookieHelper";
 import {
   HomeIcon,
   ClipboardCheckIcon,
@@ -7,14 +10,25 @@ import {
   LogoutIcon,
   UserCircleIcon,
   MenuIcon,
-  UserAddIcon
+  UserAddIcon,
 } from "@heroicons/react/solid"; // ✅ HeroIcons
 import { BookAIcon } from "lucide-react";
+import { FaUserCircle } from "react-icons/fa";
 
 const navigation = [
-  { name: "Dashboard", href: "/vendor-class/class-dashboard", icon: HomeIcon, color: "text-blue-400" },
-  { name: "Manage Class", href: "/vendor-class/edit-vendor-class", icon: ClipboardCheckIcon, color: "text-green-400" },
-  // { name: "Faculty", href: "/vendor-class/class-faculty", icon: UserAddIcon, color: "text-yellow-400" },
+  {
+    name: "Dashboard",
+    href: "/vendor-class/class-dashboard",
+    icon: HomeIcon,
+    color: "text-blue-400",
+  },
+  {
+    name: "Manage Class",
+    href: "/vendor-class/edit-vendor-class",
+    icon: ClipboardCheckIcon,
+    color: "text-green-400",
+  },
+  //  { name: "Faculty", href: "/vendor-class/class-faculty", icon: UserAddIcon, color: "text-yellow-400" },
   // { name: "Course", href: "/vendor-class/class-courses", icon: BookAIcon, color: "text-teal-400" },
 ];
 
@@ -22,6 +36,8 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(location.pathname);
+  const [classDetails, setClassDetails] = useState(null);
+  const [classId, setClassId] = useState(null); // ✅ State for classId
 
   // ✅ Update activeLink when URL changes
   useEffect(() => {
@@ -29,8 +45,45 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   }, [location.pathname]);
 
   const handleLogout = () => {
-         window.location.href = "/"; // ✅ Redirect to login
-      };
+    window.location.href = "/"; // ✅ Redirect to login
+  };
+
+  useEffect(() => {
+    const storedClassId = getCookie("classId"); // ✅ Use getCookie function
+    // console.log("Fetched ClassId ", storedClassId)
+    if (storedClassId) {
+      setClassId(storedClassId);
+      console.log("Class ID retrieved from cookies:", storedClassId);
+    } else {
+      console.warn("Class ID not found in cookies!");
+    }
+  }, []);
+
+  useEffect(() => {
+
+    const fetchClassDetails = async () => {
+      if (!classId) return;
+
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/api/class/${classId}`
+        );
+        console.log("Class details fetched:", response.data);
+
+        const classData = response.data?.data?.class; // ✅ Ensure correct path
+        setClassDetails({
+          ...classData,
+        });
+      } catch (error) {
+        console.error(
+          "Error fetching class details:",
+          error?.response?.data || error.message
+        );
+      }
+    };
+
+    fetchClassDetails();
+  }, [classId]);
 
   return (
     <div
@@ -39,9 +92,8 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       } md:translate-x-0`}
     >
       <div className="flex flex-col pt-5 pb-4 overflow-y-auto h-full">
-        
-                {/* ✅ Mobile Menu Close Button */}
-                <button
+        {/* ✅ Mobile Menu Close Button */}
+        <button
           className="absolute top-4 right-4 text-white md:hidden"
           onClick={() => setIsMenuOpen(false)}
         >
@@ -50,9 +102,13 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
         {/* ✅ Profile Section */}
         <div className="flex flex-col items-center text-white mb-6">
-          <UserCircleIcon className="h-16 w-16 text-white" />
-          <h2 className="mt-2 text-lg font-semibold">Vendor Name</h2>
-          <p className="text-sm text-gray-300">Class Vendor</p>
+          <FaUserCircle className="h-16 w-16 text-white" />
+          <h2 className="mt-2 text-lg font-semibold">
+            {classDetails?.ownerOrInstituteName || "Vendor"}
+          </h2>
+          <p className="text-sm text-gray-300">
+            {classDetails?.className || "Class Vendor"}
+          </p>
         </div>
 
         {/* ✅ Navigation Links */}
@@ -63,13 +119,22 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
             return (
               <button
                 key={item.name}
-                onClick={() => {navigate(item.href);
+                onClick={() => {
+                  navigate(item.href);
                   setIsMenuOpen(false);
                 }}
                 className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300
-                ${isActive ? "bg-blue-500 text-white shadow-md transform scale-105" : "text-gray-300 hover:bg-blue-600 hover:text-white"}`}
+                ${
+                  isActive
+                    ? "bg-blue-500 text-white shadow-md transform scale-105"
+                    : "text-gray-300 hover:bg-blue-600 hover:text-white"
+                }`}
               >
-                <item.icon className={`mr-3 h-6 w-6 ${isActive ? "text-white" : item.color}`} />
+                <item.icon
+                  className={`mr-3 h-6 w-6 ${
+                    isActive ? "text-white" : item.color
+                  }`}
+                />
                 {item.name}
               </button>
             );
@@ -90,6 +155,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 };
 
 export default ClassVendorSideMenu;
+
 // import { useState } from "react";
 // import { useLocation, useNavigate } from "react-router-dom";
 // import { MdMenu, MdDashboard, MdClass, MdLogout } from "react-icons/md"; // ✅ Modern Icons

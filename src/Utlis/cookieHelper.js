@@ -9,6 +9,7 @@ export const setAuthCookies = ({ token, role, subrole, userId, classId }) => {
   Cookies.set("subrole", subrole, { expires: 1 / 24 });
   Cookies.set("userId", userId, { expires: 1 / 24 });
   Cookies.set("classId", classId, { expires: 1 / 24 });
+  // Cookies.set("iqTestToken", iqTestAuthToken, {expires: 1/24});
 };
 
 // ✅ Function to retrieve a specific cookie
@@ -21,4 +22,5 @@ export const clearAuthCookies = () => {
   Cookies.remove("subrole");
   Cookies.remove("userId");
   Cookies.remove("classId");
+  // Cookies.remove("iqTestToken");
 };

@@ -87,7 +87,7 @@ const ViewExcelPage = () => {
       }
     } catch (err) {
       console.error("Error fetching test details:", err);
-      setError("Failed to fetch test details");
+      setError(err.response?.data?.usrMsg || err.response?.data?.message || "Failed to fetch test details");
     } finally {
       setLoading(false);
     }

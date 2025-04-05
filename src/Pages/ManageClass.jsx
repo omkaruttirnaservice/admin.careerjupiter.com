@@ -154,7 +154,7 @@ const ManageClass = () => {
         alert("✅ Class updated successfully!");
       } catch (error) {
         console.error("❌ Error updating class:", error);
-        alert("❌ Failed to update class.");
+        alert(error.response?.data?.usrMsg || error.response?.data?.message ||"❌ Failed to update class.");
       } finally {
         setSubmitting(false);
       }
@@ -171,17 +171,32 @@ const ManageClass = () => {
   }, [formik.values]);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen p-4 md:p-8">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-100 to-blue-300  md:p-3">
 
       {/* ✅ Sidebar */}
       {/* <ClassVendorSideMenu /> */}
 
       {/* ✅ Main Content */}
       <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-5xl bg-white shadow-2xl p-6 md:p-12 border border-blue-500 rounded-lg">
+      <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
+  {/* Background Icons - Random Placement */}
+  {Array.from({ length: 15 }).map((_, index) => (
+    <span
+      key={index}
+      className="absolute text-7xl opacity-19 select-none"
+      style={{
+        top: `${Math.random() * 100}%`, // Random Y Position
+        left: `${Math.random() * 100}%`, // Random X Position
+        transform: `rotate(${Math.random() * 360}deg)`, // Random Rotation
+      }}
+    >
+      {["📚", "✏️", "📝", "🎓", "🔬", "📖", "🖥️", "⚛️"][Math.floor(Math.random() * 8)]}
+    </span>
+  ))}
+        <div className="w-full max-w-5xl bg-white shadow-2xl p-2 lg:p-6 md:p-12 border border-blue-500">
           {/* ✅ Form Title */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 rounded-t-3xl shadow-md text-center">
-            <h2 className="text-3xl md:text-4xl font-bold">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6  shadow-md text-center">
+            <h2 className="text-2xl md:text-4xl font-bold">
               Update Class Details
             </h2>
           </div>
@@ -323,11 +338,11 @@ const ManageClass = () => {
                     name="teachingMedium"
                     formik={formik}
                   />
-                  <MultiSelectField
+                  {/* <MultiSelectField
                     label="Keywords"
                     name="keywords"
                     formik={formik}
-                  />
+                  /> */}
                 </div>
               {/* </div> */}
 
@@ -394,6 +409,7 @@ const ManageClass = () => {
             </button>
             </div>
           </form>
+        </div>
         </div>
       </div>
     </div>

@@ -21,10 +21,12 @@ import { setAuthCookies } from "../../Utlis/cookieHelper";
 import ContactWithOTP from "../../Component/ContactWithOTP";
 import MultiSelectDropdown from "../../Component/MultiSelectDropdown";
 import MapComponent from "./MapComponent";
+import Swal from "sweetalert2";
 
 const ClassForm = ({ onClose }) => {
   const [position, setPosition] = useState({ lat: 19.076, lan: 72.8777 });
   const navigate = useNavigate();
+  
 
   <stateDistricts />;
 
@@ -104,56 +106,85 @@ const ClassForm = ({ onClose }) => {
         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
         .required("Contact Details are required"),
 
-      websiteURL: Yup.string().url("Enter a valid website URL").nullable(),
-      // description: Yup.string()
-      // .min(100, "Description must be at least 100 characters long")
-      // .max(1000, "Description cannot exceed 1000 characters")
-      // .required("Description is required"),
-      keywords: Yup.array()
-      .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
-      .min(1, "At least one keyword is required")
-      .max(10, "You can add up to 10 keywords only")
-      .required("Keywords are required"),
-      imageGallery: Yup.array()
-      .min(1, "At least one image is required")
-      .max(2, "You can upload up to 2 images only")
-      .of(
-        Yup.mixed()
-          .test("fileType", "Only JPG, JPEG, or PNG files are allowed", (file) =>
-            file ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type) : true
-          )
-          .test("fileSize", "Image size must be less than 100KB", (file) =>
-            file ? file.size <= 102400 : true
-          )
+      // websiteURL: Yup.string().url("Enter a valid website URL").nullable(),
+      websiteURL: Yup.string()
+      .matches(
+        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Enter a valid website URL"
       )
-      .required("Image gallery is required"),
-      image: Yup.mixed()
-      .test("fileType", "Only JPG, JPEG, or PNG files are allowed", (file) =>
-        file ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type) : true
-      )
-      .test("fileSize", "Image size must be less than 100KB", (file) =>
-        file ? file.size <= 102400 : true
-      )
-      .required("Image is required"),
-      typeOfClass: Yup.array()
-      .of(Yup.string().oneOf(typeOfClass, "Invalid selection"))
-      .min(1, "At least one class type must be selected")
-      .required("Type of class is required"),
-      Category: Yup.array()
-      .of(Yup.string().oneOf(classCategories, "Invalid category selected"))
-      .min(1, "At least one category must be selected")
-      .required("Category is required"),
-      teachingMedium: Yup.array()
-    .of(Yup.string().min(1, "Each teaching medium must have at least 1 character"))
-    .min(1, "At least one teaching medium is required")
-    // .max(5, "You can add up to 5 teaching mediums only")
-    .required("Teaching medium is required"),
+      .nullable(),
 
-  subjectsOrCourses: Yup.array()
-    .of(Yup.string().min(1, "Each subject or course must have at least 1 character"))
-    .min(1, "At least one subject or course is required")
-    // .max(20, "You can add up to 20 subjects or courses only")
-    .required("Subjects or courses are required"),
+      info: Yup.object().shape({
+        description: Yup.string()
+          .min(100, "Minimum 100 characters required.")
+          .max(1000, "Maximum 1000 characters allowed.")
+          .required("Description is required."),
+      }),
+      keywords: Yup.array()
+        .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
+        .min(1, "At least one keyword is required")
+        .max(10, "You can add up to 10 keywords only")
+        .required("Keywords are required"),
+      imageGallery: Yup.array()
+        .min(1, "At least one image is required")
+        .max(2, "You can upload up to 2 images only")
+        .of(
+          Yup.mixed()
+            .test(
+              "fileType",
+              "Only JPG, JPEG, or PNG files are allowed",
+              (file) =>
+                file
+                  ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type)
+                  : true
+            )
+            .test("fileSize", "Image size must be less than 100KB", (file) =>
+              file ? file.size <= 102400 : true
+            )
+        )
+        .required("Image gallery is required"),
+      image: Yup.mixed()
+        .test("fileType", "Only JPG, JPEG, or PNG files are allowed", (file) =>
+          file
+            ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type)
+            : true
+        )
+        .test("fileSize", "Image size must be less than 100KB", (file) =>
+          file ? file.size <= 102400 : true
+        )
+        .required("Image is required"),
+      typeOfClass: Yup.array()
+        .of(Yup.string().oneOf(typeOfClass, "Invalid selection"))
+        .min(1, "At least one class type must be selected")
+        .required("Type of class is required"),
+      Category: Yup.array()
+        .of(Yup.string().oneOf(classCategories, "Invalid category selected"))
+        .min(1, "At least one category must be selected")
+        .required("Category is required"),
+        modeOfTeaching: Yup.array()
+        .min(1, "Please select at least one mode of teaching") // At least one option must be selected
+        .required("Mode of teaching is required"),
+      teachingMedium: Yup.array()
+        .of(
+          Yup.string().min(
+            1,
+            "Each teaching medium must have at least 1 character"
+          )
+        )
+        .min(1, "At least one teaching medium is required")
+        // .max(5, "You can add up to 5 teaching mediums only")
+        .required("Teaching medium is required"),
+
+      subjectsOrCourses: Yup.array()
+        .of(
+          Yup.string().min(
+            1,
+            "Each subject or course must have at least 1 character"
+          )
+        )
+        .min(1, "At least one subject or course is required")
+        // .max(20, "You can add up to 20 subjects or courses only")
+        .required("Subjects or courses are required"),
     }),
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -161,8 +192,6 @@ const ClassForm = ({ onClose }) => {
         const formData = new FormData();
 
         console.log("🚀 Original Form Values:", values); // ✅ Debugging
-
-        
 
         // ✅ Properly format `address` and `info`
         const formattedData = {
@@ -178,46 +207,55 @@ const ClassForm = ({ onClose }) => {
 
         console.log("✅ Formatted Data Before Sending:", formattedData);
 
-
         //
         formData.append("address[line1]", values.address?.line1);
         formData.append("address[line2]", values.address?.line2);
         formData.append("address[pincode]", values.address?.pincode);
         formData.append("address[state]", values.address?.state);
         formData.append("address[dist]", values.address?.dist);
+        formData.append("franchiseOrIndependent", formattedData.franchiseOrIndependent);
+
 
         // const formattedInfo = { description: values.info }; // ✅ Ensure correct structure
         // formData.append("info", JSON.stringify(values.info)); // ✅ Converts object correctly
         formData.append("info[description]", values.info?.description);
-        
-      
+        formData.append("contactDetails", formattedData.contactDetails);
+
+
         values.locations.forEach((loc, index) => {
           formData.append(`locations[${index}][lat]`, loc.lat);
           formData.append(`locations[${index}][lan]`, loc.lan);
         });
-        
+
         console.log("📌 Address Data:", values.address);
         console.log(
           "📌 FormData Sent:",
           Object.fromEntries(formData.entries())
         );
 
-        // formData.append("className", formattedData.className);
-        // formData.append("ownerOrInstituteName", formattedData.ownerOrInstituteName);
+        formData.append("className", formattedData.className);
+        formData.append("ownerOrInstituteName", formattedData.ownerOrInstituteName);
+        formData.append("websiteURL", formattedData.websiteURL);
+        formData.append("yearEstablished", formattedData.yearEstablished);
+
 
         formattedData.Category.forEach((cat) => {
           formData.append("Category", cat);
         });
-        
+
         // formData.append("subjectsOrCourses", JSON.stringify(formattedData.subjectsOrCourses || []));
         formattedData.modeOfTeaching.forEach((mode) => {
           formData.append("modeOfTeaching", mode);
         });
-        
+
         formattedData.typeOfClass.forEach((type) => {
           formData.append("typeOfClass", type);
         });
-        
+
+        if (formattedData.image) {
+          formData.append("image", formattedData.image);
+        }
+
         // / Append imageGallery one by one
         formattedData.imageGallery.forEach((file) => {
           formData.append("imageGallery", file);
@@ -237,29 +275,10 @@ const ClassForm = ({ onClose }) => {
         formattedData.teachingMedium.forEach((medium) => {
           formData.append("teachingMedium", medium);
         });
-        // ✅ Append formatted data correctly to FormData
-        Object.keys(formattedData).forEach((key) => {
-          if (key === "image" && formattedData.image) {
-            formData.append("image", formattedData.image);
-          } else if (
-            key === "imageGallery" &&
-            formattedData.imageGallery.length > 0
-          ) {
-            formattedData.imageGallery.forEach((file) => {
-              formData.append("imageGallery", file);
-            });
-          } else if (
-            typeof formattedData[key] === "object" &&
-            !Array.isArray(formattedData[key])
-          ) {
-            formData.append(key, JSON.stringify(formattedData[key])); // ✅ Convert objects to JSON
-          } else if (!Array.isArray(formattedData[key])) {
-            formData.append(key, formattedData[key]);
-          }
-        });
+       
 
         console.log(
-          "📌**************************************Final FormData Sent:",
+          "📌Final FormData Sent:",
           Object.fromEntries(formData.entries())
         );
 
@@ -272,53 +291,46 @@ const ClassForm = ({ onClose }) => {
           }
         );
 
-        console.log(
-          "Class Created Successfully:",
-          response.data
-        );
+        console.log("Class Created Successfully:", response.data);
 
         // ✅ Extract Class ID
-        const classId = response.data?.data?.class?._id;
-        if (!classId) throw new Error("❌ Class ID missing in API response");
+  const classId = response.data?.data?.class?._id;
+  if (!classId) {
+    throw new Error("❌ Class ID missing in API response");
+  }
 
-        // ✅ Store Class ID in Cookies
-        Cookies.set("classId", classId, { expires: 1 / 24 });
+  // ✅ Store Class ID in Cookies
+  Cookies.set("classId", classId, { expires: 1 / 24 });
 
-        // ✅ Vendor Signup API
-        const authResponse = await axios.post(
-          `${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`,
-          {
-            mobile_no: values.contactDetails,
-            otp: values.otp, // ✅ Now sending OTP
-            reference_id: values.reference_id, // ✅ Now sending Reference ID
-          }
-        );
-
-        console.log("📌 Auth Response:", authResponse.data);
-
-        if (authResponse.data.success) {
-          setAuthCookies({
-            token: authResponse.data.data.token,
-            role: authResponse.data.data.role,
-            subrole: authResponse.data.data.subrole,
-            userId: authResponse.data.data.userId,
-            classId,
-          });
-
-          alert("✅ Registration Successful! Redirecting...");
-          resetForm();
-          console.log("Navigating to Vendor Dashboard");
-          navigate("/vendor-class/class-dashboard");
-        } else {
-          console.error("❌ Signup failed:", authResponse.data);
-          alert("❌ Signup failed! Try again.");
-        }
+  // ✅ Show Success Message & Redirect to Vendor Dashboard
+  // alert("✅ Class Created Successfully!");
+  Swal.fire({
+    title: "🎉 Success!",
+    text: "Class has been added to the system.",
+    icon: "success",
+    timer:3000,
+    background: "#f9f9f9", // Light background
+    showClass: {
+      popup: "animate__animated animate__fadeInDown",
+    },
+    hideClass: {
+      popup: "animate__animated animate__fadeOutUp",
+    },
+  });
+  
+  resetForm();
+  console.log("Navigating to Vendor Dashboard");
+  navigate("/");
       } catch (error) {
         console.error(
           "❌ Error submitting form:",
           error.response?.data || error.message
         );
-        alert("❌ Error submitting form. Try again.");
+        alert(
+          error.response?.data?.usrMsg ||
+            error.response?.data?.message ||
+            "❌ Error submitting form. Try again."
+        );
       } finally {
         setSubmitting(false);
       }
@@ -326,8 +338,11 @@ const ClassForm = ({ onClose }) => {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200">
-      <div className="w-full max-w-4xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6">
+    // <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200 background-image">
+    <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
+      <div className="absolute inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm"></div>
+
+      <div className="w-full max-w-5xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
         {/* Form Title */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-t-md text-center">
           <h2 className="text-2xl font-bold flex items-center justify-center gap-3">
@@ -402,7 +417,7 @@ const ClassForm = ({ onClose }) => {
 
             <InputField
               label="Website URL"
-              type="url"
+              type="text"
               name="websiteURL"
               formik={formik}
             />
@@ -447,7 +462,7 @@ const ClassForm = ({ onClose }) => {
                 />
               </div>
             </div>
-            
+
             <RadioGroup
               label="Franchise or Independent"
               name="franchiseOrIndependent"
@@ -485,12 +500,23 @@ const ClassForm = ({ onClose }) => {
             </div>
 
             {/* Submit Button */}
-            <div className="text-center mt-2">
+            {/* <div className="text-center mt-2 col-span-full w-50 justify-center">
               <button
                 type="submit"
-                className="w-full cursor-pointer bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition sm:w-full"
+                className="cursor-pointer bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition sm:w-full"
               >
                 Submit
+              </button>
+            </div> */}
+
+            <div className="col-span-full flex justify-center mt-4">
+              <button
+                type="submit"
+                className="bg-indigo-600 cursor-pointer text-white py-3 px-6 rounded-md font-semibold 
+               hover:bg-indigo-700 transition w-full sm:w-auto disabled:bg-gray-400 disabled:cursor-not-allowed"
+                disabled={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? "Submitting..." : "Submit"}
               </button>
             </div>
           </div>

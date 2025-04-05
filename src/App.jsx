@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -9,6 +8,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Root from "./Component/Root";
+// import { Navigate } from "react-router-dom";
 import Login from "./Pages/Login";
 import CollegeTableDetails from "./Pages/CollegeTableDetails";
 import MultiStepForm from "./Pages/AddNewCollege";
@@ -38,6 +38,8 @@ import VendorLayout from "./Pages/VendorLayout.jsx";
 import ClassTableDetails from "./Pages/ClassTableDetails.jsx";
 import FacultyManagement from "./Pages/FacultyManagement.jsx";
 import ClassCourses from "./Pages/ClassCourses.jsx";
+import ProtectedRoute from "./Component/ProtectedRoute"; // Import the ProtectedRoute
+import AddAdmin from "./Pages/AddAdmin.jsx";
 
 const queryClient = new QueryClient();
 
@@ -50,12 +52,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
-          <Route path="/" element={<Root />}>
+        <Route path="/" element={<Root />}>
+            {/* Public Route */}
             <Route index element={<Login />} />
-
-            {/* ✅ Admin Routes */}
-            {role === "ADMIN" && token && (
-              <>
+            <Route path="/add-admin" element={<AddAdmin />}/>
+            
+            {/* Protected Routes for Admin */}
+            <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
                 <Route path="/dashboard" element={<AdminDashboard />} />
                 <Route path="/colleges" element={<CollegeTableDetails />} />
                 <Route path="/university-details" element={<UniversityTableDetails />} />
@@ -75,24 +78,22 @@ function App() {
                 <Route path="/edit-college/:id" element={<EditCollegeDetails />} />
                 <Route path="/university" element={<AddUniversity />} />
                 <Route path="/edit-university/:id" element={<EditUniversity />} />
-              </>
-            )}
+                </Route>
 
-            {/* ✅ Vendor-Class Routes */}
-            {role === "VENDOR" && subrole === "Class" && token ? (
+           {/* Protected Routes for Vendor-Class */}
+           <Route element={<ProtectedRoute roleRequired="VENDOR" />}>
               <Route path="/vendor-class" element={<VendorLayout />}>
                 <Route index element={<ClassVendorDashboard />} />
                 <Route path="class-dashboard" element={<ClassVendorDashboard />} />
                 <Route path="edit-vendor-class" element={<ManageClass />} />
                 <Route path="class-faculty" element={<FacultyManagement />} />
-                <Route path="class-courses" element={<ClassCourses/>}/>
+                {/* <Route path="class-courses" element={<ClassCourses/>}/> */}
               </Route>
-              ) : null}  
-
-            
+              </Route>
+          
 
             {/* ❌ Redirect Unauthenticated Users to Login */}
-            {!token && <Route path="*" element={<Navigate to="/" replace />} />}
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </Route>
           {/* ✅ Registration Route for Vendors */}
           <Route path="/register-class" element={<ClassForm />} />
@@ -103,3 +104,5 @@ function App() {
 }
 
 export default App;
+
+

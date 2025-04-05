@@ -9,7 +9,7 @@ import { FaMobileAlt, FaLock, FaSms, FaBook, FaGraduationCap, FaLightbulb} from 
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const ADMIN_MOBILE = "8999425875"; // ✅ Hardcoded Admin Mobile Number
+const ADMIN_MOBILE = "9890060633"; // ✅ Hardcoded Admin Mobile Number
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
@@ -320,11 +320,11 @@ const Login = () => {
             <label className=" text-gray-700 text-lg font-medium mb-2 flex items-center">
               Mobile Number
             </label>
-            <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 focus-within:ring-2 focus-within:ring-purple-600">
-            <FaMobileAlt className="text-purple-600 mr-2" />
+            <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 focus-within:ring-2 focus-within:ring-blue-500">
+            <FaMobileAlt className="text-blue-500 mr-3" />
               <input
                 type="text"
-                className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
+                className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
                 placeholder="Enter Mobile Number"
                 value={mobileNo}
                 onChange={(e) => setMobileNo(e.target.value)}
@@ -336,7 +336,7 @@ const Login = () => {
               whileTap={{ scale: 0.95 }} 
               onClick={sendOtp} 
               disabled={loading}
-              className="w-full mt-6 bg-gradient-to-br from-purple-700 to-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
+              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold shadow-md transition flex items-center justify-center "
             >
               <FaSms className="mr-2" /> {loading ? "Sending..." : "Send OTP"}
             </motion.button>
@@ -345,11 +345,11 @@ const Login = () => {
 
         {step === 2 && (
           <>
-            <label className=" text-gray-700 text-lg font-medium mb-2 flex items-center">
+            <label className="block text-gray-700 text-lg font-medium mb-2">
               Enter OTP
             </label>
-            <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 focus-within:ring-2 focus-within:ring-green-500">
-            <FaLock className="text-green-600 mr-3" />
+            <div className="flex items-center bg-white shadow-md p-3 rounded-lg border border-gray-400 transition focus-within:ring-2 focus-within:ring-green-500">
+            <FaLock className="text-green-500 mr-3" />
               <input
                 type="text"
                 className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
@@ -363,7 +363,7 @@ const Login = () => {
               whileTap={{ scale: 0.95 }} 
               onClick={verifyOtp} 
               disabled={loading}
-              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center transition"
+              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold shadow-md transition flex items-center justify-center"
             >
               <FaLock className="mr-2" /> {loading ? "Verifying..." : "Verify OTP"}
             </motion.button>

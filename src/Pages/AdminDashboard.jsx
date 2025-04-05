@@ -14,7 +14,9 @@ const categories = [
   "HSC",
   "SSC",
   "Under Graduate",
-  "Post Graduate"
+  "Post Graduate",
+  "Begineer",
+  "Basic"
 ];
 
 const AdminDashboard = () => {
@@ -86,7 +88,7 @@ const AdminDashboard = () => {
         console.log("Final IQ Test Counts:", responses); // Debugging log
         setIqTestCounts(responses);
       } catch (error) {
-        console.error("Error fetching IQ Test data:", error?.response?.data || error.message);
+        console.log("Error fetching IQ Test data:", error?.response?.data || error.message);
       }
     };
     

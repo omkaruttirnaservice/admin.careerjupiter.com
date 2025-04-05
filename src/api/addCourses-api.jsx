@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import Swal from "sweetalert2";
 
 // const API_BASE_URL = "http://192.168.1.12:5000/api//course";
 
@@ -12,6 +13,7 @@ export const AddCourses = async (collegeId, courseData) => {
     return response.data;
   } catch (error) {
     console.error("Error adding courses:", error.response?.data || error.message);
+    Swal.fire(error.response?.data?.message || error.response?.data?.usrMsg || "Error Adding Courses")
     throw error;
   }
 };
