@@ -102,7 +102,7 @@ const CollegeTableDetails = () => {
       setEditModalOpen(true);
     } catch (error) {
       console.error("❌ Error parsing JSON in handleEdit:", error);
-      alert(error.response?.data?.usrMsg || error.response?.data?.message ||"Error processing college data. Please check the format.");
+      alert(error.response?.data?.usrMsg || error.response?.data?.message ||  error.response?.data.errMessage || "Error processing college data. Please check the format.");
     }
   };
 
@@ -189,7 +189,7 @@ const CollegeTableDetails = () => {
           "❌ Error updating college data:",
           error.response?.data || error
         );
-        alert(error.response?.data?.usrMsg || error.response?.data?.message ||`❌ Error updating college details: ${error}`);
+        alert(error.response?.data?.usrMsg || error.response?.data?.message ||  error.response?.data.errMessage || `❌ Error updating college details: ${error}`);
       });
   };
 

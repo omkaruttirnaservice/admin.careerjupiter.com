@@ -3,9 +3,31 @@ import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { Doughnut, Bar } from "react-chartjs-2";
 import "chart.js/auto";
+import { useNavigate } from "react-router-dom";
 import { FaUniversity, FaSchool, FaChalkboardTeacher } from "react-icons/fa";
 import { FiActivity, FiUserPlus, FiBookOpen, FiCalendar } from "react-icons/fi";
 import api from "../api/token_api"; // ✅ Correct Import
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import { TbSmartHome, TbUserSquareRounded } from "react-icons/tb";
+
+import {
+  GiGraduateCap,
+  GiSchoolBag,
+  GiTeacher,
+  GiNotebook,
+  GiNetworkBars,
+} from "react-icons/gi";
+
+// Register Chart.js components
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const categories = [
   "Diploma",
@@ -16,18 +38,64 @@ const categories = [
   "Under Graduate",
   "Post Graduate",
   "Begineer",
-  "Basic"
+  "Basic",
+];
+
+const navigation = [
+  {
+    name: "Home",
+    href: "/dashboard",
+    icon: TbSmartHome,
+    color: "text-blue-500",
+  },
+  {
+    name: "Universities",
+    href: "/university-details",
+    icon: GiGraduateCap,
+    color: "text-purple-600",
+  },
+  {
+    name: "Colleges",
+    href: "/colleges",
+    
+    icon: GiSchoolBag,
+    color: "text-green-500",
+  },
+  {
+    name: "Classes",
+    href: "/class-list",
+    icon: GiTeacher,
+    color: "text-yellow-500",
+  },
+  {
+    name: "IQ Tests",
+    href: "/iq-test",
+    icon: GiNotebook,
+    color: "text-pink-500",
+  },
+  {
+    name: "Analytics",
+    href: "/reports",
+    icon: GiNetworkBars,
+    color: "text-teal-500",
+  },
+  {
+    name: "Profile",
+    href: "/profile",
+    icon: TbUserSquareRounded,
+    color: "text-red-500",
+  },
 ];
 
 const AdminDashboard = () => {
   // Stats Data
   const [stats, setStats] = useState({
-    universities: 180,
-    colleges: 150,
-    classes: 30,
+    universities: 0,
+    colleges: 0,
+    classes: 0,
   });
   const [iqTestCounts, setIqTestCounts] = useState([]);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -56,7 +124,7 @@ const AdminDashboard = () => {
       } catch (error) {
         console.error(
           "Error fetching stats:",
-          error?.response?.data || error.message
+          error?.response?.data || error.message  || error.response?.data.errMessage 
         );
       }
     };
@@ -64,13 +132,13 @@ const AdminDashboard = () => {
     const fetchIqTestCounts = async () => {
       try {
         console.log("Fetching IQ Test Counts...");
-    
+
         const responses = await Promise.all(
           categories.map(async (category) => {
             try {
               const res = await api.get(`/api/iqtest?type=${category}`); // Fetch data per category
               console.log(`API Response for ${category}:`, res.data); // Debug log
-    
+
               // Check if the data contains an array and return the count
               if (Array.isArray(res.data?.data)) {
                 return res.data.data.length;
@@ -79,19 +147,25 @@ const AdminDashboard = () => {
                 return 0; // Default to 0 if structure is incorrect
               }
             } catch (err) {
-              console.error(`Error fetching ${category}:`, err?.response?.data || err.message);
+              console.error(
+                `Error fetching ${category}:`,
+                err?.response?.data || err.message ||  err.response?.data.errMessage 
+              );
               return 0; // Default to 0 if request fails
             }
           })
         );
-    
+
         console.log("Final IQ Test Counts:", responses); // Debugging log
         setIqTestCounts(responses);
       } catch (error) {
-        console.log("Error fetching IQ Test data:", error?.response?.data || error.message);
+        console.log(
+          "Error fetching IQ Test data:",
+          error?.response?.data || error.message ||  error.response?.data.errMessage 
+        );
       }
     };
-    
+
     fetchStats();
     fetchIqTestCounts();
   }, []);
@@ -108,9 +182,9 @@ const AdminDashboard = () => {
     ],
   };
 
-  // Histogram Data
+  // Data
   const barData = {
-    labels:categories,
+    labels: categories,
     datasets: [
       {
         label: "Total IQ Tests",
@@ -119,8 +193,20 @@ const AdminDashboard = () => {
       },
     ],
   };
-  console.log("Updated IQ Test Counts:", iqTestCounts);
 
+  // Options
+  const barOptions = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+          precision: 0,
+        },
+        suggestedMax: 2, // Optional: set higher if needed
+      },
+    },
+  };
   return (
     <div className="p-6 bg-gradient-to-br from-blue-100 to-blue-50 min-h-screen">
       {/* Stats Section */}
@@ -171,34 +257,46 @@ const AdminDashboard = () => {
             IQ Test Count by Category
           </h2>
           <div className="w-full h-64">
-            <Bar data={barData} />
+            <Bar data={barData} options={barOptions} />
           </div>
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
-        <h2 className="text-lg font-semibold text-blue-700 mb-3 flex items-center">
-          <FiActivity className="mr-2 text-blue-600" /> Recent Activity
+      {/* Quick Shortcuts */}
+      <div className="bg-white rounded-3xl shadow-2xl p-8 border border-blue-100">
+        <h2 className="text-2xl font-extrabold text-blue-800 mb-6">
+          🚀 Quick Shortcuts
         </h2>
-        <ul className="space-y-3">
-          <li className="flex items-center text-gray-700">
-            <FiBookOpen className="text-green-500 text-xl mr-2" />
-            <span>New IQ Test added for Engineering Category</span>
-          </li>
-          <li className="flex items-center text-gray-700">
-            <FiUserPlus className="text-purple-500 text-xl mr-2" />
-            <span>1200 students registered this month</span>
-          </li>
-          <li className="flex items-center text-gray-700">
-            <FaUniversity className="text-indigo-500 text-xl mr-2" />
-            <span>New College added: XYZ Institute of Technology</span>
-          </li>
-          <li className="flex items-center text-gray-700">
-            <FiCalendar className="text-orange-500 text-xl mr-2" />
-            <span>Admission season starting next week</span>
-          </li>
-        </ul>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {navigation.map((item, idx) => {
+            const baseColor = item.color?.split("-")[1] ?? "blue";
+            const hoverFrom = `hover:from-${baseColor}-300`;
+            const hoverBorder = `hover:border-${baseColor}-600`;
+            const iconBg = `bg-${baseColor}-200`;
+            const textHover = `group-hover:text-${baseColor}-800`;
+
+            return (
+              <button
+                key={idx}
+                onClick={() => navigate(item.href)}
+                className={`group p-6 rounded-2xl bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300
+ ${hoverFrom} hover:to-white shadow-md hover:shadow-2xl border border-gray-200 ${hoverBorder} transition duration-300 flex flex-col items-center justify-center transform hover:-translate-y-1`}
+              >
+                <div
+                  className={`p-4 rounded-full ${iconBg} group-hover:scale-110 transition-transform duration-300 shadow-inner`}
+                >
+                  <item.icon className={`h-10 w-10 ${item.color}`} />
+                </div>
+                <span
+                  className={`mt-4 text-base font-semibold text-gray-800 ${textHover} transition-all`}
+                >
+                  {item.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

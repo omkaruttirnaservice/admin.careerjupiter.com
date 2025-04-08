@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+import 'leaflet/dist/leaflet.css';
 import Root from "./Component/Root";
 // import { Navigate } from "react-router-dom";
 import Login from "./Pages/Login";

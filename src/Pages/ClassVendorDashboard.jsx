@@ -55,7 +55,7 @@ const ClassVendorDashboard = () => {
       } catch (error) {
         console.error(
           "Error fetching class details:",
-          error?.response?.data || error.message
+          error?.response?.data || error.message ||  error.response?.data.errMessage 
         );
       }
     };
@@ -115,16 +115,7 @@ const ClassVendorDashboard = () => {
               </div>
             </div>
   
-            {/* 🔹 Teaching Medium */}
-            <div className="relative bg-gradient-to-r from-yellow-200 to-yellow-100 p-6 rounded-lg shadow-md flex items-center gap-4 
-                overflow-hidden before:absolute before:top-0 before:left-[-100%] before:w-full before:h-full 
-                before:bg-white before:opacity-20 before:rotate-6 before:transition-all hover:before:left-full">
-              <FaLanguage className="text-yellow-600 text-3xl" />
-              <div>
-                <h3 className="text-lg font-bold">Teaching Medium</h3>
-                <p className="text-gray-700">{classDetails?.teachingMedium?.join(", ") || "N/A"}</p>
-              </div>
-            </div>
+          
           </div>
   
           {/* ✅ Description Section */}

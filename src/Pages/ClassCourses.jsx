@@ -78,10 +78,10 @@ const ClassCourses = () => {
         alert("Courses saved successfully!");
         setIsUpdated(false);
       } else {
-        setError(error.response?.data?.usrMsg ||error.response?.data?.message ||"Failed to save courses.");
+        setError(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "Failed to save courses.");
       }
     } catch (error) {
-      setError(error.response?.data?.usrMsg ||error.response?.data?.message || "Error saving courses.");
+      setError(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "Error saving courses.");
     } finally {
       setLoading(false);
     }

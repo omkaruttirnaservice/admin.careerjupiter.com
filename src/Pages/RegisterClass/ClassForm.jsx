@@ -22,39 +22,33 @@ import ContactWithOTP from "../../Component/ContactWithOTP";
 import MultiSelectDropdown from "../../Component/MultiSelectDropdown";
 import MapComponent from "./MapComponent";
 import Swal from "sweetalert2";
+import AddressModal from "../../Component/AddressModel";
+import ButtonComponent from "../../Component/Button";
 
 const ClassForm = ({ onClose }) => {
-  const [position, setPosition] = useState({ lat: 19.076, lan: 72.8777 });
+  // const [position, setPosition] = useState({ lat: 19.076, lan: 72.8777 });
   const navigate = useNavigate();
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  // const [formik, setFormik] = useState(null); // Store Formik instance or use `useFormik`
+
   
 
   <stateDistricts />;
 
   const classCategories = [
-    "SSC",
-    "HSC",
-    "Diploma",
-    "Pharmacy",
-    "Engineering",
-    "Under Graduate",
-    "Post Graduate",
-  ];
-
-  const typeOfClass = [
-    "8th",
-    "9th",
-    "10th",
-    "SSC",
-    "HSC",
-    "CBSE",
-    "ICSE",
+    "Primary (1 to 7)",
+    "Secondary (8 to 10) State Board",
+    "Secondary (8 to 10) CBSE Board",
+    "Secondary (8 to 10) ICSE Board",
+    "Secondary (8 to 10) IGCSE Board",
+    "11 - 12 Science with CET",
+    "11 - 12 Science with CET, JEE, NEET",
+    "Diploma Engineering",
+    "Degree Engineering",
     "NDA",
-    "11th",
-    "12th",
-    "Hobbies Class",
-    "Home Coaching",
-    "Training Institute",
-    "Tutions",
+    "Hobby/Sports",
+    "Competative Exams",
+    "Others",
   ];
 
   const formik = useFormik({
@@ -68,14 +62,25 @@ const ClassForm = ({ onClose }) => {
       modeOfTeaching: [],
       franchiseOrIndependent: "",
       yearEstablished: "",
-      address: {
-        line1: "",
-        line2: "",
-        pincode: "",
-        state: "",
-        dist: "",
-      },
+      address: [
+        {
+          line1: "",
+          line2: "",
+          pincode: "",
+          state: "",
+          dist: "",
+          taluka:"",
+          nearbyLandmarks: "", // ✅ single string
+          autorizedName: "",
+          autorizedPhono: "",
+        },
+      ],
+      
       contactDetails: "",
+      otp: '',
+      reference_id: '',
+      isVerified: false,
+      password: '',
       info: { description: "" },
       websiteURL: "",
       image: null,
@@ -94,25 +99,34 @@ const ClassForm = ({ onClose }) => {
         .required("Year Established is required")
         .min(1900, "Enter a valid year")
         .max(new Date().getFullYear(), "Year cannot be in the future"),
-      address: Yup.object().shape({
-        line1: Yup.string().required("Address Line 1 is required"),
-        pincode: Yup.string()
-          .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
-          .required("Pincode is required"),
-        state: Yup.string().required("State is required"),
-        dist: Yup.string().required("District is required"),
-      }),
+        address: Yup.array().of(
+          Yup.object().shape({
+    //         line1: Yup.string().required("Address Line 1 is required"),
+    //         // line2: Yup.string().required("Address Line 2 is required"),
+            pincode: Yup.string()
+              .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
+              .required("Pincode is required"),
+    //         state: Yup.string().required("State is required"),
+    //         dist: Yup.string().required("District is required"),
+    //         taluka: Yup.string().required("Taluka is required"), // ✅ single string
+    //         nearbyLandmarks: Yup.string().required("Landmark is required"), // ✅ single string
+    //         autorizedName: Yup.string().required("Autorized Name is required"), // ✅ single string
+    //         autorizedPhono: Yup.string()
+    //         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
+    //         .required("Phone Number is required"),
+          })
+        ),
       contactDetails: Yup.string()
         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
         .required("Contact Details are required"),
 
-      // websiteURL: Yup.string().url("Enter a valid website URL").nullable(),
-      websiteURL: Yup.string()
-      .matches(
-        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        "Enter a valid website URL"
-      )
-      .nullable(),
+    //   // websiteURL: Yup.string().url("Enter a valid website URL").nullable(),
+    //   // websiteURL: Yup.string()
+    //   // .matches(
+    //   //   /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    //   //   "Enter a valid website URL"
+    //   // )
+    //   // .nullable(),
 
       info: Yup.object().shape({
         description: Yup.string()
@@ -127,7 +141,7 @@ const ClassForm = ({ onClose }) => {
         .required("Keywords are required"),
       imageGallery: Yup.array()
         .min(1, "At least one image is required")
-        .max(2, "You can upload up to 2 images only")
+        // .max(2, "You can upload up to 2 images only")
         .of(
           Yup.mixed()
             .test(
@@ -153,10 +167,10 @@ const ClassForm = ({ onClose }) => {
           file ? file.size <= 102400 : true
         )
         .required("Image is required"),
-      typeOfClass: Yup.array()
-        .of(Yup.string().oneOf(typeOfClass, "Invalid selection"))
-        .min(1, "At least one class type must be selected")
-        .required("Type of class is required"),
+    //   typeOfClass: Yup.array()
+    //     .of(Yup.string().oneOf(typeOfClass, "Invalid selection"))
+    //     .min(1, "At least one class type must be selected")
+    //     .required("Type of class is required"),
       Category: Yup.array()
         .of(Yup.string().oneOf(classCategories, "Invalid category selected"))
         .min(1, "At least one category must be selected")
@@ -164,27 +178,27 @@ const ClassForm = ({ onClose }) => {
         modeOfTeaching: Yup.array()
         .min(1, "Please select at least one mode of teaching") // At least one option must be selected
         .required("Mode of teaching is required"),
-      teachingMedium: Yup.array()
-        .of(
-          Yup.string().min(
-            1,
-            "Each teaching medium must have at least 1 character"
-          )
-        )
-        .min(1, "At least one teaching medium is required")
-        // .max(5, "You can add up to 5 teaching mediums only")
-        .required("Teaching medium is required"),
+    //   teachingMedium: Yup.array()
+    //     .of(
+    //       Yup.string().min(
+    //         1,
+    //         "Each teaching medium must have at least 1 character"
+    //       )
+    //     )
+    //     .min(1, "At least one teaching medium is required")
+    //     // .max(5, "You can add up to 5 teaching mediums only")
+    //     .required("Teaching medium is required"),
 
-      subjectsOrCourses: Yup.array()
-        .of(
-          Yup.string().min(
-            1,
-            "Each subject or course must have at least 1 character"
-          )
-        )
-        .min(1, "At least one subject or course is required")
-        // .max(20, "You can add up to 20 subjects or courses only")
-        .required("Subjects or courses are required"),
+    //   subjectsOrCourses: Yup.array()
+    //     .of(
+    //       Yup.string().min(
+    //         1,
+    //         "Each subject or course must have at least 1 character"
+    //       )
+    //     )
+    //     .min(1, "At least one subject or course is required")
+    //     // .max(20, "You can add up to 20 subjects or courses only")
+    //     .required("Subjects or courses are required"),
     }),
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -208,11 +222,15 @@ const ClassForm = ({ onClose }) => {
         console.log("✅ Formatted Data Before Sending:", formattedData);
 
         //
-        formData.append("address[line1]", values.address?.line1);
-        formData.append("address[line2]", values.address?.line2);
-        formData.append("address[pincode]", values.address?.pincode);
-        formData.append("address[state]", values.address?.state);
-        formData.append("address[dist]", values.address?.dist);
+        formData.append("address[0][line1]", values.address[0].line1);
+formData.append("address[0][line2]", values.address[0].line2);
+formData.append("address[0][taluka]", values.address[0].taluka);
+formData.append("address[0][pincode]", values.address[0].pincode);
+formData.append("address[0][state]", values.address[0].state);
+formData.append("address[0][dist]", values.address[0].dist);
+formData.append("address[0][nearbyLandmarks]", values.address[0].nearbyLandmarks);
+formData.append("address[0][autorizedName]", values.address[0].autorizedName);
+formData.append("address[0][autorizedPhono]", values.address[0].autorizedPhono);
         formData.append("franchiseOrIndependent", formattedData.franchiseOrIndependent);
 
 
@@ -238,7 +256,7 @@ const ClassForm = ({ onClose }) => {
         formData.append("websiteURL", formattedData.websiteURL);
         formData.append("yearEstablished", formattedData.yearEstablished);
 
-
+        formData.append("password", formattedData.password);
         formattedData.Category.forEach((cat) => {
           formData.append("Category", cat);
         });
@@ -248,10 +266,7 @@ const ClassForm = ({ onClose }) => {
           formData.append("modeOfTeaching", mode);
         });
 
-        formattedData.typeOfClass.forEach((type) => {
-          formData.append("typeOfClass", type);
-        });
-
+        
         if (formattedData.image) {
           formData.append("image", formattedData.image);
         }
@@ -266,16 +281,7 @@ const ClassForm = ({ onClose }) => {
           formData.append("keywords", keyword);
         });
 
-        // Append subjectsOrCourses one by one
-        formattedData.subjectsOrCourses.forEach((subject) => {
-          formData.append("subjectsOrCourses", subject);
-        });
-
-        // Append teachingMedium one by one
-        formattedData.teachingMedium.forEach((medium) => {
-          formData.append("teachingMedium", medium);
-        });
-       
+        
 
         console.log(
           "📌Final FormData Sent:",
@@ -296,7 +302,7 @@ const ClassForm = ({ onClose }) => {
         // ✅ Extract Class ID
   const classId = response.data?.data?.class?._id;
   if (!classId) {
-    throw new Error("❌ Class ID missing in API response");
+    throw new Error( error.response?.data.errMessage || "❌ Class ID missing in API response");
   }
 
   // ✅ Store Class ID in Cookies
@@ -329,6 +335,7 @@ const ClassForm = ({ onClose }) => {
         alert(
           error.response?.data?.usrMsg ||
             error.response?.data?.message ||
+            error.response?.data.errMessage ||
             "❌ Error submitting form. Try again."
         );
       } finally {
@@ -369,7 +376,7 @@ const ClassForm = ({ onClose }) => {
               name="ownerOrInstituteName"
               formik={formik}
             />
-            <InputField
+            {/* <InputField
               label="Address"
               type="text"
               name="address.line1"
@@ -381,6 +388,8 @@ const ClassForm = ({ onClose }) => {
               name="address.pincode"
               formik={formik}
             />
+ 
+
 
             <SelectField
               label="Select State"
@@ -404,9 +413,19 @@ const ClassForm = ({ onClose }) => {
               }
               formik={formik}
               disabled={!formik.values.address.state} // ✅ Disable until state is selected
-            />
+            /> */}
 
             <ContactWithOTP formik={formik} />
+
+            <div className="col-span-full grid grid-cols-2 gap-4">
+           
+            <InputField
+  label="Set Password"
+  type="password"
+  name="password"
+  formik={formik}
+/>
+  </div>
 
             <InputField
               label="Year Established"
@@ -422,12 +441,7 @@ const ClassForm = ({ onClose }) => {
               formik={formik}
             />
 
-            <MultiSelectDropdown
-              label="Type of Class"
-              name="typeOfClass"
-              options={typeOfClass}
-              formik={formik}
-            />
+        
 
             <MultiSelectDropdown
               label="Category"
@@ -445,16 +459,7 @@ const ClassForm = ({ onClose }) => {
             />
             <div className="col-span-full">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full ">
-                <MultiSelectField
-                  label="Subjects or Courses"
-                  name="subjectsOrCourses"
-                  formik={formik}
-                />
-                <MultiSelectField
-                  label="Teaching Medium"
-                  name="teachingMedium"
-                  formik={formik}
-                />
+                
                 <MultiSelectField
                   label="Keywords"
                   name="keywords"
@@ -464,9 +469,9 @@ const ClassForm = ({ onClose }) => {
             </div>
 
             <RadioGroup
-              label="Franchise or Independent"
+              label="Type"
               name="franchiseOrIndependent"
-              options={["Franchise", "Independent"]}
+              options={["Franchise", "Home Tution", "Group"]}
               formik={formik}
             />
             <CheckboxGroup
@@ -494,11 +499,62 @@ const ClassForm = ({ onClose }) => {
               </div>
             </div>
 
-            {/* Map & Search */}
-            <div className="mt-4 col-span-full">
-              <MapComponent formik={formik} />
-            </div>
+            <button
+  type="button"
+  onClick={() => setShowAddressModal(true)}
+  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200"
+>
+  ➕ Add Address
+  
+</button>
 
+{/* Display Saved Addresses */}
+{formik.values.address &&
+  formik.values.address.length > 0 &&
+  formik.values.address.some(
+    (addr) => addr.line1 || addr.line2 || addr.pincode || addr.state || addr.dist
+  ) && (
+  <div className="col-span-full mt-6">
+    <h4 className="text-lg font-semibold text-blue-800 mb-4">📌 Saved Addresses</h4>
+    <div className="space-y-4">
+      {formik.values.address.map((addr, idx) => (
+        <div
+          key={idx}
+          className="border border-blue-200 bg-blue-50 rounded-md p-4 shadow-sm relative"
+        >
+          <div className="text-sm text-gray-700 space-y-1">
+            <p><strong>Line 1:</strong> {addr.line1}</p>
+            <p><strong>Line 2:</strong> {addr.line2}</p>
+            <p><strong>Landmark:</strong> {addr.nearbyLandmarks}</p>
+            <p><strong>Taluka:</strong> {addr.taluka}</p>
+            <p><strong>District:</strong> {addr.dist}</p>
+            <p><strong>State:</strong> {addr.state}</p>
+            <p><strong>Pincode:</strong> {addr.pincode}</p>
+             <p><strong>State:</strong> {addr.state}</p>
+            <p><strong>Pincode:</strong> {addr.pincode}</p>
+          </div>
+
+          {/* Delete Button */}
+          <button
+            type="button"
+            onClick={() => {
+              const updated = [...formik.values.address];
+              updated.splice(idx, 1);
+              formik.setFieldValue("address", updated);
+            }}
+            className="absolute top-2 right-2 bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700"
+          >
+            Delete
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+
+
+            
             {/* Submit Button */}
             {/* <div className="text-center mt-2 col-span-full w-50 justify-center">
               <button
@@ -512,6 +568,7 @@ const ClassForm = ({ onClose }) => {
             <div className="col-span-full flex justify-center mt-4">
               <button
                 type="submit"
+                
                 className="bg-indigo-600 cursor-pointer text-white py-3 px-6 rounded-md font-semibold 
                hover:bg-indigo-700 transition w-full sm:w-auto disabled:bg-gray-400 disabled:cursor-not-allowed"
                 disabled={formik.isSubmitting}
@@ -522,6 +579,13 @@ const ClassForm = ({ onClose }) => {
           </div>
         </form>
       </div>
+      <AddressModal
+        open={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        onSave={(addresses) => {
+          formik.setFieldValue("address", addresses);
+        }}
+      />
     </div>
   );
 };

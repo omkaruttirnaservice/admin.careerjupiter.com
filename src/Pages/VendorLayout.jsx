@@ -33,7 +33,7 @@ const VendorLayout = () => {
 
       {/* ✅ Main Content (Expands when Sidebar Closes) */}
       {/* <div className={`flex-1 p-6 bg-gray-100 overflow-auto transition-all duration-300 ${isMenuOpen ? "ml-0" : "ml-64"} md:ml-64`}> */}
-      <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300 md:p-0 lg:p-0 sm:p-0"
+      <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300 md:p-0 lg:p-0 sm:p-0" 
   >
 
         <Outlet />

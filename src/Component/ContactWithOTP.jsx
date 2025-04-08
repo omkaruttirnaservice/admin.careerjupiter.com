@@ -5,6 +5,8 @@ import Swal from "sweetalert2"; // ✅ Import SweetAlert
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import InputField from "./InputField";
 import ButtonComponent from "./Button";
+import Cookies from "js-cookie";
+
 
 const ContactWithOTP = ({ formik }) => {
   const [otpSent, setOtpSent] = useState(false); // ✅ Controls OTP input visibility
@@ -43,7 +45,7 @@ const ContactWithOTP = ({ formik }) => {
       setLoading(true); // ✅ Show loading
       console.log("📌 Sending OTP to:", formik.values.contactDetails);
 
-      const response = await axios.post(`${API_BASE_URL}/api/auth/otp`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/send-otp`, {
         mobile_no: formik.values.contactDetails, // ✅ Takes mobile number from form
       });
 
@@ -69,7 +71,7 @@ const ContactWithOTP = ({ formik }) => {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: error.response?.data?.usrMsg ||error.response?.data?.message || "Something went wrong. Please try again.",
+        text: error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "Something went wrong. Please try again.",
         confirmButtonColor: "#d33",
       });
     } finally {
@@ -93,7 +95,7 @@ const ContactWithOTP = ({ formik }) => {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: error.response?.data?.usrMsg ||error.response?.data?.message,
+        text: error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage,
       });
       return;
     }
@@ -142,7 +144,7 @@ const ContactWithOTP = ({ formik }) => {
       Swal.fire({
         icon: "error",
         title: "Verification Failed!",
-        text: error.response?.data?.usrMsg || error.response?.data?.message || "Invalid OTP or Reference ID.",
+        text: error.response?.data?.usrMsg || error.response?.data?.message ||  error.response?.data.errMessage || "Invalid OTP or Reference ID.",
         confirmButtonColor: "#d33",
       });
     } finally {
