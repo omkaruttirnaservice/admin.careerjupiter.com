@@ -138,7 +138,7 @@ const AddTest = ({ onClose }) => {
     };
   
     console.log("Sending requestData to API:", requestData);
-    return 
+  
     try {
       const response = await axios.post(`${API_BASE_URL}/api/iqtest/`, requestData);
       console.log("API Response:", response.data); // Log full response
@@ -146,7 +146,7 @@ const AddTest = ({ onClose }) => {
       onClose();
     } catch (error) {
       console.error("API Error:", error.response?.data || error.message);
-      alert(error.response?.data?.usrMsg || error.response?.data?.message || "Failed to add test");
+      alert(error.response?.data?.usrMsg || error.response?.data?.message ||  error.response?.data.errMessage ||"Failed to add test");
     
     } finally {
       setSubmitting(false);

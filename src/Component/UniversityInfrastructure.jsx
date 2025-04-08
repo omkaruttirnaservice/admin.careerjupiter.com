@@ -103,7 +103,7 @@ function UniversityInfrastructure() {
         );
         alert(
           `Failed to save infrastructure details. Please try again. ${
-            error.response?.data?.message || "Unknown error"
+            error.response?.data?.message ||  error.response?.data.errMessage || "Unknown error"
           }`
         );
       }

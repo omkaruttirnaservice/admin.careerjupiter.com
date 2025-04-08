@@ -8,7 +8,7 @@ import {
   ClipboardCheckIcon,
   CogIcon,
   LogoutIcon,
-  UserCircleIcon,
+  UserCircleIcon, 
   MenuIcon,
   UserAddIcon,
 } from "@heroicons/react/solid"; // ✅ HeroIcons
@@ -77,7 +77,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       } catch (error) {
         console.error(
           "Error fetching class details:",
-          error?.response?.data || error.message
+          error?.response?.data || error.message ||  error.response?.data.errMessage 
         );
       }
     };
@@ -97,7 +97,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
           className="absolute top-4 right-4 text-white md:hidden"
           onClick={() => setIsMenuOpen(false)}
         >
-          <MenuIcon className="w-8 h-8" />
+          {/* <MenuIcon className="w-8 h-8" /> */}
         </button>
 
         {/* ✅ Profile Section */}

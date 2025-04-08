@@ -27,11 +27,11 @@ const ClassTableDetails = () => {
           console.log("✅ Fetched Class Data:", classArray);
           setClassData(classArray); // ✅ Update state with array
         } else {
-          console.error(error.response?.data?.usrMsg ||error.response?.data?.message ||"❌ API returned an unexpected format:", response.data);
+          console.error(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage ||"❌ API returned an unexpected format:", response.data);
         }
       })
       .catch((error) => {
-        console.error(error.response?.data?.usrMsg ||error.response?.data?.message || "❌ Error fetching class data:", error);
+        console.error(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "❌ Error fetching class data:", error);
       })
       .finally(() => {
         setLoading(false);
@@ -78,7 +78,7 @@ const ClassTableDetails = () => {
       })
       .catch((error) => {
         console.error("Error updating class:", error);
-        alert(error.response?.data?.usrMsg ||error.response?.data?.message || "❌ Error updating class details!");
+        alert(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "❌ Error updating class details!");
       });
   };
 
@@ -101,7 +101,7 @@ const ClassTableDetails = () => {
       })
       .catch((error) => {
         console.error("❌ Error deleting class:", error);
-        alert(error.response?.data?.usrMsg ||error.response?.data?.message || "❌ Error deleting class!");
+        alert(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "❌ Error deleting class!");
       });
   };
   

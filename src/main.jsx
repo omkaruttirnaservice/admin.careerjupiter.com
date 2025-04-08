@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import "../src/styles/tailwind.css"
 import './index.css'
 import { BrowserRouter } from 'react-router-dom';
+import 'leaflet/dist/leaflet.css';
 import App from './App'; 
 
 

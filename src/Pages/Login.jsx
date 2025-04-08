@@ -1,27 +1,35 @@
 
+
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { setAuthCookies } from "../Utlis/cookieHelper";
-import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import { FaMobileAlt, FaLock, FaSms, FaBook, FaGraduationCap, FaLightbulb } from "react-icons/fa";
+import { FaMobileAlt, FaLock, FaBook, FaGraduationCap, FaLightbulb } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
-  const [otp, setOtp] = useState("");
-  const [referenceId, setReferenceId] = useState("");
-  const [step, setStep] = useState(1);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [userRole, setUserRole] = useState("");
-  const [otpToken, setOtpToken] = useState("");
   const navigate = useNavigate();
 
-  const sendOtp = async () => {
+  const handleLogin = async () => {
     if (!mobileNo || mobileNo.length !== 10) {
       Swal.fire("Invalid Number!", "Enter a valid 10-digit mobile number.", "warning");
+      return;
+    }
+
+    if (!password || !confirmPassword) {
+      Swal.fire( error.response?.data.errMessage ||"Missing Fields!", "Please fill out both password fields.", "warning");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Swal.fire( error.response?.data.errMessage ||"Password Mismatch!", "Passwords do not match.", "error");
       return;
     }
 
@@ -29,93 +37,64 @@ const Login = () => {
       setLoading(true);
       const response = await axios.post(`${API_BASE_URL}/api/auth/otp`, {
         mobile_no: mobileNo,
+        password,
+        confirmPassword,
       });
 
       if (response.data.success) {
-        const { reference_id, role, token } = response.data.data;
-        setReferenceId(reference_id);
-        setUserRole(role);
-        setOtpToken(token);
-        Swal.fire("OTP Sent!");
-        setStep(2);
-      } else {
-        Swal.fire(error.response?.data?.message ||  error.response?.data?.errMessage || "Failed!", "Could not send OTP. Try again.", "error");
-      }
-    } catch (error) {
-      Swal.fire(error.response?.data?.message ||  error.response?.data?.errMessage || "Error!", "Something went wrong. Try again later.", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+        const { token, role, subrole, userId } = response.data.data || {};
+        Swal.fire("Success!", response.data.usrMsg || "Logged in successfully!", "success");
 
-  const verifyOtp = async () => {
-    if (!otp || !referenceId) {
-      Swal.fire("Error!", "OTP and Reference ID are required.", "error");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      let response;
-      if (userRole === "ADMIN") {
-        response = await axios.post(`${API_BASE_URL}/api/auth/admin/`, {
-          mobile_no: mobileNo,
-          reference_id: referenceId,
-          otp: otp,
-        });
-      } else if (userRole === "VENDOR") {
-        response = await axios.post(`${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`, {
-          mobile_no: mobileNo,
-          reference_id: referenceId,
-          otp: otp,
-        });
-      }
-
-      if (response.data.success) {
-        Swal.fire("Success!", response.data.usrMsg || "OTP Verified Successfully!", "success");
-
-        let { token, role, subrole, userId, classId } = response.data.data || {};
-
-        setAuthCookies({
-          token: token || "manual-token",
-          role,
-          userId,
-          ...(role === "VENDOR" ? { subrole, classId } : {}),
-        });
-
+        // ✅ For ADMIN
         if (role === "ADMIN") {
+          setAuthCookies({ token: token || "manual-token", role, userId });
           window.location.href = "/dashboard";
-          return;
         }
 
-        // ✅ Vendor: Check if Registered
-        const classResponse = await axios.get(`${API_BASE_URL}/api/class/all`);
-        if (classResponse.data.success && classResponse.data.data.classes) {
-          const matchedClass = classResponse.data.data.classes.find(cls => cls.contactDetails === mobileNo);
-          if (matchedClass) {
-            Cookies.set("classId", matchedClass._id, { expires: 1 / 24 }); // ✅ update classId cookie
-            window.location.href = "/vendor-class/class-dashboard";
-            return;
+        // ✅ For VENDOR
+        else if (role === "VENDOR") {
+          try {
+            const classResponse = await axios.get(`${API_BASE_URL}/api/class/all`);
+            if (classResponse.data.success && classResponse.data.data.classes) {
+              const matchedClass = classResponse.data.data.classes.find(
+                (cls) => cls.contactDetails === mobileNo
+              );
+
+              if (matchedClass) {
+                // ✅ Store all cookies including classId
+                setAuthCookies({
+                  token: token || "manual-token",
+                  role: "VENDOR",
+                  userId,
+                  subrole,
+                  classId: matchedClass._id,
+                });
+                window.location.href = "/vendor-class/class-dashboard";
+                return;
+              }
+            }
+
+            // ❌ No class found
+            Swal.fire({
+              title: "User Not Found!",
+              text: "No registered class found. Please register first.",
+              icon: "warning",
+              confirmButtonText: "Register Now",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "/register-class";
+              }
+            });
+          } catch (err) {
+            console.error("Error fetching class data:", err);
+            Swal.fire( error.response?.data.errMessage || "Error!", "Something went wrong while checking registration.", "error");
           }
         }
-
-        Swal.fire({
-          title: "User Not Found!",
-          text: "No registered class found. Please register first.",
-          icon: "warning",
-          confirmButtonText: "Register Now",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = "/register-class";
-          }
-        });
       } else {
-        Swal.fire("Failed!", response.data.usrMsg || "OTP Verification Failed!", "error");
+        Swal.fire("Login Failed!", response.data.usrMsg || "Something went wrong!", "error");
       }
     } catch (error) {
-      console.error("❌ OTP Verification Error:", error.response?.data || error.message);
-      Swal.fire("Error!", error.response?.data?.message ||  error.response?.data?.errMessage ||"Invalid OTP. Try again.", "error");
+      Swal.fire("Error!", error.response?.data?.message ||  error.response?.data.errMessage || "Server Error", "error");
     } finally {
       setLoading(false);
     }
@@ -151,67 +130,59 @@ const Login = () => {
         className="relative w-full max-w-md p-8 rounded-xl shadow-2xl bg-white text-gray-900 border-2 border-gray-300"
       >
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-purple-800">
-            {step === 1 ? "Login with Mobile" : "Enter OTP"}
-          </h2>
-          <p className="text-gray-700 mt-1">Your journey towards success starts here!</p>
+          <h2 className="text-3xl font-bold text-purple-800">Login / Register</h2>
+          <p className="text-gray-700 mt-1">Welcome back!</p>
         </div>
 
-        {step === 1 && (
-          <>
-            <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">
-              Mobile Number
-            </label>
-            <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400">
-              <FaMobileAlt className="text-blue-500 mr-3" />
-              <input
-                type="text"
-                className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
-                placeholder="Enter Mobile Number"
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
-              />
-            </div>
+        {/* Mobile Number */}
+        <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">Mobile Number</label>
+        <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4">
+          <FaMobileAlt className="text-blue-500 mr-3" />
+          <input
+            type="text"
+            className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
+            placeholder="Enter Mobile Number"
+            value={mobileNo}
+            onChange={(e) => setMobileNo(e.target.value)}
+          />
+        </div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={sendOtp}
-              disabled={loading}
-              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center"
-            >
-              <FaSms className="mr-2" /> {loading ? "Sending..." : "Send OTP"}
-            </motion.button>
-          </>
-        )}
+        {/* Password */}
+        <label className="text-gray-700 text-lg font-medium mb-2">Password</label>
+        <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4">
+          <FaLock className="text-purple-600 mr-3" />
+          <input
+            type="password"
+            className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
-        {step === 2 && (
-          <>
-            <label className="block text-gray-700 text-lg font-medium mb-2">
-              Enter OTP
-            </label>
-            <div className="flex items-center bg-white shadow-md p-3 rounded-lg border border-gray-400">
-              <FaLock className="text-green-500 mr-3" />
-              <input
-                type="text"
-                className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
-                placeholder="Enter OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-              />
-            </div>
+        {/* Confirm Password */}
+        <label className="text-gray-700 text-lg font-medium mb-2">Confirm Password</label>
+        <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4">
+          <FaLock className="text-orange-600 mr-3" />
+          <input
+            type="password"
+            className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={verifyOtp}
-              disabled={loading}
-              className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center"
-            >
-              <FaLock className="mr-2" /> {loading ? "Verifying..." : "Verify OTP"}
-            </motion.button>
-          </>
-        )}
+        {/* Login Button */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleLogin}
+          disabled={loading}
+          className="w-full mt-4 bg-gradient-to-br from-purple-700 to-orange-500 cursor-pointer text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center"
+        >
+          {loading ? "Submitting..." : "Login / Register"}
+        </motion.button>
 
         {/* Decorations */}
         <div className="absolute top-0 left-0 w-20 h-20 bg-blue-500 opacity-10 rounded-full blur-xl"></div>
@@ -222,11 +193,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
-
-
-
-
-

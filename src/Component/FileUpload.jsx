@@ -10,9 +10,9 @@ const FileUpload = ({ label, name, multiple = false, formik }) => {
     let files = multiple ? Array.from(event.target.files) : event.target.files[0];
   
     // Apply the limit only for multiple uploads
-    if (multiple && files.length > 5) {
-      alert("You can upload up to 5 images only.");
-      files = files.slice(0, 5);
+    if (multiple && files.length > 1) {
+      alert("You can upload up to 1 images only.");
+      files = files.slice(0, 1);
     }
   
     formik.setFieldValue(name, files);
