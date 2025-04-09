@@ -149,46 +149,26 @@ const filteredData = classData.filter((row) => {
       selector: (row) => row.contactDetails || "N/A",
       sortable: true,
     },
-    { 
-      name: "Locations", 
-      selector: (row) => row.locations?.map(loc => `(${loc.lat}, ${loc.lan})`).join(", ") || "N/A", 
-      sortable: true 
+    {
+      name: "Address",
+      selector: (row) => {
+        const addr = Array.isArray(row.address) ? row.address[0] : row.address;
+        if (!addr) return "N/A";
+    
+        return `${addr.line1 || ""}, ${addr.line2 || ""}, ${addr.taluka || ""}, ${addr.dist || ""}, ${addr.state || ""}, ${addr.pincode || ""}
+    Landmark: ${addr.nearbyLandmarks || "-"} 
+    Authorized: ${addr.autorizedName || "-"} (${addr.autorizedPhono || "-"})`;
+      },
+      sortable: false,
+      wrap: true,
     },
-    { 
-  name: "Teaching Medium", 
-  selector: (row) => row.teachingMedium?.join(", ") || "N/A", 
-  sortable: true 
-},
-{ 
-  name: "Types Of Classes", 
-  selector: (row) => row.typeOfClass?.join(", ") || "N/A", 
-  sortable: true 
-},
+    
 { 
   name: "Keywords", 
   selector: (row) => row.keywords?.join(", ") || "N/A", 
   sortable: true 
 },
-{
-  name: "Address",
-  selector: (row) => row.address?.line1 || "N/A",
-  sortable: true,
-},
-{
-  name: "State",
-  selector: (row) => row.address?.state || "N/A",
-  sortable: true,
-},
-{
-  name: "District",
-  selector: (row) => row.address?.dist || "N/A", // Use "dist" instead of "district" based on API response
-  sortable: true,
-},
-{
-  name: "Pincode",
-  selector: (row) => row.address?.pincode || "N/A",
-  sortable: true,
-},
+
 
     // { name: "Teaching Medium", selector: (row) => row.teachingMedium || "N/A", sortable: true },
     { name: "Year Established", selector: (row) => row.yearEstablished || "N/A", sortable: true },

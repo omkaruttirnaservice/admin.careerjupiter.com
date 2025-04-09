@@ -159,7 +159,7 @@ const ContactWithOTP = ({ formik }) => {
         <div className="relative flex-grow">
           <input
             type="text"
-            className="form-input pl-4 py-2 w-full border border-gray-300 focus:ring-2 focus:ring-blue-500"
+            className="form-input pl-4 py-2 w-full border border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
             placeholder="Enter Mobile Number"
             value={formik.values.contactDetails}
             onChange={(e) => formik.setFieldValue("contactDetails", e.target.value)}
@@ -176,7 +176,7 @@ const ContactWithOTP = ({ formik }) => {
                 type="button"
                 onClick={sendOtp}
                 disabled={isVerified}
-                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600 rounded-md"
               >
                 Send OTP
               </button>
@@ -190,7 +190,7 @@ const ContactWithOTP = ({ formik }) => {
           <div className="relative flex-grow">
             <input
               type="text"
-              className="form-input pl-4 pr-12 py-2 w-full border border-gray-300  focus:ring-2 focus:ring-blue-500"
+              className="form-input pl-4 pr-12 py-2 w-full border border-gray-300  focus:ring-2 focus:ring-blue-500 rounded-md"
               placeholder="Enter OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
@@ -199,7 +199,7 @@ const ContactWithOTP = ({ formik }) => {
               <button
                 type="button"
                 onClick={verifyOtp}
-                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600 rounded-md"
               >
                 Verify OTP
               </button>
