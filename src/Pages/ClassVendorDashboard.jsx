@@ -17,6 +17,7 @@ import ClassVendorSideMenu from "./ClassVendorSideMenu";
 const ClassVendorDashboard = () => {
   const [classDetails, setClassDetails] = useState(null);
   const [classId, setClassId] = useState(null); // ✅ State for classId
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // ✅ Fetch classId on component mount
   useEffect(() => {
@@ -66,7 +67,7 @@ const ClassVendorDashboard = () => {
   return (
     <div className="flex flex-col md:flex-row bg-gradient-to-br from-indigo-100 to-purple-50 min-h-screen">
       {/* ✅ Sidebar */}
-      <ClassVendorSideMenu />
+      {/* <ClassVendorSideMenu isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} /> */}
   
       {/* ✅ Main Content */}
       <div className="flex-1 p-4">

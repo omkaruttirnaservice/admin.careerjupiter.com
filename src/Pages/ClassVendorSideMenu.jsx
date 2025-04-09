@@ -38,6 +38,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [activeLink, setActiveLink] = useState(location.pathname);
   const [classDetails, setClassDetails] = useState(null);
   const [classId, setClassId] = useState(null); // ✅ State for classId
+  
 
   // ✅ Update activeLink when URL changes
   useEffect(() => {
@@ -45,7 +46,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    window.location.href = "/"; // ✅ Redirect to login
+   navigate("/"); // ✅ Redirect to login
   };
 
   useEffect(() => {

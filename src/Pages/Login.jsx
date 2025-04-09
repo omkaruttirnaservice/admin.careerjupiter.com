@@ -13,7 +13,6 @@ import { motion } from "framer-motion";
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -23,32 +22,32 @@ const Login = () => {
       return;
     }
 
-    if (!password || !confirmPassword) {
-      Swal.fire( error.response?.data.errMessage ||"Missing Fields!", "Please fill out both password fields.", "warning");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      Swal.fire( error.response?.data.errMessage ||"Password Mismatch!", "Passwords do not match.", "error");
+    if (!password) {
+      Swal.fire("Missing Fields!", "Please enter your password.", "warning");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await axios.post(`${API_BASE_URL}/api/auth/otp`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         mobile_no: mobileNo,
         password,
-        confirmPassword,
       });
 
+      console.log("Response", response);
       if (response.data.success) {
-        const { token, role, subrole, userId } = response.data.data || {};
+        const { token, role, subrole, userID} = response.data.data || {};
+        console.log("user id====",response?.data?.data);
+        console.log("Response data", response.data);
+        
         Swal.fire("Success!", response.data.usrMsg || "Logged in successfully!", "success");
 
         // ✅ For ADMIN
         if (role === "ADMIN") {
-          setAuthCookies({ token: token || "manual-token", role, userId });
-          window.location.href = "/dashboard";
+          setAuthCookies({ token: token || "manual-token", role, userID
+          });
+          // window.location.href = "/dashboard";
+          navigate("/dashboard");
         }
 
         // ✅ For VENDOR
@@ -65,11 +64,13 @@ const Login = () => {
                 setAuthCookies({
                   token: token || "manual-token",
                   role: "VENDOR",
-                  userId,
+                  userID,
                   subrole,
                   classId: matchedClass._id,
                 });
-                window.location.href = "/vendor-class/class-dashboard";
+                console.log("Token", token);
+                // window.location.href = "/vendor-class/class-dashboard";
+                navigate("/vendor-class/class-dashboard");
                 return;
               }
             }
@@ -82,16 +83,17 @@ const Login = () => {
               confirmButtonText: "Register Now",
             }).then((result) => {
               if (result.isConfirmed) {
-                window.location.href = "/register-class";
+                // window.location.href = "/register-class";
+                navigate("/register-class");
               }
             });
           } catch (err) {
             console.error("Error fetching class data:", err);
-            Swal.fire( error.response?.data.errMessage || "Error!", "Something went wrong while checking registration.", "error");
+            Swal.fire( err.response?.data.errMessage || "Error!", "Something went wrong while checking registration.", "error");
           }
         }
       } else {
-        Swal.fire("Login Failed!", response.data.usrMsg || "Something went wrong!", "error");
+        Swal.fire("Login Failed!", response.data.usrMsg || error.response?.data.errMessage || "Something went wrong!", "error");
       }
     } catch (error) {
       Swal.fire("Error!", error.response?.data?.message ||  error.response?.data.errMessage || "Server Error", "error");
@@ -130,7 +132,7 @@ const Login = () => {
         className="relative w-full max-w-md p-8 rounded-xl shadow-2xl bg-white text-gray-900 border-2 border-gray-300"
       >
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-purple-800">Login / Register</h2>
+          <h2 className="text-3xl font-bold text-purple-800">Login</h2>
           <p className="text-gray-700 mt-1">Welcome back!</p>
         </div>
 
@@ -160,19 +162,6 @@ const Login = () => {
           />
         </div>
 
-        {/* Confirm Password */}
-        <label className="text-gray-700 text-lg font-medium mb-2">Confirm Password</label>
-        <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4">
-          <FaLock className="text-orange-600 mr-3" />
-          <input
-            type="password"
-            className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-
         {/* Login Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -181,7 +170,7 @@ const Login = () => {
           disabled={loading}
           className="w-full mt-4 bg-gradient-to-br from-purple-700 to-orange-500 cursor-pointer text-white py-3 rounded-lg font-semibold shadow-md flex items-center justify-center"
         >
-          {loading ? "Submitting..." : "Login / Register"}
+          {loading ? "Submitting..." : "Login"}
         </motion.button>
 
         {/* Decorations */}

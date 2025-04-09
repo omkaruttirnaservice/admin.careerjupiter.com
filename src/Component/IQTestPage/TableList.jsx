@@ -35,9 +35,10 @@ const TableList = () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/iqtest?type=${selectedCategory}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Set Auth Header
+          Authorization: `Bearer ${token}`, 
         },
       });
+      console.log("Token",token);
 
       console.log("API Response:",response.data);
 
