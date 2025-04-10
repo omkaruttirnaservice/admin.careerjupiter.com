@@ -96,7 +96,7 @@ const Login = () => {
         Swal.fire("Login Failed!", response.data.usrMsg || error.response?.data.errMessage || "Something went wrong!", "error");
       }
     } catch (error) {
-      Swal.fire("Error!", error.response?.data?.message ||  error.response?.data.errMessage || "Server Error", "error");
+      Swal.fire("Error!", error.response?.data?.message ||  error.response?.data.errMessage || error.response?.data?.usrMsg || "Please Try Again", "error");
     } finally {
       setLoading(false);
     }

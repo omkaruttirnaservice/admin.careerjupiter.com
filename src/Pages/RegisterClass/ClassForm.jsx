@@ -58,23 +58,24 @@ const ClassForm = ({ onClose }) => {
       ownerOrInstituteName: "",
       typeOfClass: [],
       Category: [],
+      otherCategory: "",
       subjectsOrCourses: [],
       teachingMedium: [],
       modeOfTeaching: [],
       franchiseOrIndependent: "",
       yearEstablished: "",
       address: [
-        {
-          line1: "",
-          line2: "",
-          pincode: "",
-          state: "",
-          dist: "",
-          taluka: "",
-          nearbyLandmarks: "", // ✅ single string
-          autorizedName: "",
-          autorizedPhono: "",
-        },
+        // {
+        //   line1: "--------",
+        //   line2: "",
+        //   pincode: "",
+        //   state: "",
+        //   dist: "",
+        //   taluka: "",
+        //   nearbyLandmarks: "", // ✅ single string
+        //   autorizedName: "",
+        //   autorizedPhono: "",
+        // },
       ],
 
       contactDetails: "",
@@ -110,19 +111,19 @@ const ClassForm = ({ onClose }) => {
         .required("Confirm Password is required"),
       address: Yup.array().of(
         Yup.object().shape({
-          //         line1: Yup.string().required("Address Line 1 is required"),
-          //         // line2: Yup.string().required("Address Line 2 is required"),
+          line1: Yup.string().required("Address Line 1 is required"),
+          line2: Yup.string().required("Address Line 2 is required"),
           pincode: Yup.string()
             .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
             .required("Pincode is required"),
-          //         state: Yup.string().required("State is required"),
-          //         dist: Yup.string().required("District is required"),
-          //         taluka: Yup.string().required("Taluka is required"), // ✅ single string
-          //         nearbyLandmarks: Yup.string().required("Landmark is required"), // ✅ single string
-          //         autorizedName: Yup.string().required("Autorized Name is required"), // ✅ single string
-          //         autorizedPhono: Yup.string()
-          //         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
-          //         .required("Phone Number is required"),
+          state: Yup.string().required("State is required"),
+          dist: Yup.string().required("District is required"),
+          taluka: Yup.string().required("Taluka is required"), // ✅ single string
+          nearbyLandmarks: Yup.string().required("Landmark is required"), // ✅ single string
+          autorizedName: Yup.string().required("Autorized Name is required"), // ✅ single string
+          autorizedPhono: Yup.string()
+            .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
+            .required("Phone Number is required"),
         })
       ),
       contactDetails: Yup.string()
@@ -176,38 +177,20 @@ const ClassForm = ({ onClose }) => {
           file ? file.size <= 102400 : true
         )
         .required("Image is required"),
-      //   typeOfClass: Yup.array()
-      //     .of(Yup.string().oneOf(typeOfClass, "Invalid selection"))
-      //     .min(1, "At least one class type must be selected")
-      //     .required("Type of class is required"),
-      Category: Yup.array()
-        .of(Yup.string().oneOf(classCategories, "Invalid category selected"))
-        .min(1, "At least one category must be selected")
-        .required("Category is required"),
+  //      Category: Yup.array()
+  //   .of(Yup.string().oneOf(classCategories, "Invalid category selected"))
+  //   .min(1, "At least one category must be selected")
+  //   .required("Category is required"),
+
+  // otherCategory: Yup.string().when("Category", {
+  //   is: (val) => Array.isArray(val) && val.includes("Others"),
+  //   then: () => Yup.string().required("Please specify the other category"),
+  //   otherwise: () => Yup.string().notRequired(),
+  //   }),
       modeOfTeaching: Yup.array()
         .min(1, "Please select at least one mode of teaching") // At least one option must be selected
         .required("Mode of teaching is required"),
-      //   teachingMedium: Yup.array()
-      //     .of(
-      //       Yup.string().min(
-      //         1,
-      //         "Each teaching medium must have at least 1 character"
-      //       )
-      //     )
-      //     .min(1, "At least one teaching medium is required")
-      //     // .max(5, "You can add up to 5 teaching mediums only")
-      //     .required("Teaching medium is required"),
 
-      //   subjectsOrCourses: Yup.array()
-      //     .of(
-      //       Yup.string().min(
-      //         1,
-      //         "Each subject or course must have at least 1 character"
-      //       )
-      //     )
-      //     .min(1, "At least one subject or course is required")
-      //     // .max(20, "You can add up to 20 subjects or courses only")
-      //     .required("Subjects or courses are required"),
     }),
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -236,8 +219,14 @@ const ClassForm = ({ onClose }) => {
         values.address.forEach((address, idx) => {
           formData.append(`address[${idx}][line1]`, values.address[idx].line1);
           formData.append(`address[${idx}][line2]`, values.address[idx].line2);
-          formData.append(`address[${idx}][taluka]`, values.address[idx].taluka);
-          formData.append(`address[${idx}][pincode]`, values.address[idx].pincode);
+          formData.append(
+            `address[${idx}][taluka]`,
+            values.address[idx].taluka
+          );
+          formData.append(
+            `address[${idx}][pincode]`,
+            values.address[idx].pincode
+          );
           formData.append(`address[${idx}][state]`, values.address[idx].state);
           formData.append(`address[${idx}][dist]`, values.address[idx].dist);
           formData.append(
@@ -284,8 +273,13 @@ const ClassForm = ({ onClose }) => {
         formData.append("yearEstablished", formattedData.yearEstablished);
 
         formData.append("password", formattedData.password);
-        formattedData.Category.forEach((cat) => {
-          formData.append("Category", cat);
+        // ✅ 1. Handle Category (override "Others" with customCategory)
+        const finalCategory = values.Category.map((item) =>
+          item === "Others" ? customCategory : item
+        );
+
+        finalCategory.forEach((cat) => {
+          formData.append("Category[]", cat);
         });
 
         // formData.append("subjectsOrCourses", JSON.stringify(formattedData.subjectsOrCourses || []));
@@ -371,6 +365,7 @@ const ClassForm = ({ onClose }) => {
     },
   });
 
+  // 🔍 Watch for selection changes
   useEffect(() => {
     if (formik.values.Category?.includes("Others")) {
       setShowOtherInput(true);
@@ -379,28 +374,17 @@ const ClassForm = ({ onClose }) => {
     }
   }, [formik.values.Category]);
 
-  const handleAddOtherCategory = async () => {
+  const handleAddOtherCategory = () => {
     if (!customCategory.trim()) return;
 
-    try {
-      // ⬆️ Send to backend
-      await axios.post("/api/custom-category", { name: customCategory });
+    const updated = formik.values.Category.map((item) =>
+      item === "Others" ? customCategory : item
+    );
 
-      // 🛠 Replace "Others" with custom category in selected values
-      const updated = formik.values.Category.map((item) =>
-        item === "Others" ? customCategory : item
-      );
-      formik.setFieldValue("Category", updated);
+    formik.setFieldValue("Category", updated);
 
-      // ✅ Optional: update global list too if needed (not mandatory)
-      // classCategories.push(customCategory);
-
-      // Reset
-      setCustomCategory("");
-      setShowOtherInput(false);
-    } catch (err) {
-      console.error("Error submitting custom category:", err);
-    }
+    setCustomCategory("");
+    setShowOtherInput(false);
   };
 
   return (
@@ -543,7 +527,7 @@ const ClassForm = ({ onClose }) => {
             </div>
 
             <div className="col-span-full justify-end ">
-              <div className="flex justify-end items-center col-span-full gap-4">
+              <div className="flex justify-between items-center col-span-full gap-4">
                 <label htmlFor="Address" className="text-blue-800 font-medium">
                   Address
                 </label>
