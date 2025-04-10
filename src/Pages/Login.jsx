@@ -1,13 +1,16 @@
-
-
-
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { setAuthCookies } from "../Utlis/cookieHelper";
 import Swal from "sweetalert2";
-import { FaMobileAlt, FaLock, FaBook, FaGraduationCap, FaLightbulb } from "react-icons/fa";
+import {
+  FaMobileAlt,
+  FaLock,
+  FaBook,
+  FaGraduationCap,
+  FaLightbulb,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const Login = () => {
@@ -18,7 +21,11 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!mobileNo || mobileNo.length !== 10) {
-      Swal.fire("Invalid Number!", "Enter a valid 10-digit mobile number.", "warning");
+      Swal.fire(
+        "Invalid Number!",
+        "Enter a valid 10-digit mobile number.",
+        "warning"
+      );
       return;
     }
 
@@ -36,67 +43,59 @@ const Login = () => {
 
       console.log("Response", response);
       if (response.data.success) {
-        const { token, role, subrole, userID} = response.data.data || {};
-        console.log("user id====",response?.data?.data);
+        const { token, role, subrole, userID, vendorID } =
+          response.data.data || {};
+        console.log("user id====", response?.data?.data);
         console.log("Response data", response.data);
-        
-        Swal.fire("Success!", response.data.usrMsg || "Logged in successfully!", "success");
 
-        // ✅ For ADMIN
-        if (role === "ADMIN") {
-          setAuthCookies({ token: token || "manual-token", role, userID
-          });
-          // window.location.href = "/dashboard";
-          navigate("/dashboard");
-        }
+        Swal.fire(
+          "Success!",
+          response.data.usrMsg || "Logged in successfully!",
+          "success"
+        ).then(() => {
+          if (role === "ADMIN") {
+            setAuthCookies({ token: token || "manual-token", role, userID });
 
-        // ✅ For VENDOR
-        else if (role === "VENDOR") {
-          try {
-            const classResponse = await axios.get(`${API_BASE_URL}/api/class/all`);
-            if (classResponse.data.success && classResponse.data.data.classes) {
-              const matchedClass = classResponse.data.data.classes.find(
-                (cls) => cls.contactDetails === mobileNo
-              );
-
-              if (matchedClass) {
-                // ✅ Store all cookies including classId
-                setAuthCookies({
-                  token: token || "manual-token",
-                  role: "VENDOR",
-                  userID,
-                  subrole,
-                  classId: matchedClass._id,
-                });
-                console.log("Token", token);
-                // window.location.href = "/vendor-class/class-dashboard";
-                navigate("/vendor-class/class-dashboard");
-                return;
-              }
-            }
-
-            // ❌ No class found
-            Swal.fire({
-              title: "User Not Found!",
-              text: "No registered class found. Please register first.",
-              icon: "warning",
-              confirmButtonText: "Register Now",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // window.location.href = "/register-class";
-                navigate("/register-class");
-              }
-            });
-          } catch (err) {
-            console.error("Error fetching class data:", err);
-            Swal.fire( err.response?.data.errMessage || "Error!", "Something went wrong while checking registration.", "error");
+            navigate("/dashboard");
           }
-        }
+
+          // ✅ For VENDOR
+          else if (role === "VENDOR") {
+            // ✅ Store all cookies including classId
+            setAuthCookies({
+              token: token,
+              role: "VENDOR",
+              userID,
+              subrole,
+              classId: vendorID,
+            });
+            navigate("/vendor-class/class-dashboard");
+            return;
+          }
+        });
+        // ✅ For ADMIN
       } else {
-        Swal.fire("Login Failed!", response.data.usrMsg || error.response?.data.errMessage || "Something went wrong!", "error");
+        // ❌ No class found
+        Swal.fire({
+          title: "User Not Found!",
+          text: "No registered class found. Please register first.",
+          icon: "warning",
+          confirmButtonText: "Register Now",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/register-class");
+          }
+        });
       }
     } catch (error) {
-      Swal.fire("Error!", error.response?.data?.message ||  error.response?.data.errMessage || error.response?.data?.usrMsg || "Please Try Again", "error");
+      Swal.fire(
+        "Error!",
+        error.response?.data?.message ||
+          error.response?.data.errMessage ||
+          error.response?.data?.usrMsg ||
+          "Please Try Again",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -106,22 +105,24 @@ const Login = () => {
     <div className="relative flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-orange-500">
       {/* Floating Icons */}
       <div className="absolute inset-0 flex flex-wrap">
-        {[FaBook, FaGraduationCap, FaLightbulb, FaBook, FaGraduationCap].map((Icon, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 0.3, y: 0 }}
-            transition={{ duration: 1, delay: i * 0.3 }}
-            className="absolute text-white opacity-20"
-            style={{
-              fontSize: `${Math.random() * 3 + 2}rem`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-          >
-            <Icon />
-          </motion.div>
-        ))}
+        {[FaBook, FaGraduationCap, FaLightbulb, FaBook, FaGraduationCap].map(
+          (Icon, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 0.3, y: 0 }}
+              transition={{ duration: 1, delay: i * 0.3 }}
+              className="absolute text-white opacity-20"
+              style={{
+                fontSize: `${Math.random() * 3 + 2}rem`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+              }}
+            >
+              <Icon />
+            </motion.div>
+          )
+        )}
       </div>
 
       {/* Login Box */}
@@ -137,7 +138,9 @@ const Login = () => {
         </div>
 
         {/* Mobile Number */}
-        <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">Mobile Number</label>
+        <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">
+          Mobile Number
+        </label>
         <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4">
           <FaMobileAlt className="text-blue-500 mr-3" />
           <input
@@ -150,7 +153,9 @@ const Login = () => {
         </div>
 
         {/* Password */}
-        <label className="text-gray-700 text-lg font-medium mb-2">Password</label>
+        <label className="text-gray-700 text-lg font-medium mb-2">
+          Password
+        </label>
         <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4">
           <FaLock className="text-purple-600 mr-3" />
           <input

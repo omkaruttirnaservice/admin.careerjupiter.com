@@ -27,9 +27,11 @@ const AddAdmin = () => {
       });
 
       if (response.data.success) {
-        Swal.fire("Success!", response.data.errMessage || "Admin added successfully.", "success");
-        setMobileNo("");
-        setPassword("");
+        Swal.fire("Success!", response.data.errMessage || "Admin added successfully.", "success").then(()=>{
+          setMobileNo("");
+          setPassword("");
+        });
+       
       } else {
         Swal.fire("Error!", response.data.errMessage || "Failed to add admin.", "error");
       }

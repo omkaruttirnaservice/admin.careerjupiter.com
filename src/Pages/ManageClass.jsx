@@ -6,20 +6,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import * as Yup from "yup";
-import { useParams } from "react-router-dom";
 import InputField from "../Component/InputField";
-import SelectField from "../Component/SelectField";
-import MultiSelectField from "../Component/MultiSelectField";
-import TextAreaField from "../Component/TextAreaField";
-import FileUpload from "../Component/FileUpload";
-
-import ClassVendorSideMenu from "./ClassVendorSideMenu";
 import RadioGroup from "../Component/RadioGroup";
-import stateDistricts from "../Constant/ConstantData";
 import CheckboxGroup from "../Component/CheckboxGroup";
-import SearchBar from "./RegisterClass/SearchBar";
-import CurrentLocationButton from "./RegisterClass/CurrentLocationButton";
-import MapContainerComponent from "./RegisterClass/MapContainerComponent";
 import MultiSelectDropdown from "../Component/MultiSelectDropdown";
 
 // ✅ Helper function to safely parse JSON fields
@@ -36,7 +25,6 @@ const ManageClass = () => {
   const storedClassId = Cookies.get("classId"); // ✅ Retrieve from cookies
   const [classId, setClassId] = useState(storedClassId || "");
   const [classDetails, setClassDetails] = useState(null);
-  // const [position, setPosition] = useState({ lat: 19.076, lng: 72.8777 });
   const [previewImage, setPreviewImage] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
 
@@ -72,21 +60,6 @@ const ManageClass = () => {
         console.log("📌 Full API Response:", response.data);
 
         let classData = response.data?.data?.class || {};
-
-        // // ✅ Ensure Address Has All Required Fields
-        // classData.address = [
-        //   {
-        //     line1: classData?.address?.line1 || "",
-        //     line2: classData?.address?.line2 || "",
-        //     pincode: classData?.address?.pincode || "",
-        //     state: classData?.address?.state || "",
-        //     dist: classData?.address?.dist || "",
-        //     taluka: classData?.address?.taluka || "",
-        //     nearbyLandmarks: classData?.address?.nearbyLandmarks || "",
-        //     autorizedName: classData?.address?.autorizedName || "",
-        //     autorizedPhono: classData?.address?.autorizedPhono || "",
-        //   }
-        // ];
 
         // ✅ Ensure Info Field Exists
         classData.info = {
@@ -137,7 +110,7 @@ const ManageClass = () => {
       className: classDetails?.className || "",
       ownerOrInstituteName: classDetails?.ownerOrInstituteName || "",
       typeOfClass: classDetails?.typeOfClass || "",
-      category: classDetails?.Category || "",
+      Category: classDetails?.Category || "",
       subjectsOrCourses: classDetails?.subjectsOrCourses || [],
       modeOfTeaching: classDetails?.modeOfTeaching || "",
       teachingMedium: classDetails?.teachingMedium || [],
@@ -165,51 +138,39 @@ const ManageClass = () => {
 
       info: classDetails?.info ? { ...classDetails.info } : { description: "" },
     },
-    validationSchema: Yup.object().shape({
-      className: Yup.string().required("Class Name is required"),
-      address: Yup.array().of(
-        Yup.object().shape({
-          // line1: Yup.string().required("Line1 is required"),
-          pincode: Yup.string().required("Pincode is required"),
-          // state: Yup.string().required("State is required"),
-          // dist: Yup.string().required("District is required"),
-          // autorizedName: Yup.string().required("Name is required"),
-          // autorizedPhono: Yup.string().required("Phone is required"),
-        })
-      ),
-    }),
+    // validationSchema: Yup.object().shape({
+    //   className: Yup.string().required("Class Name is required"),
+    //   address: Yup.array().of(
+    //     Yup.object().shape({
+    //       // line1: Yup.string().required("Line1 is required"),
+    //       pincode: Yup.string().required("Pincode is required"),
+    //       // state: Yup.string().required("State is required"),
+    //       // dist: Yup.string().required("District is required"),
+    //       // autorizedName: Yup.string().required("Name is required"),
+    //       // autorizedPhono: Yup.string().required("Phone is required"),
+    //     })
+    //   ),
+    // }),
 
     onSubmit: async (values, { setSubmitting }) => {
       try {
+      
         const formData = new FormData();
-
-        // for (const key in values) {
-        //   if (key === "image" && values[key] instanceof File) {
-        //     formData.append("image", values[key]);
-        //   } else if (
-
-        //     key === "Category" ||
-
-        //     key === "modeOfTeaching" ||
-
-        //     key === "keywords"
-        //   ) {
-        //     formData.append(key, JSON.stringify(values[key]));
-        //   } else if (typeof values[key] === "object") {
-        //     formData.append(key, JSON.stringify(values[key]));
-        //   } else {
-        //     formData.append(key, values[key]);
-        //   }
-        // }
-
+       
         for (const key in values) {
+         
+         console.log(key,values[key])
+
           if (key === "image" && values[key] instanceof File) {
             formData.append("image", values[key]);
+            //console.log(formData.get('image'))
           } else if (
             key === "Category" ||
             key === "modeOfTeaching" ||
             key === "keywords"
           ) {
+            console.log("caterogry -------",JSON.stringify(values[key]));
+            
             formData.append(key, JSON.stringify(values[key]));
           } else if (key === "locations" && Array.isArray(values[key])) {
             values[key].forEach((location, index) => {
@@ -226,12 +187,21 @@ const ManageClass = () => {
                 formData.append(`address[${index}][${addrKey}]`, addr[addrKey]);
               }
             });
+          } else  if(key === 'info'){
+            formData.append('info', JSON.stringify(values['info']));
           } else if (typeof values[key] === "object") {
+            console.log(values[key])
             formData.append(key, JSON.stringify(values[key]));
           } else {
             formData.append(key, values[key]);
           }
+
+     
         }
+// return false;
+        // console.log(formData.get('info'))
+       // console.clear()
+      //  console.log(formData.getAll('address'))
 
         const response = await axios.put(
           `${API_BASE_URL}/api/class/update/${classId}`,
@@ -250,7 +220,7 @@ const ManageClass = () => {
             "❌ Failed to update class."
         );
       } finally {
-        setSubmitting(false);
+       setSubmitting(false);
       }
     },
   });
@@ -276,24 +246,8 @@ const ManageClass = () => {
       <div className="flex-1 flex justify-center">
         <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
           {/* Background Icons - Random Placement */}
-          {Array.from({ length: 15 }).map((_, index) => (
-            <span
-              key={index}
-              className="absolute text-7xl opacity-19 select-none"
-              style={{
-                top: `${Math.random() * 100}%`, // Random Y Position
-                left: `${Math.random() * 100}%`, // Random X Position
-                transform: `rotate(${Math.random() * 360}deg)`, // Random Rotation
-              }}
-            >
-              {
-                ["📚", "✏️", "📝", "🎓", "🔬", "📖", "🖥️", "⚛️"][
-                  Math.floor(Math.random() * 8)
-                ]
-              }
-            </span>
-          ))}
-          <div className="w-full max-w-5xl bg-white shadow-2xl p-2 lg:p-6 md:p-12 border border-blue-500">
+    
+          <div className="w-[1000px] max-w-screen-xl mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500">
             {/* ✅ Form Title */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6  shadow-md text-center">
               <h2 className="text-2xl md:text-4xl font-bold">
@@ -341,166 +295,165 @@ const ManageClass = () => {
 
                 <MultiSelectDropdown
                   label="Category"
-                  name="category"
+                  name="Category"
                   options={classCategories}
                   formik={formik}
                 />
               </div>
 
               {/* Address array */}
-{formik.values.address.map((addr, index) => {
-        const isEditing = editingIndex === index;
+              {formik.values.address.map((addr, index) => {
+                const isEditing = editingIndex === index;
 
-        return (
-          <div
-            key={index}
-            className="p-6 mb-6 rounded-2xl shadow-xl bg-white border border-gray-200"
-          >
-            {/* If editing, show input form */}
-            {isEditing ? (
-              <>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold text-blue-700">
-                    ✏ Editing Address {index + 1}
-                  </h3>
-                  <button
-                    onClick={() => setEditingIndex(null)}
-                    className="text-green-600 hover:text-green-800 font-medium text-sm"
+                return (
+                  <div
+                    key={index}
+                    className="p-6 mb-6 rounded-2xl shadow-xl bg-white border border-gray-200"
                   >
-                    ✅ Done
-                  </button>
-                </div>
+                    {/* If editing, show input form */}
+                    {isEditing ? (
+                      <>
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-bold text-blue-700">
+                            ✏ Editing Address {index + 1}
+                          </h3>
+                          <button
+                            onClick={() => setEditingIndex(null)}
+                            className="text-green-600 hover:text-green-800 font-medium text-sm"
+                          >
+                            ✅ Done
+                          </button>
+                        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Line 1 */}
-                  <div>
-                    <input
-                      type="text"
-                      name={`address[${index}].line1`}
-                      placeholder="Line 1"
-                      value={addr.line1}
-                      onChange={formik.handleChange}
-                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                    {formik.errors.address?.[index]?.line1 && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {formik.errors.address[index].line1}
-                      </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Line 1 */}
+                          <div>
+                            <input
+                              type="text"
+                              name={`address[${index}].line1`}
+                              placeholder="Line 1"
+                              value={addr.line1}
+                              onChange={formik.handleChange}
+                              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+                            {formik.errors.address?.[index]?.line1 && (
+                              <div className="text-red-500 text-sm mt-1">
+                                {formik.errors.address[index].line1}
+                              </div>
+                            )}
+                          </div>
+
+                          <input
+                            type="text"
+                            name={`address[${index}].line2`}
+                            placeholder="Line 2"
+                            value={addr.line2}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+
+                          <input
+                            type="text"
+                            name={`address[${index}].nearbyLandmarks`}
+                            placeholder="Nearby Landmarks"
+                            value={addr.nearbyLandmarks}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+
+                          <input
+                            type="text"
+                            name={`address[${index}].pincode`}
+                            placeholder="Pincode"
+                            value={addr.pincode}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+
+                          <input
+                            type="text"
+                            name={`address[${index}].state`}
+                            placeholder="State"
+                            value={addr.state}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+
+                          <input
+                            type="text"
+                            name={`address[${index}].dist`}
+                            placeholder="District"
+                            value={addr.dist}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+
+                          <input
+                            type="text"
+                            name={`address[${index}].taluka`}
+                            placeholder="Taluka"
+                            value={addr.taluka}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+
+                          <input
+                            type="text"
+                            name={`address[${index}].autorizedName`}
+                            placeholder="Authorized Name"
+                            value={addr.autorizedName}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+
+                          <input
+                            type="text"
+                            name={`address[${index}].autorizedPhono`}
+                            placeholder="Authorized Phone"
+                            value={addr.autorizedPhono}
+                            onChange={formik.handleChange}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Read-only display */}
+                        <div className="mb-2 text-gray-800 font-medium">
+                          {addr.line1}, {addr.line2}, {addr.nearbyLandmarks},{" "}
+                          {addr.taluka}, {addr.dist}, {addr.state},{" "}
+                          {addr.pincode}
+                        </div>
+                        <div className="text-sm text-gray-600 mb-2">
+                          {addr.autorizedName} - {addr.autorizedPhono}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-4">
+                          <button
+                            onClick={() => setEditingIndex(index)}
+                            className="text-blue-600 hover:text-blue-800 font-semibold text-sm"
+                          >
+                            ✏ Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...formik.values.address];
+                              updated.splice(index, 1);
+                              formik.setFieldValue("address", updated);
+                              if (editingIndex === index) setEditingIndex(null);
+                            }}
+                            className="text-red-600 hover:text-red-800 font-semibold text-sm"
+                          >
+                            🗑 Remove
+                          </button>
+                        </div>
+                      </>
                     )}
                   </div>
-
-                  <input
-                    type="text"
-                    name={`address[${index}].line2`}
-                    placeholder="Line 2"
-                    value={addr.line2}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-
-                  <input
-                    type="text"
-                    name={`address[${index}].nearbyLandmarks`}
-                    placeholder="Nearby Landmarks"
-                    value={addr.nearbyLandmarks}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-
-                  <input
-                    type="text"
-                    name={`address[${index}].pincode`}
-                    placeholder="Pincode"
-                    value={addr.pincode}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-
-                  <input
-                    type="text"
-                    name={`address[${index}].state`}
-                    placeholder="State"
-                    value={addr.state}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-
-                  <input
-                    type="text"
-                    name={`address[${index}].dist`}
-                    placeholder="District"
-                    value={addr.dist}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-
-                  <input
-                    type="text"
-                    name={`address[${index}].taluka`}
-                    placeholder="Taluka"
-                    value={addr.taluka}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-
-                  <input
-                    type="text"
-                    name={`address[${index}].autorizedName`}
-                    placeholder="Authorized Name"
-                    value={addr.autorizedName}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-
-                  <input
-                    type="text"
-                    name={`address[${index}].autorizedPhono`}
-                    placeholder="Authorized Phone"
-                    value={addr.autorizedPhono}
-                    onChange={formik.handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Read-only display */}
-                <div className="mb-2 text-gray-800 font-medium">
-                  {addr.line1}, {addr.line2}, {addr.nearbyLandmarks},{" "}
-                  {addr.taluka}, {addr.dist}, {addr.state}, {addr.pincode}
-                </div>
-                <div className="text-sm text-gray-600 mb-2">
-                  {addr.autorizedName} - {addr.autorizedPhono}
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setEditingIndex(index)}
-                    className="text-blue-600 hover:text-blue-800 font-semibold text-sm"
-                  >
-                    ✏ Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = [...formik.values.address];
-                      updated.splice(index, 1);
-                      formik.setFieldValue("address", updated);
-                      if (editingIndex === index) setEditingIndex(null);
-                    }}
-                    className="text-red-600 hover:text-red-800 font-semibold text-sm"
-                  >
-                    🗑 Remove
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        );
-      })}
-
-
+                );
+              })}
 
               {/* Add new address */}
               <button
@@ -534,7 +487,7 @@ const ManageClass = () => {
                     formik={formik}
                   /> */}
                 </div>
-                {/* </div> */}
+                
 
                 {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
                 <RadioGroup
@@ -565,7 +518,7 @@ const ManageClass = () => {
                           previewImage
                             ? previewImage
                             : typeof formik.values.image === "string"
-                            ? `${API_BASE_URL}${formik.values.image}` // Assuming image path is relative like "/class/class_123.jpg"
+                            ? `${API_BASE_URL}${formik.values.image}`
                             : ""
                         }
                         alt="Class"
@@ -585,7 +538,7 @@ const ManageClass = () => {
                       const file = event.currentTarget.files[0];
                       if (file) {
                         formik.setFieldValue("image", file);
-                        setPreviewImage(URL.createObjectURL(file)); // 💡 Temporary preview
+                        setPreviewImage(URL.createObjectURL(file)); 
                       }
                     }}
                     className="mt-4 block w-full"
@@ -606,25 +559,7 @@ const ManageClass = () => {
                   formik={formik}
                 />
               </div> */}
-                {/* Map & Search */}
-                {/* <div className="mb-4 col-span-full">
-                <h3 className="text-blue-700 flex items-center gap-2 font-medium">
-                  <FaMapMarkerAlt /> Select Location
-                </h3>
-                <div className="flex gap-4 mb-4 justify-center">
-                  <SearchBar onSearch={setPosition} />
-                  <CurrentLocationButton onGetLocation={setPosition} />
-                </div>
-                <MapContainerComponent
-                  position={position}
-                  setPosition={(newPosition) => {
-                    setPosition(newPosition);
-                    formik.setFieldValue("location.lat", newPosition.lat); // ✅ Updates Formik
-                    formik.setFieldValue("location.lng", newPosition.lng);
-                  }}
-                  setFieldValue={formik.setFieldValue}
-                />
-              </div> */}
+                
               </div>
 
               <div className="flex justify-center">

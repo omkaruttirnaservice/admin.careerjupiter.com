@@ -620,12 +620,14 @@
   
       if (response.data.success) {
         console.log("✅ Admin Login Success");
-        Swal.fire("Success!", "Logged in as Admin!", "success");
+        Swal.fire("Success!", "Logged in as Admin!", "success").then(()=>{
+          const { token, userId } = response.data.data || {};
+          setAuthCookies({ token, role: "ADMIN", userId });
+    
+          window.location.href = "/dashboard";
+        });
   
-        const { token, userId } = response.data.data || {};
-        setAuthCookies({ token, role: "ADMIN", userId });
-  
-        window.location.href = "/dashboard";
+       
         return;
       }
     } catch (error) {
@@ -644,12 +646,14 @@
   
       if (vendorResponse.data.success) {
         console.log("✅ Vendor Login Success");
-        Swal.fire("Success!", "Logged in as Vendor!", "success");
+        Swal.fire("Success!", "Logged in as Vendor!", "success").then(()=>{
+          const { token, userId, classId } = vendorResponse.data.data || {};
+          setAuthCookies({ token, role: "VENDOR", subrole: "Class", userId, classId });
+    
+          window.location.href = "/vendor-class/class-dashboard";
+        });
   
-        const { token, userId, classId } = vendorResponse.data.data || {};
-        setAuthCookies({ token, role: "VENDOR", subrole: "Class", userId, classId });
-  
-        window.location.href = "/vendor-class/class-dashboard";
+       
         return;
       }
     } catch (error) {
