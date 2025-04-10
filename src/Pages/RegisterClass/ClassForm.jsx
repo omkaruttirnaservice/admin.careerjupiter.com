@@ -103,29 +103,29 @@ const ClassForm = ({ onClose }) => {
         .min(1900, "Enter a valid year")
         .max(new Date().getFullYear(), "Year cannot be in the future"),
       password: Yup.string()
-        .min(6, "Password must be at least 6 characters")
+        .min(4, "Password must be at least 4 characters")
         .required("Password is required"),
 
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Confirm Password is required"),
-      address: Yup.array().of(
-        Yup.object().shape({
-          line1: Yup.string().required("Address Line 1 is required"),
-          line2: Yup.string().required("Address Line 2 is required"),
-          pincode: Yup.string()
-            .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
-            .required("Pincode is required"),
-          state: Yup.string().required("State is required"),
-          dist: Yup.string().required("District is required"),
-          taluka: Yup.string().required("Taluka is required"), // ✅ single string
-          nearbyLandmarks: Yup.string().required("Landmark is required"), // ✅ single string
-          autorizedName: Yup.string().required("Autorized Name is required"), // ✅ single string
-          autorizedPhono: Yup.string()
-            .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
-            .required("Phone Number is required"),
-        })
-      ),
+      // address: Yup.array().of(
+      //   Yup.object().shape({
+      //     line1: Yup.string().required("Address Line 1 is required"),
+      //     line2: Yup.string().required("Address Line 2 is required"),
+      //     pincode: Yup.string()
+      //       .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
+      //       .required("Pincode is required"),
+      //     state: Yup.string().required("State is required"),
+      //     dist: Yup.string().required("District is required"),
+      //     taluka: Yup.string().required("Taluka is required"), // ✅ single string
+      //     nearbyLandmarks: Yup.string().required("Landmark is required"), // ✅ single string
+      //     autorizedName: Yup.string().required("Autorized Name is required"), // ✅ single string
+      //     autorizedPhono: Yup.string()
+      //       .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
+      //       .required("Phone Number is required"),
+      //   })
+      // ),
       contactDetails: Yup.string()
         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
         .required("Contact Details are required"),
@@ -196,6 +196,11 @@ const ClassForm = ({ onClose }) => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         const formData = new FormData();
+
+        if (!values.address || values.address.length === 0) {
+          alert("Please add at least one address before submitting.");
+          return;
+        }
 
         console.log("🚀 Original Form Values:", values); // ✅ Debugging
 
@@ -343,11 +348,12 @@ const ClassForm = ({ onClose }) => {
           hideClass: {
             popup: "animate__animated animate__fadeOutUp",
           },
+        }).then(()=>{
+          resetForm();
+          navigate("/");
         });
 
-        resetForm();
-        console.log("Navigating to Vendor Dashboard");
-        navigate("/");
+      
       } catch (error) {
         console.error(
           "❌ Error submitting form:",

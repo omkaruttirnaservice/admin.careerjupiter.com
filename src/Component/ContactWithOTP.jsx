@@ -3,10 +3,6 @@ import { FaCheckCircle, FaSms } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import InputField from "./InputField";
-import ButtonComponent from "./Button";
-import Cookies from "js-cookie";
-
 
 const ContactWithOTP = ({ formik }) => {
   const [otpSent, setOtpSent] = useState(false); // ✅ Controls OTP input visibility
@@ -129,7 +125,6 @@ const ContactWithOTP = ({ formik }) => {
 
       setOtpSent(false);
       setOtp("");
-        // ✅ Disable mobile number input after successful verification
         // formik.setFieldValue("isVerified", true);
       } else {
         Swal.fire({
