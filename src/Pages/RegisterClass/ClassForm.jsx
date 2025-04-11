@@ -130,20 +130,13 @@ const ClassForm = ({ onClose }) => {
         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
         .required("Contact Details are required"),
 
-      //   // websiteURL: Yup.string().url("Enter a valid website URL").nullable(),
-      //   // websiteURL: Yup.string()
-      //   // .matches(
-      //   //   /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      //   //   "Enter a valid website URL"
-      //   // )
-      //   // .nullable(),
-
       info: Yup.object().shape({
         description: Yup.string()
           .min(100, "Minimum 100 characters required.")
           .max(1000, "Maximum 1000 characters allowed.")
           .required("Description is required."),
       }),
+      
       keywords: Yup.array()
         .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
         .min(1, "At least one keyword is required")
