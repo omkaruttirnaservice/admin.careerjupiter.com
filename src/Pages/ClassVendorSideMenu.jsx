@@ -38,6 +38,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [activeLink, setActiveLink] = useState(location.pathname);
   const [classDetails, setClassDetails] = useState(null);
   const [classId, setClassId] = useState(null); // ✅ State for classId
+  
 
   // ✅ Update activeLink when URL changes
   useEffect(() => {
@@ -45,15 +46,17 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    window.location.href = "/"; // ✅ Redirect to login
+   navigate("/"); // ✅ Redirect to login
   };
 
   useEffect(() => {
     const storedClassId = getCookie("classId"); // ✅ Use getCookie function
-    // console.log("Fetched ClassId ", storedClassId)
+
+  
+
     if (storedClassId) {
       setClassId(storedClassId);
-      console.log("Class ID retrieved from cookies:", storedClassId);
+      console.log("Class ID retrieved from cookies-------:", storedClassId);
     } else {
       console.warn("Class ID not found in cookies!");
     }
@@ -71,6 +74,8 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
         console.log("Class details fetched:", response.data);
 
         const classData = response.data?.data?.class; // ✅ Ensure correct path
+        console.log("---------- class data",classData);
+        
         setClassDetails({
           ...classData,
         });
@@ -155,95 +160,3 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 };
 
 export default ClassVendorSideMenu;
-
-// import { useState } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import { MdMenu, MdDashboard, MdClass, MdLogout } from "react-icons/md"; // ✅ Modern Icons
-
-// const navigation = [
-//   { name: "Dashboard", href: "/vendor-class/class-dashboard", icon: MdDashboard, color: "text-blue-400" },
-//   { name: "Manage Class", href: "/vendor-class/edit-vendor-class", icon: MdClass, color: "text-green-400" },
-// ];
-
-// const ClassVendorSideMenu = () => {
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const [isOpen, setIsOpen] = useState(false); // ✅ Controls sidebar open/close
-
-//   const handleLogout = () => {
-//     window.location.href = "/"; // ✅ Redirect to login
-//   };
-
-//   return (
-//     <>
-//       {/* ✅ Mobile Menu Button
-//       <button
-//         className="fixed top-4 left-4 z-50 bg-blue-600 text-white rounded-full shadow-lg md:hidden"
-//         onClick={() => setIsOpen(!isOpen)}
-//       >
-//         <MdMenu size={24} />
-//       </button> */}
-
-//       {/* ✅ Sidebar */}
-//       <div className={`fixed top-0 left-0 h-screen w-64 bg-gradient-to-b from-blue-600 to-blue-800 shadow-lg transition-transform duration-300 z-40 ${isOpen ? "translate-x-0" : "-translate-x-64"} md:translate-x-0`}>
-//         <div className="flex flex-col pt-5 pb-4 h-full">
-//           {/* ✅ Close Button (Mobile Only) */}
-//           <button
-//             className="text-white self-end mr-4 md:hidden cursor-pointer"
-//             onClick={() => setIsOpen(false)}
-//           >
-//             ✖
-//           </button>
-
-//           {/* ✅ Profile Section */}
-//           <div className="flex flex-col items-center text-white mb-6">
-//             <MdClass className="h-16 w-16 text-white" />
-//             <h2 className="mt-2 text-lg font-semibold">Vendor Name</h2>
-//             <p className="text-sm text-gray-300">Class Vendor</p>
-//           </div>
-
-//           {/* ✅ Navigation Links */}
-//           <nav className="mt-2 flex-1 px-4 space-y-2">
-//             {navigation.map((item) => {
-//               const isActive = location.pathname.startsWith(item.href);
-//               return (
-//                 <button
-//                   key={item.name}
-//                   onClick={() => {
-//                     navigate(item.href);
-//                     setIsOpen(false); // ✅ Close menu after selecting
-//                   }}
-//                   className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer ${
-//                     isActive ? "bg-blue-500 text-white shadow-md transform scale-105" : "text-gray-300 hover:bg-blue-600 hover:text-white"
-//                   }`}
-//                 >
-//                   <item.icon className={`mr-3 h-6 w-6 ${isActive ? "text-white" : item.color}`} />
-//                   {item.name}
-//                 </button>
-//               );
-//             })}
-//           </nav>
-
-//           {/* ✅ Logout Button */}
-//           <button
-//             className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
-//             onClick={handleLogout}
-//           >
-//             <MdLogout className="h-6 w-6 mr-3" />
-//             Logout
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* ✅ Overlay (Mobile) */}
-//       {isOpen && (
-//         <div
-//           className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-//           onClick={() => setIsOpen(false)}
-//         ></div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default ClassVendorSideMenu;

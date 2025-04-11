@@ -3,12 +3,8 @@ import { FaCheckCircle, FaSms } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import InputField from "./InputField";
-import ButtonComponent from "./Button";
-import Cookies from "js-cookie";
 
-
-const ContactWithOTP = ({ formik }) => {
+const ContactWithOTP = ({ formik , setVerifiedOtp}) => {
   const [otpSent, setOtpSent] = useState(false); // ✅ Controls OTP input visibility
   const [referenceId, setReferenceId] = useState(""); // ✅ Stores reference ID
   const [otp, setOtp] = useState(""); // ✅ Stores OTP input
@@ -110,7 +106,9 @@ const ContactWithOTP = ({ formik }) => {
         otp: otp,
       });
 
-      console.log("📌 OTP Verification Response:", response.data);
+
+      console.log("📌 OTP Verification Response:------", response.data);
+
       if (response.data.success) {
         Swal.fire({
           icon: "success",
@@ -126,10 +124,10 @@ const ContactWithOTP = ({ formik }) => {
       formik.setFieldValue("otp", otp);
       formik.setFieldValue("reference_id", referenceId);
       formik.setFieldValue("isVerified", true);
+      setVerifiedOtp(response.data.success);
 
       setOtpSent(false);
       setOtp("");
-        // ✅ Disable mobile number input after successful verification
         // formik.setFieldValue("isVerified", true);
       } else {
         Swal.fire({
@@ -159,7 +157,7 @@ const ContactWithOTP = ({ formik }) => {
         <div className="relative flex-grow">
           <input
             type="text"
-            className="form-input pl-4 py-2 w-full border border-gray-300 focus:ring-2 focus:ring-blue-500"
+            className="form-input pl-4 py-2 w-full border border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
             placeholder="Enter Mobile Number"
             value={formik.values.contactDetails}
             onChange={(e) => formik.setFieldValue("contactDetails", e.target.value)}
@@ -176,7 +174,7 @@ const ContactWithOTP = ({ formik }) => {
                 type="button"
                 onClick={sendOtp}
                 disabled={isVerified}
-                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600 rounded-md"
               >
                 Send OTP
               </button>
@@ -190,7 +188,7 @@ const ContactWithOTP = ({ formik }) => {
           <div className="relative flex-grow">
             <input
               type="text"
-              className="form-input pl-4 pr-12 py-2 w-full border border-gray-300  focus:ring-2 focus:ring-blue-500"
+              className="form-input pl-4 pr-12 py-2 w-full border border-gray-300  focus:ring-2 focus:ring-blue-500 rounded-md"
               placeholder="Enter OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
@@ -199,7 +197,7 @@ const ContactWithOTP = ({ formik }) => {
               <button
                 type="button"
                 onClick={verifyOtp}
-                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600"
+                className="px-4 py-2 cursor-pointer bg-blue-500 text-white hover:bg-blue-600 rounded-md"
               >
                 Verify OTP
               </button>

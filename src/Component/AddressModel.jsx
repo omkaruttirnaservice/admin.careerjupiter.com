@@ -1,15 +1,71 @@
 import React from "react";
-import { Formik, FieldArray } from "formik";
+import { Formik } from "formik";
 import { motion } from "framer-motion";
-import { Trash, Plus } from "lucide-react";
+import * as Yup from "yup";
 
-const AddressModal = ({ open, onClose, onSave }) => {
+
+const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
   if (!open) return null;
+
+  const addressValidationSchema = Yup.object().shape({
+    line1: Yup.string().required("Address Line 1 is required"),
+    line2: Yup.string().required("Address Line 2 is required"),
+    pincode: Yup.string()
+      .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
+      .required("Pincode is required"),
+    state: Yup.string().required("State is required"),
+    dist: Yup.string().required("District is required"),
+    taluka: Yup.string().required("Taluka is required"),
+    nearbyLandmarks: Yup.string().required("Landmark is required"),
+    autorizedName: Yup.string().required("Authorized Name is required"),
+    autorizedPhono: Yup.string()
+      .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
+      .required("Phone Number is required"),
+  });
+
+  
+  const indianStates = [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi",
+    "Jammu and Kashmir",
+    "Ladakh",
+    "Lakshadweep",
+    "Puducherry",
+  ];
 
   return (
     <div className="fixed inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-start overflow-y-auto py-10">
-    <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 p-8 w-full max-w-5xl relative">
-      
+      <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 p-8 w-full max-w-3xl relative">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -18,188 +74,197 @@ const AddressModal = ({ open, onClose, onSave }) => {
           &times;
         </button>
 
-        <h3 className="text-3xl font-bold text-blue-800 mb-6">🏠 Add Address</h3>
+        <h3 className="text-3xl font-bold text-blue-800 mb-6">
+          🏠 Add Address
+        </h3>
 
         <Formik
           initialValues={{
-            address: [
-              {
-                line1: "",
-                line2: "",
-                pincode: "",
-                state: "",
-                dist: "",
-                taluka: "",
-                nearbyLandmarks: "",
-                autorizedName: "",
-                autorizedPhono: "",
-              },
-            ],
+            line1: initialData?.line1 || "",
+            line2: initialData?.line2 || "",
+            pincode: initialData?.pincode || "",
+            state: initialData?.state || "",
+            dist: initialData?.dist || "",
+            taluka: initialData?.taluka || "",
+            nearbyLandmarks: initialData?.nearbyLandmarks || "",
+            autorizedName: initialData?.autorizedName || "",
+            autorizedPhono: initialData?.autorizedPhono || "",
           }}
+          validationSchema={addressValidationSchema}
           onSubmit={(values) => {
-            onSave(values.address);
+            onSave(values); // Pass single address object
             onClose();
           }}
         >
-          {({ values, handleChange, handleBlur, handleSubmit }) => (
+          {({ values, handleChange, handleBlur, handleSubmit, errors, touched  }) => (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <FieldArray name="address">
-                {({ push, remove }) => (
-                  <>
-                    {values.address.map((_, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 10 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4"
-                      >
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">Address Line 1</label>
-                            <input
-                              name={`address[${index}].line1`}
-                              value={values.address[index].line1 || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="Enter line 1"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">Address Line 2</label>
-                            <input
-                              name={`address[${index}].line2`}
-                              value={values.address[index].line2 || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="Enter line 2"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">Landmark</label>
-                            <input
-                              name={`address[${index}].nearbyLandmarks`}
-                              value={values.address[index].nearbyLandmarks || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="Nearby landmark"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">State</label>
-                            <input
-                              name={`address[${index}].state`}
-                              value={values.address[index].state || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="State"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">District</label>
-                            <input
-                              name={`address[${index}].dist`}
-                              value={values.address[index].dist || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="District"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">Taluka</label>
-                            <input
-                              name={`address[${index}].taluka`}
-                              value={values.address[index].taluka || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="Taluka"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">Pincode</label>
-                            <input
-                              name={`address[${index}].pincode`}
-                              value={values.address[index].pincode || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="Pincode"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">Authorized Name</label>
-                            <input
-                              name={`address[${index}].autorizedName`}
-                              value={values.address[index].autorizedName || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="Enter line 2"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-blue-700">Autorized Phone Number</label>
-                            <input
-                              name={`address[${index}].autorizedPhono`}
-                              value={values.address[index].autorizedPhono || ""}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              placeholder="Enter line 2"
-                              className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                            />
-                          </div>
-                        </div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 10 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Address Line 1 */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Address Line 1</label>
+                    <input
+                      name="line1"
+                      value={values.line1}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Enter line 1"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.line1 && errors.line1 && (
+    <div className="text-red-500 text-sm">{errors.line1}</div>
+  )}
+                  </div>
 
-                        {/* Delete Address Button */}
-                        {values.address.length > 1 && (
-                          <div className="flex justify-end">
-                            <button
-                              type="button"
-                              onClick={() => remove(index)}
-                              className="flex items-center bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded-lg shadow-md transition duration-300"
-                            >
-                              <Trash className="mr-2" size={20} /> Delete Address
-                            </button>
-                          </div>
-                        )}
-                      </motion.div>
-                    ))}
+                  {/* Address Line 2 */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Address Line 2</label>
+                    <input
+                      name="line2"
+                      value={values.line2}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Enter line 2"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.line2 && errors.line2 && (
+    <div className="text-red-500 text-sm">{errors.line2}</div>
+  )}
+                  </div>
 
-                    <div className="mt-6 flex justify-between">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          push({
-                            line1: "",
-                            line2: "",
-                            nearbyLandmarks: "",
-                            state: "",
-                            dist: "",
-                            taluka: "",
-                            pincode: "",
-                          })
-                        }
-                        className="flex items-center bg-blue-600 hover:bg-blue-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300"
-                      >
-                        <Plus className="mr-2" size={20} /> Add Another
-                      </button>
+                  {/* Landmark */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Landmark</label>
+                    <input
+                      name="nearbyLandmarks"
+                      value={values.nearbyLandmarks}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Nearby landmark"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.nearbyLandmarks && errors.nearbyLandmarks && (
+    <div className="text-red-500 text-sm">{errors.nearbyLandmarks}</div>
+  )}
+                  </div>
 
-                      <button
-                        type="submit"
-                        className="bg-green-600 hover:bg-green-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300"
-                      >
-                        ✅ Save Address
-                      </button>
-                    </div>
-                  </>
-                )}
-              </FieldArray>
+                  {/* State (Dropdown) */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">State</label>
+                    <select
+                      name="state"
+                      value={values.state}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    >
+                      <option value="">Select State</option>
+                      {indianStates.map((state) => (
+                        <option key={state} value={state}>
+                          {state}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* District */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">District</label>
+                    <input
+                      name="dist"
+                      value={values.dist}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="District"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.dist && errors.dist && (
+    <div className="text-red-500 text-sm">{errors.dist}</div>
+  )}
+                  </div>
+
+                  {/* Taluka */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Taluka</label>
+                    <input
+                      name="taluka"
+                      value={values.taluka}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Taluka"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.taluka && errors.taluka && (
+    <div className="text-red-500 text-sm">{errors.taluka}</div>
+  )}
+                  </div>
+
+                  {/* Pincode */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Pincode</label>
+                    <input
+                      name="pincode"
+                      value={values.pincode}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Pincode"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.pincode && errors.pincode && (
+    <div className="text-red-500 text-sm">{errors.pincode}</div>
+  )}
+                  </div>
+
+                  {/* Authorized Name */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Authorized Name</label>
+                    <input
+                      name="autorizedName"
+                      value={values.autorizedName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Enter Authorized Name"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.autorizedName && errors.autorizedName && (
+    <div className="text-red-500 text-sm">{errors.autorizedName}</div>
+  )}
+                  </div>
+
+                  {/* Authorized Phone */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">
+                      Authorized Phone Number
+                    </label>
+                    <input
+                      name="autorizedPhono"
+                      value={values.autorizedPhono}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Enter Phone No."
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.autorizedPhono && errors.autorizedPhono && (
+    <div className="text-red-500 text-sm">{errors.autorizedPhono}</div>
+  )}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Save Button */}
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="bg-green-600 hover:bg-green-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300"
+                >
+                  ✅ Save Address
+                </button>
+              </div>
             </form>
           )}
         </Formik>

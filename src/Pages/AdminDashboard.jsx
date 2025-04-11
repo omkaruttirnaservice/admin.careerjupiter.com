@@ -57,7 +57,7 @@ const navigation = [
   {
     name: "Colleges",
     href: "/colleges",
-    
+
     icon: GiSchoolBag,
     color: "text-green-500",
   },
@@ -124,7 +124,9 @@ const AdminDashboard = () => {
       } catch (error) {
         console.error(
           "Error fetching stats:",
-          error?.response?.data || error.message  || error.response?.data.errMessage 
+          error?.response?.data ||
+            error.message ||
+            error.response?.data.errMessage
         );
       }
     };
@@ -149,7 +151,9 @@ const AdminDashboard = () => {
             } catch (err) {
               console.error(
                 `Error fetching ${category}:`,
-                err?.response?.data || err.message ||  err.response?.data.errMessage 
+                err?.response?.data ||
+                  err.message ||
+                  err.response?.data.errMessage
               );
               return 0; // Default to 0 if request fails
             }
@@ -161,7 +165,9 @@ const AdminDashboard = () => {
       } catch (error) {
         console.log(
           "Error fetching IQ Test data:",
-          error?.response?.data || error.message ||  error.response?.data.errMessage 
+          error?.response?.data ||
+            error.message ||
+            error.response?.data.errMessage
         );
       }
     };
