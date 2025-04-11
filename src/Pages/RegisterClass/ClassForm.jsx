@@ -33,6 +33,7 @@ const ClassForm = ({ onClose }) => {
   // const [formik, setFormik] = useState(null); // Store Formik instance or use `useFormik`
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
+  const [verifiedOtp , setVerifiedOtp] = useState(false);
 
   <stateDistricts />;
 
@@ -81,7 +82,7 @@ const ClassForm = ({ onClose }) => {
       contactDetails: "",
       otp: "",
       reference_id: "",
-      isVerified: false,
+      verificationCheck: "",
       password: "",
       confirmPassword: "",
       info: { description: "" },
@@ -129,6 +130,8 @@ const ClassForm = ({ onClose }) => {
       contactDetails: Yup.string()
         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
         .required("Contact Details are required"),
+
+
 
       info: Yup.object().shape({
         description: Yup.string()
@@ -190,6 +193,12 @@ const ClassForm = ({ onClose }) => {
       try {
         const formData = new FormData();
 
+        if (!verifiedOtp) {
+          alert('Please verify your mobile number and OTP before submitting the form.');
+         
+          return false;
+        }
+        
         if (!values.address || values.address.length === 0) {
           alert("Please add at least one address before submitting.");
           return;
@@ -419,7 +428,7 @@ const ClassForm = ({ onClose }) => {
               formik={formik}
             />
 
-            <ContactWithOTP formik={formik} />
+            <ContactWithOTP formik={formik} setVerifiedOtp={setVerifiedOtp} verifiedOtp={verifiedOtp}/>
 
             <div className="col-span-full grid grid-cols-2 gap-4">
               <InputField
@@ -615,7 +624,7 @@ const ClassForm = ({ onClose }) => {
                 type="submit"
                 className="bg-indigo-600 cursor-pointer text-white py-3 px-6 rounded-md font-semibold 
                hover:bg-indigo-700 transition w-full sm:w-auto disabled:bg-gray-400 disabled:cursor-not-allowed"
-                disabled={formik.isSubmitting}
+                disabled={verifiedOtp ?  formik.isSubmitting : formik.isSubmitting}
               >
                 {formik.isSubmitting ? "Submitting..." : "Submit"}
               </button>

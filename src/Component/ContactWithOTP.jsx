@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 
-const ContactWithOTP = ({ formik }) => {
+const ContactWithOTP = ({ formik , setVerifiedOtp}) => {
   const [otpSent, setOtpSent] = useState(false); // ✅ Controls OTP input visibility
   const [referenceId, setReferenceId] = useState(""); // ✅ Stores reference ID
   const [otp, setOtp] = useState(""); // ✅ Stores OTP input
@@ -106,7 +106,9 @@ const ContactWithOTP = ({ formik }) => {
         otp: otp,
       });
 
-      console.log("📌 OTP Verification Response:", response.data);
+
+      console.log("📌 OTP Verification Response:------", response.data);
+
       if (response.data.success) {
         Swal.fire({
           icon: "success",
@@ -122,6 +124,7 @@ const ContactWithOTP = ({ formik }) => {
       formik.setFieldValue("otp", otp);
       formik.setFieldValue("reference_id", referenceId);
       formik.setFieldValue("isVerified", true);
+      setVerifiedOtp(response.data.success);
 
       setOtpSent(false);
       setOtp("");
