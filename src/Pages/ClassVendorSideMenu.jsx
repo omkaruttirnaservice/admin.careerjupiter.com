@@ -50,7 +50,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   };
 
   useEffect(() => {
-    const storedClassId = getCookie("classId"); // ✅ Use getCookie function
+    const storedClassId = getCookie("classID"); // ✅ Use getCookie function
     // console.log("Fetched ClassId ", storedClassId)
     if (storedClassId) {
       setClassId(storedClassId);

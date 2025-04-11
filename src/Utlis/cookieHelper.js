@@ -3,7 +3,7 @@
 // // ✅ Function to store all cookies
 // export const setAuthCookies = ({ token, role, subrole, userId, classId }) => {
 //   console.log("🚀 Storing Cookies:", { token, role, subrole, userId, classId });
-  
+
 //   Cookies.set("token", token, { expires: 1 / 24 }); // 1 hour expiration
 //   Cookies.set("role", role, { expires: 1 / 24 });
 //   Cookies.set("subrole", subrole, { expires: 1 / 24 });
@@ -25,23 +25,20 @@
 //   // Cookies.remove("iqTestToken");
 // };
 
-
 import Cookies from "js-cookie";
 
 // ✅ Function to store all cookies
-export const setAuthCookies = ({ token, role, subrole, userID
-  , classId }) => {
-  console.log("🚀 Storing Cookies:", { token, role, subrole, userID
-    , classId });
+export const setAuthCookies = ({ token, role, subrole, userID, classID }) => {
+  console.log("🚀 Storing Cookies:", { token, role, subrole, userID, classID });
 
-  Cookies.set("token", token, { expires: 1 / 24 });   // 1 hour
+  Cookies.set("token", token, { expires: 1 / 24 }); // 1 hour
   Cookies.set("role", role, { expires: 1 / 24 });
-  Cookies.set("userID", userID
-    , { expires: 1 / 24 });
+  Cookies.set("userID", userID, { expires: 1 / 24 });
 
   // Optional cookies only if they exist
   if (subrole) Cookies.set("subrole", subrole, { expires: 1 / 24 });
-  if (classId) Cookies.set("classId", classId, { expires: 1 / 24 });
+  if (classID) Cookies.set("classId", classID, { expires: 1 / 24 });
+  console.log("Classs Id", classID);
 };
 
 // ✅ Function to get a specific cookie
