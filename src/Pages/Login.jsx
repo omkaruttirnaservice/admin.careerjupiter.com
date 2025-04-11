@@ -41,34 +41,42 @@ const Login = () => {
         password,
       });
 
-      console.log("Response", response);
+     
+
       if (response.data.success) {
-        const { token, role, subrole, userID, vendorID } =
+        const { token, role, subrole, userID, classID } =
           response.data.data || {};
         console.log("user id====", response?.data?.data);
         console.log("Response data", response.data);
+        
 
         Swal.fire(
           "Success!",
           response.data.usrMsg || "Logged in successfully!",
           "success"
         ).then(() => {
+          console.log("role",role);
+          
           if (role === "ADMIN") {
             setAuthCookies({ token: token || "manual-token", role, userID });
 
             navigate("/dashboard");
+            
           }
 
           // ✅ For VENDOR
           else if (role === "VENDOR") {
             // ✅ Store all cookies including classId
-            setAuthCookies({
+            const payload = {
               token: token,
               role: "VENDOR",
               userID,
               subrole,
-              classId: vendorID,
-            });
+              classID,
+            }
+            console.log("=============", payload);
+            
+            setAuthCookies(payload);
             navigate("/vendor-class/class-dashboard");
             return;
           }

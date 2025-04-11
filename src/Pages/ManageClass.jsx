@@ -10,6 +10,7 @@ import InputField from "../Component/InputField";
 import RadioGroup from "../Component/RadioGroup";
 import CheckboxGroup from "../Component/CheckboxGroup";
 import MultiSelectDropdown from "../Component/MultiSelectDropdown";
+import { getCookie } from "../Utlis/cookieHelper";
 
 // ✅ Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
@@ -49,6 +50,18 @@ const ManageClass = () => {
   ];
 
   // ✅ Fetch Class Details
+    useEffect(() => {
+      const storedClassId = getCookie("classID"); // ✅ Use getCookie function
+      // console.log("Fetched ClassId ", storedClassId)
+      if (storedClassId) {
+        setClassId(storedClassId);
+        console.log("Class ID retrieved from cookies:", storedClassId);
+      } else {
+        console.warn("Class ID not found in cookies!");
+      }
+
+    }, []);
+
   useEffect(() => {
     const fetchClassDetails = async () => {
       if (!classId) return;
@@ -138,19 +151,10 @@ const ManageClass = () => {
 
       info: classDetails?.info ? { ...classDetails.info } : { description: "" },
     },
-    // validationSchema: Yup.object().shape({
-    //   className: Yup.string().required("Class Name is required"),
-    //   address: Yup.array().of(
-    //     Yup.object().shape({
-    //       // line1: Yup.string().required("Line1 is required"),
-    //       pincode: Yup.string().required("Pincode is required"),
-    //       // state: Yup.string().required("State is required"),
-    //       // dist: Yup.string().required("District is required"),
-    //       // autorizedName: Yup.string().required("Name is required"),
-    //       // autorizedPhono: Yup.string().required("Phone is required"),
-    //     })
-    //   ),
-    // }),
+     validationSchema: Yup.object().shape({
+     className: Yup.string().required("Class Name is required"),
+      
+    }),
 
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -247,7 +251,7 @@ const ManageClass = () => {
         <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
           {/* Background Icons - Random Placement */}
     
-          <div className="w-[1000px] max-w-screen-xl mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500">
+          <div className="w-full max-w-full lg:w-[1000px] mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500 rounded-xl">
             {/* ✅ Form Title */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6  shadow-md text-center">
               <h2 className="text-2xl md:text-4xl font-bold">
@@ -531,7 +535,7 @@ const ManageClass = () => {
                   </div>
 
                   {/* File Input */}
-                  <input
+                  {/* <input
                     type="file"
                     accept="image/*"
                     onChange={(event) => {
@@ -542,7 +546,29 @@ const ManageClass = () => {
                       }
                     }}
                     className="mt-4 block w-full"
-                  />
+                  /> */}
+
+<input
+  type="file"
+  id="imageUpload"
+  accept="image/jpeg,image/jpg,image/png"
+  className="hidden"
+  onChange={(event) => {
+    const file = event.currentTarget.files[0];
+    if (file) {
+      formik.setFieldValue("image", file);
+      setPreviewImage(URL.createObjectURL(file)); // preview
+    }
+  }}
+/>
+
+<label
+  htmlFor="imageUpload"
+  className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded cursor-pointer hover:bg-blue-700 transition"
+>
+  Update Image
+</label>
+
 
                   {formik.touched.image && formik.errors.image && (
                     <div className="text-red-500 text-sm">
