@@ -50,11 +50,13 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   };
 
   useEffect(() => {
-    const storedClassId = getCookie("classID"); // ✅ Use getCookie function
-    // console.log("Fetched ClassId ", storedClassId)
+    const storedClassId = getCookie("classId"); // ✅ Use getCookie function
+
+  
+
     if (storedClassId) {
       setClassId(storedClassId);
-      console.log("Class ID retrieved from cookies:", storedClassId);
+      console.log("Class ID retrieved from cookies-------:", storedClassId);
     } else {
       console.warn("Class ID not found in cookies!");
     }
@@ -72,6 +74,8 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
         console.log("Class details fetched:", response.data);
 
         const classData = response.data?.data?.class; // ✅ Ensure correct path
+        console.log("---------- class data",classData);
+        
         setClassDetails({
           ...classData,
         });

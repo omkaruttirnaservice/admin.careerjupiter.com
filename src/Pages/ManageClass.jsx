@@ -50,17 +50,16 @@ const ManageClass = () => {
   ];
 
   // ✅ Fetch Class Details
-    useEffect(() => {
-      const storedClassId = getCookie("classID"); // ✅ Use getCookie function
-      // console.log("Fetched ClassId ", storedClassId)
-      if (storedClassId) {
-        setClassId(storedClassId);
-        console.log("Class ID retrieved from cookies:", storedClassId);
-      } else {
-        console.warn("Class ID not found in cookies!");
-      }
-
-    }, []);
+  useEffect(() => {
+    const storedClassId = getCookie("classID"); // ✅ Use getCookie function
+    // console.log("Fetched ClassId ", storedClassId)
+    if (storedClassId) {
+      setClassId(storedClassId);
+      console.log("Class ID retrieved from cookies:", storedClassId);
+    } else {
+      console.warn("Class ID not found in cookies!");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchClassDetails = async () => {
@@ -151,19 +150,16 @@ const ManageClass = () => {
 
       info: classDetails?.info ? { ...classDetails.info } : { description: "" },
     },
-     validationSchema: Yup.object().shape({
-     className: Yup.string().required("Class Name is required"),
-      
+    validationSchema: Yup.object().shape({
+      className: Yup.string().required("Class Name is required"),
     }),
 
     onSubmit: async (values, { setSubmitting }) => {
       try {
-      
         const formData = new FormData();
-       
+
         for (const key in values) {
-         
-         console.log(key,values[key])
+          console.log(key, values[key]);
 
           if (key === "image" && values[key] instanceof File) {
             formData.append("image", values[key]);
@@ -173,8 +169,8 @@ const ManageClass = () => {
             key === "modeOfTeaching" ||
             key === "keywords"
           ) {
-            console.log("caterogry -------",JSON.stringify(values[key]));
-            
+            console.log("caterogry -------", JSON.stringify(values[key]));
+
             formData.append(key, JSON.stringify(values[key]));
           } else if (key === "locations" && Array.isArray(values[key])) {
             values[key].forEach((location, index) => {
@@ -191,21 +187,19 @@ const ManageClass = () => {
                 formData.append(`address[${index}][${addrKey}]`, addr[addrKey]);
               }
             });
-          } else  if(key === 'info'){
-            formData.append('info', JSON.stringify(values['info']));
+          } else if (key === "info") {
+            formData.append("info", JSON.stringify(values["info"]));
           } else if (typeof values[key] === "object") {
-            console.log(values[key])
+            console.log(values[key]);
             formData.append(key, JSON.stringify(values[key]));
           } else {
             formData.append(key, values[key]);
           }
-
-     
         }
-// return false;
+        // return false;
         // console.log(formData.get('info'))
-       // console.clear()
-      //  console.log(formData.getAll('address'))
+        // console.clear()
+        //  console.log(formData.getAll('address'))
 
         const response = await axios.put(
           `${API_BASE_URL}/api/class/update/${classId}`,
@@ -224,7 +218,7 @@ const ManageClass = () => {
             "❌ Failed to update class."
         );
       } finally {
-       setSubmitting(false);
+        setSubmitting(false);
       }
     },
   });
@@ -250,7 +244,7 @@ const ManageClass = () => {
       <div className="flex-1 flex justify-center">
         <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
           {/* Background Icons - Random Placement */}
-    
+
           <div className="w-full max-w-full lg:w-[1000px] mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500 rounded-xl">
             {/* ✅ Form Title */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6  shadow-md text-center">
@@ -491,7 +485,6 @@ const ManageClass = () => {
                     formik={formik}
                   /> */}
                 </div>
-                
 
                 {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
                 <RadioGroup
@@ -548,27 +541,26 @@ const ManageClass = () => {
                     className="mt-4 block w-full"
                   /> */}
 
-<input
-  type="file"
-  id="imageUpload"
-  accept="image/jpeg,image/jpg,image/png"
-  className="hidden"
-  onChange={(event) => {
-    const file = event.currentTarget.files[0];
-    if (file) {
-      formik.setFieldValue("image", file);
-      setPreviewImage(URL.createObjectURL(file)); // preview
-    }
-  }}
-/>
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    accept="image/jpeg,image/jpg,image/png"
+                    className="hidden"
+                    onChange={(event) => {
+                      const file = event.currentTarget.files[0];
+                      if (file) {
+                        formik.setFieldValue("image", file);
+                        setPreviewImage(URL.createObjectURL(file)); // preview
+                      }
+                    }}
+                  />
 
-<label
-  htmlFor="imageUpload"
-  className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded cursor-pointer hover:bg-blue-700 transition"
->
-  Update Image
-</label>
-
+                  <label
+                    htmlFor="imageUpload"
+                    className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded cursor-pointer hover:bg-blue-700 transition"
+                  >
+                    Update Image
+                  </label>
 
                   {formik.touched.image && formik.errors.image && (
                     <div className="text-red-500 text-sm">
@@ -585,7 +577,6 @@ const ManageClass = () => {
                   formik={formik}
                 />
               </div> */}
-                
               </div>
 
               <div className="flex justify-center">
