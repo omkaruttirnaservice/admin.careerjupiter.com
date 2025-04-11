@@ -46,11 +46,11 @@ const ClassTableDetails = () => {
     setModalOpen(true);
   };
 
-  // ✅ Edit Class
-  const handleEdit = (item) => {
-    setSelectedItem(item);
-    setEditModalOpen(true);
-  };
+  // // ✅ Edit Class
+  // const handleEdit = (item) => {
+  //   setSelectedItem(item);
+  //   setEditModalOpen(true);
+  // };
 
   // ✅ Save Edited Class Details
   const handleSaveEdit = (updatedData) => {
@@ -187,12 +187,12 @@ const filteredData = classData.filter((row) => {
           </button>
 
           {/* ✅ Edit */}
-          <button
+          {/* <button
             className="bg-yellow-500 hover:bg-yellow-700 text-white px-3 py-1 rounded-lg cursor-pointer"
             onClick={() => handleEdit(row)}
           >
             <FaEdit size={15} />
-          </button>
+          </button> */}
 
           {/* ✅ Delete */}
           <button

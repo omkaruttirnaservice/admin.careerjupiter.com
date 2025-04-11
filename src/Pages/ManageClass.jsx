@@ -11,6 +11,7 @@ import RadioGroup from "../Component/RadioGroup";
 import CheckboxGroup from "../Component/CheckboxGroup";
 import MultiSelectDropdown from "../Component/MultiSelectDropdown";
 import { getCookie } from "../Utlis/cookieHelper";
+import AddressModal from "../Component/AddressModel";
 
 // ✅ Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
@@ -28,6 +29,9 @@ const ManageClass = () => {
   const [classDetails, setClassDetails] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [customCategory, setCustomCategory] = useState("");
 
   console.log("📌 Retrieved Class ID from Cookies:", classId);
 
@@ -223,6 +227,28 @@ const ManageClass = () => {
     },
   });
 
+  // 🔍 Watch for selection changes
+  useEffect(() => {
+    if (formik.values.Category?.includes("Others")) {
+      setShowOtherInput(true);
+    } else {
+      setShowOtherInput(false);
+    }
+  }, [formik.values.Category]);
+
+  const handleAddOtherCategory = () => {
+    if (!customCategory.trim()) return;
+
+    const updated = formik.values.Category.map((item) =>
+      item === "Others" ? customCategory : item
+    );
+
+    formik.setFieldValue("Category", updated);
+
+    setCustomCategory("");
+    setShowOtherInput(false);
+  };
+
   useEffect(() => {
     if (typeof formik.values.image === "string") {
       setPreviewImage(`${API_BASE_URL}${formik.values.image}`);
@@ -272,13 +298,6 @@ const ManageClass = () => {
                 {/* 🔹 Address Section */}
 
                 <InputField
-                  label="Contact Details"
-                  type="text"
-                  name="contactDetails"
-                  formik={formik}
-                />
-
-                <InputField
                   label="Year Established"
                   type="number"
                   name="yearEstablished"
@@ -297,6 +316,24 @@ const ManageClass = () => {
                   options={classCategories}
                   formik={formik}
                 />
+                {showOtherInput && (
+                  <div className="flex items-center gap-2 mt-3">
+                    <input
+                      type="text"
+                      placeholder="Enter custom category"
+                      value={customCategory}
+                      onChange={(e) => setCustomCategory(e.target.value)}
+                      className="border border-gray-300 rounded px-3 py-2 w-full"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddOtherCategory}
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Address array */}
@@ -454,27 +491,13 @@ const ManageClass = () => {
               })}
 
               {/* Add new address */}
+
               <button
                 type="button"
-                onClick={() => {
-                  formik.setFieldValue("address", [
-                    ...formik.values.address,
-                    {
-                      line1: "",
-                      line2: "",
-                      pincode: "",
-                      state: "",
-                      dist: "",
-                      taluka: "",
-                      nearbyLandmarks: "",
-                      autorizedName: "",
-                      autorizedPhono: "",
-                    },
-                  ]);
-                }}
-                className="text-blue-600 mt-4"
+                onClick={() => setShowAddressModal(true)}
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200"
               >
-                + Add Address
+                ➕ Add Address
               </button>
 
               <div className="col-span-full">
@@ -501,7 +524,6 @@ const ManageClass = () => {
                   formik={formik}
                 />
 
-                {/* <div className="grid grid-cols-2 space-x-3 col-span-full">
                 {/* Single Image Upload */}
                 <div className="mt-6">
                   <h3 className="text-lg font-bold text-gray-800">
@@ -590,6 +612,16 @@ const ManageClass = () => {
               </div>
             </form>
           </div>
+          <AddressModal
+            open={showAddressModal}
+            onClose={() => setShowAddressModal(false)}
+            onSave={(newAddress) => {
+              formik.setFieldValue("address", [
+                ...(formik.values.address || []),
+                newAddress,
+              ]);
+            }}
+          />
         </div>
       </div>
     </div>

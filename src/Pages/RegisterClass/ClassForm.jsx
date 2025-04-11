@@ -2,35 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { FaMapMarkerAlt, FaTimes, FaUniversity } from "react-icons/fa";
+import { FaUniversity } from "react-icons/fa";
 import InputField from "../../Component/InputField";
-import SelectField from "../../Component/SelectField";
 import CheckboxGroup from "../../Component/CheckboxGroup";
 import FileUpload from "../../Component/FileUpload";
 import TextAreaField from "../../Component/TextAreaField";
 import MultiSelectField from "../../Component/MultiSelectField";
 import RadioGroup from "../../Component/RadioGroup";
-import MapContainerComponent from "./MapContainerComponent";
-import SearchBar from "./SearchBar";
-import CurrentLocationButton from "./CurrentLocationButton";
 import { API_BASE_URL } from "../../Constant/constantBaseUrl";
-import stateDistricts from "../../Constant/ConstantData";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { setAuthCookies } from "../../Utlis/cookieHelper";
 import ContactWithOTP from "../../Component/ContactWithOTP";
 import MultiSelectDropdown from "../../Component/MultiSelectDropdown";
-import MapComponent from "./MapComponent";
 import Swal from "sweetalert2";
 import AddressModal from "../../Component/AddressModel";
-import ButtonComponent from "../../Component/Button";
 
 const ClassForm = ({ onClose }) => {
-  // const [position, setPosition] = useState({ lat: 19.076, lan: 72.8777 });
+
   const navigate = useNavigate();
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [editingAddressIndex, setEditingAddressIndex] = useState(null); // New
-  // const [formik, setFormik] = useState(null); // Store Formik instance or use `useFormik`
+  const [editingAddressIndex, setEditingAddressIndex] = useState(null); 
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
   const [verifiedOtp , setVerifiedOtp] = useState(false);
@@ -220,9 +212,6 @@ const ClassForm = ({ onClose }) => {
 
         console.log("✅ Formatted Data Before Sending:", formattedData);
 
-        //
-        // formData.append("address", JSON.stringify(values.address));
-
         values.address.forEach((address, idx) => {
           formData.append(`address[${idx}][line1]`, values.address[idx].line1);
           formData.append(`address[${idx}][line2]`, values.address[idx].line2);
@@ -254,9 +243,6 @@ const ClassForm = ({ onClose }) => {
           `franchiseOrIndependent`,
           formattedData.franchiseOrIndependent
         );
-
-        // const formattedInfo = { description: values.info }; // ✅ Ensure correct structure
-        // formData.append("info", JSON.stringify(values.info)); // ✅ Converts object correctly
         formData.append("info[description]", values.info?.description);
         formData.append("contactDetails", formattedData.contactDetails);
 
