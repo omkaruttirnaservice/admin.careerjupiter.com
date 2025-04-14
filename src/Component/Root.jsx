@@ -13,7 +13,7 @@ const Root = () => {
       {/* ✅ Hide Sidebar on Login Page */}
       {!isLoginPage && <SideMenu />}  
 
-      <div className={`flex-1  ${!isLoginPage ? "md:pl-64" : ""} bg-blue-100 overflow-hidden`}>
+      <div className={`flex-1  ${!isLoginPage ? "md:pl-64" : ""} bg-blue-100 overflow-hidden min-h-lvh`}>
         <Outlet /> {/* Only render child routes here */}
       </div>
     </div>

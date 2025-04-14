@@ -1,23 +1,28 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
-  UsersIcon,
-  FolderIcon,
-  CalendarIcon,
-  InboxIcon,
-  ChartBarIcon,
-  AcademicCapIcon,
-  OfficeBuildingIcon,
   LibraryIcon,
+  OfficeBuildingIcon,
   PlusCircleIcon,
+  AcademicCapIcon,
   BookOpenIcon,
   ClipboardListIcon,
   PresentationChartBarIcon,
+  ChartBarIcon,
   UserCircleIcon,
-} from "@heroicons/react/solid"; // Using solid icons
+  ChevronDownIcon,
+  ChevronUpIcon,
+  LogoutIcon,
+} from "@heroicons/react/solid";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Puzzle,
+  Landmark,
+  GraduationCap,
+} from "lucide-react";
 
-// Navigation Items with Custom Colors
+// Sidebar items
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon, color: "text-blue-400" },
   { name: "Manage Colleges", href: "/colleges", icon: LibraryIcon, color: "text-green-400" },
@@ -25,7 +30,33 @@ const navigation = [
   { name: "Add New College", href: "/add-college", icon: PlusCircleIcon, color: "text-yellow-400" },
   { name: "Add New University", href: "/university", icon: AcademicCapIcon, color: "text-red-400" },
   { name: "Manage Classes", href: "/class-list", icon: BookOpenIcon, color: "text-blue-500" },
-  // { name: "Add Class", href: "/register-class", icon: ClipboardListIcon, color: "text-orange-400" },
+  // navigation section
+  {
+    name: "Add Categories",
+    icon: ClipboardListIcon,
+    color: "text-orange-400",
+    children: [
+      {
+        name: "Add Class Category",
+        href: "/add-category",
+        icon: Puzzle,
+        color: "text-blue-400",
+      },
+      {
+        name: "Add College Category",
+        href: "/add-college-category",
+        icon: Landmark,
+        color: "text-green-400",
+      },
+      {
+        name: "Add University Category",
+        href: "/add-university-category",
+        icon: GraduationCap,
+        color: "text-purple-400",
+      },
+    ],
+  },
+  
   { name: "IQ Test", href: "/iq-test", icon: PresentationChartBarIcon, color: "text-indigo-400" },
   { name: "Reports & Analytics", href: "/reports", icon: ChartBarIcon, color: "text-teal-400" },
   { name: "View Profile", href: "/profile", icon: UserCircleIcon, color: "text-pink-400" },
@@ -35,12 +66,17 @@ const SideMenu = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(location.pathname);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleLogout = () => {
+    navigate("/"); // ✅ Redirect to login
+   };
 
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gradient-to-b from-blue-700 to-blue-900 shadow-lg">
+    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gradient-to-b from-blue-700 to-blue-900 shadow-xl z-10 ">
       <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-        {/* Logo Section */}
-        <div className="flex items-center flex-shrink-0 px-4 mb-4">
+        {/* Logo */}
+        <div className="flex items-center justify-center mb-6">
           <img
             className="h-12 w-12 rounded-full border-2 border-white shadow-lg"
             src="https://cdn-icons-png.flaticon.com/128/4345/4345672.png"
@@ -49,10 +85,68 @@ const SideMenu = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="mt-2 flex-1 px-4 space-y-2">
+        <nav className="px-4 space-y-2">
           {navigation.map((item) => {
             const isActive = activeLink === item.href;
 
+            // DROPDOWN ITEM
+            if (item.children) {
+              return (
+                <div key={item.name}>
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="w-full flex items-center justify-between px-3 py-3 text-sm font-medium text-white bg-blue-800 rounded-lg hover:bg-blue-700 transition"
+                  >
+                    <span className="flex items-center">
+                      <item.icon className={`mr-3 h-5 w-5 ${item.color}`} />
+                      {item.name}
+                    </span>
+                    {dropdownOpen ? (
+                      <ChevronUpIcon className="w-5 h-5 text-white" />
+                    ) : (
+                      <ChevronDownIcon className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+
+                  <AnimatePresence>
+                    {dropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="ml-4 mt-1 rounded-md shadow-inner p-2"
+                      >
+                        {item.children.map((child) => {
+                          const isChildActive = activeLink === child.href;
+                          return (
+                            <button
+                              key={child.name}
+                              onClick={() => {
+                                setActiveLink(child.href);
+                                navigate(child.href);
+                              }}
+                              className={`w-full text-left px-4 py-2 text-sm rounded-md transition duration-200 ${
+                                isChildActive
+                                  ? "bg-blue-500 text-white font-semibold shadow"
+                                  : "text-gray-100 hover:bg-blue-700"
+                              }`}
+                            >
+                              <div className="flex flex-row gap-2 ">
+                              <child.icon className={`h-5 w-5 ${child.color}`} />
+                              {child.name}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            }
+
+            // NORMAL ITEM
             return (
               <button
                 key={item.name}
@@ -60,28 +154,29 @@ const SideMenu = () => {
                   setActiveLink(item.href);
                   navigate(item.href);
                 }}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300  cursor-pointer
-                ${
+                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition duration-300 ${
                   isActive
                     ? "bg-blue-500 text-white shadow-md transform scale-105"
-                    : "text-gray-300 hover:bg-blue-600 hover:text-white"
+                    : "text-gray-200 hover:bg-blue-600 hover:text-white"
                 }`}
               >
-                <item.icon
-                  className={`mr-3 h-6 w-6 ${
-                    isActive ? "text-white" : `${item.color}`
-                  }`}
-                />
+                <item.icon className={`mr-3 h-6 w-6 ${isActive ? "text-white" : item.color}`} />
                 {item.name}
               </button>
             );
           })}
         </nav>
+
+        <button
+                  className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+                  onClick={handleLogout} // Implement logout logic
+                >
+                  <LogoutIcon className="h-6 w-6 mr-3" />
+                  Logout
+                </button>
       </div>
     </div>
   );
 };
 
 export default SideMenu;
-
-
