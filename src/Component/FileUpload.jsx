@@ -94,7 +94,7 @@ const FileUpload = ({ label, name, multiple = false, formik }) => {
             onChange={handleFileChange}
           />
           {formik.touched[name] && formik.errors[name] && (
-            <p className="text-red-500 text-sm">{formik.errors[name]}</p>
+            <p className="text-red-500 text-sm mt-2 font-semibold">{formik.errors[name]}</p>
           )}
         </div>
       ) : (
@@ -131,7 +131,7 @@ const FileUpload = ({ label, name, multiple = false, formik }) => {
             onChange={handleFileChange}
           />
           {formik.touched[name] && formik.errors[name] && (
-            <p className="text-red-500 text-sm">{formik.errors[name]}</p>
+            <p className="text-red-500 text-sm mt-2 font-semibold">{formik.errors[name]}</p>
           )}
         </div>
       )}

@@ -3,7 +3,6 @@ import { Formik } from "formik";
 import { motion } from "framer-motion";
 import * as Yup from "yup";
 
-
 const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
   if (!open) return null;
 
@@ -23,7 +22,6 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
       .required("Phone Number is required"),
   });
 
-  
   const indianStates = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -96,7 +94,14 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
             onClose();
           }}
         >
-          {({ values, handleChange, handleBlur, handleSubmit, errors, touched  }) => (
+          {({
+            values,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            errors,
+            touched,
+          }) => (
             <form onSubmit={handleSubmit} className="space-y-6">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -117,8 +122,8 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.line1 && errors.line1 && (
-    <div className="text-red-500 text-sm">{errors.line1}</div>
-  )}
+                      <div className="text-red-500 text-sm">{errors.line1}</div>
+                    )}
                   </div>
 
                   {/* Address Line 2 */}
@@ -133,8 +138,8 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.line2 && errors.line2 && (
-    <div className="text-red-500 text-sm">{errors.line2}</div>
-  )}
+                      <div className="text-red-500 text-sm">{errors.line2}</div>
+                    )}
                   </div>
 
                   {/* Landmark */}
@@ -149,8 +154,10 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.nearbyLandmarks && errors.nearbyLandmarks && (
-    <div className="text-red-500 text-sm">{errors.nearbyLandmarks}</div>
-  )}
+                      <div className="text-red-500 text-sm">
+                        {errors.nearbyLandmarks}
+                      </div>
+                    )}
                   </div>
 
                   {/* State (Dropdown) */}
@@ -184,8 +191,8 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.dist && errors.dist && (
-    <div className="text-red-500 text-sm">{errors.dist}</div>
-  )}
+                      <div className="text-red-500 text-sm">{errors.dist}</div>
+                    )}
                   </div>
 
                   {/* Taluka */}
@@ -200,8 +207,10 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.taluka && errors.taluka && (
-    <div className="text-red-500 text-sm">{errors.taluka}</div>
-  )}
+                      <div className="text-red-500 text-sm">
+                        {errors.taluka}
+                      </div>
+                    )}
                   </div>
 
                   {/* Pincode */}
@@ -216,8 +225,10 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.pincode && errors.pincode && (
-    <div className="text-red-500 text-sm">{errors.pincode}</div>
-  )}
+                      <div className="text-red-500 text-sm">
+                        {errors.pincode}
+                      </div>
+                    )}
                   </div>
 
                   {/* Authorized Name */}
@@ -232,8 +243,10 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.autorizedName && errors.autorizedName && (
-    <div className="text-red-500 text-sm">{errors.autorizedName}</div>
-  )}
+                      <div className="text-red-500 text-sm">
+                        {errors.autorizedName}
+                      </div>
+                    )}
                   </div>
 
                   {/* Authorized Phone */}
@@ -250,8 +263,10 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.autorizedPhono && errors.autorizedPhono && (
-    <div className="text-red-500 text-sm">{errors.autorizedPhono}</div>
-  )}
+                      <div className="text-red-500 text-sm">
+                        {errors.autorizedPhono}
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -260,7 +275,7 @@ const AddressModal = ({ open, onClose, onSave, initialData = null }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-green-600 hover:bg-green-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300"
+                  className="bg-green-600 hover:bg-green-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300 cursor-pointer"
                 >
                   ✅ Save Address
                 </button>

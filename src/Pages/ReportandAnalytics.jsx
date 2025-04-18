@@ -31,7 +31,7 @@ const ReportandAnalytics = () => {
 
   // Pie Chart: Search Pattern Insights
   const searchPatternData = {
-    labels: ["Engineering", "Medical", "Business", "Arts", "Law"],
+    labels: ["Degree", "Diploma", "Degree", "Diploma", "Degree"],
     datasets: [
       {
         data: [40, 25, 15, 10, 10],

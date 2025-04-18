@@ -69,9 +69,9 @@ function App() {
                 <Route path="/class-list" element={<ClassTableDetails />} />
                 <Route path="/iq-test" element={<IQTest />} />
                 <Route path="/add-category" element={<ManagageCategory/>}/>
-                <Route path="/tests/:category" element={<TableList />} />
+                <Route path="/tests/:category/:mainCategoryId" element={<TableList />} />
                 <Route path="/view-excel/:testId" element={<ViewExcelPage />} />
-                <Route path="/add-test/:category" element={<AddTest />} />
+                <Route path="/add-test/:mainCategoryId" element={<AddTest />} />
                 <Route path="/reports" element={<ReportandAnalytics />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/colleges/courses/:collegeId" element={<CollegeCourses />} />

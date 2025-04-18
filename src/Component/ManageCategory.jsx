@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { Pencil, Trash2, Save, X } from "lucide-react";
+import Swal from "sweetalert2";
 
 const ManageCategory = ({ onCategoriesChange }) => {
   const [type] = useState("class");
@@ -22,7 +23,7 @@ const ManageCategory = ({ onCategoriesChange }) => {
     try {
       const res = await axios.post(`${API_BASE_URL}/api/category/add`, payload);
       const saveCategory = res.data.data;
-     
+
       const update = {
         ...categories,
         [type]: [...categories[type], saveCategory],
@@ -37,25 +38,36 @@ const ManageCategory = ({ onCategoriesChange }) => {
         "Error adding Category:",
         error.response?.data.errMsg || error.response?.data.usrMsg
       );
-      alert(error.response?.data.errMsg || "Failed adding categories");
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: error.response?.data.errMsg || error.response?.data.usrMsg || "Failed to add category. Please try again.",
+        confirmButtonColor: "#3085d6"
+      });
     }
   };
 
-const handleDeleteCategory = async (id) => {
-  try{
-    await axios.delete(`${API_BASE_URL}/api/category/${id}`);
-    
-    const updated = {
-      ...categories,
-      [type]: categories[type].filter((cat) => cat._id !== id),
-    };
-    setCategories(updated);
-    onCategoriesChange && onCategoriesChange(updated);
-  }catch (error) {
-    console.error("Failed to dalete category",error);
-    alert(error.response?.data.errMsg || "Failed to Delete Category");
-  }
-};
+  const handleDeleteCategory = async (id) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/category/${id}`);
+
+      const updated = {
+        ...categories,
+        [type]: categories[type].filter((cat) => cat._id !== id),
+      };
+      setCategories(updated);
+      onCategoriesChange && onCategoriesChange(updated);
+    } catch (error) {
+      console.error("Failed to dalete category", error);
+      Swal.fire({
+        icon: "error",
+        title: "Unable to Delete",
+        text: error.response?.data.errMsg || "Failed to delete category. Please try again.",
+        confirmButtonColor: "#d33"
+      });
+      
+    }
+  };
 
   const handleEditCategory = (cat) => {
     setEditCategoryId(cat._id);
@@ -63,49 +75,57 @@ const handleDeleteCategory = async (id) => {
   };
 
   const handleUpdateCategory = async (id) => {
-    if(!editCategoryName.trim()) return;
+    if (!editCategoryName.trim()) return;
 
-    try{
+    try {
       const payload = {
-        category : editCategoryName.trim()
+        category: editCategoryName.trim(),
       };
 
-      const res = await axios.put(`${API_BASE_URL}/api/category/${id}`, payload);
+      const res = await axios.put(
+        `${API_BASE_URL}/api/category/${id}`,
+        payload
+      );
       const updateCat = res.data.data;
 
       const updated = {
         ...categories,
-        [type]: categories[type].map((cat) => 
-        cat._id === id ? {
-          ...cat, category: updateCat.category
-        } : cat ),
+        [type]: categories[type].map((cat) =>
+          cat._id === id
+            ? {
+                ...cat,
+                category: updateCat.category,
+              }
+            : cat
+        ),
       };
 
       setCategories(updated);
       onCategoriesChange && onCategoriesChange(updated);
       setEditCategoryId(null);
       setEditCategoryName("");
-    }catch(error) {
+    } catch (error) {
       console.error("Error updating Category" || error);
-      alert(error.response?.data.errMsg || "Failed to Update Category");
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: error.response?.data.errMsg || "Could not update the category. Please try again.",
+        confirmButtonColor: "#d33"
+      });
+      
     }
   };
 
   return (
     <div className="p-8 bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-2xl m-10 shadow-xl max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2">
-        📁 Manage Category
+        📁 Manage Category <span className="capitalize">{type}</span>
       </h2>
-  
+
       <div className="mb-6">
-        <label className="font-semibold mr-2 text-gray-700">Type:</label>
-        <span className="px-4 py-1 rounded-full bg-blue-100 text-blue-800 font-medium shadow-sm capitalize">
-          {type}
-        </span>
-      </div>
-  
- <div className="mb-6">
-        <label className="block font-semibold mb-2 text-gray-700">Add Category</label>
+        <label className="block font-semibold mb-2 text-gray-700">
+          Add Category
+        </label>
         <div className="flex gap-3 items-center">
           <input
             type="text"
@@ -115,24 +135,21 @@ const handleDeleteCategory = async (id) => {
             className="border border-blue-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
           />
 
-
-
- <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all duration-200"
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all duration-200 cursor-pointer"
             onClick={handleAddCategory}
           >
             Add
           </button>
         </div>
       </div>
-  
-
 
       <div>
         <h4 className="font-semibold mb-4 text-gray-800">
-          Categories for <span className="capitalize text-blue-700">{type}</span>
+          Categories for{" "}
+          <span className="capitalize text-blue-700">{type}</span>
         </h4>
-  
+
         <ul className="space-y-4">
           {categories[type].map((cat) => (
             <li
@@ -149,13 +166,13 @@ const handleDeleteCategory = async (id) => {
                   />
                   <div className="flex gap-2">
                     <button
-                      className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg shadow"
+                      className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg shadow cursor-pointer"
                       onClick={() => handleUpdateCategory(cat._id)}
                     >
                       <Save size={18} />
                     </button>
                     <button
-                      className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded-lg shadow"
+                      className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded-lg shadow cursor-pointer"
                       onClick={() => setEditCategoryId(null)}
                     >
                       <X size={18} />
@@ -164,16 +181,18 @@ const handleDeleteCategory = async (id) => {
                 </div>
               ) : (
                 <>
-                  <span className="font-medium text-gray-800">{cat.category}</span>
+                  <span className="font-medium text-gray-800">
+                    {cat.category}
+                  </span>
                   <div className="flex gap-2">
                     <button
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded-lg shadow"
+                      className="bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded-lg shadow cursor-pointer"
                       onClick={() => handleEditCategory(cat)}
                     >
                       <Pencil size={18} />
                     </button>
                     <button
-                      className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg shadow"
+                      className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg shadow cursor-pointer"
                       onClick={() => handleDeleteCategory(cat._id)}
                     >
                       <Trash2 size={18} />
@@ -187,7 +206,6 @@ const handleDeleteCategory = async (id) => {
       </div>
     </div>
   );
-  
 };
 
 export default ManageCategory;

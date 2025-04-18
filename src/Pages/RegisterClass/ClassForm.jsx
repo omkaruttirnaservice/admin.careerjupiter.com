@@ -19,30 +19,35 @@ import Swal from "sweetalert2";
 import AddressModal from "../../Component/AddressModel";
 
 const ClassForm = ({ onClose }) => {
-
   const navigate = useNavigate();
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [editingAddressIndex, setEditingAddressIndex] = useState(null); 
+  const [editingAddressIndex, setEditingAddressIndex] = useState(null);
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
-  const [verifiedOtp , setVerifiedOtp] = useState(false);
+  const [verifiedOtp, setVerifiedOtp] = useState(false);
+  const [selectedDiscount, setSelectedDiscount] = useState("");
+  const [validTill, setValidTill] = useState("");
+  const [dynamicCategories, setDynamicCategories] = useState([]);
 
   <stateDistricts />;
 
-  const classCategories = [
-    "Primary (1 to 7)",
-    "Secondary (8 to 10) State Board",
-    "Secondary (8 to 10) CBSE Board",
-    "Secondary (8 to 10) ICSE Board",
-    "Secondary (8 to 10) IGCSE Board",
-    "11 - 12 Science with CET",
-    "11 - 12 Science with CET, JEE, NEET",
-    "Diploma Engineering",
-    "Degree Engineering",
-    "NDA",
-    "Hobby/Sports",
-    "Competative Exams",
-    "Others",
+  const discountOptions = [
+    { label: "Discount 5%", value: 5 },
+    { label: "Discount 10%", value: 10 },
+    { label: "Discount 15%", value: 15 },
+    { label: "Discount 20%", value: 20 },
+    { label: "Discount 25%", value: 25 },
+    { label: "Discount 30%", value: 30 },
+    { label: "Discount 35%", value: 35 },
+    { label: "Discount 40%", value: 40 },
+    { label: "Discount 45%", value: 45 },
+    { label: "Discount 50%", value: 50 },
+    { label: "Discount 55%", value: 55 },
+    { label: "Discount 60%", value: 60 },
+    { label: "Discount 65%", value: 65 },
+    { label: "Discount 70%", value: 70 },
+    { label: "Discount 75%", value: 75 },
+    { label: "Discount 80%", value: 80 },
   ];
 
   const formik = useFormik({
@@ -50,27 +55,14 @@ const ClassForm = ({ onClose }) => {
       className: "",
       ownerOrInstituteName: "",
       typeOfClass: [],
-      Category: [],
+      category: [],
       otherCategory: "",
       subjectsOrCourses: [],
       teachingMedium: [],
       modeOfTeaching: [],
       franchiseOrIndependent: "",
       yearEstablished: "",
-      address: [
-        // {
-        //   line1: "--------",
-        //   line2: "",
-        //   pincode: "",
-        //   state: "",
-        //   dist: "",
-        //   taluka: "",
-        //   nearbyLandmarks: "", // ✅ single string
-        //   autorizedName: "",
-        //   autorizedPhono: "",
-        // },
-      ],
-
+      address: [],
       contactDetails: "",
       otp: "",
       reference_id: "",
@@ -81,8 +73,10 @@ const ClassForm = ({ onClose }) => {
       websiteURL: "",
       image: null,
       imageGallery: [],
-      locations: [], // ✅ Store lat/lng
+      locations: [],
       keywords: [],
+      discount: "",
+      validTill: "",
     },
 
     validationSchema: Yup.object({
@@ -102,28 +96,10 @@ const ClassForm = ({ onClose }) => {
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Confirm Password is required"),
-      // address: Yup.array().of(
-      //   Yup.object().shape({
-      //     line1: Yup.string().required("Address Line 1 is required"),
-      //     line2: Yup.string().required("Address Line 2 is required"),
-      //     pincode: Yup.string()
-      //       .matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode")
-      //       .required("Pincode is required"),
-      //     state: Yup.string().required("State is required"),
-      //     dist: Yup.string().required("District is required"),
-      //     taluka: Yup.string().required("Taluka is required"), // ✅ single string
-      //     nearbyLandmarks: Yup.string().required("Landmark is required"), // ✅ single string
-      //     autorizedName: Yup.string().required("Autorized Name is required"), // ✅ single string
-      //     autorizedPhono: Yup.string()
-      //       .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
-      //       .required("Phone Number is required"),
-      //   })
-      // ),
+
       contactDetails: Yup.string()
         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
         .required("Contact Details are required"),
-
-
 
       info: Yup.object().shape({
         description: Yup.string()
@@ -131,7 +107,7 @@ const ClassForm = ({ onClose }) => {
           .max(1000, "Maximum 1000 characters allowed.")
           .required("Description is required."),
       }),
-      
+
       keywords: Yup.array()
         .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
         .min(1, "At least one keyword is required")
@@ -165,20 +141,22 @@ const ClassForm = ({ onClose }) => {
           file ? file.size <= 102400 : true
         )
         .required("Image is required"),
-  //      Category: Yup.array()
-  //   .of(Yup.string().oneOf(classCategories, "Invalid category selected"))
-  //   .min(1, "At least one category must be selected")
-  //   .required("Category is required"),
 
-  // otherCategory: Yup.string().when("Category", {
-  //   is: (val) => Array.isArray(val) && val.includes("Others"),
-  //   then: () => Yup.string().required("Please specify the other category"),
-  //   otherwise: () => Yup.string().notRequired(),
-  //   }),
+      category: Yup.array()
+        .of(Yup.string().oneOf(dynamicCategories, "Invalid category selected"))
+        .min(1, "At least one category must be selected")
+        .required("Category is required"),
+
+        // discount: Yup.string().required("Please select a discount"),
+
+      // otherCategory: Yup.string().when("Category", {
+      //   is: (val) => Array.isArray(val) && val.includes("Others"),
+      //   then: () => Yup.string().required("Please specify the other category"),
+      //   otherwise: () => Yup.string().notRequired(),
+      //   }),
       modeOfTeaching: Yup.array()
         .min(1, "Please select at least one mode of teaching") // At least one option must be selected
         .required("Mode of teaching is required"),
-
     }),
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -186,17 +164,22 @@ const ClassForm = ({ onClose }) => {
         const formData = new FormData();
 
         if (!verifiedOtp) {
-          alert('Please verify your mobile number and OTP before submitting the form.');
-         
+          alert(
+            "Please verify your mobile number and OTP before submitting the form."
+          );
+
           return false;
         }
-        
+
         if (!values.address || values.address.length === 0) {
           alert("Please add at least one address before submitting.");
           return;
         }
 
         console.log("🚀 Original Form Values:", values); // ✅ Debugging
+
+        values.discount = selectedDiscount;
+        values.validTill = validTill;
 
         // ✅ Properly format `address` and `info`
         const formattedData = {
@@ -239,6 +222,22 @@ const ClassForm = ({ onClose }) => {
           );
         });
 
+        // Include selected discount and validTill
+        if (values.discount && values.discount !== "") {
+          formData.append("discount", Number(values.discount));
+        }
+
+        console.log("**********Discount************", values.discount);
+
+        if (values.validTill) {
+          formData.append("validTill", values.validTill);
+        }
+
+        console.log(
+          "****************Valid Till ****************",
+          values.validTill
+        );
+
         formData.append(
           `franchiseOrIndependent`,
           formattedData.franchiseOrIndependent
@@ -266,13 +265,13 @@ const ClassForm = ({ onClose }) => {
         formData.append("yearEstablished", formattedData.yearEstablished);
 
         formData.append("password", formattedData.password);
-        // ✅ 1. Handle Category (override "Others" with customCategory)
-        const finalCategory = values.Category.map((item) =>
+
+        const finalCategory = values.category.map((item) =>
           item === "Others" ? customCategory : item
         );
 
         finalCategory.forEach((cat) => {
-          formData.append("Category[]", cat);
+          formData.append("category[]", cat);
         });
 
         // formData.append("subjectsOrCourses", JSON.stringify(formattedData.subjectsOrCourses || []));
@@ -284,12 +283,10 @@ const ClassForm = ({ onClose }) => {
           formData.append("image", formattedData.image);
         }
 
-        // / Append imageGallery one by one
         formattedData.imageGallery.forEach((file) => {
           formData.append("imageGallery", file);
         });
 
-        // Append keywords one by one
         formattedData.keywords.forEach((keyword) => {
           formData.append("keywords", keyword);
         });
@@ -299,7 +296,6 @@ const ClassForm = ({ onClose }) => {
           Object.fromEntries(formData.entries())
         );
 
-        // ✅ Send API Request
         const response = await axios.post(
           `${API_BASE_URL}/api/class/create`,
           formData,
@@ -322,26 +318,17 @@ const ClassForm = ({ onClose }) => {
         // ✅ Store Class ID in Cookies
         Cookies.set("classId", classId, { expires: 1 / 24 });
 
-        // ✅ Show Success Message & Redirect to Vendor Dashboard
+        // Show Success Message & Redirect to Vendor Dashboard
         // alert("✅ Class Created Successfully!");
         Swal.fire({
           title: "🎉 Success!",
           text: "Class has been added to the system.",
           icon: "success",
-          timer: 3000,
-          background: "#f9f9f9", // Light background
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutUp",
-          },
-        }).then(()=>{
+          background: "#f9f9f9", 
+        }).then(() => {
           resetForm();
           navigate("/");
         });
-
-      
       } catch (error) {
         console.error(
           "❌ Error submitting form:",
@@ -359,35 +346,89 @@ const ClassForm = ({ onClose }) => {
     },
   });
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/class/search`);
+        if (response.data.success && response.data.categories) {
+          const formatted = response.data.categories.map((cat) => cat.category);
+          setDynamicCategories(formatted);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   // 🔍 Watch for selection changes
   useEffect(() => {
-    if (formik.values.Category?.includes("Others")) {
+    if (formik.values.category?.includes("Others")) {
       setShowOtherInput(true);
     } else {
       setShowOtherInput(false);
     }
-  }, [formik.values.Category]);
+  }, [formik.values.category]);
 
   const handleAddOtherCategory = () => {
     if (!customCategory.trim()) return;
 
-    const updated = formik.values.Category.map((item) =>
+    const updated = formik.values.category.map((item) =>
       item === "Others" ? customCategory : item
     );
 
-    formik.setFieldValue("Category", updated);
+    formik.setFieldValue("category", updated);
 
     setCustomCategory("");
     setShowOtherInput(false);
   };
 
+  // Handle custom category
+  // const handleAddOtherCategory = () => {
+  //   if (!customCategory) return;
+
+  //   const exists = dynamicCategories.some(
+  //     (cat) => cat.value.toLowerCase() === customCategory.toLowerCase()
+  //   );
+
+  //   if (!exists) {
+  //     const newCat = { label: customCategory, value: customCategory };
+  //     setDynamicCategories((prev) => [...prev, newCat]);
+  //   }
+
+  //   formik.setFieldValue("Category", [
+  //     ...(formik.values.Category || []),
+  //     customCategory,
+  //   ]);
+
+  //   setCustomCategory("");
+  //   setShowOtherInput(false);
+  // };
+
+  // handle custom input if "Others" is selected
+  useEffect(() => {
+    if (formik.values.category?.includes("Others")) {
+      setShowOtherInput(true);
+    } else {
+      setShowOtherInput(false);
+    }
+  }, [formik.values.category]);
+
   return (
-    // <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200 background-image">
     <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
       <div className="absolute inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm"></div>
-
       <div className="w-full max-w-5xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
         {/* Form Title */}
+        <div className="text-right mb-4">
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="text-blue-600 underline hover:text-blue-800 transition cursor-pointer"
+          >
+            Class Login
+          </button>
+        </div>
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-t-md text-center">
           <h2 className="text-2xl font-bold flex items-center justify-center gap-3">
             <FaUniversity
@@ -400,6 +441,7 @@ const ClassForm = ({ onClose }) => {
 
         {/* Form */}
         <form onSubmit={formik.handleSubmit} className="space-y-4 mt-4">
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
               label="Class Name"
@@ -414,7 +456,11 @@ const ClassForm = ({ onClose }) => {
               formik={formik}
             />
 
-            <ContactWithOTP formik={formik} setVerifiedOtp={setVerifiedOtp} verifiedOtp={verifiedOtp}/>
+            <ContactWithOTP
+              formik={formik}
+              setVerifiedOtp={setVerifiedOtp}
+              verifiedOtp={verifiedOtp}
+            />
 
             <div className="col-span-full grid grid-cols-2 gap-4">
               <InputField
@@ -433,7 +479,7 @@ const ClassForm = ({ onClose }) => {
             </div>
 
             <InputField
-              label="Year Established"
+              label="Established Year"
               type="number"
               name="yearEstablished"
               formik={formik}
@@ -448,8 +494,8 @@ const ClassForm = ({ onClose }) => {
 
             <MultiSelectDropdown
               label="Category"
-              name="Category"
-              options={classCategories}
+              name="category"
+              options={dynamicCategories}
               formik={formik}
             />
             {showOtherInput && (
@@ -471,9 +517,32 @@ const ClassForm = ({ onClose }) => {
               </div>
             )}
 
-            {/* <InputField label="Address Line 1" type="text" name="address.line1" formik={formik} />
-          <InputField label="Pincode" type="text" name="address.pincode" formik={formik} /> */}
-            {/* <CheckboxGroup label="Mode of Teaching" name="modeOfTeaching" options={["Online", "Offline", "Hybrid"]} formik={formik} /> */}
+            {/* <MultiSelectDropdown
+              label="Category"
+              name="Category"
+              options={dynamicCategories}
+              formik={formik}
+            />
+
+            {showOtherInput && (
+              <div className="flex items-center gap-2 mt-3">
+                <input
+                  type="text"
+                  placeholder="Enter custom category"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-2 w-full"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddOtherCategory}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Add
+                </button>
+              </div>
+            )} */}
+
             <TextAreaField
               label="Description"
               name="info.description"
@@ -501,6 +570,52 @@ const ClassForm = ({ onClose }) => {
               options={["Online", "Offline"]}
               formik={formik}
             />
+
+            <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex-1">
+                <label className="block text-blue-900 text-lg font-semibold mb-2">
+                  Select Discount
+                </label>
+                <select
+                  className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={selectedDiscount}
+                  onChange={(e) => setSelectedDiscount(e.target.value)}
+                >
+                  <option value="">Select Discount</option>
+                  {discountOptions.map((option, index) => (
+                    <option key={index} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {formik.touched.discount && formik.errors.discount && (
+                  <div className="text-red-500 text-sm mt-2 font-semibold">
+                    {formik.errors.discount}
+                  </div>
+                )}
+              </div>
+
+              {/* Valid Till Date Picker */}
+              {selectedDiscount && (
+                <div className="flex-1">
+                  <label className="block text-blue-900 text-lg font-semibold mb-2">
+                    Valid Till
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={validTill}
+                    onChange={(e) => setValidTill(e.target.value)}
+                  />
+                  {formik.touched.validTill && formik.errors.validTill && (
+                    <div className="text-red-500 text-sm mt-2 font-semibold">
+                      {formik.errors.validTill}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="col-span-full">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Single Image Upload */}
@@ -522,15 +637,18 @@ const ClassForm = ({ onClose }) => {
 
             <div className="col-span-full justify-end ">
               <div className="flex justify-between items-center col-span-full gap-4">
-                <label htmlFor="Address" className="text-blue-800 font-medium">
+                <label
+                  htmlFor="Address"
+                  className="text-blue-900 font-semibold block text-lg"
+                >
                   Address
                 </label>
                 <button
                   type="button"
                   onClick={() => setShowAddressModal(true)}
-                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200"
+                  className="cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-gray-500 to-gray-700 text-white font-medium shadow-md hover:shadow-lg hover:from-gray-400 hover:to-gray-500 transition-all duration-200"
                 >
-                  ➕ Add Address
+                  <span className="font-extrabold">+</span> Add Address
                 </button>
               </div>
             </div>
@@ -546,49 +664,60 @@ const ClassForm = ({ onClose }) => {
                   addr.state ||
                   addr.dist
               ) && (
-                <div className="col-span-full mt-6">
-                  <h4 className="text-lg font-semibold text-blue-800 mb-4">
-                    📌 Saved Addresses
+                <div className="col-span-full mt-4">
+                  <h4 className="text-xl font-semibold text-blue-800 mb-6 flex items-center gap-2">
+                    <span>📌</span> Saved Addresses
                   </h4>
-                  <div className="space-y-4">
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {formik.values.address.map((addr, idx) => (
                       <div
                         key={idx}
-                        className="border border-blue-200 bg-blue-50 rounded-md p-4 shadow-sm relative"
+                        className="relative bg-white border border-blue-200 rounded-2xl p-5 shadow-md hover:shadow-lg transition duration-300 col-span-full"
                       >
-                        <div className="mb-2 text-gray-800 font-medium">
-                          {addr.line1}, {addr.line2}, {addr.nearbyLandmarks},{" "}
-                          {addr.taluka}, {addr.dist}, {addr.state},{" "}
-                          {addr.pincode}
-                        </div>
-                        <div className="text-sm text-gray-600 mb-2">
-                          {addr.autorizedName} - {addr.autorizedPhono}
+                        <div className="space-y-1 text-gray-800 text-sm">
+                          <p className="font-medium">
+                            🏠 {addr.line1}, {addr.line2}
+                          </p>
+                          {addr.nearbyLandmarks && (
+                            <p>📍 Nearby: {addr.nearbyLandmarks}</p>
+                          )}
+                          <p>
+                            🗺️ {addr.taluka}, {addr.dist}, {addr.state} -{" "}
+                            {addr.pincode}
+                          </p>
+                          <p className="text-gray-600 text-xs mt-1">
+                            👤 {addr.autorizedName} &nbsp; 📞{" "}
+                            {addr.autorizedPhono}
+                          </p>
                         </div>
 
-                        {/* Edit Button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingAddressIndex(idx);
-                            setShowAddressModal(true);
-                          }}
-                          className="absolute top-2 right-16 bg-yellow-500 text-white text-xs px-3 py-1 rounded-md hover:bg-yellow-600"
-                        >
-                          Edit
-                        </button>
+                        <div className="flex justify-end gap-3 mt-4">
+                          {/* Edit Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingAddressIndex(idx);
+                              setShowAddressModal(true);
+                            }}
+                            className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1"
+                          >
+                            ✏️ Edit
+                          </button>
 
-                        {/* Delete Button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const updated = [...formik.values.address];
-                            updated.splice(idx, 1);
-                            formik.setFieldValue("address", updated);
-                          }}
-                          className="absolute top-2 right-2 bg-red-600 text-white text-xs px-3 py-1 rounded-md hover:bg-red-700"
-                        >
-                          Delete
-                        </button>
+                          {/* Delete Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...formik.values.address];
+                              updated.splice(idx, 1);
+                              formik.setFieldValue("address", updated);
+                            }}
+                            className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1"
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -596,23 +725,16 @@ const ClassForm = ({ onClose }) => {
               )}
 
             {/* Submit Button */}
-            {/* <div className="text-center mt-2 col-span-full w-50 justify-center">
-              <button
-                type="submit"
-                className="cursor-pointer bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition sm:w-full"
-              >
-                Submit
-              </button>
-            </div> */}
-
-            <div className="col-span-full flex justify-center mt-4">
+            <div className="col-span-full flex justify-end mt-4">
               <button
                 type="submit"
                 className="bg-indigo-600 cursor-pointer text-white py-3 px-6 rounded-md font-semibold 
                hover:bg-indigo-700 transition w-full sm:w-auto disabled:bg-gray-400 disabled:cursor-not-allowed"
-                disabled={verifiedOtp ?  formik.isSubmitting : formik.isSubmitting}
+                disabled={
+                  verifiedOtp ? formik.isSubmitting : formik.isSubmitting
+                }
               >
-                {formik.isSubmitting ? "Submitting..." : "Submit"}
+                {formik.isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
             </div>
           </div>

@@ -16,20 +16,46 @@ import {
 } from "@heroicons/react/solid";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Puzzle,
-  Landmark,
-  GraduationCap,
-} from "lucide-react";
+import { Puzzle, Landmark, GraduationCap } from "lucide-react";
 
 // Sidebar items
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: HomeIcon, color: "text-blue-400" },
-  { name: "Manage Colleges", href: "/colleges", icon: LibraryIcon, color: "text-green-400" },
-  { name: "Manage University", href: "/university-details", icon: OfficeBuildingIcon, color: "text-purple-400" },
-  { name: "Add New College", href: "/add-college", icon: PlusCircleIcon, color: "text-yellow-400" },
-  { name: "Add New University", href: "/university", icon: AcademicCapIcon, color: "text-red-400" },
-  { name: "Manage Classes", href: "/class-list", icon: BookOpenIcon, color: "text-blue-500" },
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: HomeIcon,
+    color: "text-blue-400",
+  },
+  {
+    name: "Manage Colleges",
+    href: "/colleges",
+    icon: LibraryIcon,
+    color: "text-green-400",
+  },
+  {
+    name: "Manage University",
+    href: "/university-details",
+    icon: OfficeBuildingIcon,
+    color: "text-purple-400",
+  },
+  {
+    name: "Manage Classes",
+    href: "/class-list",
+    icon: BookOpenIcon,
+    color: "text-blue-500",
+  },
+  {
+    name: "Add New College",
+    href: "/add-college",
+    icon: PlusCircleIcon,
+    color: "text-yellow-400",
+  },
+  {
+    name: "Add New University",
+    href: "/university",
+    icon: AcademicCapIcon,
+    color: "text-red-400",
+  },
   // navigation section
   {
     name: "Add Categories",
@@ -56,10 +82,31 @@ const navigation = [
       },
     ],
   },
-  
-  { name: "IQ Test", href: "/iq-test", icon: PresentationChartBarIcon, color: "text-indigo-400" },
-  { name: "Reports & Analytics", href: "/reports", icon: ChartBarIcon, color: "text-teal-400" },
-  { name: "View Profile", href: "/profile", icon: UserCircleIcon, color: "text-pink-400" },
+
+  {
+    name: "IQ Test",
+    href: "/iq-test",
+    icon: PresentationChartBarIcon,
+    color: "text-indigo-400",
+  },
+  {
+    name: "Reports & Analytics",
+    href: "/reports",
+    icon: ChartBarIcon,
+    color: "text-teal-400",
+  },
+  {
+    name: "View Profile",
+    href: "/profile",
+    icon: UserCircleIcon,
+    color: "text-pink-400",
+  },
+  {
+    name: "Logout",
+    href: "/",
+    icon: LogoutIcon,
+    color: "text-red-800",
+  },
 ];
 
 const SideMenu = () => {
@@ -68,12 +115,9 @@ const SideMenu = () => {
   const [activeLink, setActiveLink] = useState(location.pathname);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleLogout = () => {
-    navigate("/"); // ✅ Redirect to login
-   };
 
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gradient-to-b from-blue-700 to-blue-900 shadow-xl z-10 ">
+    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10 ">
       <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
         {/* Logo */}
         <div className="flex items-center justify-center mb-6">
@@ -133,8 +177,10 @@ const SideMenu = () => {
                               }`}
                             >
                               <div className="flex flex-row gap-2 ">
-                              <child.icon className={`h-5 w-5 ${child.color}`} />
-                              {child.name}
+                                <child.icon
+                                  className={`h-5 w-5 ${child.color}`}
+                                />
+                                {child.name}
                               </div>
                             </button>
                           );
@@ -160,20 +206,17 @@ const SideMenu = () => {
                     : "text-gray-200 hover:bg-blue-600 hover:text-white"
                 }`}
               >
-                <item.icon className={`mr-3 h-6 w-6 ${isActive ? "text-white" : item.color}`} />
+                <item.icon
+                  className={`mr-3 h-6 w-6 ${
+                    isActive ? "text-white" : item.color
+                  }`}
+                />
                 {item.name}
               </button>
             );
           })}
         </nav>
 
-        <button
-                  className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
-                  onClick={handleLogout} // Implement logout logic
-                >
-                  <LogoutIcon className="h-6 w-6 mr-3" />
-                  Logout
-                </button>
       </div>
     </div>
   );
