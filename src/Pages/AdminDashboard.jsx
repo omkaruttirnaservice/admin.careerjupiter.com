@@ -103,12 +103,12 @@ const AdminDashboard = () => {
         const [collegesRes, universitiesRes, classesRes] = await Promise.all([
           axios.get(`${API_BASE_URL}/api/college/all`),
           axios.get(`${API_BASE_URL}/api/university/all`),
-          axios.get(`${API_BASE_URL}/api/class/all`), // Replace with actual API
+          axios.get(`${API_BASE_URL}/api/class/all`),
         ]);
 
-        console.log("Colleges API Response:", collegesRes.data);
-        console.log("Universities API Response:", universitiesRes.data);
-        console.log("Classes API Response:", classesRes.data);
+        console.log("Colleges API Response:", collegesRes);
+        console.log("Universities API Response:", universitiesRes);
+        console.log("Classes API Response:", classesRes);
 
         setStats({
           universities: Array.isArray(universitiesRes.data.data.universities)

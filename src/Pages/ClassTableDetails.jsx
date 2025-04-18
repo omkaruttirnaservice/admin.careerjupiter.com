@@ -4,8 +4,9 @@ import DataTable from "react-data-table-component";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import EditClassDetails from "./EditClassDetails"; // ✅ Modal for Editing Class Details
-import ClassInfoCard from "./ClassInforCard"; // ✅ Ensure Correct Import
+import EditClassDetails from "./EditClassDetails"; 
+import ClassInfoCard from "./ClassInforCard"; 
+import Swal from 'sweetalert2';
 
 const ClassTableDetails = () => {
   const [classData, setClassData] = useState([]);
@@ -27,18 +28,28 @@ const ClassTableDetails = () => {
           console.log("✅ Fetched Class Data:", classArray);
           setClassData(classArray); // ✅ Update state with array
         } else {
-          console.error(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage ||"❌ API returned an unexpected format:", response.data);
+          console.error(
+            error.response?.data?.usrMsg ||
+              error.response?.data?.message ||
+              error.response?.data.errMessage ||
+              "❌ API returned an unexpected format:",
+            response.data
+          );
         }
       })
       .catch((error) => {
-        console.error(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "❌ Error fetching class data:", error);
+        console.error(
+          error.response?.data?.usrMsg ||
+            error.response?.data?.message ||
+            error.response?.data.errMessage ||
+            "❌ Error fetching class data:",
+          error
+        );
       })
       .finally(() => {
         setLoading(false);
       });
   }, []);
-  
-  
 
   // ✅ View Class Profile
   const handleViewProfile = (item) => {
@@ -46,81 +57,138 @@ const ClassTableDetails = () => {
     setModalOpen(true);
   };
 
-  // ✅ Edit Class
-  const handleEdit = (item) => {
-    setSelectedItem(item);
-    setEditModalOpen(true);
-  };
+  // // ✅ Edit Class
+  // const handleEdit = (item) => {
+  //   setSelectedItem(item);
+  //   setEditModalOpen(true);
+  // };
 
   // ✅ Save Edited Class Details
-  const handleSaveEdit = (updatedData) => {
-    if (!updatedData || !updatedData._id) {
-      alert("❌ Error: Class data is missing or invalid.");
-      return;
-    }
+  // const handleSaveEdit = (updatedData) => {
+  //   if (!updatedData || !updatedData._id) {
+  //     alert("❌ Error: Class data is missing or invalid.");
+  //     return;
+  //   }
 
-    const { _id, createdAt, updatedAt, __v, ...cleanData } = updatedData;
+  //   const { _id, createdAt, updatedAt, __v, ...cleanData } = updatedData;
 
-    axios
-      .put(`${API_BASE_URL}/api/class/update/${_id}`, cleanData)
-      .then((response) => {
-        if (response.data.success) {
-          setClassData((prevData) =>
-            prevData.map((classItem) =>
-              classItem._id === _id ? { ...classItem, ...cleanData } : classItem
-            )
-          );
-          setEditModalOpen(false);
-          alert("✅ Successfully Updated Class");
-        } else {
-          alert("❌ Failed to update class details");
-        }
-      })
-      .catch((error) => {
-        console.error("Error updating class:", error);
-        alert(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "❌ Error updating class details!");
-      });
-  };
+  //   axios
+  //     .put(`${API_BASE_URL}/api/class/update/${_id}`, cleanData)
+  //     .then((response) => {
+  //       if (response.data.success) {
+  //         setClassData((prevData) =>
+  //           prevData.map((classItem) =>
+  //             classItem._id === _id ? { ...classItem, ...cleanData } : classItem
+  //           )
+  //         );
+  //         setEditModalOpen(false);
+  //         alert("✅ Successfully Updated Class");
+  //       } else {
+  //         alert("❌ Failed to update class details");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error updating class:", error);
+  //       alert(
+  //         error.response?.data?.usrMsg ||
+  //           error.response?.data?.message ||
+  //           error.response?.data.errMessage ||
+  //           "❌ Error updating class details!"
+  //       );
+  //     });
+  // };
 
   // ✅ Delete Class
-  const handleDelete = (item) => {
-    const isConfirmed = window.confirm("Are you sure you want to delete this class?");
-    
+  // const handleDelete = (item) => {
+  //   const { isConfirmed } = await Swal.fire({
+  //   title: 'Are you sure?',
+  //   text: "You won't be able to revert this!",
+  //   icon: 'warning',
+  //   showCancelButton: true,
+  //   confirmButtonText: 'Yes, delete it!',
+  //   cancelButtonText: 'No, keep it',
+  //   reverseButtons: true, // Reverses the positions of the buttons
+  // });
+
+  // if (!isConfirmed) return;
+
+  //   axios
+  //     .delete(`${API_BASE_URL}/api/class/delete/${item._id}`)
+  //     .then((response) => {
+  //       if (response.data.success) {
+  //         // ✅ Remove class from state
+  //         setClassData((prevData) =>
+  //           prevData.filter((classItem) => classItem._id !== item._id)
+  //         );
+  //         alert("✅ Class deleted successfully!");
+  //       } else {
+  //         alert("❌ Failed to delete class.");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("❌ Error deleting class:", error);
+  //       alert(
+  //         error.response?.data?.usrMsg ||
+  //           error.response?.data?.message ||
+  //           error.response?.data.errMessage ||
+  //           "❌ Failed deleting class!"
+  //       );
+  //     });
+  // };
+
+  const handleDelete = async (item) => {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+      reverseButtons: true, // Reverses the positions of the buttons
+    });
+  
     if (!isConfirmed) return;
   
-    axios
-      .delete(`${API_BASE_URL}/api/class/delete/${item._id}`)
-      .then((response) => {
-        if (response.data.success) {
-          // ✅ Remove class from state
-          setClassData((prevData) => prevData.filter((classItem) => classItem._id !== item._id));
-          alert("✅ Class deleted successfully!");
-        } else {
-          alert("❌ Failed to delete class.");
-        }
-      })
-      .catch((error) => {
-        console.error("❌ Error deleting class:", error);
-        alert(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "❌ Error deleting class!");
-      });
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/api/class/delete/${item._id}`);
+      if (response.data.success) {
+        // ✅ Remove class from state
+        setClassData((prevData) =>
+          prevData.filter((classItem) => classItem._id !== item._id)
+        );
+        Swal.fire('Deleted!', 'Class has been deleted.', 'success');
+      } else {
+        Swal.fire('Failed!', 'Could not delete the class.', 'error');
+      }
+    } catch (error) {
+      console.error("❌ Error deleting class:", error);
+      Swal.fire(
+        'Warning!',
+        error.response?.data?.usrMsg ||
+          error.response?.data?.message ||
+          error.response?.data.errMessage ||
+          'Failed to delete class!',
+        'error'
+      );
+    }
   };
   
 
   // ✅ Search Functionality
-// ✅ Search Functionality - Filters Across All Columns
-const filteredData = classData.filter((row) => {
-  const searchLower = searchTerm.toLowerCase();
+  // ✅ Search Functionality - Filters Across All Columns
+  const filteredData = classData.filter((row) => {
+    const searchLower = searchTerm.toLowerCase();
 
-  return (
-    row.className?.toLowerCase().includes(searchLower) ||
-    row.ownerOrInstituteName?.toLowerCase().includes(searchLower) ||
-    row.Category?.some((cat) => cat.toLowerCase().includes(searchLower)) ||
-    row.modeOfTeaching?.some((mode) => mode.toLowerCase().includes(searchLower)) ||
-    row.contactDetails?.toLowerCase().includes(searchLower) 
-    // (`Lat: ${row.location?.lat}, Lng: ${row.location?.lan}`.toLowerCase().includes(searchLower))
-  );
-});
-
+    return (
+      row.className?.toLowerCase().includes(searchLower) ||
+      row.ownerOrInstituteName?.toLowerCase().includes(searchLower) ||
+      row.Category?.some((cat) => cat.toLowerCase().includes(searchLower)) ||
+      row.modeOfTeaching?.some((mode) =>
+        mode.toLowerCase().includes(searchLower)
+      ) ||
+      row.contactDetails?.toLowerCase().includes(searchLower)
+    );
+  });
 
   // ✅ Table Columns
   const columns = [
@@ -134,15 +202,15 @@ const filteredData = classData.filter((row) => {
       selector: (row) => row.ownerOrInstituteName || "N/A",
       sortable: true,
     },
-    { 
-      name: "Category", 
-      selector: (row) => row.Category?.join(", ") || "N/A", 
-      sortable: true 
+    {
+      name: "Category",
+      selector: (row) => row.Category?.join(", ") || "N/A",
+      sortable: true,
     },
-    { 
-      name: "Mode of Teaching", 
-      selector: (row) => row.modeOfTeaching?.join(", ") || "N/A", 
-      sortable: true 
+    {
+      name: "Mode of Teaching",
+      selector: (row) => row.modeOfTeaching?.join(", ") || "N/A",
+      sortable: true,
     },
     {
       name: "Contact",
@@ -154,26 +222,37 @@ const filteredData = classData.filter((row) => {
       selector: (row) => {
         const addr = Array.isArray(row.address) ? row.address[0] : row.address;
         if (!addr) return "N/A";
-    
-        return `${addr.line1 || ""}, ${addr.line2 || ""}, ${addr.taluka || ""}, ${addr.dist || ""}, ${addr.state || ""}, ${addr.pincode || ""}
+
+        return `${addr.line1 || ""}, ${addr.line2 || ""}, ${
+          addr.taluka || ""
+        }, ${addr.dist || ""}, ${addr.state || ""}, ${addr.pincode || ""}
     Landmark: ${addr.nearbyLandmarks || "-"} 
     Authorized: ${addr.autorizedName || "-"} (${addr.autorizedPhono || "-"})`;
       },
       sortable: false,
       wrap: true,
     },
-    
-{ 
-  name: "Keywords", 
-  selector: (row) => row.keywords?.join(", ") || "N/A", 
-  sortable: true 
-},
 
-
-    // { name: "Teaching Medium", selector: (row) => row.teachingMedium || "N/A", sortable: true },
-    { name: "Year Established", selector: (row) => row.yearEstablished || "N/A", sortable: true },
-    { name: "Website", selector: (row) => row.websiteURL || "N/A", sortable: true },
-    { name: "Franchise/Independent", selector: (row) => row.franchiseOrIndependent || "N/A", sortable: true },
+    {
+      name: "Keywords",
+      selector: (row) => row.keywords?.join(", ") || "N/A",
+      sortable: true,
+    },
+    {
+      name: "Year Established",
+      selector: (row) => row.yearEstablished || "N/A",
+      sortable: true,
+    },
+    {
+      name: "Website",
+      selector: (row) => row.websiteURL || "N/A",
+      sortable: true,
+    },
+    {
+      name: "Franchise/Independent",
+      selector: (row) => row.franchiseOrIndependent || "N/A",
+      sortable: true,
+    },
     {
       name: "Actions",
       cell: (row) => (
@@ -187,12 +266,12 @@ const filteredData = classData.filter((row) => {
           </button>
 
           {/* ✅ Edit */}
-          <button
+          {/* <button
             className="bg-yellow-500 hover:bg-yellow-700 text-white px-3 py-1 rounded-lg cursor-pointer"
             onClick={() => handleEdit(row)}
           >
             <FaEdit size={15} />
-          </button>
+          </button> */}
 
           {/* ✅ Delete */}
           <button
@@ -201,13 +280,13 @@ const filteredData = classData.filter((row) => {
           >
             <FaTrash size={15} />
           </button>
-            {/* ✅ Manage Courses */}
-        {/* <button className="bg-green-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-courses/${row._id}`)}>
+          {/* ✅ Manage Courses */}
+          {/* <button className="bg-green-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-courses/${row._id}`)}>
           📚 Courses
         </button> */}
 
-        {/* ✅ Manage Faculty */}
-        {/* <button className="bg-purple-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-faculty/${row._id}`)}>
+          {/* ✅ Manage Faculty */}
+          {/* <button className="bg-purple-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-faculty/${row._id}`)}>
           👨‍🏫 Faculty
         </button> */}
         </div>
@@ -247,16 +326,21 @@ const filteredData = classData.filter((row) => {
         />
 
         {/* ✅ View Class Details Modal */}
-        {modalOpen && <ClassInfoCard classData={selectedItem} onClose={() => setModalOpen(false)} />}
+        {modalOpen && (
+          <ClassInfoCard
+            classData={selectedItem}
+            onClose={() => setModalOpen(false)}
+          />
+        )}
 
         {/* ✅ Edit Class Details Modal */}
-        {editModalOpen && (
+        {/* {editModalOpen && (
           <EditClassDetails
             classData={selectedItem}
             onSave={handleSaveEdit}
             onCancel={() => setEditModalOpen(false)}
           />
-        )}
+        )} */}
       </div>
     </section>
   );

@@ -38,7 +38,7 @@ const MultiSelectField = ({ label, name, formik }) => {
 
   return (
     <div className="mb-3 w-full">
-      <label className="text-blue-700 font-semibold block mb-2 text-lg">
+      <label className="text-blue-900 font-semibold block mb-2 text-lg">
         {label}
       </label>
 
@@ -87,9 +87,10 @@ const MultiSelectField = ({ label, name, formik }) => {
             </span>
           ))}
         </div>
-        {/* ✅ Display validation error below the added subjects */}
+        {/* ✅ Display validation 
+         below the added subjects */}
         {formik.touched[name] && formik.errors[name] && (
-          <p className="text-red-500 text-sm mt-2">{formik.errors[name]}</p>
+          <p className="text-red-500 text-sm mt-2 font-semibold">{formik.errors[name]}</p>
         )}
       </div>
     </div>

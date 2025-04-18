@@ -12,8 +12,8 @@ export const AddCourses = async (collegeId, courseData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error adding courses:", error.response?.data || error.message);
-    Swal.fire(error.response?.data?.message || error.response?.data?.usrMsg || error.response?.data.errMessage ||"Error Adding Courses")
+    console.error("Failed to add courses:", error.response?.data || error.message);
+    Swal.fire(error.response?.data?.message || error.response?.data?.usrMsg || error.response?.data.errMessage || "Couldn’t Add Courses — Please Try Again")
     throw error;
   }
 };

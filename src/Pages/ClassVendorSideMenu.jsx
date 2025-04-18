@@ -14,6 +14,7 @@ import {
 } from "@heroicons/react/solid"; // ✅ HeroIcons
 import { BookAIcon } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
+import { clearAuthCookies } from "../Utlis/cookieHelper";
 
 const navigation = [
   {
@@ -46,13 +47,12 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   }, [location.pathname]);
 
   const handleLogout = () => {
+    // clearAuthCookies();
    navigate("/"); // ✅ Redirect to login
   };
 
   useEffect(() => {
     const storedClassId = getCookie("classId"); // ✅ Use getCookie function
-
-  
 
     if (storedClassId) {
       setClassId(storedClassId);

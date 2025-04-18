@@ -2,18 +2,19 @@
 import React from "react";
 
 const RadioGroup = ({ label, name, options, formik }) => {
-  // ✅ Get error and touched state for validation
+  // ✅ Get 
+  //  and touched state for validation
   const getError = () => formik?.errors?.[name];
   const isTouched = formik?.touched?.[name];
 
   return (
     <div className="mb-5 p-5 border border-blue-200 rounded-xl shadow-md bg-gradient-to-r from-blue-50 to-white">
       <label className="text-blue-900 font-semibold block mb-3 text-lg">{label}</label>
-      <div className="flex flex-wrap gap-4">
+      <div className="lg:flex lg:flex-wrap gap-3 flex-row">
         {options.map((option, index) => (
           <label
             key={index}
-            className={`flex items-center space-x-3 px-5 py-3 rounded-xl shadow-md transition-all cursor-pointer 
+            className={`flex items-center space-x-2 px-3 py-3 rounded-xl shadow-md transition-all cursor-pointer mb-2 
               ${
                 formik.values[name] === option
                   ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg scale-105"
@@ -21,7 +22,7 @@ const RadioGroup = ({ label, name, options, formik }) => {
               }`}
           >
             <input
-              type="radio"
+              type="radio" 
               name={name}
               value={option}
               checked={formik.values[name] === option}

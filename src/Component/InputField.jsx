@@ -42,7 +42,7 @@ const InputField = ({ label, type, name, placeholder, value, onChange, formik, d
           ${disabled ? "bg-gray-200 cursor-not-allowed" : "border-blue-300 focus:ring-2 focus:ring-blue-500"}`}
       />
       {isTouched && getError() && (
-        <p className="text-red-500 text-sm">{getError()}</p>
+        <p className="text-red-500 text-sm mt-2 font-semibold">{getError()}</p>
       )}
     </div>
   );

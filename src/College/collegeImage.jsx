@@ -111,7 +111,7 @@ const CollegeImageUpload = () => {
                     className="w-20 h-12 object-cover rounded"
                   />
                   <button
-                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       removeGalleryImage(index);
