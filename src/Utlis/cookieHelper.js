@@ -38,7 +38,7 @@ export const setAuthCookies = ({ token, role, subrole, userID, classID }) => {
   // Optional cookies only if they exist
   if (subrole) Cookies.set("subrole", subrole, { expires: 1 / 24 });
   if (classID) Cookies.set("classId", classID, { expires: 1 / 24 });
-  console.log("Classs Id", classID);
+  console.log("Classs Id from cookie helper", classID);
 };
 
 // ✅ Function to get a specific cookie

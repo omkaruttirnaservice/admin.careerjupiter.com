@@ -553,7 +553,7 @@ const ManageClass = () => {
                 {/* Single Image Upload */}
                 <div className="mt-6">
                   <h3 className="text-lg font-bold text-gray-800">
-                    Class Image
+                    Class Image (Max: 100KB)
                   </h3>
 
                   <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-4">

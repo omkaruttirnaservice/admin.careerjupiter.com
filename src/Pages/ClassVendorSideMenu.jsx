@@ -47,7 +47,8 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    // clearAuthCookies();
+    clearAuthCookies();
+
    navigate("/"); // ✅ Redirect to login
   };
 
