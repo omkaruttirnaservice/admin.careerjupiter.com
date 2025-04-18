@@ -49,7 +49,7 @@ const MultiSelectDropdown = ({ label, name, options, formik }) => {
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      <label className="block text-lg font-semibold text-gray-800 mb-2">{label}</label>
+      <label className="block text-lg font-semibold text-blue-900 mb-2">{label}</label>
 
       {/* Dropdown Trigger */}
       <div

@@ -1,22 +1,67 @@
 import React from "react";
 
 const FileUpload = ({ label, name, multiple = false, formik }) => {
-  // const handleFileChange = (event) => {
-  //   const files = multiple ? Array.from(event.target.files) : event.target.files[0];
-  //   formik.setFieldValue(name, files);
-  // };
 
-  const handleFileChange = (event) => {
-    let files = multiple ? Array.from(event.target.files) : event.target.files[0];
+  const compressImage = (file, maxWidth = 800, maxHeight = 1000, quality = 0.8) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
   
-    // Apply the limit only for multiple uploads
+          const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
+          const width = img.width * ratio;
+          const height = img.height * ratio;
+  
+          canvas.width = width;
+          canvas.height = height;
+  
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            resolve(blob);
+          }, "image/jpeg", quality);
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileChange = async (event) => {
+    let files = multiple ? Array.from(event.target.files) : [event.target.files[0]];
+  
     if (multiple && files.length > 1) {
-      alert("You can upload up to 1 images only.");
+      alert("You can upload up to 1 image only.");
       files = files.slice(0, 1);
     }
   
-    formik.setFieldValue(name, files);
+    // Compress all files
+    const compressedFiles = await Promise.all(
+      files.map(async (file) => {
+        const blob = await compressImage(file);
+        return new File([blob], file.name, { type: blob.type });
+      })
+    );
+  
+    // Set in formik
+    if (multiple) {
+      formik.setFieldValue(name, compressedFiles);
+    } else {
+      formik.setFieldValue(name, compressedFiles[0]);
+    }
   };
+  
+  // const handleFileChange = (event) => {
+  //   let files = multiple ? Array.from(event.target.files) : event.target.files[0];
+  //   if (multiple && files.length > 1) {
+  //     alert("You can upload up to 1 images only.");
+  //     files = files.slice(0, 1);
+  //   }
+  
+  //   formik.setFieldValue(name, files);
+  // };
   
 
   return (
@@ -25,7 +70,7 @@ const FileUpload = ({ label, name, multiple = false, formik }) => {
       {!multiple ? (
         <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
           <label className="block font-semibold text-blue-800 mb-2">
-            {label} <span className="text-red-500">(Max: 100KB, JPG/JPEG/PNG)</span>
+            {label} <span className="text-red-500">(JPG/JPEG/PNG)</span>
           </label>
           <div
             className="border border-gray-300 p-6 rounded-lg cursor-pointer hover:bg-blue-50 transition"
@@ -49,7 +94,7 @@ const FileUpload = ({ label, name, multiple = false, formik }) => {
             onChange={handleFileChange}
           />
           {formik.touched[name] && formik.errors[name] && (
-            <p className="text-red-500 text-sm">{formik.errors[name]}</p>
+            <p className="text-red-500 text-sm mt-2 font-semibold">{formik.errors[name]}</p>
           )}
         </div>
       ) : (
@@ -86,7 +131,7 @@ const FileUpload = ({ label, name, multiple = false, formik }) => {
             onChange={handleFileChange}
           />
           {formik.touched[name] && formik.errors[name] && (
-            <p className="text-red-500 text-sm">{formik.errors[name]}</p>
+            <p className="text-red-500 text-sm mt-2 font-semibold">{formik.errors[name]}</p>
           )}
         </div>
       )}

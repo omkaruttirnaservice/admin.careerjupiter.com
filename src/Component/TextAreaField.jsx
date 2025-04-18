@@ -38,9 +38,9 @@ const TextAreaField = ({ label, name, formik }) => {
       </div>
 
       {formik.touched[name] && formik.errors[name] ? (
-  <p className="text-red-500 text-sm mt-2">{formik.errors[name]}</p>
+  <p className="text-red-500 text-sm mt-2 font-semibold">{formik.errors[name]}</p>
 ) : fieldValue.length < minLength ? (
-  <p className="text-red-500 text-sm mt-1">
+  <p className="text-red-500 text-sm mt-2 font-semibold">
     Minimum {minLength} characters required.
   </p>
 ) : null}

@@ -34,7 +34,7 @@ const CollegeCourses = () => {
         }
       } catch (err) {
         setError(
-          "Failed to fetch courses. Please check the console for more details."
+          "Failed to fetch courses."
         );
         console.error("Error fetching courses:", err.message);
       } finally {

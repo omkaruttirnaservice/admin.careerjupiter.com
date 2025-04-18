@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { FaMapMarkerAlt, FaTimes, FaUniversity } from "react-icons/fa";
+import {
+  FaWindowClose,
+} from "react-icons/fa";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,8 +13,11 @@ import RadioGroup from "../Component/RadioGroup";
 import CheckboxGroup from "../Component/CheckboxGroup";
 import MultiSelectDropdown from "../Component/MultiSelectDropdown";
 import { getCookie } from "../Utlis/cookieHelper";
+import AddressModal from "../Component/AddressModel";
+import Swal from "sweetalert2";
+import { MdDone } from "react-icons/md";
 
-// ✅ Helper function to safely parse JSON fields
+// Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
   try {
     return typeof field === "string" ? JSON.parse(field) : field;
@@ -23,35 +28,23 @@ const parseJSONField = (field) => {
 
 const ManageClass = () => {
   const navigate = useNavigate();
-  const storedClassId = Cookies.get("classId"); // ✅ Retrieve from cookies
+  const storedClassId = Cookies.get("classId");
   const [classId, setClassId] = useState(storedClassId || "");
   const [classDetails, setClassDetails] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [customCategory, setCustomCategory] = useState("");
+  const [dynamicCategories, setDynamicCategories] = useState([]);
 
   console.log("📌 Retrieved Class ID from Cookies:", classId);
 
   <stateDistricts />;
 
-  const classCategories = [
-    "Primary (1 to 7)",
-    "Secondary (8 to 10) State Board",
-    "Secondary (8 to 10) CBSE Board",
-    "Secondary (8 to 10) ICSE Board",
-    "Secondary (8 to 10) IGCSE Board",
-    "11 - 12 Science with CET",
-    "11 - 12 Science with CET, JEE, NEET",
-    "Diploma Engineering",
-    "Degree Engineering",
-    "NDA",
-    "Hobby/Sports",
-    "Competative Exams",
-    "Others",
-  ];
-
-  // ✅ Fetch Class Details
+  // Fetch Class Details
   useEffect(() => {
-    const storedClassId = getCookie("classID"); // ✅ Use getCookie function
+    const storedClassId = getCookie("classID"); // Use getCookie function
     // console.log("Fetched ClassId ", storedClassId)
     if (storedClassId) {
       setClassId(storedClassId);
@@ -73,21 +66,20 @@ const ManageClass = () => {
 
         let classData = response.data?.data?.class || {};
 
-        // ✅ Ensure Info Field Exists
         classData.info = {
           description: classData?.info?.description || "",
         };
 
-        // ✅ Ensure Subjects & Teaching Medium are parsed
+        // Ensure Subjects & Teaching Medium are parsed
         classData.subjectsOrCourses =
           parseJSONField(classData.subjectsOrCourses) || [];
         classData.teachingMedium =
           parseJSONField(classData.teachingMedium) || [];
         classData.keywords = parseJSONField(classData.keywords) || [];
 
-        // ✅ Ensure other fields exist
+        // Ensure other fields exist
         classData.modeOfTeaching = classData?.modeOfTeaching || "";
-        classData.Category = classData?.Category || [];
+        classData.category = classData?.category || [];
         classData.yearEstablished = classData?.yearEstablished || 0;
         classData.className = classData?.className || "";
         classData.ownerOrInstituteName = classData?.ownerOrInstituteName || "";
@@ -97,12 +89,12 @@ const ManageClass = () => {
         classData.websiteURL = classData?.websiteURL || "";
 
         console.log("📌 Processed Class Data:", classData);
-        setClassDetails(classData); // ✅ Update state
+        setClassDetails(classData); // Update state
 
-        // ✅ Update Formik with new data
+        // Update Formik with new data
         formik.setValues({
           ...formik.values,
-          ...classData, // ✅ Merge class details into Formik values
+          ...classData, // Merge class details into Formik values
         });
       } catch (error) {
         console.error(
@@ -122,7 +114,7 @@ const ManageClass = () => {
       className: classDetails?.className || "",
       ownerOrInstituteName: classDetails?.ownerOrInstituteName || "",
       typeOfClass: classDetails?.typeOfClass || "",
-      Category: classDetails?.Category || "",
+      category: classDetails?.category || "",
       subjectsOrCourses: classDetails?.subjectsOrCourses || [],
       modeOfTeaching: classDetails?.modeOfTeaching || "",
       teachingMedium: classDetails?.teachingMedium || [],
@@ -165,7 +157,7 @@ const ManageClass = () => {
             formData.append("image", values[key]);
             //console.log(formData.get('image'))
           } else if (
-            key === "Category" ||
+            key === "category" ||
             key === "modeOfTeaching" ||
             key === "keywords"
           ) {
@@ -208,7 +200,16 @@ const ManageClass = () => {
         );
 
         console.log("📌 Update Response:", response.data);
-        alert("✅ Class updated successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Class Updated!",
+          text: "✅ Class updated successfully!",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/vendor-class/class-dashboard");
+          }
+        });
       } catch (error) {
         console.error("❌ Error updating class:", error);
         alert(
@@ -222,6 +223,44 @@ const ManageClass = () => {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/class/search`);
+        if (response.data.success && response.data.categories) {
+          const formatted = response.data.categories.map((cat) => cat.category); // Just an array of strings
+          setDynamicCategories(formatted);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // 🔍 Watch for selection changes
+  useEffect(() => {
+    if (formik.values.category?.includes("Others")) {
+      setShowOtherInput(true);
+    } else {
+      setShowOtherInput(false);
+    }
+  }, [formik.values.category]);
+
+  const handleAddOtherCategory = () => {
+    if (!customCategory.trim()) return;
+
+    const updated = formik.values.category.map((item) =>
+      item === "Others" ? customCategory : item
+    );
+
+    formik.setFieldValue("category", updated);
+
+    setCustomCategory("");
+    setShowOtherInput(false);
+  };
 
   useEffect(() => {
     if (typeof formik.values.image === "string") {
@@ -272,13 +311,6 @@ const ManageClass = () => {
                 {/* 🔹 Address Section */}
 
                 <InputField
-                  label="Contact Details"
-                  type="text"
-                  name="contactDetails"
-                  formik={formik}
-                />
-
-                <InputField
                   label="Year Established"
                   type="number"
                   name="yearEstablished"
@@ -293,10 +325,28 @@ const ManageClass = () => {
 
                 <MultiSelectDropdown
                   label="Category"
-                  name="Category"
-                  options={classCategories}
+                  name="category"
+                  options={dynamicCategories}
                   formik={formik}
                 />
+                {showOtherInput && (
+                  <div className="flex items-center gap-2 mt-3">
+                    <input
+                      type="text"
+                      placeholder="Enter custom category"
+                      value={customCategory}
+                      onChange={(e) => setCustomCategory(e.target.value)}
+                      className="border border-gray-300 rounded px-3 py-2 w-full"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddOtherCategory}
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Address array */}
@@ -310,130 +360,143 @@ const ManageClass = () => {
                   >
                     {/* If editing, show input form */}
                     {isEditing ? (
-                      <>
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-bold text-blue-700">
+
+                      <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-200 mb-6">
+                        {/* Header */}
+                        <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-600 to-blue-400 px-4 py-2 rounded-md">
+                          <h3 className="text-white text-lg font-semibold">
                             ✏ Editing Address {index + 1}
                           </h3>
+                        </div>
+
+                        {/* Form Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {[
+                            {
+                              label: "Address Line 1",
+                              name: "line1",
+                              placeholder: "Line 1",
+                            },
+                            {
+                              label: "Address Line 2",
+                              name: "line2",
+                              placeholder: "Line 2",
+                            },
+                            {
+                              label: "Nearby Landmarks",
+                              name: "nearbyLandmarks",
+                              placeholder: "Nearby Landmarks",
+                            },
+                            {
+                              label: "Pincode",
+                              name: "pincode",
+                              placeholder: "Pincode",
+                            },
+                            {
+                              label: "State",
+                              name: "state",
+                              placeholder: "State",
+                            },
+                            {
+                              label: "District",
+                              name: "dist",
+                              placeholder: "District",
+                            },
+                            {
+                              label: "Taluka",
+                              name: "taluka",
+                              placeholder: "Taluka",
+                            },
+                            {
+                              label: "Authorized Name",
+                              name: "autorizedName",
+                              placeholder: "Authorized Name",
+                            },
+                            {
+                              label: "Authorized Phone",
+                              name: "autorizedPhono",
+                              placeholder: "Authorized Phone",
+                            },
+                          ].map((field, idx) => (
+                            <div key={idx}>
+                              <label className="block text-sm font-semibold text-blue-800 mb-2">
+                                {field.label}
+                              </label>
+                              <input
+                                type="text"
+                                name={`address[${index}].${field.name}`}
+                                placeholder={field.placeholder}
+                                value={addr[field.name]}
+                                onChange={formik.handleChange}
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                              />
+                              {formik.errors.address?.[index]?.[field.name] && (
+                                <div className="text-red-500 text-sm mt-1">
+                                  {formik.errors.address[index][field.name]}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Cancel Button */}
+                        <div className="mt-8 text-center justify-end flex gap-2">
                           <button
                             onClick={() => setEditingIndex(null)}
-                            className="text-green-600 hover:text-green-800 font-medium text-sm"
+                            className="text-white bg-green-500 hover:bg-green-600 transition px-6 py-2 text-sm font-medium rounded-md flex gap-2"
                           >
-                            ✅ Done
+                            <span className="mt-1">
+                              <MdDone />
+                            </span>{" "}
+                            Done
                           </button>
-                        </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {/* Line 1 */}
-                          <div>
-                            <input
-                              type="text"
-                              name={`address[${index}].line1`}
-                              placeholder="Line 1"
-                              value={addr.line1}
-                              onChange={formik.handleChange}
-                              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            />
-                            {formik.errors.address?.[index]?.line1 && (
-                              <div className="text-red-500 text-sm mt-1">
-                                {formik.errors.address[index].line1}
-                              </div>
-                            )}
-                          </div>
-
-                          <input
-                            type="text"
-                            name={`address[${index}].line2`}
-                            placeholder="Line 2"
-                            value={addr.line2}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-
-                          <input
-                            type="text"
-                            name={`address[${index}].nearbyLandmarks`}
-                            placeholder="Nearby Landmarks"
-                            value={addr.nearbyLandmarks}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-
-                          <input
-                            type="text"
-                            name={`address[${index}].pincode`}
-                            placeholder="Pincode"
-                            value={addr.pincode}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-
-                          <input
-                            type="text"
-                            name={`address[${index}].state`}
-                            placeholder="State"
-                            value={addr.state}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-
-                          <input
-                            type="text"
-                            name={`address[${index}].dist`}
-                            placeholder="District"
-                            value={addr.dist}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-
-                          <input
-                            type="text"
-                            name={`address[${index}].taluka`}
-                            placeholder="Taluka"
-                            value={addr.taluka}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-
-                          <input
-                            type="text"
-                            name={`address[${index}].autorizedName`}
-                            placeholder="Authorized Name"
-                            value={addr.autorizedName}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-
-                          <input
-                            type="text"
-                            name={`address[${index}].autorizedPhono`}
-                            placeholder="Authorized Phone"
-                            value={addr.autorizedPhono}
-                            onChange={formik.handleChange}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        {/* Read-only display */}
-                        <div className="mb-2 text-gray-800 font-medium">
-                          {addr.line1}, {addr.line2}, {addr.nearbyLandmarks},{" "}
-                          {addr.taluka}, {addr.dist}, {addr.state},{" "}
-                          {addr.pincode}
-                        </div>
-                        <div className="text-sm text-gray-600 mb-2">
-                          {addr.autorizedName} - {addr.autorizedPhono}
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex gap-4">
                           <button
-                            onClick={() => setEditingIndex(index)}
-                            className="text-blue-600 hover:text-blue-800 font-semibold text-sm"
+                            onClick={() => setEditingIndex(null)}
+                            className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-lg transition flex gap-2"
                           >
-                            ✏ Edit
+                            <span className="mt-1">
+                              <FaWindowClose />
+                            </span>{" "}
+                            Cancel
                           </button>
+                        </div>
+                      </div>
+                    ) : (
+
+                      <div
+                        key={index}
+                        className="relative bg-white border border-blue-200 rounded-2xl p-5 shadow-md hover:shadow-lg transition duration-300 col-span-full"
+                      >
+                        <div className="space-y-1 text-gray-800 text-sm">
+                          <p className="font-medium">
+                            🏠 {addr.line1}, {addr.line2}
+                          </p>
+                          {addr.nearbyLandmarks && (
+                            <p>📍 Nearby: {addr.nearbyLandmarks}</p>
+                          )}
+                          <p>
+                            🗺️ {addr.taluka}, {addr.dist}, {addr.state} -{" "}
+                            {addr.pincode}
+                          </p>
+                          <p className="text-gray-600 text-xs mt-1">
+                            👤 {addr.autorizedName} &nbsp; 📞{" "}
+                            {addr.autorizedPhono}
+                          </p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-end gap-3 mt-4">
+                          {/* Edit Button */}
+                          <button
+                            type="button"
+                            onClick={() => setEditingIndex(index)}
+                            className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1"
+                          >
+                            ✏️ Edit
+                          </button>
+
+                          {/* Delete Button */}
                           <button
                             type="button"
                             onClick={() => {
@@ -442,39 +505,25 @@ const ManageClass = () => {
                               formik.setFieldValue("address", updated);
                               if (editingIndex === index) setEditingIndex(null);
                             }}
-                            className="text-red-600 hover:text-red-800 font-semibold text-sm"
+                            className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1"
                           >
-                            🗑 Remove
+                            🗑️ Remove
                           </button>
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
                 );
               })}
 
               {/* Add new address */}
+
               <button
                 type="button"
-                onClick={() => {
-                  formik.setFieldValue("address", [
-                    ...formik.values.address,
-                    {
-                      line1: "",
-                      line2: "",
-                      pincode: "",
-                      state: "",
-                      dist: "",
-                      taluka: "",
-                      nearbyLandmarks: "",
-                      autorizedName: "",
-                      autorizedPhono: "",
-                    },
-                  ]);
-                }}
-                className="text-blue-600 mt-4"
+                onClick={() => setShowAddressModal(true)}
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200"
               >
-                + Add Address
+                ➕ Add Address
               </button>
 
               <div className="col-span-full">
@@ -501,7 +550,6 @@ const ManageClass = () => {
                   formik={formik}
                 />
 
-                {/* <div className="grid grid-cols-2 space-x-3 col-span-full">
                 {/* Single Image Upload */}
                 <div className="mt-6">
                   <h3 className="text-lg font-bold text-gray-800">
@@ -557,7 +605,7 @@ const ManageClass = () => {
 
                   <label
                     htmlFor="imageUpload"
-                    className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded cursor-pointer hover:bg-blue-700 transition"
+                    className="inline-block mt-4 px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded cursor-pointer hover:bg-blue-700 transition"
                   >
                     Update Image
                   </label>
@@ -579,17 +627,33 @@ const ManageClass = () => {
               </div> */}
               </div>
 
-              <div className="flex justify-center">
+              <div className="flex justify-end">
                 <button
                   type="submit"
-                  onClick={formik.handleSubmit} // ✅ Ensure API is called on click
-                  className="bg-indigo-600 text-white px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:scale-105 transition cursor-pointer"
+                  onClick={formik.handleSubmit} 
+                  disabled={!(formik.isValid && formik.dirty) || formik.isSubmitting} 
+                  // className="bg-indigo-600 text-white px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:scale-105 transition cursor-pointer"
+                  className={`px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition ${
+                    formik.isValid && formik.dirty
+                      ? "bg-indigo-600 hover:bg-blue-700 cursor-pointer"
+                      : "bg-gray-400 cursor-not-allowed"
+                  }`}
                 >
-                  Update Class
+                  {formik.isSubmitting ? "Updating..." : "Update Class"}
                 </button>
               </div>
             </form>
           </div>
+          <AddressModal
+            open={showAddressModal}
+            onClose={() => setShowAddressModal(false)}
+            onSave={(newAddress) => {
+              formik.setFieldValue("address", [
+                ...(formik.values.address || []),
+                newAddress,
+              ]);
+            }}
+          />
         </div>
       </div>
     </div>

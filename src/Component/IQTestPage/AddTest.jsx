@@ -1,16 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import * as XLSX from "xlsx";
-import { API_BASE_URL } from "../../Constant/constantBaseUrl";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_BASE_URL } from "../../Constant/constantBaseUrl"; // Make sure this is correct
+import Cookies from "js-cookie";
+import { FiPlus, FiUpload, FiXCircle, FiSave, FiDownload } from "react-icons/fi";
+import Swal from "sweetalert2";
+
 
 const AddTest = ({ onClose }) => {
+  let fileRef = useRef()
   const navigate = useNavigate();
-  const { category } = useParams();
+  const { mainCategoryId, category } = useParams();
   const [fileName, setFileName] = useState("");
   const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [categories, setCategories] = useState([]); // State to store fetched categories
+  const [loading, setLoading] = useState(false); // Loading state for category fetch
+  const [error, setError] = useState(""); // Error state for API fetch
+  const [subCategories, setSubCategories] = useState([]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [subItems, setSubItems] = useState([]);
+  const [showSubInput, setShowSubInput] = useState(false);
+  const [newSubCategory, setNewSubCategory] = useState("");
+
+  const [showTypeInput, setShowTypeInput] = useState(false);
+  const [selectedSubType, setSelectedSubType] = useState("");
+
+  const [newType, setNewType] = useState("");
 
   const initialValues = {
     testName: "",
@@ -21,12 +39,12 @@ const AddTest = ({ onClose }) => {
     totalQuestions: "",
     randomQuestions: false,
     excelFile: null,
-    userType: "0", // Default to Visitor (0)
+    userType: "0",
   };
 
   const validationSchema = Yup.object({
     testName: Yup.string().required("Test Name is required"),
-    category: Yup.string().required("Category is required"),
+    // category: Yup.string().required("Category is required"),
     duration: Yup.number().required("Duration is required"),
     passingMarks: Yup.number().required("Passing Marks are required"),
     totalMarks: Yup.number().required("Total Marks are required"),
@@ -35,6 +53,117 @@ const AddTest = ({ onClose }) => {
       .min(1, "Must be at least 1"),
   });
 
+  const handleAddSubCategory = async () => {
+    if (!newSubCategory.trim()) return;
+    const token = Cookies.get("token");
+
+    const updated = [...subCategories, { name: newSubCategory, sub: [] }];
+
+    try {
+      const res = await axios.put(
+        `${API_BASE_URL}/api/iq_category/${mainCategoryId}`,
+        {
+          sub_category: updated,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setSubCategories(updated);
+      setNewSubCategory("");
+      setShowSubInput(false);
+      alert("Subcategory added!");
+    } catch (error) {
+      console.error("Error adding subcategory:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text:
+          error.response?.data.errMsg ||
+          "Failed to add subcategory. Please try again.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
+
+  const handleAddSubType = async () => {
+    if (!newType.trim() || !selectedSubCategory) return;
+    const token = Cookies.get("token");
+
+    const updated = subCategories.map((sub) => {
+      if (sub.name === selectedSubCategory.name) {
+        return { ...sub, sub: [...(sub.sub || []), newType] };
+      }
+      return sub;
+    });
+
+    try {
+      const res = await axios.put(
+        `${API_BASE_URL}/api/iq_category/${mainCategoryId}`,
+        {
+          sub_category: updated,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setSubCategories(updated);
+      setSubItems((prev) => [...prev, newType]);
+      setNewType("");
+      setShowTypeInput(false);
+      alert("Type added!");
+    } catch (error) {
+      console.error("Error adding type:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Type Addition Failed",
+        text:
+          error.response?.data?.errMsg ||
+          "Could not add the type. Please try again.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      const token = Cookies.get("token");
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/api/iq_category/${mainCategoryId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Subcategory API:", response.data);
+        if (response.data?.data?.sub_category) {
+          setSubCategories(response.data.data.sub_category);
+        }
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+
+        Swal.fire({
+          icon: "error",
+          title: "Failed to Load Subcategories",
+          text:
+            error.response?.data?.errMsg ||
+            "Unable to fetch subcategories. Please try again.",
+          confirmButtonColor: "#d33",
+        });
+      }
+    };
+
+    if (mainCategoryId) {
+      fetchSubCategories();
+    }
+  }, [mainCategoryId]);
+
+  // Handle the Excel file upload
   const handleExcelUpload = (event, setFieldValue) => {
     const file = event.target.files[0];
     if (file) {
@@ -51,318 +180,340 @@ const AddTest = ({ onClose }) => {
         const jsonData = XLSX.utils.sheet_to_json(sheet);
 
         if (jsonData.length === 0) {
-          alert("The uploaded file contains no data!");
-          setSelectedQuestions([]);
+          Swal.fire({
+            icon: "warning",
+            title: "Empty File",
+            text: "The uploaded file contains no data. Please check and try again.",
+            confirmButtonColor: "#f0ad4e",
+          }).then(() => {
+            setSelectedQuestions([]);
+          });
         } else {
-          setSelectedQuestions(jsonData);
+          let error = false;
+          jsonData.some((question,index) => {
+            if(question.question === undefined){
+              showWarnInQuestionUpload(index,'Main Question');
+              error = true;
+              return true;
+            }
+
+            if(question.optionA === undefined){
+              showWarnInQuestionUpload(index,'Option A');
+              error = true;
+              return true;
+            }
+
+            if(question.optionB === undefined){
+              showWarnInQuestionUpload(index,'Option B');
+              error = true;
+              return true;
+            }
+
+            if(question.optionC === undefined){
+              error = true;
+              showWarnInQuestionUpload(index,'Option C');
+              return true;
+            }
+
+            if(question.optionD === undefined){
+              error = true;
+              showWarnInQuestionUpload(index,'Option D');
+              return true;
+            }
+
+            if(question.marks === undefined){
+              error = true;
+              showWarnInQuestionUpload(index,'Marks');
+              return true;
+            }
+            return false;
+          })
+          if(    error === false){
+            Swal.fire({
+              icon: "success",
+              title: `${jsonData.length} Question Found.`,
+              text: "All Question are perfect. Good to Go.",
+              confirmButtonColor: "#28a745",
+            }).then(() => {
+              setSelectedQuestions(jsonData);
+            });
+             
+          }else{
+            fileRef.current.value="";
+              setSelectedQuestions([]);
+          }
         }
       };
     }
   };
 
-  // const handleSubmit = async (values, { setSubmitting }) => {
-  //   let finalQuestions = selectedQuestions;
-  //   const totalQ = Number(values.totalQuestions);
-
-  //   if (values.randomQuestions && selectedQuestions.length > totalQ) {
-  //     const uniqueQuestions = new Set();
-
-  //     // Keep selecting random questions until Set reaches required size
-  //     while (uniqueQuestions.size < totalQ) {
-  //       const randomIndex = Math.floor(
-  //         Math.random() * selectedQuestions.length
-  //       );
-  //       uniqueQuestions.add(selectedQuestions[randomIndex]);
-  //     }
-
-  //     finalQuestions = Array.from(uniqueQuestions);
-  //   } else {
-  //     finalQuestions = selectedQuestions.slice(0, totalQ);
-  //   }
-
-  //   const requestData = {
-  //     title: values.testName,
-  //     testLevel: values.category,
-  //     testDuration: Number(values.duration),
-  //     // passingMarks: Number(values.passingMarks), // ✅ Convert to Number
-  //     totalMarks: Number(values.totalMarks),
-  //     questions: finalQuestions,
-  //     userType: Number(values.userType), // Convert to number (0 for Visitor, 1 for Member)
-  //   };
-
-  //   console.log("Sending requestData to API:", requestData);
-
-  //   try {
-  //     await axios.post(`${API_BASE_URL}/api/iqtest/`, requestData);
-  //     alert("Test added successfully!");
-  //     onClose();
-  //   } catch (error) {
-  //     console.error("Error adding test:", error);
-  //     alert(
-  //       error.response?.data?.usrMsg ||
-  //         error.response?.data?.message ||
-  //         "Failed to add test"
-  //     );
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
+  function showWarnInQuestionUpload(QuestionNumber,text){
+    Swal.fire({
+      icon: "warning",
+      title: `Issue in Question No. ${QuestionNumber+1}`,
+      text: `${text} is  missing, Please add in Excel and Upload again, Thank you.`,
+      confirmButtonColor: "#d33"
+    });
+  }
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    let finalQuestions = selectedQuestions;
-    const totalQ = Number(values.totalQuestions);
-  
-    if (values.randomQuestions && selectedQuestions.length > totalQ) {
-      const uniqueQuestions = new Set();
-  
-      while (uniqueQuestions.size < totalQ) {
-        const randomIndex = Math.floor(Math.random() * selectedQuestions.length);
-        uniqueQuestions.add(selectedQuestions[randomIndex]);
-      }
-  
-      finalQuestions = Array.from(uniqueQuestions);
-    } else {
-      finalQuestions = selectedQuestions.slice(0, totalQ);
+    const finalQuestions = selectedQuestions;
+    // const totalQ = Number(values.totalQuestions);
+
+    if(finalQuestions.length === 0){
+      Swal.fire({
+        icon: "warn",
+        title: "Question Not Found",
+        text: "Question are missing, Please add The Question",
+        confirmButtonColor: "#d33"
+      });
+      return false;
     }
-  
     const requestData = {
+      main_category: {
+        mainCategoryId: mainCategoryId,
+        name: category,
+      },
+      sub_category: selectedSubCategory.name,
+      sub: selectedSubType,
       title: values.testName,
-      testLevel: values.category,
+      questions: finalQuestions,
       testDuration: {
-        minutes: Math.floor(Number(values.duration)),
+        minutes: Number(values.duration),
         seconds: 0,
       },
+      totalQuestions: Number(values.totalQuestions),
       totalMarks: Number(values.totalMarks),
-      userType: String(values.userType), // Ensure it is sent as a string
-      questions: finalQuestions,
+      passingMarks: Number(values.passingMarks),
+      userType: Number(values.userType),
     };
-  
+
     console.log("Sending requestData to API:", requestData);
-  
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/iqtest/`, requestData);
-      console.log("API Response:", response.data); // Log full response
-      alert("Test added successfully!");
-      onClose();
+      await axios.post(`${API_BASE_URL}/api/iqtest/create`, requestData);
+      Swal.fire({
+        icon: "success",
+        title: "Test Added",
+        text: "Test added successfully!",
+        confirmButtonColor: "#28a745",
+      }).then(() => {
+        onClose();
+      });
     } catch (error) {
-      console.error("API Error:", error.response?.data || error.message);
-      alert(error.response?.data?.usrMsg || error.response?.data?.message ||  error.response?.data.errMessage ||"Failed to add test");
-    
+      console.error("Error adding test:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Test Creation Failed",
+        text: error.response?.data?.errMsg || "Failed to add test. Please try again.",
+        confirmButtonColor: "#d33"
+      });
+      
     } finally {
       setSubmitting(false);
     }
   };
-  
+
+  // useEffect(() => {
+  //   if (category) {
+  //     fetchCategories(category);
+  //   }
+  // }, [category]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-black/50 backdrop-blur-sm overflow-y-auto z-50">
-      <div className="bg-white p-6 rounded-lg shadow-xl w-[800px] relative animate-fadeIn z-50 overflow-y-auto max-h-[90vh]">
-        <h3 className="text-2xl font-bold mb-4 text-center text-gray-700">
-          ➕ Add New Test
-        </h3>
+<div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 overflow-y-auto">
+  <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto space-y-6 border-3 border-blue-500 max-h-[90vh] overflow-y-auto">
+    <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 rounded-t-lg">
+      <h2 className="text-3xl font-semibold">➕ Add New Test</h2>
+      <button
+        onClick={onClose}
+        className="text-white text-3xl hover:text-red-600 transition-all duration-300 cursor-pointer"
+      >
+        &times;
+      </button>
+    </div>
 
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting, setFieldValue }) => (
-            <Form className="flex flex-col space-y-4">
-              <div>
-                <label className="block text-md font-semibold text-gray-600">
-                  Test Name:
-                </label>
-                <Field
-                  type="text"
-                  name="testName"
-                  className="w-full border p-2 rounded-md focus:outline-blue-500"
-                />
-                <ErrorMessage
-                  name="testName"
-                  component="div"
-                  className="text-red-500 text-xs"
-                />
+    <hr />
+
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+      {({ isSubmitting, setFieldValue }) => (
+        <Form className="space-y-6 px-4">
+  
+          {/* Test Name */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">Test Name</label>
+            <Field name="testName" type="text" className="w-full border rounded-md p-2 focus:outline-blue-400 shadow-sm" />
+            <ErrorMessage name="testName" component="div" className="text-sm text-red-500" />
+          </div>
+
+          {/* Category + Type Selection */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            {/* Subcategory Section */}
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Subcategory</label>
+              <div className="flex gap-2 items-center">
+                <select
+                  className="w-full border p-2 rounded-md"
+                  onChange={(e) => {
+                    const selected = subCategories.find(sc => sc.name === e.target.value);
+                    setSelectedSubCategory(selected);
+                    setSubItems(selected?.sub || []);
+                  }}
+                >
+                  <option value="">Select Subcategory</option>
+                  {subCategories.map((subCat) => (
+                    <option key={subCat._id} value={subCat.name}>{subCat.name}</option>
+                  ))}
+                </select>
+                <button type="button" onClick={() => setShowSubInput(!showSubInput)} className="text-blue-600 hover:text-blue-800 text-xl cursor-pointer">
+                  <FiPlus />
+                </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-md font-semibold text-gray-600">
-                    Category:
-                  </label>
-                  <Field
-                    as="select"
-                    name="category"
-                    className="w-full border p-2 rounded-md focus:outline-blue-500"
-                  >
-                    <option value="">Select</option>
-                    <option value="SSC">SSC</option>
-                    <option value="HSC">HSC</option>
-                    <option value="Diploma">Diploma</option>
-                    <option value="Pharmacy">Pharmacy</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="UG">Under Graduate</option>
-                    <option value="PG">Post Graduate</option>
-                    <option value="Begineer">Begineer</option>
-                    <option value="Basic">Basic</option>
-                  </Field>
-                  <ErrorMessage
-                    name="category"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-md font-semibold text-gray-600">
-                    Duration (min):
-                  </label>
-                  <Field
-                    type="number"
-                    name="duration"
-                    step="any"
-                    className="w-full border p-2 rounded-md focus:outline-blue-500"
-                  />
-                  <ErrorMessage
-                    name="duration"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-md font-semibold text-gray-600">
-                    Passing Marks:
-                  </label>
-                  <Field
-                    type="number"
-                    name="passingMarks"
-                    step="any"
-                    className="w-full border p-2 rounded-md focus:outline-blue-500"
-                  />
-                  <ErrorMessage
-                    name="passingMarks"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-md font-semibold text-gray-600">
-                    Total Marks:
-                  </label>
-                  <Field
-                    type="number"
-                    name="totalMarks"
-                    step="any"
-                    className="w-full border p-2 rounded-md focus:outline-blue-500"
-                  />
-                  <ErrorMessage
-                    name="totalMarks"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-md font-semibold text-gray-600">
-                  Total Questions Required:
-                </label>
-                <Field
-                  type="number"
-                  name="totalQuestions"
-                  step="any"
-                  className="w-full border p-2 rounded-md focus:outline-blue-500"
-                />
-                <ErrorMessage
-                  name="totalQuestions"
-                  component="div"
-                  className="text-red-500 text-xs"
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Field
-                  type="checkbox"
-                  name="randomQuestions"
-                  className="w-4 h-4"
-                />
-                <label className="text-gray-600">Random Questions</label>
-              </div>
-
-              <div>
-                <label className="block text-md font-semibold text-gray-600">
-                  User Type:
-                </label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2">
-                    <Field
-                      type="radio"
-                      name="userType"
-                      value="0"
-                      className="w-4 h-4"
-                    />
-                    <span className="text-gray-600">Without Login</span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <Field
-                      type="radio"
-                      name="userType"
-                      value="1"
-                      className="w-4 h-4"
-                    />
-                    <span className="text-gray-600">With Login</span>
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-md font-semibold text-gray-600">
-                  Upload Excel:
-                </label>
-                <div className="flex items-center gap-4">
+              {showSubInput && (
+                <div className="flex gap-2 mt-2">
                   <input
-                    type="file"
-                    accept=".xlsx, .xls"
-                    className="border p-2 rounded-md"
-                    onChange={(e) => handleExcelUpload(e, setFieldValue)}
+                    type="text"
+                    placeholder="New Subcategory"
+                    value={newSubCategory}
+                    onChange={(e) => setNewSubCategory(e.target.value)}
+                    className="border p-2 rounded-md w-full"
                   />
-                  <a
-                    href="/IQTest_Sample.xlsx" // Path to your sample file
-                    download="sample.xlsx"
-                    className="text-blue-500 hover:underline text-sm"
-                  >
-                    Download Sample Excel
-                  </a>
+                  <button onClick={handleAddSubCategory} type="button" className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 cursor-pointer">
+                    ✅
+                  </button>
                 </div>
-                {fileName && (
-                  <p className="text-gray-500 text-sm">
-                    Selected File: {fileName}
-                  </p>
+              )}
+            </div>
+
+            {/* Type Section */}
+            {selectedSubCategory && (
+              <div>
+                <label className="block font-medium text-gray-700 mb-1">Type</label>
+                <div className="flex gap-2 items-center">
+                  <select
+                    className="w-full border p-2 rounded-md"
+                    value={selectedSubType}
+                    onChange={(e) => setSelectedSubType(e.target.value)}
+                  >
+                    <option value="">Select Type</option>
+                    {subItems.map((item, index) => (
+                      <option key={index} value={item}>{item}</option>
+                    ))}
+                  </select>
+                  <button type="button" onClick={() => setShowTypeInput(!showTypeInput)} className="text-blue-600 hover:text-blue-800 text-xl cursor-pointer">
+                    <FiPlus />
+                  </button>
+                </div>
+
+                {showTypeInput && (
+                  <div className="flex gap-2 mt-2">
+                    <input
+                      type="text"
+                      placeholder="New Type"
+                      value={newType}
+                      onChange={(e) => setNewType(e.target.value)}
+                      className="border p-2 rounded-md w-full"
+                    />
+                    <button onClick={handleAddSubType} type="button" className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 cursor-pointer">
+                      ✅
+                    </button>
+                  </div>
                 )}
               </div>
+            )}
+          </div>
 
-              <div className="flex justify-between mt-4 gap-12">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-blue-500 text-white px-2 py-2 rounded-md hover:bg-blue-600 transition-all w-1/2 cursor-pointer"
-                >
-                  {isSubmitting ? "Saving..." : "Save"}
-                </button>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="bg-gray-400 text-white px-2 py-2 rounded-md hover:bg-gray-500 transition-all w-1/2 cursor-pointer"
-                >
-                  Close
-                </button>
+          {/* Marks & Duration Section */}
+          <div className="grid grid-cols-3 gap-6">
+            {["duration", "passingMarks", "totalMarks"].map((field) => (
+              <div key={field}>
+                <label className="block font-medium text-gray-700 capitalize">{field.replace(/([A-Z])/g, " $1")}:</label>
+                <Field name={field} type="number" className="w-full border p-2 rounded-md focus:outline-blue-400" />
+                <ErrorMessage name={field} component="div" className="text-sm text-red-500" />
               </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </div>
+            ))}
+          </div>
+
+          {/* Questions Count */}
+          <div>
+            <label className="block font-medium text-gray-700">Total Questions Required:</label>
+            <Field name="totalQuestions" type="number" className="w-full border p-2 rounded-md focus:outline-blue-400" />
+            <ErrorMessage name="totalQuestions" component="div" className="text-sm text-red-500" />
+          </div>
+
+          {/* Checkbox + Radio */}
+          {/* <div className="flex items-center gap-3">
+            <Field type="checkbox" name="randomQuestions" className="w-4 h-4" />
+            <label className="text-gray-700">Use Random Questions</label>
+          </div> */}
+
+          <div>
+            <label className="block font-medium text-gray-700">User Type:</label>
+            <div className="flex gap-6 mt-1">
+              <label className="flex items-center gap-2 text-gray-600">
+                <Field type="radio" name="userType" value="0" className="w-4 h-4" />
+                Without Login
+              </label>
+              <label className="flex items-center gap-2 text-gray-600">
+                <Field type="radio" name="userType" value="1" className="w-4 h-4" />
+                With Login
+              </label>
+            </div>
+          </div>
+
+          {/* File Upload */}
+          <div>
+            <label className="block font-medium text-gray-700">Upload Excel File:</label>
+            <div className="flex gap-4 items-center mt-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <FiUpload className="text-lg text-gray-500" />
+                <input
+                ref={fileRef}
+                  type="file"
+                  accept=".xlsx, .xls"
+                  className="hidden"
+                  onChange={(e) => handleExcelUpload(e, setFieldValue)}
+                />
+                <span className="text-gray-600">Choose File</span>
+              </label>
+
+              <a
+                href="/IQTest_Sample.xlsx"
+                download
+                className="flex items-center gap-1 text-blue-600 hover:underline text-sm"
+              >
+                <FiDownload /> Sample Excel
+              </a>
+            </div>
+            {fileName && <p className="text-sm text-gray-500 mt-1">Selected: {fileName}</p>}
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-between mt-4 gap-4">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-all w-1/2 cursor-pointer"
+            >
+              <FiSave /> {isSubmitting ? "Saving..." : "Save Test"}
+            </button>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex items-center justify-center gap-2 bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-all w-1/2 cursor-pointer"
+            >
+              <FiXCircle /> Cancel
+            </button>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  </div>
+</div>
+
   );
 };
 
