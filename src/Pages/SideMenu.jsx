@@ -139,7 +139,7 @@ const SideMenu = () => {
                 <div key={item.name}>
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    className="w-full flex items-center justify-between px-3 py-3 text-sm font-medium text-white bg-blue-800 rounded-lg hover:bg-blue-700 transition"
+                    className="w-full flex items-center justify-between px-3 py-3 text-sm font-medium text-white transition cursor-pointer"
                   >
                     <span className="flex items-center">
                       <item.icon className={`mr-3 h-5 w-5 ${item.color}`} />
@@ -170,7 +170,7 @@ const SideMenu = () => {
                                 setActiveLink(child.href);
                                 navigate(child.href);
                               }}
-                              className={`w-full text-left px-4 py-2 text-sm rounded-md transition duration-200 ${
+                              className={`w-full text-left px-4 py-2 text-sm rounded-md transition duration-200 cursor-pointer ${
                                 isChildActive
                                   ? "bg-blue-500 text-white font-semibold shadow"
                                   : "text-gray-100 hover:bg-blue-700"
@@ -200,7 +200,7 @@ const SideMenu = () => {
                   setActiveLink(item.href);
                   navigate(item.href);
                 }}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition duration-300 ${
+                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition duration-300 cursor-pointer ${
                   isActive
                     ? "bg-blue-500 text-white shadow-md transform scale-105"
                     : "text-gray-200 hover:bg-blue-600 hover:text-white"

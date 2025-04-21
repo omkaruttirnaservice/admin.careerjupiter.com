@@ -10,7 +10,7 @@ import { FiPlus, FiUpload, FiXCircle, FiSave, FiDownload } from "react-icons/fi"
 import Swal from "sweetalert2";
 
 
-const AddTest = ({ onClose }) => {
+const AddTest = ({ onClose, onTestAdded }) => {
   let fileRef = useRef()
   const navigate = useNavigate();
   const { mainCategoryId, category } = useParams();
@@ -24,10 +24,8 @@ const AddTest = ({ onClose }) => {
   const [subItems, setSubItems] = useState([]);
   const [showSubInput, setShowSubInput] = useState(false);
   const [newSubCategory, setNewSubCategory] = useState("");
-
   const [showTypeInput, setShowTypeInput] = useState(false);
   const [selectedSubType, setSelectedSubType] = useState("");
-
   const [newType, setNewType] = useState("");
 
   const initialValues = {
@@ -73,11 +71,19 @@ const AddTest = ({ onClose }) => {
       setSubCategories(updated);
       setNewSubCategory("");
       setShowSubInput(false);
-      alert("Subcategory added!");
+      // alert("Subcategory added!");
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Subcategory added!',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      });
+      
     } catch (error) {
       console.error("Error adding subcategory:", error);
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Oops!",
         text:
           error.response?.data.errMsg ||
@@ -113,11 +119,18 @@ const AddTest = ({ onClose }) => {
       setSubItems((prev) => [...prev, newType]);
       setNewType("");
       setShowTypeInput(false);
-      alert("Type added!");
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Type added!',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      });
+      
     } catch (error) {
       console.error("Error adding type:", error);
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Type Addition Failed",
         text:
           error.response?.data?.errMsg ||
@@ -148,7 +161,7 @@ const AddTest = ({ onClose }) => {
         console.error("Error fetching subcategories:", error);
 
         Swal.fire({
-          icon: "error",
+          icon: "warning",
           title: "Failed to Load Subcategories",
           text:
             error.response?.data?.errMsg ||
@@ -262,7 +275,7 @@ const AddTest = ({ onClose }) => {
 
     if(finalQuestions.length === 0){
       Swal.fire({
-        icon: "warn",
+        icon: "warning",
         title: "Question Not Found",
         text: "Question are missing, Please add The Question",
         confirmButtonColor: "#d33"
@@ -298,12 +311,12 @@ const AddTest = ({ onClose }) => {
         text: "Test added successfully!",
         confirmButtonColor: "#28a745",
       }).then(() => {
-        onClose();
+        onTestAdded();
       });
     } catch (error) {
       console.error("Error adding test:", error);
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Test Creation Failed",
         text: error.response?.data?.errMsg || "Failed to add test. Please try again.",
         confirmButtonColor: "#d33"

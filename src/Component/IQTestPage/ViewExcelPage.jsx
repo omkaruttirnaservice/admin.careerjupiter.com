@@ -38,11 +38,21 @@ const ViewExcelPage = () => {
       }
     } catch (err) {
       console.error("Error fetching test details:", err);
-      setError(
+
+      const errorMessage =
+        err.response?.data?.errMsg ||
         err.response?.data?.usrMsg ||
-          err.response?.data?.message ||
-          "Failed to fetch test details"
-      );
+        err.response?.data?.message ||
+        "Failed to fetch test details";
+
+      setError(errorMessage); // Still setting error for UI
+
+      Swal.fire({
+        icon: "warning",
+        title: "Failed Fetching Test Details",
+        text: errorMessage,
+        confirmButtonColor: "#d33",
+      });
     } finally {
       setLoading(false);
     }

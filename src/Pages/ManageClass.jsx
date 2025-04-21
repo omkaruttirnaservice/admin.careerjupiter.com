@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaWindowClose,
-} from "react-icons/fa";
+import { FaWindowClose } from "react-icons/fa";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -16,6 +14,7 @@ import { getCookie } from "../Utlis/cookieHelper";
 import AddressModal from "../Component/AddressModel";
 import Swal from "sweetalert2";
 import { MdDone } from "react-icons/md";
+import FileUpload from "../Component/FileUpload";
 
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
@@ -25,6 +24,25 @@ const parseJSONField = (field) => {
     return [];
   }
 };
+
+const discountOptions = [
+  { label: "Discount 5%", value: 5 },
+  { label: "Discount 10%", value: 10 },
+  { label: "Discount 15%", value: 15 },
+  { label: "Discount 20%", value: 20 },
+  { label: "Discount 25%", value: 25 },
+  { label: "Discount 30%", value: 30 },
+  { label: "Discount 35%", value: 35 },
+  { label: "Discount 40%", value: 40 },
+  { label: "Discount 45%", value: 45 },
+  { label: "Discount 50%", value: 50 },
+  { label: "Discount 55%", value: 55 },
+  { label: "Discount 60%", value: 60 },
+  { label: "Discount 65%", value: 65 },
+  { label: "Discount 70%", value: 70 },
+  { label: "Discount 75%", value: 75 },
+  { label: "Discount 80%", value: 80 },
+];
 
 const ManageClass = () => {
   const navigate = useNavigate();
@@ -87,6 +105,7 @@ const ManageClass = () => {
           classData?.franchiseOrIndependent || "";
         classData.contactDetails = classData?.contactDetails || "";
         classData.websiteURL = classData?.websiteURL || "";
+        classData.discount = classData?.discount || "";
 
         console.log("📌 Processed Class Data:", classData);
         setClassDetails(classData); // Update state
@@ -98,7 +117,7 @@ const ManageClass = () => {
         });
       } catch (error) {
         console.error(
-          error.response?.data.errMessage || "❌ Error fetching class details:",
+          error.response?.data.errMsg || "❌ Error fetching class details:",
           error
         );
       }
@@ -141,6 +160,8 @@ const ManageClass = () => {
             ],
 
       info: classDetails?.info ? { ...classDetails.info } : { description: "" },
+      discount: classDetails?.discount || "",
+      validTill: classDetails?.validTill || "",
     },
     validationSchema: Yup.object().shape({
       className: Yup.string().required("Class Name is required"),
@@ -161,8 +182,6 @@ const ManageClass = () => {
             key === "modeOfTeaching" ||
             key === "keywords"
           ) {
-            console.log("caterogry -------", JSON.stringify(values[key]));
-
             formData.append(key, JSON.stringify(values[key]));
           } else if (key === "locations" && Array.isArray(values[key])) {
             values[key].forEach((location, index) => {
@@ -181,14 +200,17 @@ const ManageClass = () => {
             });
           } else if (key === "info") {
             formData.append("info", JSON.stringify(values["info"]));
+          } else if (key === "discount") {
+            formData.append("discount", values["discount"]);
+          } else if (key === "validTill") {
+            formData.append("validTill", values["validTill"]);
           } else if (typeof values[key] === "object") {
-            console.log(values[key]);
             formData.append(key, JSON.stringify(values[key]));
           } else {
             formData.append(key, values[key]);
           }
         }
-        // return false;
+
         // console.log(formData.get('info'))
         // console.clear()
         //  console.log(formData.getAll('address'))
@@ -212,12 +234,16 @@ const ManageClass = () => {
         });
       } catch (error) {
         console.error("❌ Error updating class:", error);
-        alert(
-          error.response?.data?.usrMsg ||
+        Swal.fire({
+          icon: "warning",
+          title: "Update Failed",
+          text:
+            error.response?.data?.errMsg ||
+            error.response?.data?.usrMsg ||
             error.response?.data?.message ||
-            error.response?.data?.errMessage ||
-            "❌ Failed to update class."
-        );
+            "Failed to update class.",
+          confirmButtonColor: "#d33",
+        });
       } finally {
         setSubmitting(false);
       }
@@ -284,7 +310,7 @@ const ManageClass = () => {
         <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
           {/* Background Icons - Random Placement */}
 
-          <div className="w-full max-w-full lg:w-[1000px] mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500 rounded-xl">
+          <div className="w-screen lg:w-[1100px] mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500 rounded-xl">
             {/* ✅ Form Title */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6  shadow-md text-center">
               <h2 className="text-2xl md:text-4xl font-bold">
@@ -308,7 +334,6 @@ const ManageClass = () => {
                   name="ownerOrInstituteName"
                   formik={formik}
                 />
-                {/* 🔹 Address Section */}
 
                 <InputField
                   label="Year Established"
@@ -341,7 +366,7 @@ const ManageClass = () => {
                     <button
                       type="button"
                       onClick={handleAddOtherCategory}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
                     >
                       Add
                     </button>
@@ -360,7 +385,6 @@ const ManageClass = () => {
                   >
                     {/* If editing, show input form */}
                     {isEditing ? (
-
                       <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-200 mb-6">
                         {/* Header */}
                         <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-600 to-blue-400 px-4 py-2 rounded-md">
@@ -443,7 +467,7 @@ const ManageClass = () => {
                         <div className="mt-8 text-center justify-end flex gap-2">
                           <button
                             onClick={() => setEditingIndex(null)}
-                            className="text-white bg-green-500 hover:bg-green-600 transition px-6 py-2 text-sm font-medium rounded-md flex gap-2"
+                            className="text-white bg-green-500 hover:bg-green-600 transition px-6 py-2 text-sm font-medium rounded-md flex gap-2 cursor-pointer"
                           >
                             <span className="mt-1">
                               <MdDone />
@@ -453,7 +477,7 @@ const ManageClass = () => {
 
                           <button
                             onClick={() => setEditingIndex(null)}
-                            className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-lg transition flex gap-2"
+                            className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-lg transition flex gap-2 cursor-pointer"
                           >
                             <span className="mt-1">
                               <FaWindowClose />
@@ -463,7 +487,6 @@ const ManageClass = () => {
                         </div>
                       </div>
                     ) : (
-
                       <div
                         key={index}
                         className="relative bg-white border border-blue-200 rounded-2xl p-5 shadow-md hover:shadow-lg transition duration-300 col-span-full"
@@ -491,7 +514,7 @@ const ManageClass = () => {
                           <button
                             type="button"
                             onClick={() => setEditingIndex(index)}
-                            className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1"
+                            className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1 cursor-pointer"
                           >
                             ✏️ Edit
                           </button>
@@ -505,7 +528,7 @@ const ManageClass = () => {
                               formik.setFieldValue("address", updated);
                               if (editingIndex === index) setEditingIndex(null);
                             }}
-                            className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1"
+                            className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1 cursor-pointer"
                           >
                             🗑️ Remove
                           </button>
@@ -521,10 +544,60 @@ const ManageClass = () => {
               <button
                 type="button"
                 onClick={() => setShowAddressModal(true)}
-                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200"
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 cursor-pointer"
               >
                 ➕ Add Address
               </button>
+
+              <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Discount Dropdown */}
+                <div className="flex-1">
+                  <label className="block text-blue-900 text-lg font-semibold mb-2">
+                    Select Discount
+                  </label>
+                  <select
+                    name="discount"
+                    className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={formik.values.discount}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  >
+                    <option value="">Select Discount</option>
+                    {discountOptions.map((option, index) => (
+                      <option key={index} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {formik.touched.discount && formik.errors.discount && (
+                    <div className="text-red-500 text-sm mt-2 font-semibold">
+                      {formik.errors.discount}
+                    </div>
+                  )}
+                </div>
+
+                {/* Valid Till Date Picker */}
+                {formik.values.discount && (
+                  <div className="flex-1">
+                    <label className="block text-blue-900 text-lg font-semibold mb-2">
+                      Valid Till
+                    </label>
+                    <input
+                      type="date"
+                      name="validTill"
+                      className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={formik.values.validTill}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.validTill && formik.errors.validTill && (
+                      <div className="text-red-500 text-sm mt-2 font-semibold">
+                        {formik.errors.validTill}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               <div className="col-span-full">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
@@ -553,7 +626,7 @@ const ManageClass = () => {
                 {/* Single Image Upload */}
                 <div className="mt-6">
                   <h3 className="text-lg font-bold text-gray-800">
-                    Class Image (Max: 100KB)
+                    Class Image
                   </h3>
 
                   <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-4">
@@ -568,7 +641,7 @@ const ManageClass = () => {
                         }
                         alt="Class"
                         className="relative w-full h-40 object-cover rounded-lg shadow-md overflow-hidden before:absolute before:top-0 before:left-[-100%] 
-          before:w-full before:h-full before:bg-white before:opacity-20 before:rotate-6 before:transition-all hover:before:left-full"
+          before:w-full before:h-full before:bg-white before:opacity-20 before:rotate-6 before:transition-all hover:before:left-full mb-2"
                       />
                     ) : (
                       <p className="text-gray-500 italic">No image available</p>
@@ -589,7 +662,7 @@ const ManageClass = () => {
                     className="mt-4 block w-full"
                   /> */}
 
-                  <input
+                  {/* <input
                     type="file"
                     id="imageUpload"
                     accept="image/jpeg,image/jpg,image/png"
@@ -614,7 +687,13 @@ const ManageClass = () => {
                     <div className="text-red-500 text-sm">
                       {formik.errors.image}
                     </div>
-                  )}
+                  )} */}
+
+                  <FileUpload
+                    label="Class Image"
+                    name="image"
+                    formik={formik}
+                  />
                 </div>
 
                 {/* Multiple Image Upload (Gallery) */}
@@ -630,8 +709,10 @@ const ManageClass = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  onClick={formik.handleSubmit} 
-                  disabled={!(formik.isValid && formik.dirty) || formik.isSubmitting} 
+                  onClick={formik.handleSubmit}
+                  disabled={
+                    !(formik.isValid && formik.dirty) || formik.isSubmitting
+                  }
                   // className="bg-indigo-600 text-white px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:scale-105 transition cursor-pointer"
                   className={`px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition ${
                     formik.isValid && formik.dirty

@@ -33,7 +33,7 @@ export const createCollege = async (collegeData) => {
     const errorMessage =
       error.response?.data?.message || // First check usrMsg
       error.response?.data?.usrMsg || // Then check message
-      error.response?.data.errMessage ||
+      error.response?.data.errMsg ||
       "An error occurred while creating the college."; // Fallback message
 
     console.error("🔴 Error Message:", errorMessage);

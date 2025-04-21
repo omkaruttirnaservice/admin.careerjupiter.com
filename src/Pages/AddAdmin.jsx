@@ -37,26 +37,29 @@ const AddAdmin = () => {
       if (response.data.success) {
         Swal.fire(
           "Success!",
-          response.data.errMessage || "Admin added successfully.",
+          response.data.errMsg || "Admin added successfully.",
           "success"
         ).then(() => {
           setMobileNo("");
           setPassword("");
         });
       } else {
-        Swal.fire(response.data.errMessage || "Failed to add admin.", "error");
+        Swal.fire(
+          response.data.errMsg || "Failed to add admin.",
+          "warning"
+        );
       }
     } catch (error) {
       console.error(
-        "Error adding admin:",
+        "Failed to add admin:",
         error.response?.data || error.message
       );
       Swal.fire(
-        "Error!",
-        error.response?.data?.errMessage ||
+        "Warning!",
+        error.response?.data?.errMsg ||
           error.response?.data?.message ||
           "Please Try Again.",
-        "error"
+        "warning"
       );
     } finally {
       setLoading(false);

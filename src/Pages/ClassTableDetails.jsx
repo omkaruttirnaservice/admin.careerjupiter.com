@@ -31,7 +31,7 @@ const ClassTableDetails = () => {
           console.error(
             error.response?.data?.usrMsg ||
               error.response?.data?.message ||
-              error.response?.data.errMessage ||
+              error.response?.data.errMsg ||
               "❌ API returned an unexpected format:",
             response.data
           );
@@ -41,7 +41,7 @@ const ClassTableDetails = () => {
         console.error(
           error.response?.data?.usrMsg ||
             error.response?.data?.message ||
-            error.response?.data.errMessage ||
+            error.response?.data.errMsg ||
             "❌ Error fetching class data:",
           error
         );
@@ -92,7 +92,7 @@ const ClassTableDetails = () => {
   //       alert(
   //         error.response?.data?.usrMsg ||
   //           error.response?.data?.message ||
-  //           error.response?.data.errMessage ||
+  //           error.response?.data.errMsg ||
   //           "❌ Error updating class details!"
   //       );
   //     });
@@ -130,7 +130,7 @@ const ClassTableDetails = () => {
   //       alert(
   //         error.response?.data?.usrMsg ||
   //           error.response?.data?.message ||
-  //           error.response?.data.errMessage ||
+  //           error.response?.data.errMsg ||
   //           "❌ Failed deleting class!"
   //       );
   //     });
@@ -158,7 +158,7 @@ const ClassTableDetails = () => {
         );
         Swal.fire('Deleted!', 'Class has been deleted.', 'success');
       } else {
-        Swal.fire('Failed!', 'Could not delete the class.', 'error');
+        Swal.fire('Failed!', 'Could not delete the class.', 'warning');
       }
     } catch (error) {
       console.error("❌ Error deleting class:", error);
@@ -166,9 +166,9 @@ const ClassTableDetails = () => {
         'Warning!',
         error.response?.data?.usrMsg ||
           error.response?.data?.message ||
-          error.response?.data.errMessage ||
+          error.response?.data.errMsg ||
           'Failed to delete class!',
-        'error'
+        'warning'
       );
     }
   };
@@ -182,7 +182,7 @@ const ClassTableDetails = () => {
     return (
       row.className?.toLowerCase().includes(searchLower) ||
       row.ownerOrInstituteName?.toLowerCase().includes(searchLower) ||
-      row.Category?.some((cat) => cat.toLowerCase().includes(searchLower)) ||
+      row.category?.some((cat) => cat.toLowerCase().includes(searchLower)) ||
       row.modeOfTeaching?.some((mode) =>
         mode.toLowerCase().includes(searchLower)
       ) ||
@@ -204,7 +204,7 @@ const ClassTableDetails = () => {
     },
     {
       name: "Category",
-      selector: (row) => row.Category?.join(", ") || "N/A",
+      selector: (row) => row.category?.join(", ") || "N/A",
       sortable: true,
     },
     {

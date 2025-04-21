@@ -51,7 +51,7 @@ const ClassInfoCard = ({ classData, onClose }) => {
           <div>
             <strong className="text-blue-700">Category:</strong>
             <p className="text-gray-800 font-medium">
-              {classData?.Category?.join(", ") || "N/A"}
+              {classData?.category?.join(", ") || "N/A"}
             </p>
           </div>
 

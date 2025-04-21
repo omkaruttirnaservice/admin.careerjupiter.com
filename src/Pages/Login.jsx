@@ -72,9 +72,9 @@ const Login = () => {
           // }
 
           // ✅ For VENDOR
-          
+
           if (responseRole === "ADMIN") {
-            setAuthCookies({ token: token || "manual-token", role: responseRole, userID });
+            setAuthCookies({ token: token, role: responseRole, userID });
             navigate("/dashboard");
           } else if (responseRole === "VENDOR") {
             const payload = {
@@ -87,8 +87,7 @@ const Login = () => {
             setAuthCookies(payload);
             navigate("/vendor-class/class-dashboard");
           }
-          
-          
+
           // else if (role === "VENDOR") {
           //   // ✅ Store all cookies including classId
           //   const payload = {
@@ -123,7 +122,6 @@ const Login = () => {
       Swal.fire(
         "Warning",
         error.response?.data?.message ||
-          error.response?.data.errMessage ||
           error.response?.data?.usrMsg ||
           error.response?.data?.errMsg ||
           "Please Try Again",
