@@ -126,7 +126,7 @@ const AdminDashboard = () => {
           "Error fetching stats:",
           error?.response?.data ||
             error.message ||
-            error.response?.data.errMessage
+            error.response?.data.errMsg
         );
       }
     };
@@ -153,7 +153,7 @@ const AdminDashboard = () => {
                 `Error fetching ${category}:`,
                 err?.response?.data ||
                   err.message ||
-                  err.response?.data.errMessage
+                  err.response?.data.errMsg
               );
               return 0; // Default to 0 if request fails
             }
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
           "Error fetching IQ Test data:",
           error?.response?.data ||
             error.message ||
-            error.response?.data.errMessage
+            error.response?.data.errMsg
         );
       }
     };

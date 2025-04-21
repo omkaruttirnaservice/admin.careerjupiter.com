@@ -61,7 +61,7 @@ const ClassVendorDashboard = () => {
       } catch (error) {
         console.error(
           "Error fetching class details:",
-          error?.response?.data || error.message ||  error.response?.data.errMessage 
+          error?.response?.data || error.message ||  error.response?.data.errMsg 
         );
       }
     };

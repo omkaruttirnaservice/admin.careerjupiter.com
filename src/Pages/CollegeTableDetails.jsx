@@ -32,7 +32,7 @@ const CollegeTableDetails = () => {
     Engineering: "bg-yellow-200 text-yellow-800  transition-all duration-300",
     Pharmacy: "bg-red-200 text-red-800  transition-all duration-300",
   };
-  
+
   const typeColorMapping = {
     Government: "bg-green-200",
     Private: "bg-purple-200",
@@ -102,7 +102,12 @@ const CollegeTableDetails = () => {
       setEditModalOpen(true);
     } catch (error) {
       console.error("❌ Error parsing JSON in handleEdit:", error);
-      alert(error.response?.data?.usrMsg || error.response?.data?.message ||  error.response?.data.errMessage || "Error processing college data. Please check the format.");
+      alert(
+        error.response?.data?.usrMsg ||
+          error.response?.data?.message ||
+          error.response?.data.errMsg ||
+          "Error processing college data. Please check the format."
+      );
     }
   };
 
@@ -123,13 +128,14 @@ const CollegeTableDetails = () => {
       Category: cleanData.Category || "",
       collegeType: cleanData.collegeType || "",
       location: cleanData.location || { lat: "", lng: "" },
-      address: cleanData.address || {
-        line1: "",
-        line2: "",
-        pincode: "",
-        state: "",
-        dist: "",
-      },
+      address: cleanData.address,
+      // {
+      //   line1: "",
+      //   line2: "",
+      //   pincode: "",
+      //   state: "",
+      //   dist: "",
+      // },
       contactDetails: cleanData.contactDetails || "",
       establishedYear: cleanData.establishedYear || "",
       admissionProcess: cleanData.admissionProcess || "",
@@ -189,20 +195,25 @@ const CollegeTableDetails = () => {
           "❌ Error updating college data:",
           error.response?.data || error
         );
-        alert(error.response?.data?.usrMsg || error.response?.data?.message ||  error.response?.data.errMessage || `❌ Error updating college details: ${error}`);
+        alert(
+          error.response?.data?.usrMsg ||
+            error.response?.data?.message ||
+            error.response?.data.errMsg ||
+            `❌ Error updating college details: ${error}`
+        );
       });
   };
 
   const handleDelete = (item) => {
-    const isConfirmed = window.confirm("Are you sure you want to delete this college?");
-    
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this college?"
+    );
+
     if (isConfirmed) {
       setCollegeData(collegeData.filter((college) => college._id !== item._id));
       alert("College deleted successfully! ✅");
     }
   };
-  
-  
 
   // const filteredData = collegeData.filter((row) => {
   //   return (
@@ -228,34 +239,34 @@ const CollegeTableDetails = () => {
   const filteredData = collegeData.filter((row) => {
     return (
       row.collegeName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.affiliatedUniversity?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  
+      row.affiliatedUniversity
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       // ✅ Fix: `Category` is an array, check if **any** item matches the search term
-      row.Category?.some((cat) => cat.toLowerCase().includes(searchTerm.toLowerCase())) ||
-  
+      row.Category?.some((cat) =>
+        cat.toLowerCase().includes(searchTerm.toLowerCase())
+      ) ||
       row.collegeType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  
       // ✅ Fix: `location` uses `lat` and `lan`, not `lng`
       `${row.location?.lat || 0}, ${row.location?.lan || 0}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-  
       // ✅ Fix: Handle `null` address fields
-      `${row.address?.line1 || ""}, ${row.address?.line2 || ""}, ${row.address?.dist || ""}, ${row.address?.state || ""} - ${row.address?.pincode || ""}`
+      // `${row.address?.line1 || ""},
+      `${row.address?.line2 || ""}, ${row.address?.dist || ""}, ${
+        row.address?.state || ""
+      } - ${row.address?.pincode || ""}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-  
       row.contactDetails?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  
       row.websiteURL?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  
       // ✅ Fix: Handle `null` establishedYear
-      (row.establishedYear ? row.establishedYear.toString().includes(searchTerm) : false) ||
-  
+      (row.establishedYear
+        ? row.establishedYear.toString().includes(searchTerm)
+        : false) ||
       row.accreditation?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-  
 
   const columns = [
     {
@@ -304,12 +315,12 @@ const CollegeTableDetails = () => {
       sortable: true,
     },
 
-    {
-      name: "Address",
-      selector: (row) =>
-        `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`,
-      sortable: true,
-    },
+    // {
+    //   name: "Address",
+    //   selector: (row) =>
+    //     `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`,
+    //   sortable: true,
+    // },
 
     {
       name: "Contact",
@@ -430,7 +441,9 @@ const CollegeTableDetails = () => {
     <section>
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-6 shadow-lg ">
         <div className="flex justify-between items-center bg-white p-4 shadow-md  mb-4">
-          <h2 className="text-3xl font-semibold text-blue-800">🎓 College List</h2>
+          <h2 className="text-3xl font-semibold text-blue-800">
+            🎓 College List
+          </h2>
           <div className="ml-4">
             <input
               type="text"
@@ -454,15 +467,15 @@ const CollegeTableDetails = () => {
             headRow: {
               style: {
                 backgroundColor: "#2563eb",
-      color: "white",
-      fontSize: "16px",
-      fontWeight: "bold",
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "bold",
               },
             },
             headCells: {
               style: {
                 padding: "12px",
-      textTransform: "uppercase",
+                textTransform: "uppercase",
               },
             },
             rows: {
@@ -477,8 +490,8 @@ const CollegeTableDetails = () => {
             pagination: {
               style: {
                 backgroundColor: "#ffffff",
-      borderTop: "1px solid #ddd",
-      padding: "8px",
+                borderTop: "1px solid #ddd",
+                padding: "8px",
               },
             },
           }}

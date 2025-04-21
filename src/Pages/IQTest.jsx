@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import axios from "axios";
@@ -28,9 +27,9 @@ const IQTest = () => {
     } catch (err) {
       console.error("Error fetching categories:", err);
       Swal.fire({
-        icon: 'warning',
-        title: 'Oops...',
-        text: 'Failed to load categories',
+        icon: "warning",
+        title: "Oops...",
+        text: "Failed to load categories",
       });
     }
   };
@@ -55,9 +54,9 @@ const IQTest = () => {
     } catch (error) {
       console.error("Failed to add category", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.response?.data.errMsg || 'Failed to add Category',
+        icon: "warning",
+        title: "Oops...",
+        text: error.response?.data.errMsg || "Failed to add Category",
       });
     }
   };
@@ -78,15 +77,13 @@ const IQTest = () => {
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        
         {categories.map((cat, index) => (
           <div
             key={index}
             className="bg-white p-6 rounded-xl shadow hover:shadow-xl cursor-pointer border-l-4 border-blue-500 transition-all"
             onClick={() => navigate(`/tests/${cat.main_category}/${cat._id}`)}
           >
-            {console.log("categories-------",cat.main_category)
-            }
+            {console.log("categories-------", cat.main_category)}
             <h2 className="text-xl font-semibold text-gray-800">
               {cat.main_category}
             </h2>

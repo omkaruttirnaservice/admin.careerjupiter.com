@@ -781,7 +781,7 @@
 //       alert(
 //         error.response?.data?.usrMsg ||
 //           error.response?.data?.message ||
-//           error.response?.data.errMessage ||
+//           error.response?.data.errMsg ||
 //           "Failed to add test"
 //       );
 //     } finally {
