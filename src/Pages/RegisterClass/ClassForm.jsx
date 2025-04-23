@@ -147,7 +147,7 @@ const ClassForm = ({ onClose }) => {
         .min(1, "At least one category must be selected")
         .required("Category is required"),
 
-        // discount: Yup.string().required("Please select a discount"),
+      // discount: Yup.string().required("Please select a discount"),
 
       // otherCategory: Yup.string().when("Category", {
       //   is: (val) => Array.isArray(val) && val.includes("Others"),
@@ -164,15 +164,22 @@ const ClassForm = ({ onClose }) => {
         const formData = new FormData();
 
         if (!verifiedOtp) {
-          alert(
-            "Please verify your mobile number and OTP before submitting the form."
-          );
-
+          Swal.fire({
+            icon: "warning",
+            title: "OTP Not Verified",
+            text: "Please verify your mobile number and OTP before submitting the form.",
+            confirmButtonColor: "#f0ad4e",
+          });
           return false;
         }
 
         if (!values.address || values.address.length === 0) {
-          alert("Please add at least one address before submitting.");
+          Swal.fire({
+            icon: "warning",
+            title: "Address Required",
+            text: "Please add at least one address before submitting.",
+            confirmButtonColor: "#f0ad4e",
+          });
           return;
         }
 
@@ -310,8 +317,7 @@ const ClassForm = ({ onClose }) => {
         const classId = response.data?.data?.class?._id;
         if (!classId) {
           throw new Error(
-            error.response?.data.errMessage ||
-              "❌ Class ID missing in API response"
+            error.response?.data.errMsg || "❌ Class ID missing in API response"
           );
         }
 
@@ -324,7 +330,7 @@ const ClassForm = ({ onClose }) => {
           title: "🎉 Success!",
           text: "Class has been added to the system.",
           icon: "success",
-          background: "#f9f9f9", 
+          background: "#f9f9f9",
         }).then(() => {
           resetForm();
           navigate("/");
@@ -334,12 +340,16 @@ const ClassForm = ({ onClose }) => {
           "❌ Error submitting form:",
           error.response?.data || error.message
         );
-        alert(
-          error.response?.data?.usrMsg ||
+        Swal.fire({
+          icon: "warning",
+          title: "Submission Failed",
+          text:
+            error.response?.data?.errMsg ||
+            error.response?.data?.usrMsg ||
             error.response?.data?.message ||
-            error.response?.data.errMessage ||
-            "❌ Error submitting form. Try again."
-        );
+            "Failed to submit form. Please try again.",
+          confirmButtonColor: "#d33",
+        });
       } finally {
         setSubmitting(false);
       }
@@ -441,7 +451,6 @@ const ClassForm = ({ onClose }) => {
 
         {/* Form */}
         <form onSubmit={formik.handleSubmit} className="space-y-4 mt-4">
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
               label="Class Name"
@@ -510,7 +519,7 @@ const ClassForm = ({ onClose }) => {
                 <button
                   type="button"
                   onClick={handleAddOtherCategory}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
                 >
                   Add
                 </button>
@@ -700,7 +709,7 @@ const ClassForm = ({ onClose }) => {
                               setEditingAddressIndex(idx);
                               setShowAddressModal(true);
                             }}
-                            className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1"
+                            className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1 cursor-pointer"
                           >
                             ✏️ Edit
                           </button>
@@ -713,7 +722,7 @@ const ClassForm = ({ onClose }) => {
                               updated.splice(idx, 1);
                               formik.setFieldValue("address", updated);
                             }}
-                            className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1"
+                            className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1 cursor-pointer"
                           >
                             🗑️ Delete
                           </button>

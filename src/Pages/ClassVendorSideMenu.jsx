@@ -83,7 +83,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       } catch (error) {
         console.error(
           "Error fetching class details:",
-          error?.response?.data || error.message ||  error.response?.data.errMessage 
+          error.response?.data.errMsg  || error?.response?.data || error.message 
         );
       }
     };
@@ -100,7 +100,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       <div className="flex flex-col pt-5 pb-4 overflow-y-auto h-full">
         {/* ✅ Mobile Menu Close Button */}
         <button
-          className="absolute top-4 right-4 text-white md:hidden"
+          className="absolute top-4 right-4 text-white md:hidden cursor-pointer"
           onClick={() => setIsMenuOpen(false)}
         >
           {/* <MenuIcon className="w-8 h-8" /> */}
@@ -129,7 +129,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
                   navigate(item.href);
                   setIsMenuOpen(false);
                 }}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300
+                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer
                 ${
                   isActive
                     ? "bg-blue-500 text-white shadow-md transform scale-105"
@@ -149,7 +149,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
         {/* ✅ Logout Button */}
         <button
-          className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+          className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
           onClick={handleLogout} // Implement logout logic
         >
           <LogoutIcon className="h-6 w-6 mr-3" />

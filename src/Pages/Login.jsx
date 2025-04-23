@@ -19,7 +19,7 @@ const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("ADMIN");
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -72,9 +72,9 @@ const Login = () => {
           // }
 
           // ✅ For VENDOR
-          
+
           if (responseRole === "ADMIN") {
-            setAuthCookies({ token: token || "manual-token", role: responseRole, userID });
+            setAuthCookies({ token: token, role: responseRole, userID });
             navigate("/dashboard");
           } else if (responseRole === "VENDOR") {
             const payload = {
@@ -87,8 +87,7 @@ const Login = () => {
             setAuthCookies(payload);
             navigate("/vendor-class/class-dashboard");
           }
-          
-          
+
           // else if (role === "VENDOR") {
           //   // ✅ Store all cookies including classId
           //   const payload = {
@@ -123,7 +122,6 @@ const Login = () => {
       Swal.fire(
         "Warning",
         error.response?.data?.message ||
-          error.response?.data.errMessage ||
           error.response?.data?.usrMsg ||
           error.response?.data?.errMsg ||
           "Please Try Again",
@@ -168,6 +166,23 @@ const Login = () => {
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-purple-800">Login</h2>
           <p className="text-gray-700 mt-1">Welcome back!</p>
+        </div>
+
+        <div>
+          <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">
+            Select Role
+          </label>
+          <select
+            className="w-full bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4 outline-none text-gray-900"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="" disabled>
+              Select Role
+            </option>
+            <option value="ADMIN">Admin</option>
+            <option value="VENDOR">Class</option>
+          </select>
         </div>
 
         {/* Mobile Number */}
@@ -232,19 +247,6 @@ const Login = () => {
           </span>
         </div>
 
-        <div>
-          <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">
-            Select Role{" "}
-          </label>
-          <select
-            className="w-full bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4 outline-none text-gray-900"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="ADMIN">Admin</option>
-            <option value="VENDOR">Class</option>
-          </select>
-        </div>
         <div className="text-center">
           <span>Don't Have Class Account ? </span>
           <button

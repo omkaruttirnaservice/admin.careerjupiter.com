@@ -85,8 +85,8 @@ const AddUniversity = () => {
     },
     onError: (error) => {
       console.error("API Error:",error.response?.data || error.message);
-      toast.error(` ${error.response?.data?.message ||error.message ||  error.response?.data.errMessage } ||Something went wrong:`);
-      alert(`Submission Failed: ${error.response?.data?.message || error.message || error.response?.data.errMessage }`)
+      toast.error(` ${error.response?.data?.message ||error.message ||  error.response?.data.errMsg } ||Something went wrong:`);
+      alert(`Submission Failed: ${error.response?.data?.message || error.message || error.response?.data.errMsg }`)
     },
   });
 
@@ -99,8 +99,8 @@ const AddUniversity = () => {
       address_line1: "",
       address_line2: "",
       pincode: "",
-      state: "Maharashtra",
-      dist: "Mumbai",
+      state: "",
+      dist: "",
       contactDetails: "",
       info: "",
       websiteURL: "",

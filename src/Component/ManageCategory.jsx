@@ -39,7 +39,7 @@ const ManageCategory = ({ onCategoriesChange }) => {
         error.response?.data.errMsg || error.response?.data.usrMsg
       );
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Oops!",
         text: error.response?.data.errMsg || error.response?.data.usrMsg || "Failed to add category. Please try again.",
         confirmButtonColor: "#3085d6"
@@ -60,7 +60,7 @@ const ManageCategory = ({ onCategoriesChange }) => {
     } catch (error) {
       console.error("Failed to dalete category", error);
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Unable to Delete",
         text: error.response?.data.errMsg || "Failed to delete category. Please try again.",
         confirmButtonColor: "#d33"
@@ -107,7 +107,7 @@ const ManageCategory = ({ onCategoriesChange }) => {
     } catch (error) {
       console.error("Error updating Category" || error);
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Update Failed",
         text: error.response?.data.errMsg || "Could not update the category. Please try again.",
         confirmButtonColor: "#d33"

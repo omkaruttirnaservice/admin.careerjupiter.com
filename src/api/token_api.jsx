@@ -1,13 +1,12 @@
 
 import axios from "axios";
-import Cookies from "js-cookie"; // Import for token handling
+import Cookies from "js-cookie"; 
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Add a request interceptor to dynamically set the token
 api.interceptors.request.use(
   (config) => {
     const token = Cookies.get("token"); // Get token from cookies
