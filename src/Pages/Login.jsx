@@ -19,7 +19,7 @@ const Login = () => {
   const [mobileNo, setMobileNo] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("ADMIN");
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -168,6 +168,23 @@ const Login = () => {
           <p className="text-gray-700 mt-1">Welcome back!</p>
         </div>
 
+        <div>
+          <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">
+            Select Role
+          </label>
+          <select
+            className="w-full bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4 outline-none text-gray-900"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="" disabled>
+              Select Role
+            </option>
+            <option value="ADMIN">Admin</option>
+            <option value="VENDOR">Class</option>
+          </select>
+        </div>
+
         {/* Mobile Number */}
         <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">
           Mobile Number
@@ -230,19 +247,6 @@ const Login = () => {
           </span>
         </div>
 
-        <div>
-          <label className="text-gray-700 text-lg font-medium mb-2 flex items-center">
-            Select Role{" "}
-          </label>
-          <select
-            className="w-full bg-gray-100 p-3 rounded-lg border border-gray-400 mb-4 outline-none text-gray-900"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="ADMIN">Admin</option>
-            <option value="VENDOR">Class</option>
-          </select>
-        </div>
         <div className="text-center">
           <span>Don't Have Class Account ? </span>
           <button
