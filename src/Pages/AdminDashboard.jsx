@@ -3,7 +3,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { Doughnut, Bar } from "react-chartjs-2";
 import "chart.js/auto";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUniversity, FaSchool, FaChalkboardTeacher } from "react-icons/fa";
 import { FiActivity, FiUserPlus, FiBookOpen, FiCalendar } from "react-icons/fi";
 import api from "../api/token_api"; // ✅ Correct Import
@@ -25,6 +25,7 @@ import {
   GiNotebook,
   GiNetworkBars,
 } from "react-icons/gi";
+import { GraduationCap, Landmark, Puzzle } from "lucide-react";
 
 // Register Chart.js components
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
@@ -246,26 +247,70 @@ const AdminDashboard = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
         {/* Donut Chart */}
-        <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+        {/* <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
           <h2 className="text-lg font-semibold text-blue-700 mb-3">
             Data Distribution
           </h2>
           <div className="w-64">
             <Doughnut data={donutData} />
           </div>
-        </div>
+        </div> */}
+
+<div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center space-y-4 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+  <h2 className="text-2xl font-extrabold text-blue-800 mb-3 tracking-wide">
+    Data Distribution
+  </h2>
+  
+  <div className="w-72 h-72 p-4 bg-blue-50 rounded-xl flex items-center justify-center shadow-md transform transition-all duration-500 ease-in-out hover:scale-105">
+    <Doughnut data={donutData} />
+  </div>
+</div>
+
 
         {/* Histogram */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        {/* <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-lg font-semibold text-blue-700 mb-3">
             IQ Test Count by Category
           </h2>
           <div className="w-full h-64">
             <Bar data={barData} options={barOptions} />
           </div>
-        </div>
+        </div> */}
+
+        {/* Add Categories Section */}
+
+<div className="bg-white p-6 rounded-lg shadow-lg space-y-4">
+  <h2 className="text-2xl font-extrabold text-blue-800 mb-6">
+    🗂️ Add Categories
+  </h2>
+
+  {/* Add Class Category */}
+  <Link to="/add-category" className="flex items-center bg-blue-50 p-4 rounded-lg shadow hover:bg-blue-100 cursor-pointer">
+    <div className={`w-10 h-10 text-blue-400 mr-4 flex items-center justify-center rounded-full bg-blue-200`}>
+      <Puzzle className="w-6 h-6" />
+    </div>
+    <span className="font-semibold text-blue-700">Add Class Category</span>
+  </Link>
+
+  {/* Add College Category */}
+  <Link to="/add-college-category" className="flex items-center bg-green-50 p-4 rounded-lg shadow hover:bg-green-100 cursor-pointer">
+    <div className={`w-10 h-10 text-green-400 mr-4 flex items-center justify-center rounded-full bg-green-200`}>
+      <Landmark className="w-6 h-6" />
+    </div>
+    <span className="font-semibold text-green-700">Add College Category</span>
+  </Link>
+
+  {/* Add University Category */}
+  <Link to="/add-university-category" className="flex items-center bg-purple-50 p-4 rounded-lg shadow hover:bg-purple-100 cursor-pointer">
+    <div className={`w-10 h-10 text-purple-400 mr-4 flex items-center justify-center rounded-full bg-purple-200`}>
+      <GraduationCap className="w-6 h-6" />
+    </div>
+    <span className="font-semibold text-purple-700">Add University Category</span>
+  </Link>
+</div>
+
       </div>
 
       {/* Quick Shortcuts */}

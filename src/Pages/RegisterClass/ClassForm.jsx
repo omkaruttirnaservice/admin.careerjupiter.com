@@ -25,8 +25,8 @@ const ClassForm = ({ onClose }) => {
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
   const [verifiedOtp, setVerifiedOtp] = useState(false);
-  const [selectedDiscount, setSelectedDiscount] = useState("");
-  const [validTill, setValidTill] = useState("");
+  // const [selectedDiscount, setSelectedDiscount] = useState("");
+  // const [validTill, setValidTill] = useState("");
   const [dynamicCategories, setDynamicCategories] = useState([]);
 
   <stateDistricts />;
@@ -92,22 +92,18 @@ const ClassForm = ({ onClose }) => {
       password: Yup.string()
         .min(4, "Password must be at least 4 characters")
         .required("Password is required"),
-
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .required("Confirm Password is required"),
-
       contactDetails: Yup.string()
         .matches(/^[0-9]{10}$/, "Enter a valid 10-digit contact number")
         .required("Contact Details are required"),
-
       info: Yup.object().shape({
         description: Yup.string()
           .min(100, "Minimum 100 characters required.")
           .max(1000, "Maximum 1000 characters allowed.")
           .required("Description is required."),
       }),
-
       keywords: Yup.array()
         .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
         .min(1, "At least one keyword is required")
@@ -142,12 +138,34 @@ const ClassForm = ({ onClose }) => {
         )
         .required("Image is required"),
 
+      // category: Yup.array()
+      //   .of(Yup.string().oneOf(dynamicCategories, "Invalid category selected"))
+      //   .min(1, "At least one category must be selected")
+      //   .required("Category is required"),
+
       category: Yup.array()
-        .of(Yup.string().oneOf(dynamicCategories, "Invalid category selected"))
+        .of(
+          Yup.string().test(
+            "is-valid-category",
+            "Invalid category selected",
+            (value) =>
+              dynamicCategories.includes(value) ||
+              formik.values.category.includes(value)
+          )
+        )
         .min(1, "At least one category must be selected")
         .required("Category is required"),
 
-      // discount: Yup.string().required("Please select a discount"),
+      discount: Yup.string().required("Please select a discount"),
+      validTill: Yup.date()
+        .nullable()
+        .when("discount", {
+          is: (val) => val !== "", // only validate if discount is selected
+          then: (schema) =>
+            schema
+              .required("Valid till date is required")
+              .min(new Date(), "Date must be today or later"),
+        }),
 
       // otherCategory: Yup.string().when("Category", {
       //   is: (val) => Array.isArray(val) && val.includes("Others"),
@@ -184,9 +202,6 @@ const ClassForm = ({ onClose }) => {
         }
 
         console.log("🚀 Original Form Values:", values); // ✅ Debugging
-
-        values.discount = selectedDiscount;
-        values.validTill = validTill;
 
         // ✅ Properly format `address` and `info`
         const formattedData = {
@@ -229,21 +244,12 @@ const ClassForm = ({ onClose }) => {
           );
         });
 
-        // Include selected discount and validTill
-        if (values.discount && values.discount !== "") {
+        if (values.discount) {
           formData.append("discount", Number(values.discount));
         }
-
-        console.log("**********Discount************", values.discount);
-
         if (values.validTill) {
           formData.append("validTill", values.validTill);
         }
-
-        console.log(
-          "****************Valid Till ****************",
-          values.validTill
-        );
 
         formData.append(
           `franchiseOrIndependent`,
@@ -325,7 +331,6 @@ const ClassForm = ({ onClose }) => {
         Cookies.set("classId", classId, { expires: 1 / 24 });
 
         // Show Success Message & Redirect to Vendor Dashboard
-        // alert("✅ Class Created Successfully!");
         Swal.fire({
           title: "🎉 Success!",
           text: "Class has been added to the system.",
@@ -356,6 +361,7 @@ const ClassForm = ({ onClose }) => {
     },
   });
 
+  // Get dynamic categories from api
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -381,6 +387,7 @@ const ClassForm = ({ onClose }) => {
     }
   }, [formik.values.category]);
 
+  // When selected others in category list - to handle the value entered in others field
   const handleAddOtherCategory = () => {
     if (!customCategory.trim()) return;
 
@@ -586,9 +593,11 @@ const ClassForm = ({ onClose }) => {
                   Select Discount
                 </label>
                 <select
+                  name="discount"
                   className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={selectedDiscount}
-                  onChange={(e) => setSelectedDiscount(e.target.value)}
+                  value={formik.values.discount || ""}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 >
                   <option value="">Select Discount</option>
                   {discountOptions.map((option, index) => (
@@ -605,16 +614,18 @@ const ClassForm = ({ onClose }) => {
               </div>
 
               {/* Valid Till Date Picker */}
-              {selectedDiscount && (
+              {formik.values.discount && (
                 <div className="flex-1">
                   <label className="block text-blue-900 text-lg font-semibold mb-2">
                     Valid Till
                   </label>
                   <input
                     type="date"
+                    name="validTill"
                     className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={validTill}
-                    onChange={(e) => setValidTill(e.target.value)}
+                    value={formik.values.validTill || ""}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                   />
                   {formik.touched.validTill && formik.errors.validTill && (
                     <div className="text-red-500 text-sm mt-2 font-semibold">

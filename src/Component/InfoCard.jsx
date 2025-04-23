@@ -43,18 +43,6 @@ const InfoCard = ({ collegeData, onClose }) => {
             <p className="text-gray-800 font-medium">{collegeData?.collegeType || "N/A"}</p>
           </div>
 
-          {/* Location */}
-          <div>
-            <strong className="text-blue-700">📍 Location:</strong>
-            <p className="text-gray-800 font-medium">
-              {collegeData?.location
-                ? `${collegeData.location.lat}, ${collegeData.location.lng}`
-                : "N/A"}
-            </p>
-          </div>
-
-          
-
           {/* Contact Details */}
           <div>
             <strong className="text-blue-700">📞 Contact:</strong>
