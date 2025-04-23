@@ -116,7 +116,7 @@ const TableList = () => {
   };
 
   return (
-    <div className="max-w-full mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-full h-full mx-auto p-6 bg-white shadow-md rounded-lg">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800">IQ Tests 🧠</h2>
@@ -133,7 +133,7 @@ const TableList = () => {
       {error && <p className="text-red-500 font-semibold">{error}</p>}
 
       {/* Scrollable Table */}
-      <div className="overflow-y-auto max-h-120 rounded-lg shadow-lg">
+      <div className="overflow-y-auto max-h-155 rounded-lg shadow-lg">
         <table className="w-full border-collapse">
           <thead className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-700 text-white z-20">
             <tr>

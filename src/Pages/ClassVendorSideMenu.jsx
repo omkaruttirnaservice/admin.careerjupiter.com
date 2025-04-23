@@ -15,6 +15,16 @@ import {
 import { BookAIcon } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
 import { clearAuthCookies } from "../Utlis/cookieHelper";
+import { motion } from "framer-motion";
+
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return { text: "Good Morning", emoji: "🌞", color: "#facc15" }; // yellow
+  if (hour < 16) return { text: "Good Afternoon", emoji: "☀️", color: "#fb923c" }; // orange
+  return { text: "Good Evening", emoji: "🌙", color: "#60a5fa" }; // blue
+};
+
 
 const navigation = [
   {
@@ -39,6 +49,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [activeLink, setActiveLink] = useState(location.pathname);
   const [classDetails, setClassDetails] = useState(null);
   const [classId, setClassId] = useState(null); // ✅ State for classId
+  const greeting = getGreeting();
   
 
   // ✅ Update activeLink when URL changes
@@ -98,7 +109,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       } md:translate-x-0`}
     >
       <div className="flex flex-col pt-5 pb-4 overflow-y-auto h-full">
-        {/* ✅ Mobile Menu Close Button */}
+         {/* ✅ Mobile Menu Close Button */}
         <button
           className="absolute top-4 right-4 text-white md:hidden cursor-pointer"
           onClick={() => setIsMenuOpen(false)}
@@ -106,20 +117,50 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
           {/* <MenuIcon className="w-8 h-8" /> */}
         </button>
 
-        {/* ✅ Profile Section */}
-        <div className="flex flex-col items-center text-white mb-6">
-          <FaUserCircle className="h-16 w-16 text-white" />
-          <h2 className="mt-2 text-lg font-semibold">
-            {classDetails?.ownerOrInstituteName || "Vendor"}
-          </h2>
-          <p className="text-sm text-gray-300">
-            {classDetails?.className || "Class Vendor"}
-          </p>
-        </div>
+      {/* ✅ Profile Section */}
+<div className="flex flex-col items-center text-white mb-6">
+<FaUserCircle className="h-16 w-16 text-white" />
 
-        {/* ✅ Navigation Links */}
+<motion.div
+  initial={{ opacity: 0, y: -10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ type: "spring", stiffness: 100 }}
+  className="mt-2 text-lg font-semibold flex items-center space-x-2"
+>
+  {/* Greeting Text */}
+  <motion.span
+    className="block"
+    style={{ color: greeting.color }}
+    animate={{ scale: [1, 1.05, 1], rotate: [0, 3, -3, 0] }}
+    transition={{ repeat: Infinity, duration: 2 }}
+  >
+    {greeting.text}
+  </motion.span>
+
+  {/* Emoji */}
+  <motion.span
+    className="text-2xl inline-block"
+    animate={{ y: [0, -8, 0], rotate: [0, 10, -10, 0] }}
+    transition={{ repeat: Infinity, duration: 2 }}
+  >
+    {greeting.emoji}
+  </motion.span>
+</motion.div>
+
+<motion.p
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.5 }}
+  className="text-sm text-blue-200 mt-1"
+>
+  Ready to make your class shine!
+</motion.p>
+</div>
+
+
+       {/* ✅ Navigation Links */}
         <nav className="mt-2 flex-1 px-4 space-y-2">
-          {navigation.map((item) => {
+           {navigation.map((item) => {
             const isActive = activeLink === item.href;
 
             return (
@@ -147,7 +188,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
           })}
         </nav>
 
-        {/* ✅ Logout Button */}
+       {/* ✅ Logout Button */}
         <button
           className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
           onClick={handleLogout} // Implement logout logic
@@ -161,3 +202,6 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 };
 
 export default ClassVendorSideMenu;
+
+
+

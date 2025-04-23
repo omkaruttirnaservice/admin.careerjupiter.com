@@ -8,6 +8,7 @@ import {
   FaPlus,
   FaBuilding,
   FaBriefcase,
+  FaImages,
 } from "react-icons/fa";
 // import Swal from "sweetalert2";
 import { Tooltip } from "react-tooltip";
@@ -15,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import InfoCard from "../Component/InfoCard"; // Import the InfoCard component
 import EditCollegeDetails from "../Component/EditCollegeDetails"; // Import the EditCollegeDetails component
+import FileUpload from "../Component/FileUpload";
+import Swal from "sweetalert2";
 
 const CollegeTableDetails = () => {
   const [collegeData, setCollegeData] = useState([]);
@@ -25,6 +28,13 @@ const CollegeTableDetails = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [infraModalOpen, setInfraModalOpen] = useState(false);
   const [placementModalOpen, setPlacementModalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
+  const [heroImage, setHeroImage] = useState(null);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [heroImageError, setHeroImageError] = useState('');
+const [galleryImagesError, setGalleryImagesError] = useState('');
+
 
   const categoryColorMapping = {
     HSC: "bg-blue-200 text-blue-800  transition-all duration-300",
@@ -51,6 +61,7 @@ const CollegeTableDetails = () => {
               ? JSON.parse(response.data.data)
               : response.data.data;
           setCollegeData(parsedData.colleges);
+          console.log("//////////// college data //////",parsedData )
           setLoading(false);
         } else {
           setLoading(false);
@@ -127,7 +138,6 @@ const CollegeTableDetails = () => {
       affiliatedUniversity: cleanData.affiliatedUniversity || "",
       Category: cleanData.Category || "",
       collegeType: cleanData.collegeType || "",
-      location: cleanData.location || { lat: "", lng: "" },
       address: cleanData.address,
       // {
       //   line1: "",
@@ -204,6 +214,82 @@ const CollegeTableDetails = () => {
       });
   };
 
+  // const handleUpload = () => {
+  //   if (!selectedRow) return;
+
+  //   const formData = new FormData();
+  //   if (heroImage) formData.append("heroImage", heroImage);
+  //   if (galleryImages.length > 0) {
+  //     Array.from(galleryImages).forEach((file) =>
+  //       formData.append("galleryImages", file)
+  //     );
+  //   }
+
+  //   axios
+  //     .post(
+  //       `${API_BASE_URL}/api/college/${selectedRow._id}/upload-images`,
+  //       formData
+  //     )
+  //     .then((res) => {
+  //       alert("🎉 Images uploaded successfully!");
+  //       setUploadModalOpen(false);
+  //       setHeroImage(null);
+  //       setGalleryImages([]);
+  //     })
+  //     .catch((err) => {
+  //       alert("❌ Upload failed!");
+  //       console.error(err);
+  //     });
+  // };
+
+
+  const handleUpload = (collegeId) => {
+    if (!collegeId || !heroImage) return;
+    if (heroImageError || galleryImagesError) {
+      return; // prevent upload
+    }
+  
+    const formData = new FormData();
+  
+    // Append hero image with key "image"
+    formData.append("image", heroImage);
+  
+    // Append gallery images with key "imageGallery"
+    if (galleryImages.length > 0) {
+      Array.from(galleryImages).forEach((file) =>
+        formData.append("imageGallery", file)
+      );
+    }
+  
+    // Make POST request to upload images
+    axios
+      .post(`${API_BASE_URL}/api/college/upload/${collegeId}`, formData)
+      .then((res) => {
+        Swal.fire({
+          icon: "success",
+          title: "Uploaded!",
+          text: "🎉 Images uploaded successfully!",
+          confirmButtonText: "OK",
+        }).then(() => {
+          setUploadModalOpen(false);
+          setHeroImage(null);
+          setGalleryImages([]);
+        });
+      })    
+      .catch((err) => {
+        Swal.fire({
+          icon: "warning",
+          title: "Upload Failed!",
+          text: "Please Try Again.",
+          confirmButtonText: "OK",
+        });
+        console.error(err);
+      });
+      
+      
+  };
+
+  
   const handleDelete = (item) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this college?"
@@ -214,27 +300,6 @@ const CollegeTableDetails = () => {
       alert("College deleted successfully! ✅");
     }
   };
-
-  // const filteredData = collegeData.filter((row) => {
-  //   return (
-  //     row.collegeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     row.affiliatedUniversity
-  //       .toLowerCase()
-  //       .includes(searchTerm.toLowerCase()) ||
-  //     row.Category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     row.collegeType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     `${row.location.lat}, ${row.location.lng}`
-  //       .toLowerCase()
-  //       .includes(searchTerm.toLowerCase()) ||
-  //     `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`
-  //       .toLowerCase()
-  //       .includes(searchTerm.toLowerCase()) ||
-  //     row.contactDetails.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     row.websiteURL.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     row.establishedYear.toString().includes(searchTerm) ||
-  //     row.accreditation.toLowerCase().includes(searchTerm.toLowerCase())
-  //   );
-  // });
 
   const filteredData = collegeData.filter((row) => {
     return (
@@ -247,10 +312,6 @@ const CollegeTableDetails = () => {
         cat.toLowerCase().includes(searchTerm.toLowerCase())
       ) ||
       row.collegeType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      // ✅ Fix: `location` uses `lat` and `lan`, not `lng`
-      `${row.location?.lat || 0}, ${row.location?.lan || 0}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
       // ✅ Fix: Handle `null` address fields
       // `${row.address?.line1 || ""},
       `${row.address?.line2 || ""}, ${row.address?.dist || ""}, ${
@@ -269,6 +330,40 @@ const CollegeTableDetails = () => {
   });
 
   const columns = [
+    // ✅ Upload Image column before Actions
+    // {
+    //   name: "Upload",
+    //   cell: (row) => (
+    //     <div className="flex gap-2">
+    //       <FaImages
+    //         className="cursor-pointer text-blue-500"
+    //         title="Upload Images"
+    //         onClick={() => {
+    //           setSelectedRow(row);
+    //           setUploadModalOpen(true);
+    //         }}
+    //       />
+    //     </div>
+    //   ),
+    //   width: "100px",
+    // },
+
+    {
+      name: "Upload",
+      cell: (row) => (
+        <div className="flex gap-2">
+          <FaImages
+            className="cursor-pointer text-blue-500"
+            title="Upload Images"
+            onClick={() => {
+              setSelectedRow(row); // row contains _id
+              setUploadModalOpen(true);
+            }}
+          />
+        </div>
+      ),
+      width: "100px",
+    },    
     {
       name: "College Name",
       selector: (row) => row.collegeName,
@@ -309,12 +404,6 @@ const CollegeTableDetails = () => {
       },
     },
 
-    {
-      name: "Location",
-      selector: (row) => `${row.location.lat}, ${row.location.lng}`,
-      sortable: true,
-    },
-
     // {
     //   name: "Address",
     //   selector: (row) =>
@@ -327,25 +416,50 @@ const CollegeTableDetails = () => {
       selector: (row) => row.contactDetails,
       sortable: true,
     },
+    // {
+    //   name: "Website",
+    //   selector: (row) => (
+    //     <div>
+    //       {row.websiteURL && row.websiteURL.trim() !== "" ? (
+    //         <a
+    //           href={row.websiteURL}
+    //           target="_blank"
+    //           rel="noopener noreferrer"
+    //           className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer inline-block"
+    //         >
+    //           Visit Website
+    //         </a>
+    //       ) : (
+    //         <span className="text-gray-500">N/A</span>
+    //       )}
+    //     </div>
+    //   ),
+    // },
 
     {
       name: "Website",
       selector: (row) => (
         <div>
           {row.websiteURL && row.websiteURL.trim() !== "" ? (
-            <button
-              onClick={() => window.open(row.websiteURL, "_blank")}
-              className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer"
+            <a
+              href={
+                row.websiteURL.startsWith("http")
+                  ? row.websiteURL
+                  : `https://${row.websiteURL}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer inline-block"
             >
               Visit Website
-            </button>
+            </a>
           ) : (
-            <span className="text-gray-500">No Website Available</span>
+            <span className="text-gray-500">N/A</span>
           )}
         </div>
       ),
-    },
-
+      sortable: true,
+    },    
     {
       name: "Established Year",
       selector: (row) => row.establishedYear,
@@ -384,6 +498,15 @@ const CollegeTableDetails = () => {
           >
             <FaEdit size={17} />
           </button>
+
+          {/* <button
+            className="bg-indigo-500 hover:bg-indigo-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
+            data-tooltip-id="upload-image-tooltip"
+            data-tooltip-content="Upload Images"
+            onClick={() => openUploadModal(row)}
+          >
+            <FaImages size={17} />
+          </button> */}
 
           {/* Delete */}
           <button
@@ -432,6 +555,7 @@ const CollegeTableDetails = () => {
           <Tooltip id="courses-tooltip" place="top" />
           <Tooltip id="infra-tooltip" place="top" />
           <Tooltip id="placement-tooltip" place="top" />
+          {/* <Tooltip id="upload-image-tooltip" place="top" /> */}
         </div>
       ),
     },
@@ -500,6 +624,144 @@ const CollegeTableDetails = () => {
         {/* Render InfoCard modal */}
         {modalOpen && (
           <InfoCard collegeData={selectedItem} onClose={handleCloseModal} />
+        )}
+
+        {isUploadModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-50 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mx-auto border-4 border-blue-500">
+              {/* Modal Header */}
+              <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 rounded-t-lg">
+                <h2 className="text-2xl font-semibold">
+                  📤 Upload College Images
+                </h2>
+                <button
+                  onClick={() => {
+                    setUploadModalOpen(false);
+                    setSelectedRow(null);
+                    setHeroImage(null);
+                    setGalleryImages([]);
+                  }}
+                  className="text-white text-3xl hover:text-red-500 transition-all duration-300 cursor-pointer"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <hr className="my-4 border-blue-200" />
+
+              {/* Upload Section */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-2 sm:px-4">
+                {/* Hero Image Input */}
+                <div>
+                  <label className="text-blue-700 font-semibold block mb-2">
+                    Main Image (Max: 100KB):
+                  </label>
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition-all">
+                    <span className="text-gray-500 mb-1 text-sm">
+                      Click to upload Main Image
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      (Only one image allowed)
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file && file.size > 100 * 1024) {
+                          setHeroImageError("Image size must be less than 100KB");
+                          setHeroImage(null);
+                        } else {
+                          setHeroImageError("");
+                          setHeroImage(file);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    {heroImageError && (
+  <p className="text-red-500 text-sm mt-2">{heroImageError}</p>
+)}
+                  </label>
+                  {heroImage && (
+                    <img
+                      src={URL.createObjectURL(heroImage)}
+                      alt="Hero Preview"
+                      className="mt-3 rounded-md shadow max-h-32 object-contain"
+                    />
+                  )}
+                </div>
+
+                {/* Gallery Images Input */}
+                <div>
+                  <label className="text-green-600 font-semibold block mb-2">
+                    Gallery Images (Max: 100KB):
+                  </label>
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-green-400 transition-all">
+                    <span className="text-gray-600 font-medium mb-1">
+                      Upload Gallery Images
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      (You can select multiple images)
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files);
+                        const oversized = files.filter(file => file.size > 100 * 1024);
+                    
+                        if (oversized.length > 0) {
+                          setGalleryImagesError("All gallery images must be under 100KB");
+                          setGalleryImages([]);
+                        } else {
+                          setGalleryImagesError("");
+                          setGalleryImages(e.target.files);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    {galleryImagesError && (
+  <p className="text-red-500 text-sm mt-2">{galleryImagesError}</p>
+)}
+                  </label>
+                  {galleryImages && (
+                    <div className="grid grid-cols-3 gap-2 mt-3">
+                      {Array.from(galleryImages).map((file, index) => (
+                        <img
+                          key={index}
+                          src={URL.createObjectURL(file)}
+                          alt={`Gallery Preview ${index + 1}`}
+                          className="rounded-md shadow max-h-24 object-cover"
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-4 mt-8 px-4">
+                <button
+                  className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded"
+                  onClick={() => {
+                    setUploadModalOpen(false);
+                    setSelectedRow(null);
+                    setHeroImage(null);
+                    setGalleryImages([]);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                  onClick={() => handleUpload(selectedRow._id)}
+                >
+                  Upload
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Render EditCollegeDetails modal */}
