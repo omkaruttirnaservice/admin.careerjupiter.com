@@ -3,8 +3,6 @@ import {
   HomeIcon,
   LibraryIcon,
   OfficeBuildingIcon,
-  PlusCircleIcon,
-  AcademicCapIcon,
   BookOpenIcon,
   ClipboardListIcon,
   PresentationChartBarIcon,
@@ -27,16 +25,42 @@ const navigation = [
     color: "text-blue-400",
   },
   {
-    name: "Manage Colleges",
-    href: "/colleges",
+    name: "College",
     icon: LibraryIcon,
     color: "text-green-400",
+    children: [
+      {
+        name: "Manage Colleges",
+        href: "/colleges",
+        icon: Puzzle,
+        color: "text-blue-400",
+      },
+      {
+        name: "Add New College",
+        href: "/add-college",
+        icon: Landmark,
+        color: "text-green-400",
+      },
+    ],
   },
   {
-    name: "Manage University",
-    href: "/university-details",
+    name: "University",
     icon: OfficeBuildingIcon,
     color: "text-purple-400",
+    children: [
+      {
+        name: "Manage University",
+        href: "/university-details",
+        icon: Puzzle,
+        color: "text-blue-400",
+      },
+      {
+        name: "Add New University",
+        href: "/university",
+        icon: Landmark,
+        color: "text-green-400",
+      },
+    ],
   },
   {
     name: "Manage Classes",
@@ -44,19 +68,6 @@ const navigation = [
     icon: BookOpenIcon,
     color: "text-blue-500",
   },
-  {
-    name: "Add New College",
-    href: "/add-college",
-    icon: PlusCircleIcon,
-    color: "text-yellow-400",
-  },
-  {
-    name: "Add New University",
-    href: "/university",
-    icon: AcademicCapIcon,
-    color: "text-red-400",
-  },
-  // navigation section
   {
     name: "Add Categories",
     icon: ClipboardListIcon,
@@ -82,7 +93,6 @@ const navigation = [
       },
     ],
   },
-
   {
     name: "IQ Test",
     href: "/iq-test",
@@ -113,11 +123,17 @@ const SideMenu = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(location.pathname);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownStates, setDropdownStates] = useState({});
 
+  const toggleDropdown = (itemName) => {
+    setDropdownStates((prev) => ({
+      ...prev,
+      [itemName]: !prev[itemName],
+    }));
+  };
 
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10 ">
+    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10">
       <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
         {/* Logo */}
         <div className="flex items-center justify-center mb-6">
@@ -133,19 +149,20 @@ const SideMenu = () => {
           {navigation.map((item) => {
             const isActive = activeLink === item.href;
 
-            // DROPDOWN ITEM
             if (item.children) {
+              const isDropdownOpen = dropdownStates[item.name] || false;
+
               return (
                 <div key={item.name}>
                   <button
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    onClick={() => toggleDropdown(item.name)}
                     className="w-full flex items-center justify-between px-3 py-3 text-sm font-medium text-white transition cursor-pointer"
                   >
                     <span className="flex items-center">
                       <item.icon className={`mr-3 h-5 w-5 ${item.color}`} />
                       {item.name}
                     </span>
-                    {dropdownOpen ? (
+                    {isDropdownOpen ? (
                       <ChevronUpIcon className="w-5 h-5 text-white" />
                     ) : (
                       <ChevronDownIcon className="w-5 h-5 text-white" />
@@ -153,7 +170,7 @@ const SideMenu = () => {
                   </button>
 
                   <AnimatePresence>
-                    {dropdownOpen && (
+                    {isDropdownOpen && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -176,7 +193,7 @@ const SideMenu = () => {
                                   : "text-gray-100 hover:bg-blue-700"
                               }`}
                             >
-                              <div className="flex flex-row gap-2 ">
+                              <div className="flex flex-row gap-2">
                                 <child.icon
                                   className={`h-5 w-5 ${child.color}`}
                                 />
@@ -192,7 +209,6 @@ const SideMenu = () => {
               );
             }
 
-            // NORMAL ITEM
             return (
               <button
                 key={item.name}
@@ -216,7 +232,6 @@ const SideMenu = () => {
             );
           })}
         </nav>
-
       </div>
     </div>
   );
