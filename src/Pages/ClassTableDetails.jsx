@@ -4,9 +4,9 @@ import DataTable from "react-data-table-component";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import EditClassDetails from "./EditClassDetails"; 
-import ClassInfoCard from "./ClassInforCard"; 
-import Swal from 'sweetalert2';
+import EditClassDetails from "./EditClassDetails";
+import ClassInfoCard from "./ClassInforCard";
+import Swal from "sweetalert2";
 
 const ClassTableDetails = () => {
   const [classData, setClassData] = useState([]);
@@ -15,6 +15,8 @@ const ClassTableDetails = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -26,7 +28,11 @@ const ClassTableDetails = () => {
         if (response.data.success && response.data.data.classes) {
           const classArray = response.data.data.classes; // ✅ Extract `classes` array
           console.log("✅ Fetched Class Data:", classArray);
-          setClassData(classArray); // ✅ Update state with array
+          // setClassData(classArray); // ✅ Update state with array
+          const visibleClasses = classArray.filter(
+            (classItem) => classItem.isHidden
+          );
+          setClassData(visibleClasses); // ✅ Only show classes that are not hidden
         } else {
           console.error(
             error.response?.data?.usrMsg ||
@@ -56,47 +62,6 @@ const ClassTableDetails = () => {
     setSelectedItem(item);
     setModalOpen(true);
   };
-
-  // // ✅ Edit Class
-  // const handleEdit = (item) => {
-  //   setSelectedItem(item);
-  //   setEditModalOpen(true);
-  // };
-
-  // ✅ Save Edited Class Details
-  // const handleSaveEdit = (updatedData) => {
-  //   if (!updatedData || !updatedData._id) {
-  //     alert("❌ Error: Class data is missing or invalid.");
-  //     return;
-  //   }
-
-  //   const { _id, createdAt, updatedAt, __v, ...cleanData } = updatedData;
-
-  //   axios
-  //     .put(`${API_BASE_URL}/api/class/update/${_id}`, cleanData)
-  //     .then((response) => {
-  //       if (response.data.success) {
-  //         setClassData((prevData) =>
-  //           prevData.map((classItem) =>
-  //             classItem._id === _id ? { ...classItem, ...cleanData } : classItem
-  //           )
-  //         );
-  //         setEditModalOpen(false);
-  //         alert("✅ Successfully Updated Class");
-  //       } else {
-  //         alert("❌ Failed to update class details");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error updating class:", error);
-  //       alert(
-  //         error.response?.data?.usrMsg ||
-  //           error.response?.data?.message ||
-  //           error.response?.data.errMsg ||
-  //           "❌ Error updating class details!"
-  //       );
-  //     });
-  // };
 
   // ✅ Delete Class
   // const handleDelete = (item) => {
@@ -136,43 +101,55 @@ const ClassTableDetails = () => {
   //     });
   // };
 
+  const handleCategoryClick = (categories) => {
+    if (Array.isArray(categories) && categories.length > 0) {
+      setSelectedCategories(categories);
+      setShowModal(true);
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedCategories([]);
+  };
+
   const handleDelete = async (item) => {
     const { isConfirmed } = await Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it',
-      reverseButtons: true, // Reverses the positions of the buttons
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, keep it",
     });
-  
+
     if (!isConfirmed) return;
-  
+
     try {
-      const response = await axios.delete(`${API_BASE_URL}/api/class/delete/${item._id}`);
+      const response = await axios.delete(
+        `${API_BASE_URL}/api/class/delete/${item._id}`
+      );
       if (response.data.success) {
         // ✅ Remove class from state
         setClassData((prevData) =>
           prevData.filter((classItem) => classItem._id !== item._id)
         );
-        Swal.fire('Deleted!', 'Class has been deleted.', 'success');
+        Swal.fire("Deleted!", "Class has been deleted.", "success");
       } else {
-        Swal.fire('Failed!', 'Could not delete the class.', 'warning');
+        Swal.fire("Failed!", "Could not delete the class.", "warning");
       }
     } catch (error) {
       console.error("❌ Error deleting class:", error);
       Swal.fire(
-        'Warning!',
+        "Warning!",
         error.response?.data?.usrMsg ||
           error.response?.data?.message ||
           error.response?.data.errMsg ||
-          'Failed to delete class!',
-        'warning'
+          "Failed to delete class!",
+        "warning"
       );
     }
   };
-  
 
   // ✅ Search Functionality
   // ✅ Search Functionality - Filters Across All Columns
@@ -202,9 +179,27 @@ const ClassTableDetails = () => {
       selector: (row) => row.ownerOrInstituteName || "N/A",
       sortable: true,
     },
+    // {
+    //   name: "Category",
+    //   selector: (row) => row.category?.join(", ") || "N/A",
+    //   sortable: true,
+    // },
     {
       name: "Category",
-      selector: (row) => row.category?.join(", ") || "N/A",
+      selector: (row) => (
+        <span
+          onClick={() => handleCategoryClick(row.category)}
+          className={`${
+            Array.isArray(row.category) && row.category.length > 0
+              ? "bg-blue-100 text-blue-700"
+              : "bg-gray-200 text-gray-500"
+          } px-3 py-1 rounded-full text-sm font-medium cursor-pointer inline-block hover:shadow-md`}
+        >
+          {Array.isArray(row.category) && row.category.length > 0
+            ? row.category.length
+            : "N/A"}
+        </span>
+      ),
       sortable: true,
     },
     {
@@ -218,38 +213,49 @@ const ClassTableDetails = () => {
       sortable: true,
     },
     {
-      name: "Address",
-      selector: (row) => {
-        const addr = Array.isArray(row.address) ? row.address[0] : row.address;
-        if (!addr) return "N/A";
-
-        return `${addr.line1 || ""}, ${addr.line2 || ""}, ${
-          addr.taluka || ""
-        }, ${addr.dist || ""}, ${addr.state || ""}, ${addr.pincode || ""}
-    Landmark: ${addr.nearbyLandmarks || "-"} 
-    Authorized: ${addr.autorizedName || "-"} (${addr.autorizedPhono || "-"})`;
-      },
-      sortable: false,
-      wrap: true,
-    },
-
-    {
-      name: "Keywords",
-      selector: (row) => row.keywords?.join(", ") || "N/A",
-      sortable: true,
-    },
-    {
       name: "Year Established",
       selector: (row) => row.yearEstablished || "N/A",
       sortable: true,
     },
+    // {
+    //   name: "Website",
+    //   selector: (row) => row.websiteURL || "N/A",
+    //   sortable: true,
+    // },
     {
       name: "Website",
-      selector: (row) => row.websiteURL || "N/A",
+      selector: (row) => (
+        <div>
+          {row.websiteURL && row.websiteURL.trim() !== "" ? (
+            // <a
+            //   href={row.websiteURL}
+            //   target="_blank"
+            //   rel="noopener noreferrer"
+            //   className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer inline-block"
+            // >
+            //   Visit Website
+            // </a>
+            <a
+              href={
+                row.websiteURL.startsWith("http")
+                  ? row.websiteURL
+                  : `https://${row.websiteURL}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer inline-block"
+            >
+              Visit Website
+            </a>
+          ) : (
+            <span className="text-gray-500">N/A</span>
+          )}
+        </div>
+      ),
       sortable: true,
     },
     {
-      name: "Franchise/Independent",
+      name: "Class Type",
       selector: (row) => row.franchiseOrIndependent || "N/A",
       sortable: true,
     },
@@ -264,14 +270,6 @@ const ClassTableDetails = () => {
           >
             <FaEye size={15} />
           </button>
-
-          {/* ✅ Edit */}
-          {/* <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white px-3 py-1 rounded-lg cursor-pointer"
-            onClick={() => handleEdit(row)}
-          >
-            <FaEdit size={15} />
-          </button> */}
 
           {/* ✅ Delete */}
           <button
@@ -331,6 +329,50 @@ const ClassTableDetails = () => {
             classData={selectedItem}
             onClose={() => setModalOpen(false)}
           />
+        )}
+
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 bg-opacity-50 backdrop-blur-sm">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto border-4 border-blue-500 space-y-6">
+              {/* Header */}
+              <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 rounded-t-lg">
+                <h2 className="text-2xl font-semibold">📌 Category List</h2>
+                <button
+                  onClick={closeModal}
+                  className="text-white text-3xl hover:text-red-500 transition duration-300"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <hr />
+
+              {/* Content */}
+              <div className="px-4">
+                {selectedCategories && selectedCategories.length > 0 ? (
+                  <ul className="list-disc pl-5 space-y-2">
+                    {selectedCategories.map((cat, idx) => (
+                      <li key={idx} className="text-gray-800 font-medium">
+                        {cat}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500">No categories available.</p>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-end px-4">
+                <button
+                  onClick={closeModal}
+                  className="mt-2 px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-800 transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* ✅ Edit Class Details Modal */}
