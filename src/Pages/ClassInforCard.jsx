@@ -49,37 +49,16 @@ const ClassInfoCard = ({ classData, onClose }) => {
           </div>
 
           <div>
-            <strong className="text-blue-700">Tpyes Of Class:</strong>
-            <p className="text-gray-800 font-medium">
-              {classData?.typeOfClass?.join(", ") || "N/A"}
-            </p>
-          </div>
-
-          <div>
             <strong className="text-blue-700">Category:</strong>
             <p className="text-gray-800 font-medium">
-              {classData?.Category?.join(", ") || "N/A"}
+              {classData?.category?.join(", ") || "N/A"}
             </p>
           </div>
 
           <div>
-            <strong className="text-blue-700">Franchise/Independent:</strong>
+            <strong className="text-blue-700">Type:</strong>
             <p className="text-gray-800 font-medium">
               {classData?.franchiseOrIndependent || "N/A"}
-            </p>
-          </div>
-
-          <div>
-            <strong className="text-blue-700">Mobile No:</strong>
-            <p className="text-gray-800 font-medium">
-              {classData?.contactDetails || "N/A"}
-            </p>
-          </div>
-
-          <div>
-            <strong className="text-blue-700">Teaching Medium:</strong>
-            <p className="text-gray-800 font-medium">
-              {classData?.teachingMedium?.join(", ") || "N/A"}
             </p>
           </div>
 
@@ -104,12 +83,30 @@ const ClassInfoCard = ({ classData, onClose }) => {
 
           {/* Address */}
           <div className="sm:col-span-2">
-            <strong className="text-blue-700">📬 Address:</strong>
-            <p className="text-gray-800 font-medium">
-              {classData?.address
-                ? `${classData.address.line1}, ${classData.address.line2}, ${classData.address.dist}, ${classData.address.state} - ${classData.address.pincode}`
-                : "N/A"}
-            </p>
+            <strong className="text-blue-700">📬 Addresses:</strong>
+            {Array.isArray(classData?.address) &&
+            classData.address.length > 0 ? (
+              classData.address.map((addr, index) => (
+                <div key={index} className="mb-2 text-gray-800 font-medium">
+                  <p>
+                    {addr.line1}, {addr.line2}, {addr.taluka}, {addr.dist},{" "}
+                    {addr.state} - {addr.pincode}
+                  </p>
+                  <p>
+                    <strong>Landmark:</strong> {addr.nearbyLandmarks || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Authorized:</strong> {addr.autorizedName || "N/A"} (
+                    {addr.autorizedPhono || "N/A"})
+                  </p>
+                  {index < classData.address.length - 1 && (
+                    <hr className="my-2 border-blue-300" />
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-800 font-medium">N/A</p>
+            )}
           </div>
         </div>
       </div>

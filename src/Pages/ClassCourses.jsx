@@ -18,7 +18,9 @@ const ClassCourses = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/class/course/${classId}`);
+        const response = await axios.get(
+          `${API_BASE_URL}/api/class/course/${classId}`
+        );
         setCourses(response.data.courses || []);
       } catch (err) {
         setError("Failed to fetch courses.");
@@ -38,8 +40,8 @@ const ClassCourses = () => {
         duration: "",
         feeStructure: { amount: "", type: "Monthly" },
         scholarshipOrDiscounts: "",
-        studyMaterialProvided: "No"
-      }
+        studyMaterialProvided: "No",
+      },
     ]);
     setIsUpdated(true);
   };
@@ -58,7 +60,9 @@ const ClassCourses = () => {
       if (checked) {
         updatedCourses[index].courseType.push(value);
       } else {
-        updatedCourses[index].courseType = updatedCourses[index].courseType.filter(type => type !== value);
+        updatedCourses[index].courseType = updatedCourses[
+          index
+        ].courseType.filter((type) => type !== value);
       }
     } else if (field.includes("feeStructure")) {
       updatedCourses[index].feeStructure[field.split(".")[1]] = value;
@@ -73,34 +77,64 @@ const ClassCourses = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/class/course/`, { classId, courses });
+      const response = await axios.post(`${API_BASE_URL}/api/class/course/`, {
+        classId,
+        courses,
+      });
       if (response.data.success) {
-        alert("Courses saved successfully!");
+        // alert("Courses saved successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Courses saved successfully!",
+          confirmButtonColor: "#28a745",
+        });
+
         setIsUpdated(false);
       } else {
-        setError(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "Failed to save courses.");
+        setError(
+          error.response?.data?.usrMsg ||
+            error.response?.data?.message ||
+            error.response?.data.errMessage ||
+            "Failed to save courses."
+        );
       }
     } catch (error) {
-      setError(error.response?.data?.usrMsg ||error.response?.data?.message ||  error.response?.data.errMessage || "Error saving courses.");
+      setError(error.response?.data?.usrMsg ||
+        error.response?.data?.message ||
+        error.response?.data?.errMsg ||
+        "Failed to save courses.");
+
+      Swal.fire({
+        icon: "warning",
+        title: "Save Failed",
+        text: error.response?.data?.errMsg || error.response?.data?.usrMsg || "Failed to save courses",
+        confirmButtonColor: "#d33",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-<section className="p-8 bg-white rounded-2xl shadow-xl max-w-5xl mx-auto relative border border-gray-200">
+    <section className="p-8 bg-white rounded-2xl shadow-xl max-w-5xl mx-auto relative border border-gray-200">
       <button
         onClick={() => navigate("/classes")}
-        className="absolute top-4 right-4 text-red-600 text-3xl font-bold"
+        className="absolute top-4 right-4 text-red-600 text-3xl font-bold cursor-pointer"
       >
         &times;
       </button>
-      <h3 className="text-3xl font-bold text-center text-blue-700 mb-6">📚 Manage Class Courses</h3>
+      <h3 className="text-3xl font-bold text-center text-blue-700 mb-6">
+        📚 Manage Class Courses
+      </h3>
       {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
       <div className="space-y-6">
         {courses.map((course, index) => (
-          <motion.div key={index} className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-300">
+          <motion.div
+            key={index}
+            className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-300"
+          >
             <label className="block text-lg font-medium">Course Name</label>
             <input
               type="text"
@@ -164,7 +198,9 @@ const ClassCourses = () => {
               <option value="One-time">One-time</option>
             </select>
 
-            <label className="block text-lg font-medium">Scholarship/Discount</label>
+            <label className="block text-lg font-medium">
+              Scholarship/Discount
+            </label>
             <input
               type="text"
               name="scholarshipOrDiscounts"
@@ -174,7 +210,9 @@ const ClassCourses = () => {
               className="border p-3 w-full rounded-md mb-4"
             />
 
-            <label className="block text-lg font-medium">Study Material Provided</label>
+            <label className="block text-lg font-medium">
+              Study Material Provided
+            </label>
             <select
               name="studyMaterialProvided"
               value={course.studyMaterialProvided}
@@ -187,7 +225,7 @@ const ClassCourses = () => {
 
             <button
               onClick={() => removeCourse(index)}
-              className="text-red-600 font-semibold hover:text-red-800"
+              className="text-red-600 font-semibold hover:text-red-800 cursor-pointer"
             >
               Remove Course
             </button>
@@ -196,12 +234,17 @@ const ClassCourses = () => {
       </div>
 
       <div className="flex justify-center gap-4 mt-6">
-        <button onClick={addCourse} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+        <button
+          onClick={addCourse}
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
+        >
           + Add Course
         </button>
         <button
           onClick={saveCourses}
-          className={`px-6 py-2 rounded-lg text-white ${isUpdated ? "bg-green-500 hover:bg-green-600" : "bg-gray-400"}`}
+          className={`px-6 py-2 rounded-lg text-white cursor-pointer ${
+            isUpdated ? "bg-green-500 hover:bg-green-600" : "bg-gray-400"
+          }`}
           disabled={!isUpdated}
         >
           Save Courses

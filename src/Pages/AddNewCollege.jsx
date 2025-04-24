@@ -108,11 +108,11 @@ const AddNewCollege = () => {
       console.error("API Error:", error.response?.data || error.message); // ✅ Debug errors
       toast.error(
         `Please Try Again ${
-          error.response?.data?.message || error.message || error.response?.data.errMessage
+          error.response?.data?.message || error.message || error.response?.data.errMsg
         }`
       );
       alert(
-        `Submission Failed: ${error.response?.data?.message ||  error.response?.data.errMessage || error.message}`
+        `Submission Failed: ${error.response?.data?.message ||  error.response?.data.errMsg || error.message}`
       );
     },
   });
@@ -377,7 +377,7 @@ const AddNewCollege = () => {
         console.error("API Error:", error.response?.data || error.message);
         alert(
           `❌ Submission Failed: ${
-            error.response?.data?.message ||  error.response?.data.errMessage || "Something went wrong"
+            error.response?.data?.message ||  error.response?.data.errMsg || "Something went wrong"
           }`
         );
 

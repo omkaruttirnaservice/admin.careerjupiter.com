@@ -14,6 +14,17 @@ import {
 } from "@heroicons/react/solid"; // ✅ HeroIcons
 import { BookAIcon } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
+import { clearAuthCookies } from "../Utlis/cookieHelper";
+import { motion } from "framer-motion";
+
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return { text: "Good Morning", emoji: "🌞", color: "#facc15" }; // yellow
+  if (hour < 16) return { text: "Good Afternoon", emoji: "☀️", color: "#fb923c" }; // orange
+  return { text: "Good Evening", emoji: "🌙", color: "#60a5fa" }; // blue
+};
+
 
 const navigation = [
   {
@@ -38,6 +49,8 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [activeLink, setActiveLink] = useState(location.pathname);
   const [classDetails, setClassDetails] = useState(null);
   const [classId, setClassId] = useState(null); // ✅ State for classId
+  const greeting = getGreeting();
+  
 
   // ✅ Update activeLink when URL changes
   useEffect(() => {
@@ -45,15 +58,17 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    window.location.href = "/"; // ✅ Redirect to login
+    clearAuthCookies();
+
+   navigate("/"); // ✅ Redirect to login
   };
 
   useEffect(() => {
     const storedClassId = getCookie("classId"); // ✅ Use getCookie function
-    // console.log("Fetched ClassId ", storedClassId)
+
     if (storedClassId) {
       setClassId(storedClassId);
-      console.log("Class ID retrieved from cookies:", storedClassId);
+      console.log("Class ID retrieved from cookies-------:", storedClassId);
     } else {
       console.warn("Class ID not found in cookies!");
     }
@@ -71,13 +86,15 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
         console.log("Class details fetched:", response.data);
 
         const classData = response.data?.data?.class; // ✅ Ensure correct path
+        console.log("---------- class data",classData);
+        
         setClassDetails({
           ...classData,
         });
       } catch (error) {
         console.error(
           "Error fetching class details:",
-          error?.response?.data || error.message ||  error.response?.data.errMessage 
+          error.response?.data.errMsg  || error?.response?.data || error.message 
         );
       }
     };
@@ -92,28 +109,58 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       } md:translate-x-0`}
     >
       <div className="flex flex-col pt-5 pb-4 overflow-y-auto h-full">
-        {/* ✅ Mobile Menu Close Button */}
+         {/* ✅ Mobile Menu Close Button */}
         <button
-          className="absolute top-4 right-4 text-white md:hidden"
+          className="absolute top-4 right-4 text-white md:hidden cursor-pointer"
           onClick={() => setIsMenuOpen(false)}
         >
           {/* <MenuIcon className="w-8 h-8" /> */}
         </button>
 
-        {/* ✅ Profile Section */}
-        <div className="flex flex-col items-center text-white mb-6">
-          <FaUserCircle className="h-16 w-16 text-white" />
-          <h2 className="mt-2 text-lg font-semibold">
-            {classDetails?.ownerOrInstituteName || "Vendor"}
-          </h2>
-          <p className="text-sm text-gray-300">
-            {classDetails?.className || "Class Vendor"}
-          </p>
-        </div>
+      {/* ✅ Profile Section */}
+<div className="flex flex-col items-center text-white mb-6">
+<FaUserCircle className="h-16 w-16 text-white" />
 
-        {/* ✅ Navigation Links */}
+<motion.div
+  initial={{ opacity: 0, y: -10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ type: "spring", stiffness: 100 }}
+  className="mt-2 text-lg font-semibold flex items-center space-x-2"
+>
+  {/* Greeting Text */}
+  <motion.span
+    className="block"
+    style={{ color: greeting.color }}
+    animate={{ scale: [1, 1.05, 1], rotate: [0, 3, -3, 0] }}
+    transition={{ repeat: Infinity, duration: 2 }}
+  >
+    {greeting.text}
+  </motion.span>
+
+  {/* Emoji */}
+  <motion.span
+    className="text-2xl inline-block"
+    animate={{ y: [0, -8, 0], rotate: [0, 10, -10, 0] }}
+    transition={{ repeat: Infinity, duration: 2 }}
+  >
+    {greeting.emoji}
+  </motion.span>
+</motion.div>
+
+<motion.p
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.5 }}
+  className="text-sm text-blue-200 mt-1"
+>
+  Ready to make your class shine!
+</motion.p>
+</div>
+
+
+       {/* ✅ Navigation Links */}
         <nav className="mt-2 flex-1 px-4 space-y-2">
-          {navigation.map((item) => {
+           {navigation.map((item) => {
             const isActive = activeLink === item.href;
 
             return (
@@ -123,7 +170,7 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
                   navigate(item.href);
                   setIsMenuOpen(false);
                 }}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300
+                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer
                 ${
                   isActive
                     ? "bg-blue-500 text-white shadow-md transform scale-105"
@@ -141,9 +188,9 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
           })}
         </nav>
 
-        {/* ✅ Logout Button */}
+       {/* ✅ Logout Button */}
         <button
-          className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+          className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
           onClick={handleLogout} // Implement logout logic
         >
           <LogoutIcon className="h-6 w-6 mr-3" />
@@ -156,94 +203,5 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
 export default ClassVendorSideMenu;
 
-// import { useState } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import { MdMenu, MdDashboard, MdClass, MdLogout } from "react-icons/md"; // ✅ Modern Icons
 
-// const navigation = [
-//   { name: "Dashboard", href: "/vendor-class/class-dashboard", icon: MdDashboard, color: "text-blue-400" },
-//   { name: "Manage Class", href: "/vendor-class/edit-vendor-class", icon: MdClass, color: "text-green-400" },
-// ];
 
-// const ClassVendorSideMenu = () => {
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const [isOpen, setIsOpen] = useState(false); // ✅ Controls sidebar open/close
-
-//   const handleLogout = () => {
-//     window.location.href = "/"; // ✅ Redirect to login
-//   };
-
-//   return (
-//     <>
-//       {/* ✅ Mobile Menu Button
-//       <button
-//         className="fixed top-4 left-4 z-50 bg-blue-600 text-white rounded-full shadow-lg md:hidden"
-//         onClick={() => setIsOpen(!isOpen)}
-//       >
-//         <MdMenu size={24} />
-//       </button> */}
-
-//       {/* ✅ Sidebar */}
-//       <div className={`fixed top-0 left-0 h-screen w-64 bg-gradient-to-b from-blue-600 to-blue-800 shadow-lg transition-transform duration-300 z-40 ${isOpen ? "translate-x-0" : "-translate-x-64"} md:translate-x-0`}>
-//         <div className="flex flex-col pt-5 pb-4 h-full">
-//           {/* ✅ Close Button (Mobile Only) */}
-//           <button
-//             className="text-white self-end mr-4 md:hidden cursor-pointer"
-//             onClick={() => setIsOpen(false)}
-//           >
-//             ✖
-//           </button>
-
-//           {/* ✅ Profile Section */}
-//           <div className="flex flex-col items-center text-white mb-6">
-//             <MdClass className="h-16 w-16 text-white" />
-//             <h2 className="mt-2 text-lg font-semibold">Vendor Name</h2>
-//             <p className="text-sm text-gray-300">Class Vendor</p>
-//           </div>
-
-//           {/* ✅ Navigation Links */}
-//           <nav className="mt-2 flex-1 px-4 space-y-2">
-//             {navigation.map((item) => {
-//               const isActive = location.pathname.startsWith(item.href);
-//               return (
-//                 <button
-//                   key={item.name}
-//                   onClick={() => {
-//                     navigate(item.href);
-//                     setIsOpen(false); // ✅ Close menu after selecting
-//                   }}
-//                   className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer ${
-//                     isActive ? "bg-blue-500 text-white shadow-md transform scale-105" : "text-gray-300 hover:bg-blue-600 hover:text-white"
-//                   }`}
-//                 >
-//                   <item.icon className={`mr-3 h-6 w-6 ${isActive ? "text-white" : item.color}`} />
-//                   {item.name}
-//                 </button>
-//               );
-//             })}
-//           </nav>
-
-//           {/* ✅ Logout Button */}
-//           <button
-//             className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
-//             onClick={handleLogout}
-//           >
-//             <MdLogout className="h-6 w-6 mr-3" />
-//             Logout
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* ✅ Overlay (Mobile) */}
-//       {isOpen && (
-//         <div
-//           className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-//           onClick={() => setIsOpen(false)}
-//         ></div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default ClassVendorSideMenu;

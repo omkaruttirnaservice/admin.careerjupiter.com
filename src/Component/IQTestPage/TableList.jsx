@@ -1,70 +1,128 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
 import AddTest from "./AddTest";
 import { API_BASE_URL } from "../../Constant/constantBaseUrl";
-
-
+import Swal from "sweetalert2";
 
 const TableList = () => {
-  const { category } = useParams();
+  const { mainCategoryId, category } = useParams();
   const navigate = useNavigate();
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
-  const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+  // useEffect(() => {
+  //   if (mainCategoryId) {
+  //     fetchTests(mainCategoryId);
+  //   }
+  // }, [mainCategoryId]);
 
   useEffect(() => {
-    if (formattedCategory) {
-      fetchTests(formattedCategory);
+    console.log("mainCategoryId:", mainCategoryId);
+    console.log("category:******************", category);
+    if (mainCategoryId) {
+      fetchTests(mainCategoryId);
     }
-  }, [formattedCategory]);
-  console.log("Category", formattedCategory)
+  }, [mainCategoryId, category]);
 
-  const fetchTests = async (selectedCategory) => {
+  const fetchTests = async (mainCategoryId) => {
     setLoading(true);
     setError(null);
-
-    // Get Token from Cookies
     const token = Cookies.get("token");
-    console.log("Token", token);
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/iqtest?type=${selectedCategory}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Set Auth Header
-        },
-      });
 
-      console.log("API Response:",response.data);
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/iqtest/test-list-for-admin`,
+        { type: mainCategoryId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("token: //////", token);
+      console.log("API Response:", response.data);
+      console.log("Sent Category to API:", mainCategoryId);
 
       if (response.data && Array.isArray(response.data.data)) {
-                setTests(response.data.data);
-              } else {
-                setTests([]);
-              }
-        // setError("Failed to fetch tests");
-      // }
+        setTests(response.data.data);
+        console.log(selectedCategory, "**************");
+        console.log("*******", response.data.data, "*****");
+      } else {
+        setTests([]);
+      }
     } catch (err) {
       setError("Error fetching data. Please try again.");
+      Swal.fire({
+        icon: "Warning",
+        title: "Oops...",
+        text:
+          err.response?.data?.errMsg ||
+          "Failed to fetch data. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const handleAddTest = () => {
+    setSelectedCategory(category);
+    setSelectedId(mainCategoryId);
+    setShowModal(true);
+  };
+
+  const handleTestAdded = () => {
+    fetchTests(mainCategoryId); 
+    setShowModal(false); 
+  };
+  
+
+  const handleDelete = async (testId) => {
+    const result = await Swal.fire({
+      title: "Are you sure ?",
+      text: "Do you want to delete this test ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const token = Cookies.get("token");
+        await axios.delete(`${API_BASE_URL}/api/iqtest/delete-test/${testId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        Swal.fire("Deleted!", "Test has been deleted.", "success");
+        fetchTests(mainCategoryId);
+      } catch (error) {
+        Swal.fire(
+          "Warning!",
+          error.response?.data?.errMsg || "Failed to delete test.",
+          "warning"
+        );
+        console.error("Failed to delete test" || error.response?.data?.errMsg);
+      }
+    }
+  };
+
   return (
-    <div className="max-w-full mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-full h-full mx-auto p-6 bg-white shadow-md rounded-lg">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">
-          {formattedCategory} IQ Tests 🧠
-        </h2>
+        <h2 className="text-3xl font-bold text-gray-800">IQ Tests 🧠</h2>
         <button
           className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-all cursor-pointer"
-          onClick={() => setShowModal(true)}
+          onClick={handleAddTest}
         >
           + Add Test
         </button>
@@ -75,7 +133,7 @@ const TableList = () => {
       {error && <p className="text-red-500 font-semibold">{error}</p>}
 
       {/* Scrollable Table */}
-      <div className="overflow-y-auto max-h-120 rounded-lg shadow-lg">
+      <div className="overflow-y-auto max-h-155 rounded-lg shadow-lg">
         <table className="w-full border-collapse">
           <thead className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-700 text-white z-20">
             <tr>
@@ -103,7 +161,16 @@ const TableList = () => {
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition-all cursor-pointer"
                     onClick={() => navigate(`/view-excel/${test._id}`)}
                   >
-                    📂 View 
+                    📂 View
+                  </button>
+
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition-all cursor-pointer ml-2"
+                    onClick={() => {
+                      handleDelete(test._id);
+                    }}
+                  >
+                    🗑️ Delete
                   </button>
                 </td>
               </tr>
@@ -113,7 +180,14 @@ const TableList = () => {
       </div>
 
       {/* Popup Modal */}
-      {showModal && <AddTest onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <AddTest
+          onClose={() => setShowModal(false)}
+          onTestAdded={handleTestAdded} 
+          mainCategoryId={selectedId}
+          category={selectedCategory}
+        />
+      )}
     </div>
   );
 };

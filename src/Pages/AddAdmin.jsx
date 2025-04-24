@@ -10,37 +10,56 @@ const AddAdmin = () => {
 
   const handleSaveAdmin = async () => {
     if (!mobileNo || mobileNo.length !== 10) {
-      Swal.fire("Invalid Number!", "Enter a valid 10-digit mobile number.", "warning");
+      Swal.fire(
+        "Invalid Number!",
+        "Enter a valid 10-digit mobile number.",
+        "warning"
+      );
       return;
     }
 
     if (!password || password.length < 4) {
-      Swal.fire("Invalid Password!", "Password should be at least 4 characters.", "warning");
+      Swal.fire(
+        "Invalid Password!",
+        "Password should be at least 4 characters.",
+        "warning"
+      );
       return;
     }
 
     try {
       setLoading(true);
-      const response = await axios.post(`${API_BASE_URL}/api/auth/admin/`, {
+      const response = await axios.post(`${API_BASE_URL}/api/admin/add`, {
         mobile_no: mobileNo,
         password: password,
       });
 
       if (response.data.success) {
-        Swal.fire("Success!", response.data.errMessage || "Admin added successfully.", "success");
-        setMobileNo("");
-        setPassword("");
+        Swal.fire(
+          "Success!",
+          response.data.errMsg || "Admin added successfully.",
+          "success"
+        ).then(() => {
+          setMobileNo("");
+          setPassword("");
+        });
       } else {
-        Swal.fire("Error!", response.data.errMessage || "Failed to add admin.", "error");
+        Swal.fire(
+          response.data.errMsg || "Failed to add admin.",
+          "warning"
+        );
       }
     } catch (error) {
-      console.error("Error adding admin:", error.response?.data || error.message);
+      console.error(
+        "Failed to add admin:",
+        error.response?.data || error.message
+      );
       Swal.fire(
-        "Error!",
-        error.response?.data?.errMessage ||
+        "Warning!",
+        error.response?.data?.errMsg ||
           error.response?.data?.message ||
-          "Something went wrong.",
-        "error"
+          "Please Try Again.",
+        "warning"
       );
     } finally {
       setLoading(false);
@@ -50,8 +69,10 @@ const AddAdmin = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-br from-[#2cacdf] to-[#1d43a1]">
       <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-96 border border-white/50">
-        <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">Add Admin</h2>
-        
+        <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
+          Add Admin
+        </h2>
+
         <input
           type="text"
           className="w-full p-4 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fb7df] text-lg placeholder-gray-500 bg-white"
@@ -71,7 +92,7 @@ const AddAdmin = () => {
         <button
           onClick={handleSaveAdmin}
           disabled={loading}
-          className="w-full bg-[#2a9cbe] hover:bg-[#3c5566] text-white font-semibold py-3 rounded-lg mt-4 text-lg transition duration-300 ease-in-out shadow-md"
+          className="w-full bg-[#2a9cbe] hover:bg-[#3c5566] text-white font-semibold py-3 rounded-lg mt-4 text-lg transition duration-300 ease-in-out shadow-md cursor-pointer"
         >
           {loading ? "Saving..." : "Save Admin"}
         </button>

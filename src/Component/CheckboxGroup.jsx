@@ -5,14 +5,15 @@ const CheckboxGroup = ({ label, name, options, formik }) => {
   const handleChange = (event) => {
     const { value, checked } = event.target;
     let updatedValues = [...formik.values[name]];
+    console.log(formik.values[name])
 
     if (checked) {
       updatedValues.push(value);
     } else {
       updatedValues = updatedValues.filter((item) => item !== value);
     }
-
-    formik.setFieldValue(name, updatedValues);
+    //console.log(name,updatedValues)
+  formik.setFieldValue(name, updatedValues);
   };
 
   return (
