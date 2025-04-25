@@ -38,6 +38,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
     randomQuestions: false,
     excelFile: null,
     userType: "0",
+    sub_category: "",
   };
 
   const validationSchema = Yup.object({
@@ -49,6 +50,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
     totalQuestions: Yup.number()
       .required("Total Questions are required")
       .min(1, "Must be at least 1"),
+      // sub_category: Yup.string().required("Subcategory is required"),
   });
 
   const handleAddSubCategory = async () => {
@@ -383,6 +385,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
                   <FiPlus />
                 </button>
               </div>
+              <ErrorMessage name="sub_category" component="div" className="text-red-500 text-sm" />
 
               {showSubInput && (
                 <div className="flex gap-2 mt-2">
