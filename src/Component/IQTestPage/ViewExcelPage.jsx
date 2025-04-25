@@ -27,6 +27,7 @@ const ViewExcelPage = () => {
 
       if (response.data.success && response.data.data) {
         setTest(response.data.data);
+        console.log("Titleeeeeeeeeeeeeeee", response.data.data);
       } else {
         setError("No test found.");
         Swal.fire({

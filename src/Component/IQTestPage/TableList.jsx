@@ -152,7 +152,7 @@ const TableList = () => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="p-3">{test.title}</td>
+                <td className="p-3" style={{ whiteSpace: "nowrap", maxWidth: "300px", overflow: "hidden", textOverflow: "ellipsis" }}>{test.title}</td>
                 <td className="p-3">{test.testDuration.minutes || "N/A"}</td>
                 {/* <td className="p-3">{test.passingMarks || "--"}</td> */}
                 <td className="p-3">{test.totalMarks || "N/A"}</td>
