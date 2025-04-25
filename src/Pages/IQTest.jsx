@@ -158,7 +158,7 @@ const handleDelete = async (id) => {
                 e.stopPropagation(); // Prevent card click
                 handleDelete(cat._id);
               }}
-              className="absolute top-2 right-2 flex items-center gap-1 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 px-3 py-1 rounded-md text-sm font-medium transition-all duration-200"
+              className="absolute cursor-pointer top-2 right-2 flex items-center gap-1 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 px-3 py-1 rounded-md text-sm font-medium transition-all duration-200"
             >
               <Trash2 size={14} />
             </button>

@@ -57,7 +57,7 @@ const navigation = [
       {
         name: "Add New University",
         href: "/university",
-        icon: Landmark,
+        icon: OfficeBuildingIcon,
         color: "text-green-400",
       },
     ],
