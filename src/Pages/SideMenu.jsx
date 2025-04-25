@@ -23,7 +23,7 @@ const navigation = [
     href: "/dashboard",
     icon: HomeIcon,
     color: "text-blue-400",
-  },
+  }, 
   {
     name: "College",
     icon: LibraryIcon,
