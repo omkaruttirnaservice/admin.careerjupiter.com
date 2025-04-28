@@ -1,10 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
-  LibraryIcon,
-  OfficeBuildingIcon,
-  PlusCircleIcon,
-  AcademicCapIcon,
   BookOpenIcon,
   ClipboardListIcon,
   PresentationChartBarIcon,
@@ -16,7 +12,14 @@ import {
 } from "@heroicons/react/solid";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Puzzle, Landmark, GraduationCap } from "lucide-react";
+import {
+  Puzzle,
+  Landmark,
+  GraduationCap,
+  FilePlus,
+  LibraryBig,
+  Building2,
+} from "lucide-react";
 
 // Sidebar items
 const navigation = [
@@ -27,16 +30,42 @@ const navigation = [
     color: "text-blue-400",
   },
   {
-    name: "Manage Colleges",
-    href: "/colleges",
-    icon: LibraryIcon,
+    name: "College",
+    icon: GraduationCap,
     color: "text-green-400",
+    children: [
+      {
+        name: "Manage Colleges",
+        href: "/colleges",
+        icon: Building2,
+        color: "text-blue-400",
+      },
+      {
+        name: "Add New College",
+        href: "/add-college",
+        icon: FilePlus,
+        color: "text-green-400",
+      },
+    ],
   },
   {
-    name: "Manage University",
-    href: "/university-details",
-    icon: OfficeBuildingIcon,
+    name: "University",
+    icon: LibraryBig,
     color: "text-purple-400",
+    children: [
+      {
+        name: "Manage University",
+        href: "/university-details",
+        icon: Building2,
+        color: "text-blue-400",
+      },
+      {
+        name: "Add New University",
+        href: "/university",
+        icon: FilePlus,
+        color: "text-green-400",
+      },
+    ],
   },
   {
     name: "Manage Classes",
@@ -45,26 +74,13 @@ const navigation = [
     color: "text-blue-500",
   },
   {
-    name: "Add New College",
-    href: "/add-college",
-    icon: PlusCircleIcon,
-    color: "text-yellow-400",
-  },
-  {
-    name: "Add New University",
-    href: "/university",
-    icon: AcademicCapIcon,
-    color: "text-red-400",
-  },
-  // navigation section
-  {
     name: "Add Categories",
     icon: ClipboardListIcon,
     color: "text-orange-400",
     children: [
       {
         name: "Add Class Category",
-        href: "/add-category",
+        href: "/add-class-category",
         icon: Puzzle,
         color: "text-blue-400",
       },
@@ -82,7 +98,6 @@ const navigation = [
       },
     ],
   },
-
   {
     name: "IQ Test",
     href: "/iq-test",
@@ -113,8 +128,14 @@ const SideMenu = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(location.pathname);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownStates, setDropdownStates] = useState({});
 
+  const toggleDropdown = (itemName) => {
+    setDropdownStates((prev) => ({
+      ...prev,
+      [itemName]: !prev[itemName],
+    }));
+  };
 
   return (
     <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10 ">
@@ -135,17 +156,19 @@ const SideMenu = () => {
 
             // DROPDOWN ITEM
             if (item.children) {
+              const isDropdownOpen = dropdownStates[item.name] || false;
+
               return (
                 <div key={item.name}>
                   <button
-                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    onClick={() => toggleDropdown(item.name)}
                     className="w-full flex items-center justify-between px-3 py-3 text-sm font-medium text-white transition cursor-pointer"
                   >
                     <span className="flex items-center">
                       <item.icon className={`mr-3 h-5 w-5 ${item.color}`} />
                       {item.name}
                     </span>
-                    {dropdownOpen ? (
+                    {isDropdownOpen ? (
                       <ChevronUpIcon className="w-5 h-5 text-white" />
                     ) : (
                       <ChevronDownIcon className="w-5 h-5 text-white" />
@@ -153,7 +176,7 @@ const SideMenu = () => {
                   </button>
 
                   <AnimatePresence>
-                    {dropdownOpen && (
+                    {isDropdownOpen && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -192,7 +215,7 @@ const SideMenu = () => {
               );
             }
 
-            // NORMAL ITEM
+            // Normal Items
             return (
               <button
                 key={item.name}
@@ -216,7 +239,6 @@ const SideMenu = () => {
             );
           })}
         </nav>
-
       </div>
     </div>
   );

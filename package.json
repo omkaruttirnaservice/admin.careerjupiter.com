@@ -17,6 +17,7 @@
     "axios": "^1.8.4",
     "chart.js": "^4.4.8",
     "cookie": "^1.0.2",
+    "emoji-mart": "^5.6.0",
     "emoji-picker-react": "^4.12.2",
     "flowbite": "^3.1.2",
     "formik": "^2.4.6",

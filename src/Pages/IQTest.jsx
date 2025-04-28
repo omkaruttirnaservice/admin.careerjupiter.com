@@ -5,7 +5,8 @@ import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { useNavigate } from "react-router-dom";
 import { Categories } from "emoji-picker-react";
 import Swal from "sweetalert2";
-import { Trash2 } from "lucide-react";
+// import { Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react"; // Optionally switch icon here
 
 const IQTest = () => {
   const [showModal, setShowModal] = useState(false);
@@ -124,7 +125,7 @@ const handleDelete = async (id) => {
 };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800">
           📚 Select a Category
@@ -138,33 +139,45 @@ const handleDelete = async (id) => {
       </div>
 
       {/* Categories Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
       {Array.isArray(categories) && categories.map((cat, index) => (
           <div
             key={index}
-            className="relative bg-white p-6 rounded-xl shadow hover:shadow-xl cursor-pointer border-l-4 border-blue-500 transition-all"
+            className="relative group bg-white p-6 rounded-2xl border border-gray-200 shadow-md hover:shadow-xl hover:border-blue-400 transform hover:-translate-y-1 transition-all duration-300 ease-in-out cursor-pointer"
             onClick={() => navigate(`/tests/${cat.main_category}/${cat._id}`)}
           >
-            <h2 className="text-xl font-semibold text-gray-800 truncate">
+
+          <div className="absolute -top-6 left-6 w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-md border border-blue-200 bg-gradient-to-tr from-blue-100 to-white group-hover:scale-110 transition-transform duration-300">
+          {"🎯"}
+        </div>
+            <h2 className="text-xl font-bold text-gray-800 mt-6 truncate group-hover:text-blue-600 transition-colors duration-300">
               {cat.main_category}
             </h2>
-            <p className="text-sm text-gray-600 mt-2 truncate max-w-xs">
+            <p className="text-sm text-gray-600 mt-2 line-clamp-2 group-hover:text-gray-800 transition-colors duration-300 truncate max-w-xs">
               {cat.description}
             </p>
+            <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-blue-300 group-hover:shadow-[0_0_12px_rgba(59,130,246,0.3)] transition-all duration-300 pointer-events-none"></div>
+
 
             {/* Delete Button */}
-            <button
+             <button
               onClick={(e) => {
                 e.stopPropagation(); // Prevent card click
                 handleDelete(cat._id);
               }}
-              className="absolute top-2 right-2 flex items-center gap-1 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 px-3 py-1 rounded-md text-sm font-medium transition-all duration-200"
+              className="absolute top-3 right-3 bg-white/70 backdrop-blur-md text-red-500 hover:text-white hover:bg-red-500 p-2 rounded-full shadow-md hover:shadow-lg transition-all duration-300 z-10 cursor-pointer"
             >
-              <Trash2 size={14} />
+               <Trash2 size={16} className="transition-transform duration-200 group-hover:rotate-360" />
             </button>
           </div>
         ))}
-      </div>
+      </div> 
+
+
+
+
+
+
 
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
@@ -204,7 +217,11 @@ const handleDelete = async (id) => {
               <div className="flex justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {setShowModal(false);
+                    setMainCategory("");    // clear category input
+                    setDescription("");     // clear description input
+                    setCategoryError("");
+                  }}
                   className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md cursor-pointer"
                 >
                   Cancel
