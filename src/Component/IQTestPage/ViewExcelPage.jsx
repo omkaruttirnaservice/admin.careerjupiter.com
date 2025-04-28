@@ -60,13 +60,15 @@ const ViewExcelPage = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-col h-screen">
       {/* Main content - takes full remaining space */}
-      <div className="flex-1 p-6 overflow-auto bg-gradient-to-r from-blue-100 to-purple-100 shadow-xl rounded-lg">
-        <h3 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
-          📄 {test?.title || "Test Details"}
+      <div className="bg-gray-800  py-4 px-8 shadow-lg z-20 mb-6">
+        <h3 className="text-4xl font-bold text-center text-white tracking-wide leading-tight transition-transform transform hover:scale-110 font-poppins">
+          📋 {test?.title || "Test Details"}
         </h3>
+      </div>
 
+      <div className="flex-1 overflow-auto p-6 bg-gradient-to-r from-blue-100 to-purple-100 shadow-xl rounded-lg">
         {loading && <p className="text-blue-500 text-center">Loading...</p>}
         {error && <p className="text-red-500 text-center">{error}</p>}
 

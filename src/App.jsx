@@ -40,7 +40,8 @@ import FacultyManagement from "./Pages/FacultyManagement.jsx";
 import ClassCourses from "./Pages/ClassCourses.jsx";
 import ProtectedRoute from "./Component/ProtectedRoute"; // Import the ProtectedRoute
 import AddAdmin from "./Pages/AddAdmin.jsx";
-import ManagageCategory from "./Component/ManageCategory.jsx";
+import ManageClassCategory from "./Component/ManageClassCategory.jsx";
+import ManageCollegeCategory from "./Component/ManageCollegeCategory.jsx";
 
 const queryClient = new QueryClient();
 
@@ -68,7 +69,8 @@ function App() {
                 <Route path="/add-college" element={<MultiStepForm />} />
                 <Route path="/class-list" element={<ClassTableDetails />} />
                 <Route path="/iq-test" element={<IQTest />} />
-                <Route path="/add-category" element={<ManagageCategory/>}/>
+                <Route path="/add-class-category" element={<ManageClassCategory/>}/>
+                <Route path="add-college-category" element={<ManageCollegeCategory/>} />
                 <Route path="/tests/:category/:mainCategoryId" element={<TableList />} />
                 <Route path="/view-excel/:testId" element={<ViewExcelPage />} />
                 <Route path="/add-test/:mainCategoryId" element={<AddTest />} />

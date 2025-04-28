@@ -15,6 +15,8 @@ import {
   FaBuilding,
   FaLayerGroup
 } from "react-icons/fa";
+import { HiAcademicCap } from "react-icons/hi"; // More educational & attractive
+
 
 import { getCookie } from "../Utlis/cookieHelper"; // ✅ Import getCookie function
 import ClassVendorSideMenu from "./ClassVendorSideMenu";
@@ -75,7 +77,7 @@ const ClassVendorDashboard = () => {
   <div className="flex-1 p-1 md:p-1 lg:p-4">
     
     {/* ✅ Profile Header */}
-    <div className="bg-white/90 backdrop-blur-md shadow-2xl p-1 rounded-2xl flex flex-col sm:flex-row items-center gap-6 mb-8 lg:p-6">
+    {/* <div className="bg-white/90 backdrop-blur-md shadow-2xl p-1 rounded-2xl flex flex-col sm:flex-row items-center gap-6 mb-8 lg:p-6">
       <div className="w-24 h-24 flex items-center justify-center rounded-full bg-indigo-600 shadow-lg">
         <FaUserCircle className="text-white text-6xl" />
       </div>
@@ -83,7 +85,34 @@ const ClassVendorDashboard = () => {
         <h2 className="text-3xl font-bold text-gray-900">Welcome, {classDetails?.ownerOrInstituteName || "Vendor"} 👋</h2>
         <p className="text-indigo-600 text-lg font-semibold">{classDetails?.className || "Your Class Name"}</p>
       </div>
+    </div> */}
+
+<div className="relative bg-gradient-to-br from-white/80 to-indigo-100/90 backdrop-blur-lg shadow-2xl p-6 rounded-3xl flex flex-col sm:flex-row items-center gap-6 mb-8 transition-all duration-500 hover:shadow-indigo-300/40 overflow-hidden">
+  {/* Avatar with gradient ring */}
+  <div className="relative w-24 h-24 flex items-center justify-center rounded-full bg-white shadow-xl group">
+    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[3px] animate-pulse" />
+    <div className="relative z-10 w-full h-full flex items-center justify-center rounded-full bg-indigo-600">
+      <HiAcademicCap className="text-white text-5xl" />
     </div>
+  </div>
+
+  {/* Text Section */}
+  <div className="text-center sm:text-left">
+    <h2 className="text-3xl font-extrabold text-gray-800 mb-1">
+      Welcome,{" "}
+      <span className="text-indigo-600">
+        {classDetails?.ownerOrInstituteName || "Vendor"}
+      </span>{" "}
+      👋
+    </h2>
+    <p className="text-lg text-gray-700 font-semibold">
+      {classDetails?.className || "Your Class Name"}
+    </p>
+    
+  </div>
+</div>
+
+
 
     {/* ✅ Class Info */}
     <div className="bg-white/80 shadow-xl p-2 rounded-2xl backdrop-blur-md lg:p-8">

@@ -14,7 +14,14 @@ import {
 } from "@heroicons/react/solid";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Puzzle, Landmark, GraduationCap } from "lucide-react";
+import {
+  Puzzle,
+  Landmark,
+  GraduationCap,
+  FilePlus,
+  LibraryBig,
+  Building2,
+} from "lucide-react";
 
 // Sidebar items
 const navigation = [
@@ -26,38 +33,44 @@ const navigation = [
   },
   {
     name: "College",
-    icon: LibraryIcon,
+    icon: GraduationCap,
     color: "text-green-400",
     children: [
       {
         name: "Manage Colleges",
         href: "/colleges",
-        icon: Puzzle,
+        icon: Building2,
+
         color: "text-blue-400",
       },
       {
         name: "Add New College",
         href: "/add-college",
-        icon: Landmark,
+        icon: FilePlus,
+
         color: "text-green-400",
       },
     ],
   },
   {
     name: "University",
-    icon: OfficeBuildingIcon,
+
+    icon: LibraryBig,
+
     color: "text-purple-400",
     children: [
       {
         name: "Manage University",
         href: "/university-details",
-        icon: Puzzle,
+
+        icon: Building2,
         color: "text-blue-400",
       },
       {
         name: "Add New University",
         href: "/university",
-        icon: Landmark,
+
+        icon: FilePlus,
         color: "text-green-400",
       },
     ],
@@ -75,7 +88,7 @@ const navigation = [
     children: [
       {
         name: "Add Class Category",
-        href: "/add-category",
+        href: "/add-class-category",
         icon: Puzzle,
         color: "text-blue-400",
       },
@@ -208,6 +221,8 @@ const SideMenu = () => {
                 </div>
               );
             }
+
+            // Normal Items
 
             return (
               <button

@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { API_BASE_URL } from "../../Constant/constantBaseUrl"; // Make sure this is correct
+import { API_BASE_URL } from "../../Constant/constantBaseUrl";
 import Cookies from "js-cookie";
 import {
   FiPlus,
@@ -21,8 +21,8 @@ const AddTest = ({ onClose, onTestAdded }) => {
   const { mainCategoryId, category } = useParams();
   const [fileName, setFileName] = useState("");
   const [selectedQuestions, setSelectedQuestions] = useState([]);
-  const [categories, setCategories] = useState([]); // State to store fetched categories
-  const [loading, setLoading] = useState(false); // Loading state for category fetch
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
     subCategory: "",
     type: "",
@@ -47,6 +47,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
     excelFile: null,
     userType: "0",
     sub_category: "",
+    reportType: "0",
   };
 
   const validateInput = (value) => {
@@ -57,14 +58,12 @@ const AddTest = ({ onClose, onTestAdded }) => {
 
   const validationSchema = Yup.object({
     testName: Yup.string().required("Test Name is required"),
-    // category: Yup.string().required("Category is required"),
     duration: Yup.number().required("Duration is required"),
     passingMarks: Yup.number().required("Passing Marks are required"),
     totalMarks: Yup.number().required("Total Marks are required"),
     totalQuestions: Yup.number()
       .required("Total Questions are required")
       .min(1, "Must be at least 1"),
-    // sub_category: Yup.string().required("Subcategory is required"),
   });
 
   const handleAddSubCategory = async () => {
@@ -99,11 +98,9 @@ const AddTest = ({ onClose, onTestAdded }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       setSubCategories(updated);
       setNewSubCategory("");
       setShowSubInput(false);
-      // alert("Subcategory added!");
       Swal.fire({
         icon: "success",
         title: "Success",
@@ -334,7 +331,6 @@ const AddTest = ({ onClose, onTestAdded }) => {
     }
 
     const finalQuestions = selectedQuestions;
-    // const totalQ = Number(values.totalQuestions);
 
     if (finalQuestions.length === 0) {
       Swal.fire({
@@ -362,6 +358,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
       totalMarks: Number(values.totalMarks),
       passingMarks: Number(values.passingMarks),
       userType: Number(values.userType),
+      reportType: Number(values.reportType),
     };
 
     console.log("Sending requestData to API:", requestData);
@@ -390,12 +387,6 @@ const AddTest = ({ onClose, onTestAdded }) => {
       setSubmitting(false);
     }
   };
-
-  // useEffect(() => {
-  //   if (category) {
-  //     fetchCategories(category);
-  //   }
-  // }, [category]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 overflow-y-auto">
@@ -438,7 +429,6 @@ const AddTest = ({ onClose, onTestAdded }) => {
 
               {/* Category + Type Selection */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Subcategory Section */}
                 <div>
                   <label className="block font-medium text-gray-700 mb-1">
                     Subcategory
@@ -452,8 +442,6 @@ const AddTest = ({ onClose, onTestAdded }) => {
                         );
                         setSelectedSubCategory(selected);
                         setSubItems(selected?.sub || []);
-
-                        // Clear subcategory error if selection is valid
                         setError((prev) => ({
                           ...prev,
                           subCategory: e.target.value
@@ -479,36 +467,10 @@ const AddTest = ({ onClose, onTestAdded }) => {
                     </button>
                   </div>
                   {error.subCategory && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {error.subCategory}
-                      </div>
-                    )}
-                  
-
-                  {/* {showSubInput && (
-                    <div className="flex gap-2 mt-2">
-                      <input
-                        type="text"
-                        placeholder="New Subcategory"
-                        value={newSubCategory}
-                        onChange={(e) => {
-                          setNewSubCategory(e.target.value);
-                          setError((prev) => ({ ...prev, newSubCategory: "" }));
-                        }}
-                        className="border p-2 rounded-md w-full"
-                      />
-                      <button
-                        onClick={handleAddSubCategory}
-                        type="button"
-                        className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 cursor-pointer"
-                      >
-                        ✅
-                      </button>
-                      {error.newSubCategory && (
-  <p className="text-red-500 text-sm">{error.newSubCategory}</p>
-)}
+                    <div className="text-red-500 text-sm mt-1">
+                      {error.subCategory}
                     </div>
-                  )} */}
+                  )}
 
                   {showSubInput && (
                     <div className="flex gap-2 mt-2">
@@ -543,11 +505,11 @@ const AddTest = ({ onClose, onTestAdded }) => {
                       </button>
                     </div>
                   )}
-                   {error.newSubCategory && (
-                        <p className="text-red-500 text-sm">
-                          {error.newSubCategory}
-                        </p>
-                      )}
+                  {error.newSubCategory && (
+                    <p className="text-red-500 text-sm">
+                      {error.newSubCategory}
+                    </p>
+                  )}
                 </div>
 
                 {/* Type Section */}
@@ -557,25 +519,11 @@ const AddTest = ({ onClose, onTestAdded }) => {
                       Type
                     </label>
                     <div className="flex gap-2 items-center">
-                      {/* <select
-                    className="w-full border p-2 rounded-md"
-                    value={selectedSubType}
-                    onChange={(e) => setSelectedSubType(e.target.value)}
-                    
-                  >
-                    <option value="">Select Type</option>
-                    {subItems.map((item, index) => (
-                      <option key={index} value={item}>{item}</option>
-                    ))}
-                  </select> */}
-
                       <select
                         className="w-full border p-2 rounded-md"
                         value={selectedSubType}
                         onChange={(e) => {
                           setSelectedSubType(e.target.value);
-
-                          // Clear type error if valid
                           setError((prev) => ({
                             ...prev,
                             type: e.target.value ? "" : "Please select a type",
@@ -599,35 +547,10 @@ const AddTest = ({ onClose, onTestAdded }) => {
                       </button>
                     </div>
                     {error.type && (
-                        <div className="text-red-500 text-sm mt-1">
-                          {error.type}
-                        </div>
-                      )}
-
-                    {/* {showTypeInput && (
-                      <div className="flex gap-2 mt-2">
-                        <input
-                          type="text"
-                          placeholder="New Type"
-                          value={newType}
-                          onChange={(e) => {
-                            setNewType(e.target.value);
-                            setError((prev) => ({ ...prev, newType: "" }));
-                          }}
-                          className="border p-2 rounded-md w-full"
-                        />
-                        <button
-                          onClick={handleAddSubType}
-                          type="button"
-                          className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 cursor-pointer"
-                        >
-                          ✅
-                        </button>
-                        {error.newType && (
-  <p className="text-red-500 text-sm">{error.newType}</p>
-)}
+                      <div className="text-red-500 text-sm mt-1">
+                        {error.type}
                       </div>
-                    )} */}
+                    )}
 
                     {showTypeInput && (
                       <div className="flex gap-2 mt-2">
@@ -660,10 +583,8 @@ const AddTest = ({ onClose, onTestAdded }) => {
                       </div>
                     )}
                     {error.newType && (
-                          <p className="text-red-500 text-sm">
-                            {error.newType}
-                          </p>
-                        )}
+                      <p className="text-red-500 text-sm">{error.newType}</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -707,11 +628,6 @@ const AddTest = ({ onClose, onTestAdded }) => {
               </div>
 
               {/* Checkbox + Radio */}
-              {/* <div className="flex items-center gap-3">
-            <Field type="checkbox" name="randomQuestions" className="w-4 h-4" />
-            <label className="text-gray-700">Use Random Questions</label>
-          </div> */}
-
               <div>
                 <label className="block font-medium text-gray-700">
                   User Type:
@@ -734,6 +650,32 @@ const AddTest = ({ onClose, onTestAdded }) => {
                       className="w-4 h-4"
                     />
                     With Login
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-medium text-gray-700">
+                  Report Type:
+                </label>
+                <div className="flex gap-6 mt-1">
+                  <label className="flex items-center gap-2 text-gray-600">
+                    <Field
+                      type="radio"
+                      name="reportType"
+                      value="1"
+                      className="w-4 h-4"
+                    />
+                    Yes
+                  </label>
+                  <label className="flex items-center gap-2 text-gray-600">
+                    <Field
+                      type="radio"
+                      name="reportType"
+                      value="0"
+                      className="w-4 h-4"
+                    />
+                    No
                   </label>
                 </div>
               </div>
