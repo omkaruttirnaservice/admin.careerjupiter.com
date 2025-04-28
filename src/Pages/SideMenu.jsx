@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
+  LibraryIcon,
+  OfficeBuildingIcon,
   BookOpenIcon,
   ClipboardListIcon,
   PresentationChartBarIcon,
@@ -38,30 +40,36 @@ const navigation = [
         name: "Manage Colleges",
         href: "/colleges",
         icon: Building2,
+
         color: "text-blue-400",
       },
       {
         name: "Add New College",
         href: "/add-college",
         icon: FilePlus,
+
         color: "text-green-400",
       },
     ],
   },
   {
     name: "University",
+
     icon: LibraryBig,
+
     color: "text-purple-400",
     children: [
       {
         name: "Manage University",
         href: "/university-details",
+
         icon: Building2,
         color: "text-blue-400",
       },
       {
         name: "Add New University",
         href: "/university",
+
         icon: FilePlus,
         color: "text-green-400",
       },
@@ -138,7 +146,7 @@ const SideMenu = () => {
   };
 
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10 ">
+    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10">
       <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
         {/* Logo */}
         <div className="flex items-center justify-center mb-6">
@@ -154,7 +162,6 @@ const SideMenu = () => {
           {navigation.map((item) => {
             const isActive = activeLink === item.href;
 
-            // DROPDOWN ITEM
             if (item.children) {
               const isDropdownOpen = dropdownStates[item.name] || false;
 
@@ -199,7 +206,7 @@ const SideMenu = () => {
                                   : "text-gray-100 hover:bg-blue-700"
                               }`}
                             >
-                              <div className="flex flex-row gap-2 ">
+                              <div className="flex flex-row gap-2">
                                 <child.icon
                                   className={`h-5 w-5 ${child.color}`}
                                 />
@@ -216,6 +223,7 @@ const SideMenu = () => {
             }
 
             // Normal Items
+
             return (
               <button
                 key={item.name}
