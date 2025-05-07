@@ -28,8 +28,8 @@
 import Cookies from "js-cookie";
 
 // ✅ Function to store all cookies
-export const setAuthCookies = ({ token, role, subrole, userID, classID }) => {
-  console.log("🚀 Storing Cookies:", { token, role, subrole, userID, classID });
+export const setAuthCookies = ({ token, role, subrole, userID, classID,  collegeID }) => {
+  console.log("🚀 Storing Cookies:", { token, role, subrole, userID, classID,  collegeID });
 
   Cookies.set("token", token, { expires: 1 / 24 }); // 1 hour
   Cookies.set("role", role, { expires: 1 / 24 });
@@ -38,7 +38,10 @@ export const setAuthCookies = ({ token, role, subrole, userID, classID }) => {
   // Optional cookies only if they exist
   if (subrole) Cookies.set("subrole", subrole, { expires: 1 / 24 });
   if (classID) Cookies.set("classId", classID, { expires: 1 / 24 });
+  if (collegeID) Cookies.set("collegeID", collegeID, { expires: 1 / 24 }); // Store collegeId
   console.log("Classs Id from cookie helper", classID);
+
+  console.log("College Id ***",collegeID);
 };
 
 // ✅ Function to get a specific cookie
@@ -51,4 +54,5 @@ export const clearAuthCookies = () => {
   Cookies.remove("subrole");
   Cookies.remove("userID");
   Cookies.remove("classId");
+  Cookies.remove("collegeID");
 };

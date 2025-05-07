@@ -1020,3 +1020,64 @@
 // };
 
 // export default AddTest;
+
+
+ // const validationSchema = Yup.object({
+  //   infrastructure: Yup.array().of(
+  //     Yup.object().shape({
+  //       campusArea: Yup.string().required("Campus area is required"),
+  //       numberOfClassrooms: Yup.number()
+  //         .min(1, "Must have at least 1 classroom")
+  //         .required("Required"),
+  //       numberOfLabs: Yup.number()
+  //         .min(1, "Must have at least 1 lab")
+  //         .required("Required"),
+  //       sportsFacilities: Yup.array().min(1, "Select at least one sports facility"),
+  //       hostelAvailability: Yup.boolean().required("Select hostel availability"),
+  //       hostelDetails: Yup.string().when("hostelAvailability", {
+  //         is: true,
+  //         then: (schema) => schema.required("Provide hostel details"),
+  //         otherwise: (schema) => schema.notRequired(),
+  //       }),
+  //       canteenAndFoodServices: Yup.boolean().required("Select canteen availability"),
+  //       medicalFacilities: Yup.boolean().required("Select medical facilities"),
+  //       transportFacility: Yup.array().min(1, "Select at least one transport option"),
+  //       library: Yup.string().required("Library details are required"),
+  //     })
+  //   ),
+  // });
+
+  // const validationSchema = Yup.object({
+  //   // infrastructure: Yup.array().of(
+  //   //   Yup.object().shape({
+  //   //     campusArea: Yup.string().required("Campus area is required"),
+  //   //     numberOfClassrooms: Yup.number()
+  //   //       .min(1, "Must have at least 1 classroom")
+  //   //       .required("Required"),
+  //   //     numberOfLabs: Yup.number()
+  //   //       .min(1, "Must have at least 1 lab")
+  //   //       .required("Required"),
+  //   //     sportsFacilities: Yup.array()
+  //   //       .min(1, "Select at least one sports facility")
+  //   //       .required("Required"),
+  //   //     hostelAvailability: Yup.boolean().required(
+  //   //       "Select hostel availability"
+  //   //     ),
+  //   //     hostelDetails: Yup.string().when("hostelAvailability", {
+  //   //       is: true,
+  //   //       then: (schema) =>
+  //   //         schema.required(
+  //   //           "Hostel details are required when hostel is available"
+  //   //         ),
+  //   //     }),
+  //   //     canteenAndFoodServices: Yup.boolean().required(
+  //   //       "Select canteen availability"
+  //   //     ),
+  //   //     medicalFacilities: Yup.boolean().required("Select medical facilities"),
+  //   //     transportFacility: Yup.array()
+  //   //       .min(1, "Select at least one transport option")
+  //   //       .required("Required"),
+  //   //     library: Yup.string().required("Library details are required"),
+  //   //   })
+  //   // ),
+  // });

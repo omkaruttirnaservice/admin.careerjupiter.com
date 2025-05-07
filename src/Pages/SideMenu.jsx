@@ -20,6 +20,8 @@ import {
   LibraryBig,
   Building2,
 } from "lucide-react";
+import { clearAuthCookies } from "../Utlis/cookieHelper"; // adjust path as needed
+import Swal from "sweetalert2";
 
 // Sidebar items
 const navigation = [
@@ -40,12 +42,12 @@ const navigation = [
         icon: Building2,
         color: "text-blue-400",
       },
-      {
-        name: "Add New College",
-        href: "/add-college",
-        icon: FilePlus,
-        color: "text-green-400",
-      },
+      // {
+      //   name: "Add New College",
+      //   href: "/add-college",
+      //   icon: FilePlus,
+      //   color: "text-green-400",
+      // },
     ],
   },
   {
@@ -116,12 +118,12 @@ const navigation = [
     icon: UserCircleIcon,
     color: "text-pink-400",
   },
-  {
-    name: "Logout",
-    href: "/",
-    icon: LogoutIcon,
-    color: "text-red-800",
-  },
+  // {
+  //   name: "Logout",
+  //   href: "/",
+  //   icon: LogoutIcon,
+  //   color: "text-red-800",
+  // },
 ];
 
 const SideMenu = () => {
@@ -136,6 +138,24 @@ const SideMenu = () => {
       [itemName]: !prev[itemName],
     }));
   };
+    const handleLogout = () => {
+      Swal.fire({
+        title: "👋 Ready to logout?",
+        text: "See you soon! Want to log out now?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",  // Blue
+        cancelButtonColor: "#d33",      // Red
+        confirmButtonText: "Yes, logout!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          clearAuthCookies();
+           window.location.href = "/"; // 🔁 Hard reload + redirect
+          // navigate("/");
+         
+        }
+      });
+    };
 
   return (
     <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10 ">
@@ -237,8 +257,56 @@ const SideMenu = () => {
                 {item.name}
               </button>
             );
+
+            // Normal Items
+          //   if (item.name === "Logout") {
+          //     return (
+          //       <button
+          //         key={item.name}
+          //         onClick={() => {
+          //           clearAuthCookies(); // 🔹 Clear cookies
+          //           setActiveLink(item.href); // Optional UI state
+          //           navigate(item.href); // 🔹 Redirect to home or login
+          //         }}
+          //         className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition duration-300 cursor-pointer text-gray-200 hover:bg-red-600 hover:text-white`}
+          //       >
+          //         <item.icon className={`mr-3 h-6 w-6 text-red-800`} />
+          //         {item.name}
+          //       </button>
+          //     );
+          //   } else {
+          //     return (
+          //       <button
+          //         key={item.name}
+          //         onClick={() => {
+          //           setActiveLink(item.href);
+          //           navigate(item.href);
+          //         }}
+          //         className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition duration-300 cursor-pointer ${
+          //           isActive
+          //             ? "bg-blue-500 text-white shadow-md transform scale-105"
+          //             : "text-gray-200 hover:bg-blue-600 hover:text-white"
+          //         }`}
+          //       >
+          //         <item.icon
+          //           className={`mr-3 h-6 w-6 ${
+          //             isActive ? "text-white" : item.color
+          //           }`}
+          //         />
+          //         {item.name}
+          //       </button>
+          //     );
+          //   }
           })}
         </nav>
+        {/* ✅ Logout Button */}
+        <button
+          className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
+          onClick={handleLogout} // Implement logout logic
+        >
+          <LogoutIcon className="h-6 w-6 mr-3" />
+          Logout
+        </button>
       </div>
     </div>
   );
