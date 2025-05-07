@@ -23,13 +23,13 @@ import ClassVendorSideMenu from "./ClassVendorSideMenu";
 
 const ClassVendorDashboard = () => {
   const [classDetails, setClassDetails] = useState(null);
-  const [classId, setClassId] = useState(null); // ✅ State for classId
+  const [classID, setClassId] = useState(null); // ✅ State for classID
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // ✅ Fetch classId on component mount
+  // ✅ Fetch classID on component mount
   useEffect(() => {
     const storedClassId = getCookie("classId"); // ✅ Use getCookie function
-    // console.log("Fetched ClassId ", storedClassId)
+    console.log("Fetched ClassId ", classID)
     if (storedClassId) {
       setClassId(storedClassId);
       console.log("Class ID retrieved from cookies:", storedClassId);
@@ -41,11 +41,11 @@ const ClassVendorDashboard = () => {
   useEffect(() => {
 
     const fetchClassDetails = async () => {
-      if (!classId) return;
+      if (!classID) return;
 
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/api/class/${classId}`
+          `${API_BASE_URL}/api/class/${classID}`
         );
         console.log("Class details fetched:", response.data);
 
@@ -69,7 +69,7 @@ const ClassVendorDashboard = () => {
     };
 
     fetchClassDetails();
-  }, [classId]);
+  }, [classID]);
 
   return (
 <div className="flex flex-col md:flex-row bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">

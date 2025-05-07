@@ -57,15 +57,55 @@ const updateUniversity = async (id, data) => {
 };
 
 // Create a new university
-const createUniversity = async (data) => {
+// const createUniversity = async (data) => {
+//   try {
+//     const response = await api.post("/api/university/create", data);
+//     return response.data;
+//   } catch (error) {
+//     console.error("❌ Create Error:", error.response?.data || error);
+//     throw error;
+//   }
+// };
+
+ const createUniversity = async (universityData) => {
   try {
-    const response = await api.post("/api/university/create/", data);
+    const headers = {};
+    if (universityData instanceof FormData) {
+      headers["Content-Type"] = "multipart/form-data";
+    } else {
+      headers["Content-Type"] = "application/json";
+    }
+
+    console.log("📢 Sending University Data:", universityData);
+
+    const response = await api.post("/api/university/create", universityData, { headers });
+
+    console.log("✅ University Created:", response.data);
+
     return response.data;
+
   } catch (error) {
-    console.error("❌ Create Error:", error.response?.data || error);
-    throw error;
+    console.error("University API Error:", error.response?.data || error.message);
+
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.usrMsg ||
+      error.response?.data?.errMsg ||
+      "An error occurred while creating the university.";
+
+    console.error("🔴 University Error Message:", errorMessage);
+
+    if (error.response?.data?.errors) {
+      console.error("🔴 Validation Errors:", error.response.data.errors);
+      alert("Validation Errors: " + error.response.data.errors.join(", "));
+    } else {
+      alert(errorMessage);
+    }
+
+    throw error.response?.data || new Error(errorMessage);
   }
 };
+
 
 // Export all functions properly
 export { getUniversityById, updateUniversity, createUniversity };

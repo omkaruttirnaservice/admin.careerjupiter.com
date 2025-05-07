@@ -132,49 +132,9 @@ const AdminDashboard = () => {
       }
     };
 
-    const fetchIqTestCounts = async () => {
-      try {
-        console.log("Fetching IQ Test Counts...");
-
-        const responses = await Promise.all(
-          categories.map(async (category) => {
-            try {
-              const res = await api.get(`/api/iqtest?type=${category}`); // Fetch data per category
-              console.log(`API Response for ${category}:`, res.data); // Debug log
-
-              // Check if the data contains an array and return the count
-              if (Array.isArray(res.data?.data)) {
-                return res.data.data.length;
-              } else {
-                console.warn(`Unexpected response for ${category}:`, res.data);
-                return 0; // Default to 0 if structure is incorrect
-              }
-            } catch (err) {
-              console.error(
-                `Error fetching ${category}:`,
-                err?.response?.data ||
-                  err.message ||
-                  err.response?.data.errMsg
-              );
-              return 0; // Default to 0 if request fails
-            }
-          })
-        );
-
-        console.log("Final IQ Test Counts:", responses); // Debugging log
-        setIqTestCounts(responses);
-      } catch (error) {
-        console.log(
-          "Error fetching IQ Test data:",
-          error?.response?.data ||
-            error.message ||
-            error.response?.data.errMsg
-        );
-      }
-    };
 
     fetchStats();
-    fetchIqTestCounts();
+ 
   }, []);
 
   // Donut Chart Data
