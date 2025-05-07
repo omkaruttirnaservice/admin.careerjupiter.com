@@ -50,7 +50,7 @@ const navigation = [
     children: [
       {
         name: "Manage University",
-        href: "/university-details",
+        href: "/universityList",
         icon: Puzzle,
         color: "text-blue-400",
       },

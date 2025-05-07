@@ -18,7 +18,9 @@ import ProfilePage from "./Pages/ProfilePage";
 import CollegeCourses from "./Courses/CollegeCourses";
 import EditCollegeDetails from "./Component/EditCollegeDetails";
 import AddUniversity from "./University/AddUniversity";
-import EditUniversity from "./University/EditUniversity";
+// import EditUniversity from "./University/EditUniversity";
+import UniversityList from "./University/UniversityLIst.jsx";
+
 import UniversityTableDetails from "./Pages/UniversityTableDetails";
 import UniversityPlacement from "./Component/UniversityPlacement";
 
@@ -41,6 +43,7 @@ import ClassCourses from "./Pages/ClassCourses.jsx";
 import ProtectedRoute from "./Component/ProtectedRoute"; // Import the ProtectedRoute
 import AddAdmin from "./Pages/AddAdmin.jsx";
 import ManagageCategory from "./Component/ManageCategory.jsx";
+// import UniversityList from "./University/UniversityLIst.jsx";
 
 const queryClient = new QueryClient();
 
@@ -79,7 +82,8 @@ function App() {
                 <Route path="/colleges/placement/:collegeId" element={<Placement />} />
                 <Route path="/edit-college/:id" element={<EditCollegeDetails />} />
                 <Route path="/university" element={<AddUniversity />} />
-                <Route path="/edit-university/:id" element={<EditUniversity />} />
+                {/* <Route path="/edituniversity/:id" element={<UniversityList/>} /> */}
+                <Route path="/universityList" element={<UniversityList/>} />
                 </Route>
 
            {/* Protected Routes for Vendor-Class */}
