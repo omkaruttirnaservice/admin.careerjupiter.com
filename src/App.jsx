@@ -43,6 +43,7 @@ import ClassCourses from "./Pages/ClassCourses.jsx";
 import ProtectedRoute from "./Component/ProtectedRoute"; // Import the ProtectedRoute
 import AddAdmin from "./Pages/AddAdmin.jsx";
 import ManagageCategory from "./Component/ManageCategory.jsx";
+import EditUniversity from "./University/EditUniversity.jsx";
 // import UniversityList from "./University/UniversityLIst.jsx";
 
 const queryClient = new QueryClient();
@@ -82,7 +83,7 @@ function App() {
                 <Route path="/colleges/placement/:collegeId" element={<Placement />} />
                 <Route path="/edit-college/:id" element={<EditCollegeDetails />} />
                 <Route path="/university" element={<AddUniversity />} />
-                {/* <Route path="/edituniversity/:id" element={<UniversityList/>} /> */}
+                <Route path="/edituniversity" element={<EditUniversity/>} />
                 <Route path="/universityList" element={<UniversityList/>} />
                 </Route>
 

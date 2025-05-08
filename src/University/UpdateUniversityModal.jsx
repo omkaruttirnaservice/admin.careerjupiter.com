@@ -3,7 +3,7 @@ import { useFormik } from "formik"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import { FaUniversity, FaTimes, FaSave } from "react-icons/fa"
-import { fetchUniversityById, updateUniversity, fetchUniversityCategories } from "./universityapi"
+import { fetchUniversityById, updateUniversity, fetchUniversityCategories } from "./Universityapi"
 
 // Constants
 const facilities = ["Library", "Hostel", "Sport Complex", "WiFi Campus"]

@@ -1,16 +1,15 @@
+
+
 // import { useState } from "react"
 // import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 // import { toast } from "react-toastify"
 // import { FaEye, FaPencilAlt, FaTrashAlt, FaGlobe, FaPlus } from "react-icons/fa"
-// // import { fetchAllUniversities, deleteUniversity } from "./Universityapi"
-// import { fetchAllUniversities, deleteUniversity } from "./universityapi"
+// import { fetchAllUniversities, deleteUniversity } from "./Universityapi"
 // import UpdateUniversityModal from "./UpdateUniversityModal"
 // import ViewUniversityModal from "./ViewUniversityModal"
 // import DeleteConfirmationModal from "./DeleteUniversitymodal"
-// import { data } from "react-router-dom"
 
 // const UniversityList = () => {
-//     // console.log(UniversityList , 'sdkflskdjflsdkf')
 //   const queryClient = useQueryClient()
 //   const [searchTerm, setSearchTerm] = useState("")
 //   const [currentPage, setCurrentPage] = useState(1)
@@ -24,14 +23,10 @@
 
 //   // Fetch universities
 //   const { data: universitiesData, isLoading, isError, error } = useQuery({
-    
 //     queryKey: ["universities"],
 //     queryFn: fetchAllUniversities,
 //     staleTime: 5 * 60 * 1000, // 5 minutes
-
 //   })
-//   console.log(universitiesData , 'fetallunivesities----------')
-
 
 //   // Delete university mutation
 //   const deleteMutation = useMutation({
@@ -70,16 +65,12 @@
 //     }
 //   }
 
-
-// const filteredUniversities = universitiesData?.filter(
-//   (university) =>
-//     university.universityName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//     university.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//     university.establishedYear?.toString().includes(searchTerm)
-// ) || [];
-// console.log(filteredUniversities , 'fiteredUniversities')
-
-  
+//   const filteredUniversities = universitiesData?.filter(
+//     (university) =>
+//       university.universityName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       university.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       university.establishedYear?.toString().includes(searchTerm)
+//   ) || [];
   
 //   // Pagination
 //   const indexOfLastUniversity = currentPage * rowsPerPage
@@ -141,8 +132,11 @@
 //             <tr className="bg-gray-100">
 //               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">University Name</th>
 //               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">Category</th>
+//               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">Sub Category</th>
 //               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">Website</th>
 //               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">Established Year</th>
+//               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">Email</th>
+//               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">Entrance Exams</th>
 //               <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">Accreditation</th>
 //               <th className="py-3 px-4 text-center font-semibold text-gray-700 border-b">Actions</th>
 //             </tr>
@@ -162,6 +156,24 @@
 //                       {university.category}
 //                     </span>
 //                   </td>
+//                   <td className="py-3 px-4 d">
+//                     {university.subCategory && university.subCategory.length > 0 ? (
+//                       <div className="flex flex-wrap gap-1">
+//                         {university.subCategory.slice(0, 2).map((item, index) => (
+//                           <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
+//                             {item}
+//                           </span>
+//                         ))}
+//                         {university.subCategory.length > 2 && (
+//                           <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs ">
+//                             +{university.subCategory.length - 2}
+//                           </span>
+//                         )}
+//                       </div>
+//                     ) : (
+//                       <span className="text-gray-400">None</span>
+//                     )}
+//                   </td>
 //                   <td className="py-3 px-4">
 //                     {university.websiteURL ? (
 //                       <a 
@@ -170,13 +182,43 @@
 //                         rel="noopener noreferrer"
 //                         className="bg-blue-500 text-white px-3 py-1 rounded-md inline-block hover:bg-blue-600 transition-colors"
 //                       >
-//                         Visit Website
+//                         Visit 
 //                       </a>
 //                     ) : (
 //                       <span className="text-gray-400">Not Available</span>
 //                     )}
 //                   </td>
 //                   <td className="py-3 px-4">{university.establishedYear || 'N/A'}</td>
+//                   <td className="py-3 px-4">
+//                     {university.email_id ? (
+//                       <a 
+//                         href={`mailto:${university.email_id}`}
+//                         className="text-blue-500 hover:underline"
+//                       >
+//                         {university.email_id}
+//                       </a>
+//                     ) : (
+//                       <span className="text-gray-400">Not Available</span>
+//                     )}
+//                   </td>
+//                   <td className="py-3 px-4">
+//                     {university.entrance_exam_required && university.entrance_exam_required.length > 0 ? (
+//                       <div className="flex flex-wrap gap-1">
+//                         {university.entrance_exam_required.slice(0, 2).map((exam, index) => (
+//                           <span key={index} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
+//                             {exam}
+//                           </span>
+//                         ))}
+//                         {university.entrance_exam_required.length > 2 && (
+//                           <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
+//                             +{university.entrance_exam_required.length - 2}
+//                           </span>
+//                         )}
+//                       </div>
+//                     ) : (
+//                       <span className="text-gray-400">None</span>
+//                     )}
+//                   </td>
 //                   <td className="py-3 px-4">
 //                     {university.accreditation && university.accreditation.length > 0 ? (
 //                       <div className="flex flex-wrap gap-1">
@@ -224,7 +266,7 @@
 //               ))
 //             ) : (
 //               <tr>
-//                 <td colSpan="6" className="py-4 px-4 text-center text-gray-500">
+//                 <td colSpan="9" className="py-4 px-4 text-center text-gray-500">
 //                   No universities found
 //                 </td>
 //               </tr>
@@ -325,12 +367,14 @@
 
 // export default UniversityList
 
+"use client"
+
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "react-toastify"
+import { Link } from "react-router-dom"
 import { FaEye, FaPencilAlt, FaTrashAlt, FaGlobe, FaPlus } from "react-icons/fa"
-import { fetchAllUniversities, deleteUniversity } from "./universityapi"
-import UpdateUniversityModal from "./UpdateUniversityModal"
+import { fetchAllUniversities, deleteUniversity } from "./Universityapi"
 import ViewUniversityModal from "./ViewUniversityModal"
 import DeleteConfirmationModal from "./DeleteUniversitymodal"
 
@@ -339,15 +383,19 @@ const UniversityList = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  
+
   // Modal states
   const [viewModalOpen, setViewModalOpen] = useState(false)
-  const [updateModalOpen, setUpdateModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [selectedUniversity, setSelectedUniversity] = useState(null)
 
   // Fetch universities
-  const { data: universitiesData, isLoading, isError, error } = useQuery({
+  const {
+    data: universitiesData = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["universities"],
     queryFn: fetchAllUniversities,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -362,7 +410,7 @@ const UniversityList = () => {
       setDeleteModalOpen(false)
     },
     onError: (error) => {
-      toast.error(`Error deleting university: ${error.message}`)
+      toast.error(`Error deleting university: ${error.message || "Failed to delete university"}`)
     },
   })
 
@@ -370,12 +418,6 @@ const UniversityList = () => {
   const handleViewUniversity = (university) => {
     setSelectedUniversity(university)
     setViewModalOpen(true)
-  }
-
-  // Handle update university
-  const handleUpdateUniversity = (university) => {
-    setSelectedUniversity(university)
-    setUpdateModalOpen(true)
   }
 
   // Handle delete university
@@ -390,13 +432,14 @@ const UniversityList = () => {
     }
   }
 
-  const filteredUniversities = universitiesData?.filter(
-    (university) =>
-      university.universityName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      university.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      university.establishedYear?.toString().includes(searchTerm)
-  ) || [];
-  
+  const filteredUniversities =
+    universitiesData?.filter(
+      (university) =>
+        university.universityName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        university.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        university.establishedYear?.toString().includes(searchTerm),
+    ) || []
+
   // Pagination
   const indexOfLastUniversity = currentPage * rowsPerPage
   const indexOfFirstUniversity = indexOfLastUniversity - rowsPerPage
@@ -442,12 +485,12 @@ const UniversityList = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button 
+          <Link
+            to="/add-university"
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-            onClick={() => window.location.href = "/add-university"}
           >
             <FaPlus /> Add New
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -472,12 +515,17 @@ const UniversityList = () => {
                 <tr key={university._id} className="hover:bg-gray-50 border-b">
                   <td className="py-3 px-4">{university.universityName}</td>
                   <td className="py-3 px-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      university.category === 'Government' ? 'bg-green-100 text-green-800' : 
-                      university.category === 'Private' ? 'bg-purple-100 text-purple-800' : 
-                      university.category === 'Autonomous' ? 'bg-yellow-100 text-yellow-800' : 
-                      'bg-blue-100 text-blue-800'
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm ${
+                        university.category === "Government"
+                          ? "bg-green-100 text-green-800"
+                          : university.category === "Private"
+                            ? "bg-purple-100 text-purple-800"
+                            : university.category === "Autonomous"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
                       {university.category}
                     </span>
                   </td>
@@ -501,25 +549,26 @@ const UniversityList = () => {
                   </td>
                   <td className="py-3 px-4">
                     {university.websiteURL ? (
-                      <a 
-                        href={university.websiteURL.startsWith('http') ? university.websiteURL : `https://${university.websiteURL}`} 
-                        target="_blank" 
+                      <a
+                        href={
+                          university.websiteURL.startsWith("http")
+                            ? university.websiteURL
+                            : `https://${university.websiteURL}`
+                        }
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="bg-blue-500 text-white px-3 py-1 rounded-md inline-block hover:bg-blue-600 transition-colors"
                       >
-                        Visit 
+                        Visit
                       </a>
                     ) : (
                       <span className="text-gray-400">Not Available</span>
                     )}
                   </td>
-                  <td className="py-3 px-4">{university.establishedYear || 'N/A'}</td>
+                  <td className="py-3 px-4">{university.establishedYear || "N/A"}</td>
                   <td className="py-3 px-4">
                     {university.email_id ? (
-                      <a 
-                        href={`mailto:${university.email_id}`}
-                        className="text-blue-500 hover:underline"
-                      >
+                      <a href={`mailto:${university.email_id}`} className="text-blue-500 hover:underline">
                         {university.email_id}
                       </a>
                     ) : (
@@ -571,13 +620,13 @@ const UniversityList = () => {
                       >
                         <FaEye />
                       </button>
-                      <button
-                        onClick={() => handleUpdateUniversity(university)}
+                      <Link
+                        to={`/edituniversity/${university._id}`}
                         className="bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 transition-colors"
                         title="Edit"
                       >
                         <FaPencilAlt />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleDeleteClick(university)}
                         className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition-colors"
@@ -604,7 +653,8 @@ const UniversityList = () => {
       {filteredUniversities.length > 0 && (
         <div className="flex justify-between items-center mt-4">
           <div className="text-sm text-gray-600">
-            Showing {indexOfFirstUniversity + 1} to {Math.min(indexOfLastUniversity, filteredUniversities.length)} of {filteredUniversities.length} entries
+            Showing {indexOfFirstUniversity + 1} to {Math.min(indexOfLastUniversity, filteredUniversities.length)} of{" "}
+            {filteredUniversities.length} entries
           </div>
           <div className="flex items-center">
             <span className="mr-2 text-sm text-gray-600">Rows per page:</span>
@@ -635,9 +685,7 @@ const UniversityList = () => {
               >
                 &lt;
               </button>
-              <span className="px-3 py-1 border-t border-b bg-blue-500 text-white">
-                {currentPage}
-              </span>
+              <span className="px-3 py-1 border-t border-b bg-blue-500 text-white">{currentPage}</span>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
@@ -663,15 +711,6 @@ const UniversityList = () => {
           university={selectedUniversity}
           isOpen={viewModalOpen}
           onClose={() => setViewModalOpen(false)}
-        />
-      )}
-
-      {/* Update Modal */}
-      {updateModalOpen && (
-        <UpdateUniversityModal
-          universityId={selectedUniversity?._id}
-          isOpen={updateModalOpen}
-          onClose={() => setUpdateModalOpen(false)}
         />
       )}
 
