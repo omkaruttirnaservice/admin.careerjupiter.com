@@ -1067,12 +1067,12 @@ const Placement = () => {
 
   return (
     <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
-      <button
+      {/* <button
         onClick={() => navigate("/colleges")}
         className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold cursor-pointer"
       >
         &times;
-      </button>
+      </button> */}
 
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-3xl font-bold text-blue-800 flex items-center">📊 Placement Details</h3>
@@ -1158,7 +1158,7 @@ const Placement = () => {
                           form.setFieldValue(`placements.${index}.topRecruiters`, recruitersArray);
                         }}
                         className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
-                        placeholder="eg. Infosys, TCS, Bosch"
+                        placeholder="eg. Infosys"
                       />
                     )}
                   </Field>

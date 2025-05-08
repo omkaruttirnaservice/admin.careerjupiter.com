@@ -12,6 +12,8 @@ import SingleSelectDropdown from "../Component/SingleSelectDropdown";
 import MultiSelectField from "../Component/MultiSelectField";
 import AddressModal from "../Component/AddressModel";
 import FileUpload from "../Component/FileUpload";
+import { MdDone } from "react-icons/md";
+import { FaWindowClose } from "react-icons/fa";
 
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
@@ -61,6 +63,38 @@ const ManageCollege = () => {
 
   const [categoryData, setCategoryData] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+
+  const formFields = [
+    {
+      name: "line1",
+      label: "Address Line 1",
+      placeholder: "Enter address line 1",
+    },
+    {
+      name: "line2",
+      label: "Address Line 2",
+      placeholder: "Enter address line 2",
+    },
+    { name: "pincode", label: "Pincode", placeholder: "Enter pincode" },
+    { name: "state", label: "State", placeholder: "Enter state" },
+    { name: "dist", label: "District", placeholder: "Enter district" },
+    { name: "taluka", label: "Taluka", placeholder: "Enter taluka" },
+    {
+      name: "nearbyLandmarks",
+      label: "Nearby Landmarks",
+      placeholder: "Enter landmarks",
+    },
+    {
+      name: "autorizedName",
+      label: "Authorized Person Name",
+      placeholder: "Enter name",
+    },
+    {
+      name: "autorizedPhono",
+      label: "Authorized Person Phone",
+      placeholder: "Enter phone number",
+    },
+  ];
 
   console.log("📌 Retrieved College ID from Cookies:", collegeId);
 
@@ -188,11 +222,11 @@ const ManageCollege = () => {
       ],
       info: { description: "" },
       affiliatedUniversity: "",
-  entrance_exam_required: [],
-  accreditation: "",
-  imageGallery: [],
-  keywords: [],
-  email_id: "",
+      entrance_exam_required: [],
+      accreditation: "",
+      imageGallery: [],
+      keywords: [],
+      email_id: "",
     },
     validationSchema: Yup.object().shape({
       collegeName: Yup.string().required("College Name is required"),
@@ -233,15 +267,14 @@ const ManageCollege = () => {
         }
 
         if (values.category) {
-             formData.append("category", values.category);
-          }
+          formData.append("category", values.category);
+        }
 
-          if (Array.isArray(values.subCategory)) {
-            values.subCategory.forEach((item) =>
-              formData.append("subCategory[]", item)
-            );
-          }
-          
+        if (Array.isArray(values.subCategory)) {
+          values.subCategory.forEach((item) =>
+            formData.append("subCategory[]", item)
+          );
+        }
 
         if (Array.isArray(values.entrance_exam_required)) {
           values.entrance_exam_required.forEach((item) =>
@@ -359,14 +392,6 @@ const ManageCollege = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                 {/* 🔹 Basic Details */}
 
-                {/* <InputField
-                  label="College ID"
-                  name="collegeId"
-                  type="text"
-                  placeholder="Enter College ID"
-                  formik={formik}
-                /> */}
-
                 <InputField
                   label="College Name"
                   type="text"
@@ -445,7 +470,7 @@ const ManageCollege = () => {
                 />
                 <InputField
                   label="Website URL"
-                  type="url"
+                  type="text"
                   name="websiteURL"
                   formik={formik}
                 />
@@ -478,8 +503,6 @@ const ManageCollege = () => {
                   options={entranceExams}
                   formik={formik}
                 />
-
-             
               </div>
 
               {/* Address array */}
@@ -611,43 +634,61 @@ const ManageCollege = () => {
               </button>
 
               <div className="mt-6">
-                  <h3 className="text-lg font-bold text-gray-800">
+                <h3 className="text-lg font-bold text-gray-800">
                   College Banner Cover Image (JPG/JPEG/PNG)
-                  </h3>
+                </h3>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-4">
-                    {previewImage || formik.values.image ? (
-                      <img
-                        src={
-                          previewImage
-                            ? previewImage
-                            : typeof formik.values.image === "string"
-                            ? `${API_BASE_URL}${formik.values.image}`
-                            : ""
-                        }
-                        alt="College"
-                        className="relative w-full h-40 object-cover rounded-lg shadow-md overflow-hidden before:absolute before:top-0 before:left-[-100%] 
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-4">
+                  {previewImage || formik.values.image ? (
+                    <img
+                      src={
+                        previewImage
+                          ? previewImage
+                          : typeof formik.values.image === "string"
+                          ? `${API_BASE_URL}${formik.values.image}`
+                          : ""
+                      }
+                      alt="College"
+                      className="relative w-full h-40 object-cover rounded-lg shadow-md overflow-hidden before:absolute before:top-0 before:left-[-100%] 
           before:w-full before:h-full before:bg-white before:opacity-20 before:rotate-6 before:transition-all hover:before:left-full mb-2"
-                      />
-                    ) : (
-                      <p className="text-gray-500 italic">No image available</p>
-                    )}
-                  </div>
-
-                  <FileUpload
-                    label="College Banner Cover Image (JPG/JPEG/PNG)"
-                    name="image"
-                    formik={formik}
-                  />
+                    />
+                  ) : (
+                    <p className="text-gray-500 italic">No image available</p>
+                  )}
                 </div>
 
+                <FileUpload
+                  label="College Banner Cover Image (JPG/JPEG/PNG)"
+                  name="image"
+                  formik={formik}
+                />
+              </div>
+
               {/* ✅ Submit Button */}
-              <button
+              {/* <button
                 type="submit"
                 className="px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition bg-gradient-to-r from-blue-600 to-indigo-600  mt-6 hover:bg-gradient-to-r hover:from-blue-700 hover:to-indigo-700  duration-300"
               >
                 Update Details
-              </button>
+              </button> */}
+
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  onClick={formik.handleSubmit}
+                  disabled={
+                    !(formik.isValid && formik.dirty) || formik.isSubmitting
+                  }
+                  // className="bg-indigo-600 text-white px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:scale-105 transition cursor-pointer"
+                  className={`px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition ${
+                    formik.isValid && formik.dirty
+                      ? "bg-indigo-600 hover:bg-blue-700 cursor-pointer"
+                      : "bg-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  {formik.isSubmitting ? "Updating..." : "Update College"}
+                </button>
+              </div>
             </form>
           </div>
           <AddressModal
