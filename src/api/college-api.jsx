@@ -1,9 +1,10 @@
 
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import Swal from "sweetalert2";
 
 const api = axios.create({
-  baseURL: API_BASE_URL, // ✅ Ensures the correct API base URL
+  baseURL: API_BASE_URL, 
 });
 
 // Function to create a college
@@ -27,26 +28,33 @@ export const createCollege = async (collegeData) => {
     return response.data; // ✅ Return response data
 
   } catch (error) {
-    console.error("API Error:", error.response?.data || error.message);
+    console.error("API Error:", error.response?.data || error.response?.data?.usrMsg || 
+      error.response?.data.errMsg  );
 
     // Extract error message from backend response
     const errorMessage =
-      error.response?.data?.message || // First check usrMsg
-      error.response?.data?.usrMsg || // Then check message
+      error.response?.data?.message || 
+      error.response?.data?.usrMsg || 
       error.response?.data.errMsg ||
-      "An error occurred while creating the college."; // Fallback message
+      "Failed to create the college."; 
 
     console.error("🔴 Error Message:", errorMessage);
 
-
     if (error.response?.data?.errors) {
       console.error("🔴 Validation Errors:", error.response.data.errors);
-      alert("Validation Errors: " + error.response.data.errors.join(", "));
+      Swal.fire({
+        icon: "warning",
+        title: "Validation Errors",
+        text: error.response.data.errors.join(", "),
+      });
     }else {
-      alert(errorMessage); // Show the extracted error message
+      Swal.fire({
+        icon: "warning",
+        title: "Warning",
+        text: errorMessage,
+      });
     }
 
-    
     throw error.response?.data || new Error(errorMessage);
   }
 };
