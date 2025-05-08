@@ -49,6 +49,7 @@ import AddNewCollege from "./Pages/AddNewCollege";
 import ManageCollege from "./Pages/ManageCollege.jsx";
 import CollegeVendorDashboard from "./Pages/CollegeVendorDashboard.jsx";
 import VendorCollegeLayout from "./Pages/VendorCollegeLayout.jsx";
+import EditUniversity from "./University/EditUniversity.jsx";
 
 const queryClient = new QueryClient();
 
