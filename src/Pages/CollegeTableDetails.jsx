@@ -919,7 +919,7 @@ const CollegeTableDetails = () => {
     const formattedData = {
       collegeName: cleanData.collegeName || "",
       affiliatedUniversity: cleanData.affiliatedUniversity || "",
-      Category: cleanData.Category || "",
+      category: cleanData.category || "",
       collegeType: cleanData.collegeType || "",
       address: cleanData.address,
       contactDetails: cleanData.contactDetails || "",
@@ -1116,10 +1116,10 @@ const CollegeTableDetails = () => {
 
     // Handle Category which might be an array or string
     let categoryMatch = false
-    if (Array.isArray(row.Category)) {
-      categoryMatch = row.Category.some((cat) => cat?.toLowerCase().includes(searchTerm.toLowerCase()))
-    } else if (typeof row.Category === "string") {
-      categoryMatch = row.Category.toLowerCase().includes(searchTerm.toLowerCase())
+    if (Array.isArray(row.category)) {
+      categoryMatch = row.category.some((cat) => cat?.toLowerCase().includes(searchTerm.toLowerCase()))
+    } else if (typeof row.category === "string") {
+      categoryMatch = row.category.toLowerCase().includes(searchTerm.toLowerCase())
     }
 
     // Handle establishedYear which might be a number
@@ -1201,10 +1201,10 @@ const CollegeTableDetails = () => {
     },
     {
       name: "Category",
-      selector: (row) => row.Category,
+      selector: (row) => row.category,
       sortable: true,
       cell: (row) => {
-        const category = Array.isArray(row.Category) ? row.Category[0] : row.Category
+        const category = Array.isArray(row.category) ? row.category[0] : row.category
         const tagColor = categoryColorMapping[category] || "bg-gray-200 text-gray-800"
         return <span className={`px-3 py-1 rounded-full ${tagColor} text-sm font-medium`}>{category}</span>
       },

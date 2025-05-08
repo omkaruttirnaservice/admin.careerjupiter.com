@@ -177,7 +177,14 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-orange-500">
+    // <div className="relative flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-orange-500">
+    <div
+  className="relative flex justify-center items-center min-h-screen overflow-hidden"
+  style={{
+    backgroundImage: 'linear-gradient(to bottom right, #6B21A8, #F97316)',
+  }}
+>
+
       <div className="absolute inset-0 flex flex-wrap">
         {[FaBook, FaGraduationCap, FaLightbulb, FaBook, FaGraduationCap].map(
           (Icon, i) => (
