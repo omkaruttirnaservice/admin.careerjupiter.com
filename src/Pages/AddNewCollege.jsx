@@ -7,11 +7,7 @@ import "leaflet/dist/leaflet.css";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  FaUniversity,
-  FaImage,
-  FaCheckCircle,
-} from "react-icons/fa";
+import { FaUniversity, FaImage, FaCheckCircle } from "react-icons/fa";
 import MultiSelectDropdown from "../Component/MultiSelectDropdown";
 import MultiSelectField from "../Component/MultiSelectField";
 import InputField from "../Component/InputField";
@@ -63,7 +59,7 @@ const establishedYears = Array.from(
 const AddNewCollege = () => {
   const [keywordInput, setKeywordInput] = useState("");
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [editingAddressIndex, setEditingAddressIndex] = useState(null); 
+  const [editingAddressIndex, setEditingAddressIndex] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
   const [filteredBranches, setFilteredBranches] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -73,8 +69,8 @@ const AddNewCollege = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [lastContactDetails, setLastContactDetails] = useState("");
-  
-// used Mutation for api calling from createCollege component
+
+  // used Mutation for api calling from createCollege component
   const mutation = useMutation({
     mutationFn: createCollege,
     onSuccess: (data) => {
@@ -86,14 +82,14 @@ const AddNewCollege = () => {
         confirmButtonColor: "#3085d6",
         background: "#f9f9f9",
       }).then(() => {
-        // resetForm();       
-        window.location.href = "/"; 
+        // resetForm();
+        window.location.href = "/";
       });
 
       console.log("API Response:+++++++++", data);
 
-      // Set the _id from the API response to collegeId 
-      const collegeId = data?.data?.college?._id; 
+      // Set the _id from the API response to collegeId
+      const collegeId = data?.data?.college?._id;
       console.log(
         "API Response clg id ------------:",
         data?.data?.college?._id
@@ -101,7 +97,7 @@ const AddNewCollege = () => {
 
       // Store collegeId in cookies
       setAuthCookies({
-        collegeId: collegeId, 
+        collegeId: collegeId,
       });
 
       // the form gets reset and fields gets empty
@@ -110,20 +106,23 @@ const AddNewCollege = () => {
     },
     // If Submission Fail = shows error message
     onError: (error) => {
-      console.log("API Error:",error.response?.data?.usrMsg ||
-        error.response?.data?.message ||
-        error.response?.data.errMessage );
-
-      Swal.fire({
-        icon: "warning",
-        title: "Submission Failed",
-        text:
+      console.log(
+        "API Error:////////////",
         error.response?.data?.usrMsg ||
-        error.response?.data?.message ||
-        error.response?.data.errMessage ||
-          "Please Try Again",
-        confirmButtonColor: "#d33",
-      });
+          error.response?.data?.message ||
+          error.response?.data.errMessage
+      );
+
+      // Swal.fire({
+      //   icon: "warning",
+      //   title: "Submission Failed",
+      //   text:
+      //     error.response?.data?.usrMsg ||
+      //     error.response?.data?.message ||
+      //     error.response?.data.errMessage ||
+      //     "Please Try Again",
+      //   confirmButtonColor: "#d33",
+      // });
     },
   });
 
@@ -167,12 +166,12 @@ const AddNewCollege = () => {
       .test("fileSize", "Image size must be less than 100KB", (file) =>
         file ? file.size <= 102400 : true
       ),
-       password: Yup.string()
-              .min(4, "Password must be at least 4 characters")
-              .required("Password is required"),
-            confirmPassword: Yup.string()
-              .oneOf([Yup.ref("password"), null], "Passwords must match")
-              .required("Confirm Password is required"),
+    password: Yup.string()
+      .min(4, "Password must be at least 4 characters")
+      .required("Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords must match")
+      .required("Confirm Password is required"),
     logo: Yup.mixed()
       .required("Logo is required")
       .test("fileType", "Only JPG, JPEG, or PNG files are allowed", (file) =>
@@ -183,14 +182,19 @@ const AddNewCollege = () => {
       .test("fileSize", "Logo size must be less than 100KB", (file) =>
         file ? file.size <= 102400 : true
       ),
-      gallery_image: Yup.array()
+    gallery_image: Yup.array()
       .required("Image gallery is required")
       .min(1, "At least one image is required")
-    //   // .max(2, "You can upload up to 2 images only") // Optional max limit
+      //   // .max(2, "You can upload up to 2 images only") // Optional max limit
       .of(
         Yup.mixed()
-          .test("fileType", "Only JPG, JPEG, or PNG files are allowed", (file) =>
-            file ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type) : true
+          .test(
+            "fileType",
+            "Only JPG, JPEG, or PNG files are allowed",
+            (file) =>
+              file
+                ? ["image/jpeg", "image/jpg", "image/png"].includes(file.type)
+                : true
           )
           .test("fileSize", "Each image must be less than 100KB", (file) =>
             file ? file.size <= 102400 : true
@@ -245,7 +249,7 @@ const AddNewCollege = () => {
           return false;
         }
 
-        // Append data to backend 
+        // Append data to backend
         formData.append("collegeId", values.collegeId);
         formData.append("collegeName", values.collegeName);
         formData.append("affiliatedUniversity", values.affiliatedUniversity);
@@ -256,7 +260,12 @@ const AddNewCollege = () => {
         formData.append("info[description]", values.info.description);
         formData.append("websiteURL", values.websiteURL);
         formData.append("establishedYear", values.establishedYear);
-        formData.append("accreditation", accreditationOptions.includes(values.accreditation) ? values.accreditation : "");
+        formData.append(
+          "accreditation",
+          accreditationOptions.includes(values.accreditation)
+            ? values.accreditation
+            : ""
+        );
         formData.append("admissionProcess", values.admissionProcess);
 
         values.subCategory.forEach((item) => {
@@ -271,7 +280,7 @@ const AddNewCollege = () => {
           }
         });
 
-          // Value of Entrance Exams 
+        // Value of Entrance Exams
         values.entrance_exam_required.forEach(
           (entrance_exam_required, index) => {
             if (entrance_exam_required.trim()) {
@@ -331,16 +340,19 @@ const AddNewCollege = () => {
         // Use the mutation to send the data
         mutation.mutate(formData);
       } catch (error) {
-        console.error("API Error:",  error.response?.data?.usrMsg ||
-          error.response?.data?.message ||
-          error.response?.data.errMessage );
+        console.error(
+          "API Error:******",
+          error.response?.data?.usrMsg ||
+            error.response?.data?.message ||
+            error.response?.data.errMessage
+        );
         Swal.fire({
           icon: "warning",
           title: "Submission Failed",
           text:
-          error.response?.data?.usrMsg ||
-          error.response?.data?.message ||
-          error.response?.data.errMessage ||
+            error.response?.data?.usrMsg ||
+            error.response?.data?.message ||
+            error.response?.data.errMessage ||
             "Please Try Again",
           confirmButtonColor: "#d33",
         });
@@ -360,7 +372,7 @@ const AddNewCollege = () => {
     },
   });
 
-// Handle Gallery Image
+  // Handle Gallery Image
   const handleGalleryImageChange = (event) => {
     const files = Array.from(event.target.files);
     formik.setFieldValue("gallery_image", files);
@@ -368,13 +380,13 @@ const AddNewCollege = () => {
 
   // Handle Address Modal
   const handleAddAddress = () => {
-    setEditingAddressIndex(null); 
+    setEditingAddressIndex(null);
     setShowAddressModal(true);
   };
 
   const isVerified = formik.values.isVerified;
 
-  // Handled Send Otp for 
+  // Ensures a new OTP is sent for updated contact info
   useEffect(() => {
     if (formik.values.contactDetails !== lastContactDetails) {
       setOtpSent(false);
@@ -384,7 +396,7 @@ const AddNewCollege = () => {
     }
   }, [formik.values.contactDetails, lastContactDetails]);
 
-  // SEND OTP FUNCTION
+  // SEND OTP Function
   const sendOtp = async () => {
     if (
       !formik.values.contactDetails ||
@@ -401,6 +413,7 @@ const AddNewCollege = () => {
     try {
       setLoading(true);
       const response = await axios.post(`${API_BASE_URL}/api/auth/otp1`, {
+        // Api call for send otp
         contactDetails: formik.values.contactDetails,
         role: "VENDOR",
       });
@@ -417,7 +430,10 @@ const AddNewCollege = () => {
       } else {
         Swal.fire(
           "Failed!",
-          response.data.usrMsg || "Could not send OTP.",
+          response.data.usrMsg ||
+            error.response?.data?.message ||
+            error.response?.data.errMessage ||
+            "Could not send OTP.",
           "warning"
         );
       }
@@ -426,7 +442,7 @@ const AddNewCollege = () => {
         icon: "warning",
         title: "Warning!",
         text:
-          error.response?.data?.usrMsg ||
+          response.usrMsg ||
           error.response?.data?.message ||
           error.response?.data?.errMessage ||
           "Please try again.",
@@ -436,7 +452,7 @@ const AddNewCollege = () => {
     }
   };
 
-  // VERIFY OTP FUNCTION
+  // VERIFY OTP Function
   const verifyOtp = async () => {
     if (!otp || otp.length !== 6) {
       Swal.fire({
@@ -459,7 +475,7 @@ const AddNewCollege = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${API_BASE_URL}/api/auth/vendor-verify`,
+        `${API_BASE_URL}/api/auth/vendor-verify`, // Api for verifying otp
         {
           contactDetails: formik.values.contactDetails,
           reference_id: referenceId,
@@ -489,13 +505,13 @@ const AddNewCollege = () => {
       }
     } catch (error) {
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Verification Failed!",
         text:
           error.response?.data?.usrMsg ||
           error.response?.data?.message ||
           error.response?.data.errMessage ||
-          "Invalid OTP or Reference ID.",
+          "Invalid OTP.",
       });
     } finally {
       setLoading(false);
@@ -504,14 +520,15 @@ const AddNewCollege = () => {
 
   // Function to open modal to edit existing address
   const handleEditAddress = (index) => {
-    setEditingAddressIndex(index); // Set index of the address being edited
+    setEditingAddressIndex(index); // Sets index of the address being edited
     setShowAddressModal(true);
   };
 
+  // Fetch college categories once on component mount from the backend API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/college/search`);
+        const response = await axios.get(`${API_BASE_URL}/api/college/search`); // Api call for Categories value for dropdown
         const categories = response.data.categories || [];
         setCategoryData(categories);
       } catch (error) {
@@ -522,6 +539,7 @@ const AddNewCollege = () => {
     fetchCategories();
   }, []);
 
+  // Update branch list when selected category or category data changes
   useEffect(() => {
     const selectedCategory = formik.values.category;
     const match = categoryData.find(
@@ -550,7 +568,7 @@ const AddNewCollege = () => {
 
         <form onSubmit={formik.handleSubmit} className="space-y-6 mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* College ID Field */}
+            {/* College ID  */}
             <InputField
               label="College ID"
               name="collegeId"
@@ -559,6 +577,7 @@ const AddNewCollege = () => {
               formik={formik}
             />
 
+            {/* college Name */}
             <InputField
               label="College Name"
               name="collegeName"
@@ -567,6 +586,7 @@ const AddNewCollege = () => {
               formik={formik}
             />
 
+            {/* Affiliated University */}
             <InputField
               label="Affiliated University"
               name="affiliatedUniversity"
@@ -575,39 +595,7 @@ const AddNewCollege = () => {
               formik={formik}
             />
 
-            {/* <div className="mb-3">
-              <label className="text-blue-700 font-medium">
-                College Category
-              </label>
-              <select
-                {...formik.getFieldProps("category")}
-                onChange={(e) => {
-                  const selected = e.target.value;
-                  formik.setFieldValue("category", selected);
-
-                  const selectedCategory = categoryData.find(
-                    (item) => item.category === selected
-                  );
-
-                  // Optional: You can auto-select first subcategory or clear
-                  formik.setFieldValue("subCategory", "");
-                  setSubCategories(selectedCategory?.subCategory || []);
-                }}
-                className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Category</option>
-                {categoryData.map((item, index) => (
-                  <option key={index} value={item.category}>
-                    {item.category}
-                  </option>
-                ))}
-              </select>
-
-              {formik.touched.category && formik.errors.category && (
-                <p className="text-red-500 text-sm">{formik.errors.category}</p>
-              )}
-            </div> */}
-
+            {/* College Category */}
             <div className="mb-4 w-full">
               <label className="block text-blue-800 font-semibold mb-2">
                 College Streams
@@ -649,6 +637,7 @@ const AddNewCollege = () => {
               )}
             </div>
 
+            {/* Sub Category */}
             <div className="mb-3">
               <MultiSelectDropdown
                 label="Branch"
@@ -658,6 +647,7 @@ const AddNewCollege = () => {
               />
             </div>
 
+            {/* College Type */}
             <SingleSelectDropdown
               label="College Type"
               name="collegeType"
@@ -744,6 +734,7 @@ const AddNewCollege = () => {
             </div>
 
             <div className="col-span-full grid grid-cols-2 gap-4">
+              {/* Set Password  */}
               <InputField
                 label="Set Password"
                 type="password"
@@ -751,6 +742,7 @@ const AddNewCollege = () => {
                 formik={formik}
               />
 
+              {/* Confirm Password  */}
               <InputField
                 label="Confirm Password"
                 type="password"
@@ -759,6 +751,7 @@ const AddNewCollege = () => {
               />
             </div>
 
+            {/* Email id  */}
             <InputField
               label="Email"
               name="email_id"
@@ -767,6 +760,7 @@ const AddNewCollege = () => {
               formik={formik}
             />
 
+            {/* Website URL  */}
             <InputField
               label="Website URL"
               name="websiteURL"
@@ -775,18 +769,21 @@ const AddNewCollege = () => {
               formik={formik}
             />
 
+            {/* Description  */}
             <TextAreaField
               label="Description"
               name="info.description"
               formik={formik}
             />
 
+            {/* Keyword  */}
             <MultiSelectField
               label="Keywords (Max 5)"
               name="keywords"
               formik={formik}
             />
 
+            {/* Established Year  */}
             <SingleSelectDropdown
               label="Established Year"
               name="establishedYear"
@@ -795,6 +792,7 @@ const AddNewCollege = () => {
               placeholder="Select an Established Year"
             />
 
+            {/* Accreditation  */}
             <SingleSelectDropdown
               label="Accreditation"
               name="accreditation"
@@ -803,7 +801,7 @@ const AddNewCollege = () => {
               placeholder="Select an Accreditation"
             />
 
-            {/* Entrance Exam Required Multi-Select Dropdown */}
+            {/* Entrance Exam Required */}
             <MultiSelectDropdown
               label="Entrance Exams Required"
               name="entrance_exam_required"
@@ -811,12 +809,14 @@ const AddNewCollege = () => {
               formik={formik}
             />
 
+            {/* Logo  */}
             <FileUpload
               label="College Logo (JPG/JPEG/PNG)"
               name="logo"
               formik={formik}
             />
 
+            {/* Hero Image  */}
             <FileUpload
               label="College Banner Cover Image (JPG/JPEG/PNG)"
               name="image"
@@ -824,6 +824,7 @@ const AddNewCollege = () => {
               formik={formik}
             />
 
+            {/* Image Gallery  */}
             <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
               <label className="block font-semibold text-blue-800 mb-2">
                 Gallery Images{" "}
@@ -836,6 +837,7 @@ const AddNewCollege = () => {
                 {formik.values.gallery_image?.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {formik.values.gallery_image.map((file, index) => (
+                      // Image Preview
                       <img
                         key={index}
                         src={URL.createObjectURL(file) || "/placeholder.svg"}
@@ -853,6 +855,7 @@ const AddNewCollege = () => {
                   </div>
                 )}
               </div>
+              {/* Gallery Image Input  */}
               <input
                 type="file"
                 id="galleryImages"
@@ -961,6 +964,7 @@ const AddNewCollege = () => {
             )}
 
           <div className="mt-4 flex justify-end gap-4">
+            {/* Reset Button  */}
             <motion.button
               type="button"
               className="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition cursor-pointer"
@@ -970,18 +974,8 @@ const AddNewCollege = () => {
             >
               Reset
             </motion.button>
-            {/* <motion.button
-              type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              disabled={
-                mutation.isPending || (verifiedOtp ? formik.isSubmitting : true)
-              }
-            >
-              {mutation.isPending ? "Submitting..." : "Submit"}
-            </motion.button> */}
 
+            {/* Submit Button  */}
             <motion.button
               type="submit"
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -989,6 +983,7 @@ const AddNewCollege = () => {
               whileTap={{ scale: 0.95 }}
               disabled={formik.isSubmitting || mutation.isPending}
               onClick={(e) => {
+                // Show error if contact number not verified
                 if (!verifiedOtp) {
                   e.preventDefault();
                   Swal.fire({
@@ -1000,6 +995,7 @@ const AddNewCollege = () => {
                   return;
                 }
 
+                // Show error if address not entered
                 if (
                   !formik.values.address ||
                   !Array.isArray(formik.values.address) ||

@@ -119,7 +119,7 @@ function App() {
                 path="/edit-college/:id"
                 element={<EditCollegeDetails />}
               />
-              <Route path="/university" element={<AddUniversity />} />
+             
               <Route path="/edit-university/:id" element={<EditUniversity />} />
             </Route>
 
@@ -193,6 +193,7 @@ function App() {
           {/* ✅ Registration Route for Vendors */}
           <Route path="/register-class" element={<ClassForm />} />
           <Route path="/add-college" element={<AddNewCollege />} />
+          <Route path="/university" element={<AddUniversity />} />
         </Routes>
       </Router>
     </QueryClientProvider>
