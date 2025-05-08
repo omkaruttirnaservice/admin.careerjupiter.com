@@ -19,6 +19,7 @@ import FileUpload from "../Component/FileUpload";
 import SingleSelectDropdown from "../Component/SingleSelectDropdown";
 import Swal from "sweetalert2";
 import { setAuthCookies } from "../Utlis/cookieHelper";
+import { useNavigate } from "react-router-dom";
 
 // Constant Values for Accreditations
 const accreditationOptions = [
@@ -69,6 +70,7 @@ const AddNewCollege = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [lastContactDetails, setLastContactDetails] = useState("");
+   const navigate = useNavigate();
 
   // used Mutation for api calling from createCollege component
   const mutation = useMutation({
@@ -556,6 +558,15 @@ const AddNewCollege = () => {
       className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200 px-6"
     >
       <div className="w-full max-w-6xl bg-white shadow-xl rounded-xl p-8 border border-blue-300">
+      <div className="text-right mb-4">
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="text-blue-600 underline hover:text-blue-800 transition cursor-pointer"
+          >
+            College Login
+          </button>
+        </div>
         <div className="flex justify-between items-center bg-gradient-to-r from-blue-700 to-blue-500 text-white p-5 rounded-t-lg shadow-lg">
           <h2 className="text-3xl font-bold flex items-center gap-4">
             <FaUniversity

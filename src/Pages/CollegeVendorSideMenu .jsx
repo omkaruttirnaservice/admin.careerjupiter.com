@@ -7,7 +7,7 @@ import { HomeIcon, ClipboardCheckIcon, LogoutIcon, AcademicCapIcon } from "@hero
 import { FaUniversity } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
-import { BookOpenIcon, BriefcaseIcon } from "lucide-react";
+import { BookOpenIcon, BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -32,20 +32,20 @@ const navigation = [
   {
     name: "Manage Courses",
     href: "/vendor-college/add-college-courses",
-    icon:  BookOpenIcon,
-    color: "text-green-400",
+    icon:  BookOpenTextIcon,
+    color: "text-pink-400",
   },
   {
     name: "Manage infrastructure",
     href: "/vendor-college/add-college-infrastructure",
-    icon: WrenchScrewdriverIcon,
-    color: "text-green-400",
+    icon:   ChartBarIcon,
+    color: "text-purple-400",
   },
   {
     name: "Manage Placement",
     href: "/vendor-college/add-college-placement",
     icon: BriefcaseIcon,
-    color: "text-green-400",
+    color: "text-gray-400",
   },
 ];
 
