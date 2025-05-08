@@ -2,56 +2,61 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import { getCookie } from "../Utlis/cookieHelper";
-import {
-  HomeIcon,
-  ClipboardCheckIcon,
-  CogIcon,
-  LogoutIcon,
-  UserCircleIcon,
-  MenuIcon,
-  UserAddIcon,
-} from "@heroicons/react/solid"; // ✅ HeroIcons
-import { BookAIcon } from "lucide-react";
-import { FaUserCircle, FaUserGraduate } from "react-icons/fa";
-import { clearAuthCookies } from "../Utlis/cookieHelper";
+import { getCookie, clearAuthCookies } from "../Utlis/cookieHelper";
+import { HomeIcon, ClipboardCheckIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
+import { FaUniversity } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+import { BookOpenIcon, BriefcaseIcon } from "lucide-react";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
-  if (hour < 12) return { text: "Good Morning", emoji: "🌞", color: "#facc15" }; // yellow
-  if (hour < 16)
-    return { text: "Good Afternoon", emoji: "☀️", color: "#fb923c" }; // orange
-  return { text: "Good Evening", emoji: "🌙", color: "#60a5fa" }; // blue
+  if (hour < 12) return { text: "Good Morning", emoji: "🌞", color: "#facc15" };
+  if (hour < 16) return { text: "Good Afternoon", emoji: "☀️", color: "#fb923c" };
+  return { text: "Good Evening", emoji: "🌙", color: "#60a5fa" };
 };
 
 const navigation = [
   {
     name: "Dashboard",
-    href: "/vendor-class/class-dashboard",
+    href: "/vendor-college/college-dashboard",
     icon: HomeIcon,
     color: "text-blue-400",
   },
   {
-    name: "Manage Class",
-    href: "/vendor-class/edit-vendor-class",
-    icon: ClipboardCheckIcon,
+    name: "Manage College",
+    href: "/vendor-college/edit-college",
+    icon: AcademicCapIcon,
     color: "text-green-400",
   },
-  //  { name: "Faculty", href: "/vendor-class/class-faculty", icon: UserAddIcon, color: "text-yellow-400" },
-  // { name: "Course", href: "/vendor-class/class-courses", icon: BookAIcon, color: "text-teal-400" },
+  {
+    name: "Manage Courses",
+    href: "/vendor-college/add-college-courses",
+    icon:  BookOpenIcon,
+    color: "text-green-400",
+  },
+  {
+    name: "Manage infrastructure",
+    href: "/vendor-college/add-college-infrastructure",
+    icon: WrenchScrewdriverIcon,
+    color: "text-green-400",
+  },
+  {
+    name: "Manage Placement",
+    href: "/vendor-college/add-college-placement",
+    icon: BriefcaseIcon,
+    color: "text-green-400",
+  },
 ];
 
-const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
+const CollegeVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(location.pathname);
-  const [classDetails, setClassDetails] = useState(null);
-  const [classId, setClassId] = useState(null); // ✅ State for classId
+  const [collegeDetails, setCollegeDetails] = useState(null);
+  const [collegeId, setCollegeId] = useState(null);
   const greeting = getGreeting();
 
-  // ✅ Update activeLink when URL changes
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
@@ -62,56 +67,41 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       text: "See you soon! Want to log out now?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",  // Blue
-      cancelButtonColor: "#d33",      // Red
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
       confirmButtonText: "Yes, logout!",
     }).then((result) => {
       if (result.isConfirmed) {
         clearAuthCookies();
-         window.location.href = "/"; // 🔁 Hard reload + redirect
-        // navigate("/");
-       
+        window.location.href = "/"; 
       }
     });
   };
 
-  useEffect(() => {
-    const storedClassId = getCookie("classId"); // ✅ Use getCookie function
+  // useEffect(() => {
+  //   const storedCollegeId = getCookie("collegeId");
+  //   if (storedCollegeId) {
+  //     setCollegeId(storedCollegeId);
+  //   } else {
+  //     console.warn("College ID not found in cookies!");
+  //   }
+  // }, []);
 
-    if (storedClassId) {
-      setClassId(storedClassId);
-      console.log("Class ID retrieved from cookies-------:", storedClassId);
-    } else {
-      console.warn("Class ID not found in cookies!");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const fetchCollegeDetails = async () => {
+  //     if (!collegeId) return;
 
-  useEffect(() => {
-    const fetchClassDetails = async () => {
-      if (!classId) return;
+  //     try {
+  //       const response = await axios.get(`${API_BASE_URL}/api/college/${collegeId}`);
+  //       const collegeData = response.data?.data?.college;
+  //       setCollegeDetails({ ...collegeData });
+  //     } catch (error) {
+  //       console.error("Error fetching college details:", error?.response?.data || error.message);
+  //     }
+  //   };
 
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/api/class/${classId}`
-        );
-        console.log("Class details fetched:", response.data);
-
-        const classData = response.data?.data?.class; // ✅ Ensure correct path
-        console.log("---------- class data", classData);
-
-        setClassDetails({
-          ...classData,
-        });
-      } catch (error) {
-        console.error(
-          "Error fetching class details:",
-          error.response?.data.errMsg || error?.response?.data || error.message
-        );
-      }
-    };
-
-    fetchClassDetails();
-  }, [classId]);
+  //   fetchCollegeDetails();
+  // }, [collegeId]);
 
   return (
     <div
@@ -120,25 +110,15 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       } md:translate-x-0`}
     >
       <div className="flex flex-col pt-5 pb-4 overflow-y-auto h-full">
-        {/* ✅ Mobile Menu Close Button */}
-        <button
-          className="absolute top-4 right-4 text-white md:hidden cursor-pointer"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          {/* <MenuIcon className="w-8 h-8" /> */}
-        </button>
-
-        {/* ✅ Profile Section */}
+        {/* Profile Section */}
         <div className="flex flex-col items-center text-white mb-6">
-          <FaUserGraduate className="h-16 w-16 text-blue-300" />
-
+          <FaUniversity className="h-16 w-16 text-blue-300" />
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 100 }}
             className="mt-2 text-lg font-semibold flex items-center space-x-2"
           >
-            {/* Greeting Text */}
             <motion.span
               className="block"
               style={{ color: greeting.color }}
@@ -147,8 +127,6 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
             >
               {greeting.text}
             </motion.span>
-
-            {/* Emoji */}
             <motion.span
               className="text-2xl inline-block"
               animate={{ y: [0, -8, 0], rotate: [0, 10, -10, 0] }}
@@ -157,22 +135,20 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
               {greeting.emoji}
             </motion.span>
           </motion.div>
-
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
             className="text-sm text-blue-200 mt-1"
           >
-            Ready to make your class shine!
+            Ready to build your college profile!
           </motion.p>
         </div>
 
-        {/* ✅ Navigation Links */}
+        {/* Navigation Links */}
         <nav className="mt-2 flex-1 px-4 space-y-2">
           {navigation.map((item) => {
             const isActive = activeLink === item.href;
-
             return (
               <button
                 key={item.name}
@@ -180,17 +156,14 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
                   navigate(item.href);
                   setIsMenuOpen(false);
                 }}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer
-                ${
+                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 cursor-pointer ${
                   isActive
                     ? "bg-blue-500 text-white shadow-md transform scale-105"
                     : "text-gray-300 hover:bg-blue-600 hover:text-white"
                 }`}
               >
                 <item.icon
-                  className={`mr-3 h-6 w-6 ${
-                    isActive ? "text-white" : item.color
-                  }`}
+                  className={`mr-3 h-6 w-6 ${isActive ? "text-white" : item.color}`}
                 />
                 {item.name}
               </button>
@@ -198,10 +171,10 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
           })}
         </nav>
 
-        {/* ✅ Logout Button */}
+        {/* Logout */}
         <button
           className="flex items-center px-4 py-3 mt-6 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
-          onClick={handleLogout} // Implement logout logic
+          onClick={handleLogout}
         >
           <LogoutIcon className="h-6 w-6 mr-3" />
           Logout
@@ -211,4 +184,4 @@ const ClassVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   );
 };
 
-export default ClassVendorSideMenu;
+export default CollegeVendorSideMenu;

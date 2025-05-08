@@ -5,7 +5,7 @@ import SideMenu from "../Pages/SideMenu"; // Import the SideMenu component
 
 const Root = () => {
   const location = useLocation();
-  const isLoginPage = location.pathname === "/" || location.pathname === "/add-admin";
+  const isLoginPage = location.pathname === "/" || location.pathname === "/add-admin" || location.pathname === "/add-college" || location.pathname === "/university";
 
 
   return (

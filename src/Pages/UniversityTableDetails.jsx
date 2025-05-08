@@ -163,9 +163,9 @@ const UniversityTableDetails = () => {
       //     .includes(searchTerm.toLowerCase()) ||
       row.Category.toLowerCase().includes(searchTerm.toLowerCase()) ||
       //   row.universityType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${row.location.lat}, ${row.location.lan}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
+      // `${row.location.lat}, ${row.location.lan}`
+      //   .toLowerCase()
+      //   .includes(searchTerm.toLowerCase()) ||
       `${row.address.line1}, ${row.address.line2}, ${row.address.dist}, ${row.address.state} - ${row.address.pincode}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
@@ -219,11 +219,11 @@ const UniversityTableDetails = () => {
     //   },
     // },
 
-    {
-      name: "Location",
-      selector: (row) => `${row.location.lat}, ${row.location.lan}`,
-      sortable: true,
-    },
+    // {
+    //   name: "Location",
+    //   selector: (row) => `${row.location.lat}, ${row.location.lan}`,
+    //   sortable: true,
+    // },
 
     {
       name: "Address",
