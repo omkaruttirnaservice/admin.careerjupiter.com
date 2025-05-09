@@ -641,7 +641,6 @@ export const updateUniversity = async (id, universityData) => {
       "Content-Type": "multipart/form-data",
     },
   })
-
   return response.data
 }
 
@@ -652,7 +651,7 @@ export const updateUniversity = async (id, universityData) => {
  */
 export const deleteUniversity = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/api/university/${id}`)
+    const response = await axios.delete(`${API_BASE_URL}/api/university/delete/${id}`)
     return response.data
   } catch (error) {
     console.error(`Error deleting university ${id}:`, error)

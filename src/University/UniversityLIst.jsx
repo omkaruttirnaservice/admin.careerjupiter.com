@@ -10,6 +10,7 @@ import { FaEye, FaPencilAlt, FaTrashAlt, FaGlobe, FaPlus } from "react-icons/fa"
 import { fetchAllUniversities, deleteUniversity } from "./Universityapi"
 import ViewUniversityModal from "./ViewUniversityModal"
 import DeleteConfirmationModal from "./DeleteUniversitymodal"
+import { useEffect } from "react"
 
 const UniversityList = () => {
   const queryClient = useQueryClient()
@@ -17,23 +18,34 @@ const UniversityList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
-  // Modal states
   const [viewModalOpen, setViewModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [selectedUniversity, setSelectedUniversity] = useState(null)
 
-  // Fetch universities
+  // const {
+  //   data: universitiesData = [],
+  //   isLoading,
+  //   isError,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["universities"],
+  //   queryFn: fetchAllUniversities,
+  //   staleTime: 5 * 60 * 1000, // 5 minutes
+  // })
+
   const {
     data: universitiesData = [],
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["universities"],
     queryFn: fetchAllUniversities,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
-
+    staleTime: 0,               // 👈 disables cache staleness
+    refetchOnMount: true,       // 👈 ensures API is called on remount
+  });
+  
   // Delete university mutation
   const deleteMutation = useMutation({
     mutationFn: deleteUniversity,
@@ -119,7 +131,7 @@ const UniversityList = () => {
             />
           </div>
           <Link
-            to="/add-university"
+            to="/university"
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
             <FaPlus /> Add New
