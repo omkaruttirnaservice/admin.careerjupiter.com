@@ -350,7 +350,8 @@
 
 
 import axios from "axios"
-import { API_BASE_URL } from "../constant/constantBaseUrl"
+// import { API_BASE_URL } from "../constant/constantBaseUrl"
+import { API_BASE_URL } from "../Constant/constantBaseUrl"
 
 /**
  * Fetch university categories
@@ -635,7 +636,7 @@ export const updateUniversity = async (id, universityData) => {
   }
 
   // Send the request with proper headers for multipart/form-data
-  const response = await axios.put(`${API_BASE_URL}/api/university/${id}`, formData, {
+  const response = await axios.put(`${API_BASE_URL}/api/university/update/${id}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

@@ -5,7 +5,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
+
 import InputField from "../Component/InputField";
 import MultiSelectDropdown from "../Component/MultiSelectDropdown";
 import SingleSelectDropdown from "../Component/SingleSelectDropdown";
@@ -154,14 +156,13 @@ const ManageCollege = () => {
       } catch (error) {
         console.error("Error fetching college details:", error);
       } finally {
-        setIsLoading(false); // ✅ Done loading
+        setIsLoading(false); 
       }
     };
 
     fetchCollegeDetails();
   }, []);
 
-  // ✅ Initialize Formik
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: collegeDetails || {
@@ -202,12 +203,12 @@ const ManageCollege = () => {
       try {
         const formData = new FormData();
 
-        // ✅ Handle image file upload
+        
         if (values.image instanceof File) {
           formData.append("image", values.image);
         }
 
-        // ✅ Append primitive fields
+        
         const primitiveFields = [
           "collegeName",
           "collegeType",
