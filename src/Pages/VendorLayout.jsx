@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import ClassVendorSideMenu from "./classVendorSideMenu";
+import ClassVendorSideMenu from "./ClassVendorSideMenu";
 import { MdMenu } from "react-icons/md";
 
 const VendorLayout = () => {

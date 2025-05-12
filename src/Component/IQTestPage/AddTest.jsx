@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { API_BASE_URL } from "../../constant/constantBaseUrl";
+import { API_BASE_URL } from "../../Constant/constantBaseUrl";
 import Cookies from "js-cookie";
 import {
   FiPlus,

@@ -1,7 +1,7 @@
 
 import axios from "axios";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import Swal from "sweetalert2";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
 
 const api = axios.create({
   baseURL: API_BASE_URL, 

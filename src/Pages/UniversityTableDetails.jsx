@@ -11,12 +11,11 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
-import UniversityInfoCard from "../component/universityInfoCard"; // Import the InfoCard component
-// import EditUniversityDetails from "../component/editUniversityDetails"; // Import the EdituniversityDetails component
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import UniversityInfoCard from "../Component/UniversityInfoCard"; // Import the InfoCard component
+import EditUniversityDetails from "../Component/EditUniversityDetails"; // Import the EdituniversityDetails component
 // import Infrastructure from "../Component/Infrastructure";
-// import UniversityPlacement from "../component/universityPlacement";
-import EditUniversityDetails from "../Component/EditUniversityDetails";
+import UniversityPlacement from "../Component/UniversityPlacement";
 
 const UniversityTableDetails = () => {
   const [universityData, setUniversityData] = useState([]);
@@ -287,7 +286,7 @@ const UniversityTableDetails = () => {
           </button>
           <button
             className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-            onClick={() => handleEdit(row)} 
+            onClick={() => handleEdit(row)} // Open EdituniversityDetails
             data-tooltip-id="edit-tooltip"
             data-tooltip-content="Edit University"
           >
@@ -398,7 +397,7 @@ const UniversityTableDetails = () => {
 
         {/* Render EdituniversityDetails modal */}
         {editModalOpen && (
-          <EditUniversityDetailsails
+          <EditUniversityDetails
             universityData={selectedItem}
             onSave={handleSaveEdit}
             onCancel={() => setEditModalOpen(false)}

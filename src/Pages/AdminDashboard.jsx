@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { Doughnut, Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUniversity, FaSchool, FaChalkboardTeacher } from "react-icons/fa";
 import { FiActivity, FiUserPlus, FiBookOpen, FiCalendar } from "react-icons/fi";
-import api from "../api/token_api";
+import api from "../api/token_api"; // ✅ Correct Import
 import {
   Chart as ChartJS,
   BarElement,

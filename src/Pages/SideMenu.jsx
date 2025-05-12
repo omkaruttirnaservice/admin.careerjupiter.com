@@ -22,7 +22,7 @@ import {
   LibraryBig,
   Building2,
 } from "lucide-react";
-import { clearAuthCookies } from "../utlis/cookieHelper"; // adjust path as needed
+import { clearAuthCookies } from "../Utlis/cookieHelper"; // adjust path as needed
 import Swal from "sweetalert2";
 
 // Sidebar items

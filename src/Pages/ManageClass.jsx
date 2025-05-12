@@ -4,18 +4,17 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
-import InputField from "../component/inputField";
-import RadioGroup from "../component/radioGroup";
-import CheckboxGroup from "../component/checkboxGroup";
-import MultiSelectDropdown from "../component/multiSelectDropdown";
-import { getCookie } from "../utlis/cookieHelper";
-// import AddressModal from "../Component/AddressModel";
-import AddressModal from "../component/addressModel";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import * as Yup from "yup";
+import InputField from "../Component/InputField";
+import RadioGroup from "../Component/RadioGroup";
+import CheckboxGroup from "../Component/CheckboxGroup";
+import MultiSelectDropdown from "../Component/MultiSelectDropdown";
+import { getCookie } from "../Utlis/cookieHelper";
+import AddressModal from "../Component/AddressModel";
 import Swal from "sweetalert2";
 import { MdDone } from "react-icons/md";
 import FileUpload from "../Component/FileUpload";
-import * as Yup from "yup";
 
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
@@ -56,8 +55,6 @@ const ManageClass = () => {
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
   const [dynamicCategories, setDynamicCategories] = useState([]);
-  const [tempEditAddress, setTempEditAddress] = useState(null);
-
 
   console.log("📌 Retrieved Class ID from Cookies:", classId);
 
@@ -449,28 +446,14 @@ const ManageClass = () => {
                               <label className="block text-sm font-semibold text-blue-800 mb-2">
                                 {field.label}
                               </label>
-                              {/* <input
+                              <input
                                 type="text"
                                 name={`address[${index}].${field.name}`}
                                 placeholder={field.placeholder}
                                 value={addr[field.name]}
                                 onChange={formik.handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                              /> */}
-                              <input
-  type="text"
-  name={field.name}
-  placeholder={field.placeholder}
-  value={tempEditAddress?.[field.name] || ""}
-  onChange={(e) =>
-    setTempEditAddress((prev) => ({
-      ...prev,
-      [field.name]: e.target.value,
-    }))
-  }
-  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-/>
-
+                              />
                               {formik.errors.address?.[index]?.[field.name] && (
                                 <div className="text-red-500 text-sm mt-1">
                                   {formik.errors.address[index][field.name]}
@@ -483,15 +466,7 @@ const ManageClass = () => {
                         {/* Cancel Button */}
                         <div className="mt-8 text-center justify-end flex gap-2">
                           <button
-                          onClick={() => {
-  const updatedAddresses = [...formik.values.address];
-  updatedAddresses[index] = tempEditAddress;
-  formik.setFieldValue("address", updatedAddresses);
-  setEditingIndex(null);
-  setTempEditAddress(null);
-}}
-
-                            // onClick={() => setEditingIndex(null)}
+                            onClick={() => setEditingIndex(null)}
                             className="text-white bg-green-500 hover:bg-green-600 transition px-6 py-2 text-sm font-medium rounded-md flex gap-2 cursor-pointer"
                           >
                             <span className="mt-1">
@@ -501,12 +476,7 @@ const ManageClass = () => {
                           </button>
 
                           <button
-                          onClick={() => {
-  setEditingIndex(null);
-  setTempEditAddress(null); // Discard temp edits
-}}
-
-                            // onClick={() => setEditingIndex(null)}
+                            onClick={() => setEditingIndex(null)}
                             className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-lg transition flex gap-2 cursor-pointer"
                           >
                             <span className="mt-1">
@@ -543,12 +513,7 @@ const ManageClass = () => {
                           {/* Edit Button */}
                           <button
                             type="button"
-                            onClick={() => {
-  setEditingIndex(index);
-  setTempEditAddress({ ...addr }); // Deep copy
-}}
-
-                            // onClick={() => setEditingIndex(index)}
+                            onClick={() => setEditingIndex(index)}
                             className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1 cursor-pointer"
                           >
                             ✏️ Edit
