@@ -286,7 +286,7 @@ const UniversityTableDetails = () => {
           </button>
           <button
             className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-            onClick={() => handleEdit(row)} // Open EdituniversityDetails
+            onClick={() => handleEdit(row)} 
             data-tooltip-id="edit-tooltip"
             data-tooltip-content="Edit University"
           >

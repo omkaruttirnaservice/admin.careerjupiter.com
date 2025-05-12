@@ -1,13 +1,17 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { getCookie, clearAuthCookies } from "../Utlis/cookieHelper";
-import { HomeIcon, ClipboardCheckIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
+import { HomeIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
 import { FaUniversity } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+
+import { BookOpen, Briefcase } from "lucide-react"; // ✅ Correct Lucide icons
+
 import { BookOpenIcon, BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
+
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -32,20 +36,23 @@ const navigation = [
   {
     name: "Manage Courses",
     href: "/vendor-college/add-college-courses",
-    icon:  BookOpenTextIcon,
-    color: "text-pink-400",
+    icon: BookOpen,
+    color: "text-green-400",
+
   },
   {
     name: "Manage infrastructure",
     href: "/vendor-college/add-college-infrastructure",
-    icon:   ChartBarIcon,
-    color: "text-purple-400",
+    // icon: WrenchScrewdriver,
+    color: "text-green-400",
+
   },
   {
     name: "Manage Placement",
     href: "/vendor-college/add-college-placement",
-    icon: BriefcaseIcon,
-    color: "text-gray-400",
+    icon: Briefcase,
+    color: "text-green-400",
+
   },
 ];
 
@@ -73,35 +80,10 @@ const CollegeVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         clearAuthCookies();
-        window.location.href = "/"; 
+        window.location.href = "/";
       }
     });
   };
-
-  // useEffect(() => {
-  //   const storedCollegeId = getCookie("collegeId");
-  //   if (storedCollegeId) {
-  //     setCollegeId(storedCollegeId);
-  //   } else {
-  //     console.warn("College ID not found in cookies!");
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchCollegeDetails = async () => {
-  //     if (!collegeId) return;
-
-  //     try {
-  //       const response = await axios.get(`${API_BASE_URL}/api/college/${collegeId}`);
-  //       const collegeData = response.data?.data?.college;
-  //       setCollegeDetails({ ...collegeData });
-  //     } catch (error) {
-  //       console.error("Error fetching college details:", error?.response?.data || error.message);
-  //     }
-  //   };
-
-  //   fetchCollegeDetails();
-  // }, [collegeId]);
 
   return (
     <div
