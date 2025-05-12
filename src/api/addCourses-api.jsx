@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import {API_BASE_URL} from "../constant/constantBaseUrl"
 import Swal from "sweetalert2";
 
 // const API_BASE_URL = "http://192.168.1.12:5000/api//course";

@@ -1,8 +1,7 @@
 
 import axios from "axios";
 import Cookies from "js-cookie"; 
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
-
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 const api = axios.create({
   baseURL: API_BASE_URL,
 });

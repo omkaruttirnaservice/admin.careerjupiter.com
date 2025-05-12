@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Trash, CheckCheck } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 
 const ViewCourses = () => {
   const { classId } = useParams();
