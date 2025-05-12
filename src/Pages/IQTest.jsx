@@ -128,7 +128,7 @@ const handleDelete = async (id) => {
     <div className="max-w-6xl mx-auto p-6">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800">
-          📚 Select a Category
+          📚 All Categories
         </h1>
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-700 shadow cursor-pointer"

@@ -199,7 +199,11 @@ import { HomeIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
 import { FaUniversity } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+
 import { BookOpen, Briefcase } from "lucide-react"; // ✅ Correct Lucide icons
+
+import { BookOpenIcon, BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
+
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -226,18 +230,21 @@ const navigation = [
     href: "/vendor-college/add-college-courses",
     icon: BookOpen,
     color: "text-green-400",
+
   },
   {
     name: "Manage infrastructure",
     href: "/vendor-college/add-college-infrastructure",
     // icon: WrenchScrewdriver,
     color: "text-green-400",
+
   },
   {
     name: "Manage Placement",
     href: "/vendor-college/add-college-placement",
     icon: Briefcase,
     color: "text-green-400",
+
   },
 ];
 

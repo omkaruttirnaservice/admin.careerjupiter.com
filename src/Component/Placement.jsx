@@ -904,11 +904,12 @@ import { Plus, Trash } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getCookie } from "../Utlis/cookieHelper";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Swal from 'sweetalert2';
+import Cookies from "js-cookie";
 
 const Placement = () => {
   const defaultPlacement = {
@@ -917,12 +918,16 @@ const Placement = () => {
     internshipOpportunities: false,
     topRecruiters: [],
   };
-
+ const { collegeId: collegeIdFromParams } = useParams();
   const [placements, setPlacements] = useState([{ ...defaultPlacement }]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [collegeId, setCollegeId] = useState(null);
+
+ // Get user role and subrole
+  const role = Cookies.get('role');
+  const subrole = Cookies.get('subrole');
 
   const validationSchema = Yup.object().shape({
     placements: Yup.array().of(
@@ -942,14 +947,39 @@ const Placement = () => {
     ),
   });
 
+ // Set collegeId from either URL params (admin) or cookies (vendor)
   useEffect(() => {
-    const id = getCookie("collegeID");
+    const collegeIdFromCookie = getCookie('collegeID');
+    const id = collegeIdFromParams || collegeIdFromCookie;
+    
     if (id) {
       setCollegeId(id);
+      console.log('College ID for placement:', id);
+      
+      // If admin is accessing, store the collegeId in cookie temporarily
+      if (role === 'ADMIN' && collegeIdFromParams) {
+        Cookies.set('collegeID', id, { expires: 1 }); // Expires in 1 day
+      }
     } else {
-      console.warn("College ID not found in cookies!");
+      console.warn('College ID not found!');
+      Swal.fire({
+        icon: 'error',
+        title: 'College ID Missing',
+        text: 'Please select a college first',
+      });
+      navigate(role === 'ADMIN' ? '/colleges' : '/vendor-college');
     }
-  }, []);
+  }, [collegeIdFromParams, role, navigate]);
+
+
+  // useEffect(() => {
+  //   const id = getCookie("collegeID");
+  //   if (id) {
+  //     setCollegeId(id);
+  //   } else {
+  //     console.warn("College ID not found in cookies!");
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (!collegeId) return;
@@ -1047,7 +1077,7 @@ const Placement = () => {
       // alert("Placement details saved successfully!");
     } catch (error) {
       console.error("Error saving placement:", error);
-      const errorMsg = error.response?.data?.message || "Failed to save placement details";
+      const errorMsg = error.response?.data?.message || error.response?.data?.errMsg ||error.response?.data?.usrMsg ||"Failed to save placement details";
 
       // ❌ Error Alert
       Swal.fire({
@@ -1067,22 +1097,17 @@ const Placement = () => {
 
   return (
     <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
-      <button
-        onClick={() => navigate("/colleges")}
-        className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold cursor-pointer"
-      >
-        &times;
-      </button>
+   
 
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-3xl font-bold text-blue-800 flex items-center">📊 Placement Details</h3>
       </div>
 
-      {error && (
+      {/* {error && (
         <div className="bg-red-100 text-red-600 p-4 rounded-md mb-4">
           <strong>Error:</strong> {error}
         </div>
-      )}
+      )} */}
 
       <Formik
         initialValues={{ placements }}
@@ -1158,7 +1183,7 @@ const Placement = () => {
                           form.setFieldValue(`placements.${index}.topRecruiters`, recruitersArray);
                         }}
                         className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
-                        placeholder="eg. Infosys, TCS, Bosch"
+                        placeholder="eg. Infosys"
                       />
                     )}
                   </Field>

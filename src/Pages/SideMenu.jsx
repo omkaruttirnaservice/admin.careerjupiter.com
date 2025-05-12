@@ -165,7 +165,7 @@ const SideMenu = () => {
     };
 
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10">
+    <div className="flex md:w-64 flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10">
       <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
         {/* Logo */}
         <div className="flex items-center justify-center mb-6">

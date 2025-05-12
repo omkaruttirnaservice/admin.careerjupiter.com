@@ -247,7 +247,7 @@ const AdminDashboard = () => {
   </h2>
 
   {/* Add Class Category */}
-  <Link to="/add-category" className="flex items-center bg-blue-50 p-4 rounded-lg shadow hover:bg-blue-100 cursor-pointer">
+  <Link to="/add-class-category" className="flex items-center bg-blue-50 p-4 rounded-lg shadow hover:bg-blue-100 cursor-pointer">
     <div className={`w-10 h-10 text-blue-400 mr-4 flex items-center justify-center rounded-full bg-blue-200`}>
       <Puzzle className="w-6 h-6" />
     </div>

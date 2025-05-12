@@ -17,6 +17,10 @@ const InfoCard = ({ collegeData, onClose }) => {
       <hr />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-4">
+          <div>
+            <strong className="text-blue-700">🏫 College Id:</strong>
+            <p className="text-gray-800 font-medium">{collegeData?.collegeId || "N/A"}</p>
+          </div>
           {/* College Name */}
           <div>
             <strong className="text-blue-700">🏫 College Name:</strong>
@@ -34,7 +38,7 @@ const InfoCard = ({ collegeData, onClose }) => {
           {/* Category */}
           <div>
             <strong className="text-blue-700">📌 Category:</strong>
-            <p className="text-gray-800 font-medium">{collegeData?.Category || "N/A"}</p>
+            <p className="text-gray-800 font-medium">{collegeData?.category || "N/A"}</p>
           </div>
 
           {/* College Type */}
@@ -48,6 +52,13 @@ const InfoCard = ({ collegeData, onClose }) => {
             <strong className="text-blue-700">📞 Contact:</strong>
             <p className="text-gray-800 font-medium">
               {collegeData?.contactDetails || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700">📞 Email Id:</strong>
+            <p className="text-gray-800 font-medium">
+              {collegeData?.email_id || "N/A"}
             </p>
           </div>
 
@@ -83,14 +94,14 @@ const InfoCard = ({ collegeData, onClose }) => {
           </div>
 
           {/* Address */}
-          <div>
+          {/* <div>
             <strong className="text-blue-700">📬 Address:</strong>
             <p className="text-gray-800 font-medium">
               {collegeData?.address
                 ? `${collegeData.address.line1}, ${collegeData.address.line2}, ${collegeData.address.dist}, ${collegeData.address.state} - ${collegeData.address.pincode}`
                 : "N/A"}
             </p>
-          </div>
+          </div> */}
 
           
         </div>
