@@ -18,7 +18,9 @@ import ProfilePage from "./Pages/ProfilePage";
 import CollegeCourses from "./Courses/CollegeCourses";
 import EditCollegeDetails from "./Component/EditCollegeDetails";
 import AddUniversity from "./University/AddUniversity";
-import EditUniversity from "./University/EditUniversity";
+// import EditUniversity from "./University/EditUniversity";
+import UniversityList from "./University/UniversityLIst.jsx";
+
 import UniversityTableDetails from "./Pages/UniversityTableDetails";
 import UniversityPlacement from "./Component/UniversityPlacement";
 
@@ -47,6 +49,9 @@ import AddNewCollege from "./Pages/AddNewCollege";
 import ManageCollege from "./Pages/ManageCollege.jsx";
 import CollegeVendorDashboard from "./Pages/CollegeVendorDashboard.jsx";
 import VendorCollegeLayout from "./Pages/VendorCollegeLayout.jsx";
+import EditUniversity from "./University/EditUniversity.jsx";
+import UniversityVendorDashboard from "./Pages/UniversityVendorDashboard.jsx";
+import VendorUniversityLayout from "./Pages/VendorUniversityLayout.jsx";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +111,10 @@ function App() {
               <Route
                 path="/colleges/courses/:collegeId"
                 element={<CollegeCourses />}
+              />
+               <Route
+                path="/colleges/edit/:collegeId"
+                element={<ManageCollege  />}
               />
               <Route
                 path="/colleges/infrastructure/:collegeId"
@@ -172,19 +181,20 @@ function App() {
                 </Route>
               )}
 
+              {/* {
+                chekc && </vendor-college/edit-college
+              } */}
+
               {subrole === "university" && (
-                <Route path="/vendor-university" element={<VendorLayout />}>
-                  <Route
-                    index
-                    element={<div>University Vendor Dashboard</div>}
-                  />
+                <Route path="/vendor-university" element={<VendorUniversityLayout />}>
+                  <Route index element={<UniversityVendorDashboard />} />
                   <Route
                     path="university-dashboard"
-                    element={<div>University Dashboard Page</div>}
+                    element={<UniversityVendorDashboard />}
                   />
                   {/* Add university-specific vendor pages here */}
                 </Route>
-              )}
+               )} 
             </Route>
 
             {/* ❌ Redirect Unauthenticated Users to Login */}
