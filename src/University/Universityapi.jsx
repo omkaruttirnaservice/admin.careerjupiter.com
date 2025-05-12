@@ -350,7 +350,8 @@
 
 
 import axios from "axios"
-import { API_BASE_URL } from "../constant/constantBaseUrl"
+// import { API_BASE_URL } from "../constant/constantBaseUrl"
+import { API_BASE_URL } from "../Constant/constantBaseUrl"
 
 /**
  * Fetch university categories
@@ -358,7 +359,7 @@ import { API_BASE_URL } from "../constant/constantBaseUrl"
  */
 export const fetchUniversityCategories = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/college/search`)
+    const response = await axios.get(`${API_BASE_URL}/api/university/search/cat`)
     return response.data
   } catch (error) {
     console.error("Error fetching categories:", error)
@@ -523,12 +524,7 @@ export const fetchUniversityById = async (id) => {
   }
 }
 
-/**
- * Update university with proper file handling
- * @param {string} id - University ID
- * @param {Object} universityData - University form data
- * @returns {Promise<Object>} API response
- */
+
 export const updateUniversity = async (id, universityData) => {
   // Create a FormData object to properly handle file uploads
   const formData = new FormData()
@@ -634,27 +630,21 @@ export const updateUniversity = async (id, universityData) => {
     formData.append("image", universityData.image)
   }
 
-  // Send the request with proper headers for multipart/form-data
-  const response = await axios.put(`${API_BASE_URL}/api/university/${id}`, formData, {
+  const response = await axios.put(`${API_BASE_URL}/api/university/update/${id}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   })
-
   return response.data
 }
 
-/**
- * Delete a university by ID
- * @param {string} id - University ID
- * @returns {Promise<Object>} API response
- */
+
 export const deleteUniversity = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/api/university/${id}`)
+    const response = await axios.delete(`${API_BASE_URL}/api/university/delete/${id}`)
     return response.data
   } catch (error) {
-    console.error(`Error deleting university ${id}:`, error)
+    // console.error(`Error deleting university ${id}:`, error)
     throw error
   }
 }
