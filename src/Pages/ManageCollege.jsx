@@ -3,20 +3,18 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
-
-import InputField from "../component/inputField";
-import MultiSelectDropdown from "../component/multiSelectDropdown";
-import SingleSelectDropdown from "../component/singleSelectDropdown";
-import MultiSelectField from "../component/multiSelectField";
-import AddressModal from "../component/addressModel";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import InputField from "../Component/InputField";
+import MultiSelectDropdown from "../Component/MultiSelectDropdown";
+import SingleSelectDropdown from "../Component/SingleSelectDropdown";
+import MultiSelectField from "../Component/MultiSelectField";
+import AddressModal from "../Component/AddressModel";
 import FileUpload from "../Component/FileUpload";
 import { MdDone } from "react-icons/md";
 import { FaWindowClose } from "react-icons/fa";
-import CollegeAddressModal from "../component/collegeAddressModal";
-import { getCookie } from "../utlis/cookieHelper";
+
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
   try {
@@ -52,14 +50,13 @@ const entranceExams = [
 ];
 const ManageCollege = () => {
   const navigate = useNavigate();
-  const { id: collegeIdFromParams } = useParams();
   const storedCollegeId = Cookies.get("collegeID");
   const [collegeId, setCollegeId] = useState(storedCollegeId || "");
   const [collegeDetails, setCollegeDetails] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showOtherInput, setShowOtherInput] = useState(false);
-  // const [customCategory, setCustomCategory] = useState("");
+  const [customCategory, setCustomCategory] = useState("");
   const [dynamicCategories, setDynamicCategories] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // ✅ Loading state
@@ -97,54 +94,20 @@ const ManageCollege = () => {
       label: "Authorized Person Phone",
       placeholder: "Enter phone number",
     },
-    {
-      name: "designation",
-      label: "Designation",
-      placeholder: "Enter designation",
-    }, // ✅ NEW
   ];
 
   console.log("📌 Retrieved College ID from Cookies:", collegeId);
 
- // Get user role and subrole
-  const role = Cookies.get('role');
-  const subrole = Cookies.get('subrole');
-
-
   // Fetch College Details
-  // useEffect(() => {
-  //   const storedCollegeId = Cookies.get("collegeID");
-  //   if (storedCollegeId) {
-  //     setCollegeId(storedCollegeId);
-  //     console.log("College ID retrieved from cookies:", storedCollegeId);
-  //   } else {
-  //     console.warn("College ID not found in cookies!");
-  //   }
-  // }, []);
-
-  // Set collegeId from either URL params (admin) or cookies (vendor)
   useEffect(() => {
-    const collegeIdFromCookie = getCookie('collegeID');
-    const id = collegeIdFromParams || collegeIdFromCookie;
-    
-    if (id) {
-      setCollegeId(id);
-      console.log('College ID for editing:', id);
-      
-      // If admin is accessing, store the collegeId in cookie temporarily
-      if (role === 'ADMIN' && collegeIdFromParams) {
-        Cookies.set('collegeID', id, { expires: 1 }); // Expires in 1 day
-      }
+    const storedCollegeId = Cookies.get("collegeID");
+    if (storedCollegeId) {
+      setCollegeId(storedCollegeId);
+      console.log("College ID retrieved from cookies:", storedCollegeId);
     } else {
-      console.warn('College ID not found!');
-      Swal.fire({
-        icon: 'error',
-        title: 'College ID Missing',
-        text: 'Please select a college first',
-      });
-      navigate(role === 'ADMIN' ? '/colleges' : '/vendor-college');
+      console.warn("College ID not found in cookies!");
     }
-  }, [collegeIdFromParams, role, navigate]);
+  }, []);
 
   // useEffect(() => {
   //   const fetchCollegeDetails = async () => {
@@ -225,13 +188,14 @@ const ManageCollege = () => {
       } catch (error) {
         console.error("Error fetching college details:", error);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false); // ✅ Done loading
       }
     };
 
     fetchCollegeDetails();
   }, []);
 
+  // ✅ Initialize Formik
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: collegeDetails || {
@@ -254,7 +218,6 @@ const ManageCollege = () => {
           nearbyLandmarks: "",
           authorizedName: "",
           authorizedPhone: "",
-          designation: "",
         },
       ],
       info: { description: "" },
@@ -273,12 +236,12 @@ const ManageCollege = () => {
       try {
         const formData = new FormData();
 
-        
+        // ✅ Handle image file upload
         if (values.image instanceof File) {
           formData.append("image", values.image);
         }
 
-        
+        // ✅ Append primitive fields
         const primitiveFields = [
           "collegeName",
           "collegeType",
@@ -350,13 +313,9 @@ const ManageCollege = () => {
           text: "✅ College updated successfully!",
           confirmButtonText: "OK",
         }).then((result) => {
-          // if (result.isConfirmed) {
-          //   navigate("/vendor-college/college-dashboard");
-          // }
-            if (result.isConfirmed) {
-        const role = Cookies.get('role');
-        navigate(role === 'ADMIN' ? '/colleges' : '/vendor-college/college-dashboard');
-      }
+          if (result.isConfirmed) {
+            navigate("/vendor-college/college-dashboard");
+          }
         });
       } catch (error) {
         console.error("❌ Error updating college:", error);
@@ -629,13 +588,8 @@ const ManageCollege = () => {
                             {addr.pincode}
                           </p>
                           <p className="text-gray-600 text-xs mt-1">
-                            👤 {addr.autorizedName}{" "}
-                            {addr.designation && (
-                              <span className="ml-1 italic text-gray-500">
-                                ({addr.designation})
-                              </span>
-                            )}{" "}
-                            &nbsp; 📞 {addr.autorizedPhono}
+                            👤 {addr.autorizedName} &nbsp; 📞{" "}
+                            {addr.autorizedPhono}
                           </p>
                         </div>
 
@@ -737,7 +691,7 @@ const ManageCollege = () => {
               </div>
             </form>
           </div>
-          <CollegeAddressModal
+          <AddressModal
             open={showAddressModal}
             onClose={() => setShowAddressModal(false)}
             onSave={(newAddress) => {

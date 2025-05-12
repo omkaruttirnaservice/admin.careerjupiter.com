@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function UniversityInfrastructure() {

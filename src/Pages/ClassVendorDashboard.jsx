@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import {
   FaUserCircle,
   FaChalkboardTeacher,
@@ -18,8 +18,8 @@ import {
 import { HiAcademicCap } from "react-icons/hi"; // More educational & attractive
 
 
-import { getCookie } from "../utlis/cookieHelper"; // ✅ Import getCookie function
-import ClassVendorSideMenu from "./classVendorSideMenu";
+import { getCookie } from "../Utlis/cookieHelper"; // ✅ Import getCookie function
+import ClassVendorSideMenu from "./ClassVendorSideMenu";
 
 const ClassVendorDashboard = () => {
   const [classDetails, setClassDetails] = useState(null);

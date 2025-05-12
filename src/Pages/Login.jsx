@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
-
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import Swal from "sweetalert2";
 import {
   FaMobileAlt,
@@ -14,9 +13,7 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-// import { setAuthCookies } from "../Utlis/cookieHelper";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
-import { setAuthCookies } from "../utlis/cookieHelper";
+import { setAuthCookies } from "../Utlis/cookieHelper";
 
 const Login = () => {
   const [mobileNo, setMobileNo] = useState("");

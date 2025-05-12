@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { API_BASE_URL } from "../constant/constantBaseUrl";
+import { API_BASE_URL } from "../Constant/constantBaseUrl";
+
 
 const scholarshipOptions = ["Merit based", "Need based", "Sports", "Minority"];
 const quotaOptions = ["General", "OBC", "SC", "ST", "EWS"];

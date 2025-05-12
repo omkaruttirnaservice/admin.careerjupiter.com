@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import axios from "axios";
+import CurrentLocationButton from "./CurrentLocationButton";
 
 const SearchBar = ({ onSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
