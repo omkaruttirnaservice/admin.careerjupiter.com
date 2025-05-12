@@ -53,7 +53,7 @@
 
 // export default DeleteConfirmationModal
 
-"use client"
+
 
 import { FaExclamationTriangle, FaTimes } from "react-icons/fa"
 

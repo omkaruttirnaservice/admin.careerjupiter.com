@@ -650,12 +650,13 @@ const UniversityForm = ({
   const toOptions = (arr) => arr.map((item) => ({ value: item, label: item }));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full bg-white shadow-xl rounded-xl p-8 border border-blue-300"
-    >
+   <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+  className="w-[70%] mx-auto bg-white shadow-xl rounded-xl p-8 border border-blue-300"
+>
+
       <div className="flex justify-between items-center bg-gradient-to-r from-blue-700 to-blue-500 text-white p-5 rounded-t-lg shadow-lg">
         <h2 className="text-3xl font-bold flex items-center gap-4">
           <FaUniversity
