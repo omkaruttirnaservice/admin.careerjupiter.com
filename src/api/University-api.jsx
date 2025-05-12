@@ -25,7 +25,9 @@
 
 
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../Constant/constantBaseUrl.jsx";
+// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+
 
 export const api = axios.create({
   baseURL: API_BASE_URL, // Use the imported constant instead of hardcoding
