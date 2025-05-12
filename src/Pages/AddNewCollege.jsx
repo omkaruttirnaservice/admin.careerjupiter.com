@@ -8,18 +8,23 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import "react-toastify/dist/ReactToastify.css";
 import { FaUniversity, FaImage, FaCheckCircle } from "react-icons/fa";
-import MultiSelectDropdown from "../Component/MultiSelectDropdown";
-import MultiSelectField from "../Component/MultiSelectField";
-import InputField from "../Component/InputField";
-import TextAreaField from "../Component/TextAreaField";
-import AddressModal from "../Component/AddressModel";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+
+
+import MultiSelectDropdown from "../component/multiSelectDropdown";
+import MultiSelectField from "../component/multiSelectField";
+import InputField from "../component/inputField";
+import TextAreaField from "../component/textAreaField";
+import AddressModal from "../component/addressModel";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 import axios from "axios";
+// import FileUpload from "../component/fileUpload";
 import FileUpload from "../Component/FileUpload";
-import SingleSelectDropdown from "../Component/SingleSelectDropdown";
+import SingleSelectDropdown from "../component/singleSelectDropdown";
 import Swal from "sweetalert2";
-import { setAuthCookies } from "../Utlis/cookieHelper";
+import { setAuthCookies } from "../utlis/cookieHelper";
 import { useNavigate } from "react-router-dom";
+import CollegeFileUpload from "../component/collegeFileUpload";
+import CollegeAddressModal from "../component/collegeAddressModal";
 
 // Constant Values for Accreditations
 const accreditationOptions = [
@@ -313,6 +318,10 @@ const AddNewCollege = () => {
           formData.append(
             `address[${idx}][autorizedPhono]`,
             address.autorizedPhono
+          );
+          formData.append(
+            `address[${idx}][designation]`,
+            address.designation
           );
         });
 
@@ -836,7 +845,7 @@ const AddNewCollege = () => {
             />
 
             {/* Image Gallery  */}
-            <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
+            {/* <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
               <label className="block font-semibold text-blue-800 mb-2">
                 Gallery Images{" "}
                 <span className="text-red-500">(Max: 100KB, JPG/JPEG/PNG)</span>
@@ -867,7 +876,7 @@ const AddNewCollege = () => {
                 )}
               </div>
               {/* Gallery Image Input  */}
-              <input
+              {/* <input
                 type="file"
                 id="galleryImages"
                 accept="image/jpeg,image/jpg,image/png"
@@ -880,7 +889,14 @@ const AddNewCollege = () => {
                   {formik.errors.gallery_image}
                 </p>
               )}
-            </div>
+            </div> */} 
+
+<CollegeFileUpload
+                  label="Gallery Images"
+                  name="gallery_image"
+                  multiple
+                  formik={formik}
+                />
           </div>
 
           {/* Address Section */}
@@ -939,7 +955,11 @@ const AddNewCollege = () => {
                           {addr.pincode}
                         </p>
                         <p className="text-gray-600 text-xs mt-1">
-                          👤 {addr.autorizedName} &nbsp; 📞{" "}
+                          👤 {addr.autorizedName}  {addr.designation && (
+                  <span className="ml-1 italic text-gray-500">
+                    ({addr.designation})
+                  </span>
+                )}&nbsp; 📞{" "}
                           {addr.autorizedPhono}
                         </p>
                       </div>
@@ -1030,7 +1050,7 @@ const AddNewCollege = () => {
         </form>
 
         {/* Address Modal */}
-        <AddressModal
+        <CollegeAddressModal
           open={showAddressModal}
           onClose={() => setShowAddressModal(false)}
           initialData={

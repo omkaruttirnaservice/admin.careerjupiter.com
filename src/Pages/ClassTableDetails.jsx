@@ -3,9 +3,9 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import EditClassDetails from "./EditClassDetails";
-import ClassInfoCard from "./ClassInforCard";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
+import EditClassDetails from "./editClassDetails";
+import ClassInfoCard from "./classInforCard";
 import Swal from "sweetalert2";
 
 const ClassTableDetails = () => {
@@ -245,7 +245,7 @@ const ClassTableDetails = () => {
               rel="noopener noreferrer"
               className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer inline-block"
             >
-              Visit Website
+              Visit
             </a>
           ) : (
             <span className="text-gray-500">N/A</span>
@@ -316,7 +316,18 @@ const ClassTableDetails = () => {
           highlightOnHover
           responsive
           progressPending={loading}
-          progressComponent={<div>Loading...</div>}
+          // progressComponent={<div>Loading...</div>}
+           progressComponent={
+            <div className="p-4 flex justify-center items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              <span className="ml-3 text-blue-500 font-medium">Loading...</span>
+            </div>
+          }
+          noDataComponent={
+            <div className="p-4 text-center text-gray-500">
+              No class found. Try a different search term.
+            </div>
+          }
           customStyles={{
             headRow: { style: { backgroundColor: "#2563eb", color: "white" } },
             rows: { style: { backgroundColor: "#f0f9ff" } },

@@ -1,13 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import { getCookie, clearAuthCookies } from "../Utlis/cookieHelper";
-import { HomeIcon, ClipboardCheckIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
 import { FaUniversity } from "react-icons/fa";
+import { HomeIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
+import { BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
-import { BookOpenIcon, BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
+import { clearAuthCookies } from "../utlis/cookieHelper";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -19,42 +17,40 @@ const getGreeting = () => {
 const navigation = [
   {
     name: "Dashboard",
-    href: "/vendor-college/college-dashboard",
+    href: "/vendor-university/university-dashboard",
     icon: HomeIcon,
-    color: "text-blue-400",
-  },
-  {
-    name: "Manage College",
-    href: "/vendor-college/edit-college",
-    icon: AcademicCapIcon,
     color: "text-green-400",
   },
   {
-    name: "Manage Courses",
-    href: "/vendor-college/add-college-courses",
-    icon:  BookOpenTextIcon,
-    color: "text-pink-400",
+    name: "Manage University",
+    href: "/vendor-university/edit-university",
+    icon: AcademicCapIcon,
+    color: "text-lime-400",
   },
   {
-    name: "Manage infrastructure",
-    href: "/vendor-college/add-college-infrastructure",
-    icon:   ChartBarIcon,
-    color: "text-purple-400",
+    name: "Manage Courses",
+    href: "/vendor-university/add-university-courses",
+    icon: BookOpenTextIcon,
+    color: "text-blue-400",
+  },
+  {
+    name: "Manage Infrastructure",
+    href: "/vendor-university/add-university-infrastructure",
+    icon: ChartBarIcon,
+    color: "text-yellow-400",
   },
   {
     name: "Manage Placement",
-    href: "/vendor-college/add-college-placement",
+    href: "/vendor-university/add-university-placement",
     icon: BriefcaseIcon,
     color: "text-gray-400",
   },
 ];
 
-const CollegeVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
+const UniversityVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(location.pathname);
-  const [collegeDetails, setCollegeDetails] = useState(null);
-  const [collegeId, setCollegeId] = useState(null);
   const greeting = getGreeting();
 
   useEffect(() => {
@@ -73,35 +69,10 @@ const CollegeVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         clearAuthCookies();
-        window.location.href = "/"; 
+        window.location.href = "/";
       }
     });
   };
-
-  // useEffect(() => {
-  //   const storedCollegeId = getCookie("collegeId");
-  //   if (storedCollegeId) {
-  //     setCollegeId(storedCollegeId);
-  //   } else {
-  //     console.warn("College ID not found in cookies!");
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchCollegeDetails = async () => {
-  //     if (!collegeId) return;
-
-  //     try {
-  //       const response = await axios.get(`${API_BASE_URL}/api/college/${collegeId}`);
-  //       const collegeData = response.data?.data?.college;
-  //       setCollegeDetails({ ...collegeData });
-  //     } catch (error) {
-  //       console.error("Error fetching college details:", error?.response?.data || error.message);
-  //     }
-  //   };
-
-  //   fetchCollegeDetails();
-  // }, [collegeId]);
 
   return (
     <div
@@ -141,7 +112,7 @@ const CollegeVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
             transition={{ delay: 0.5 }}
             className="text-sm text-blue-200 mt-1"
           >
-            Ready to build your college profile!
+            Manage your university profile!
           </motion.p>
         </div>
 
@@ -184,4 +155,4 @@ const CollegeVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   );
 };
 
-export default CollegeVendorSideMenu;
+export default UniversityVendorSideMenu;

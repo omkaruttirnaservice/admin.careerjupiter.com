@@ -8,7 +8,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
 import Root from "./Component/Root";
-// import { Navigate } from "react-router-dom";
+
 import Login from "./Pages/Login";
 import CollegeTableDetails from "./Pages/CollegeTableDetails";
 import MultiStepForm from "./Pages/AddNewCollege";
@@ -16,17 +16,16 @@ import ReportandAnalytics from "./Pages/ReportandAnalytics";
 import AdminDashboard from "./Pages/AdminDashboard";
 import ProfilePage from "./Pages/ProfilePage";
 import CollegeCourses from "./Courses/CollegeCourses";
-import EditCollegeDetails from "./Component/EditCollegeDetails";
+// import EditCollegeDetails from "./Component/EditCollegeDetails";
 import AddUniversity from "./University/AddUniversity";
-// import EditUniversity from "./University/EditUniversity";
 import UniversityList from "./University/UniversityLIst.jsx";
 
 import UniversityTableDetails from "./Pages/UniversityTableDetails";
 import UniversityPlacement from "./Component/UniversityPlacement";
 
-import TableList from "./Component/IQTestPage/TableList";
-import AddTest from "./Component/IQTestPage/AddTest.jsx";
-import ViewExcelPage from "./Component/IQTestPage/ViewExcelPage.jsx";
+// import TableList from "./Component/IQTestPage/TableList";
+// import AddTest from "./Component/IQTestPage/AddTest.jsx";
+// import ViewExcelPage from "./Component/IQTestPage/ViewExcelPage.jsx";
 
 import Infrastructure from "./Component/Infrastructure";
 import Placement from "./Component/Placement";
@@ -50,6 +49,12 @@ import ManageCollege from "./Pages/ManageCollege.jsx";
 import CollegeVendorDashboard from "./Pages/CollegeVendorDashboard.jsx";
 import VendorCollegeLayout from "./Pages/VendorCollegeLayout.jsx";
 import EditUniversity from "./University/EditUniversity.jsx";
+import UniversityVendorDashboard from "./Pages/UniversityVendorDashboard.jsx";
+import VendorUniversityLayout from "./Pages/VendorUniversityLayout.jsx";
+import ViewExcelPage from "./Component/iqTestPage/ViewExcelPage.jsx";
+import AddTest from "./Component/iqTestPage/addTest.jsx";
+import TableList from "./Component/iqTestPage/TableList.jsx";
+import EditCollegeDetails from "./component/editCollegeDetails.jsx";
 
 const queryClient = new QueryClient();
 
@@ -73,7 +78,7 @@ function App() {
               <Route path="/colleges" element={<CollegeTableDetails />} />
               <Route
                 path="/university-details"
-                element={<UniversityTableDetails />}
+                element={<UniversityList />}
               />
               <Route
                 path="/university/placement/:universityId"
@@ -109,6 +114,10 @@ function App() {
               <Route
                 path="/colleges/courses/:collegeId"
                 element={<CollegeCourses />}
+              />
+               <Route
+                path="/colleges/edit/:collegeId"
+                element={<ManageCollege  />}
               />
               <Route
                 path="/colleges/infrastructure/:collegeId"
@@ -175,19 +184,20 @@ function App() {
                 </Route>
               )}
 
+              {/* {
+                chekc && </vendor-college/edit-college
+              } */}
+
               {subrole === "university" && (
-                <Route path="/vendor-university" element={<VendorLayout />}>
-                  <Route
-                    index
-                    element={<div>University Vendor Dashboard</div>}
-                  />
+                <Route path="/vendor-university" element={<VendorUniversityLayout />}>
+                  <Route index element={<UniversityVendorDashboard />} />
                   <Route
                     path="university-dashboard"
-                    element={<div>University Dashboard Page</div>}
+                    element={<UniversityVendorDashboard />}
                   />
                   {/* Add university-specific vendor pages here */}
                 </Route>
-              )}
+               )} 
             </Route>
 
             {/* ❌ Redirect Unauthenticated Users to Login */}
