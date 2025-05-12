@@ -16,16 +16,16 @@ import ReportandAnalytics from "./Pages/ReportandAnalytics";
 import AdminDashboard from "./Pages/AdminDashboard";
 import ProfilePage from "./Pages/ProfilePage";
 import CollegeCourses from "./Courses/CollegeCourses";
-import EditCollegeDetails from "./Component/EditCollegeDetails";
+// import EditCollegeDetails from "./Component/EditCollegeDetails";
 import AddUniversity from "./University/AddUniversity";
 import UniversityList from "./University/UniversityLIst.jsx";
 
 import UniversityTableDetails from "./Pages/UniversityTableDetails";
 import UniversityPlacement from "./Component/UniversityPlacement";
 
-import TableList from "./Component/IQTestPage/TableList";
-import AddTest from "./Component/IQTestPage/AddTest.jsx";
-import ViewExcelPage from "./Component/IQTestPage/ViewExcelPage.jsx";
+// import TableList from "./Component/IQTestPage/TableList";
+// import AddTest from "./Component/IQTestPage/AddTest.jsx";
+// import ViewExcelPage from "./Component/IQTestPage/ViewExcelPage.jsx";
 
 import Infrastructure from "./Component/Infrastructure";
 import Placement from "./Component/Placement";
@@ -51,6 +51,10 @@ import VendorCollegeLayout from "./Pages/VendorCollegeLayout.jsx";
 import EditUniversity from "./University/EditUniversity.jsx";
 import UniversityVendorDashboard from "./Pages/UniversityVendorDashboard.jsx";
 import VendorUniversityLayout from "./Pages/VendorUniversityLayout.jsx";
+import ViewExcelPage from "./Component/iqTestPage/ViewExcelPage.jsx";
+import AddTest from "./Component/iqTestPage/addTest.jsx";
+import TableList from "./Component/iqTestPage/TableList.jsx";
+import EditCollegeDetails from "./component/editCollegeDetails.jsx";
 
 const queryClient = new QueryClient();
 

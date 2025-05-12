@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { useNavigate } from "react-router-dom";
 import { Categories } from "emoji-picker-react";
 import Swal from "sweetalert2";
