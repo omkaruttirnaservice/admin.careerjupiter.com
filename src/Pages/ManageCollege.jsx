@@ -5,19 +5,18 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
-
-import InputField from "../Component/InputField";
-import MultiSelectDropdown from "../Component/MultiSelectDropdown";
-import SingleSelectDropdown from "../Component/SingleSelectDropdown";
-import MultiSelectField from "../Component/MultiSelectField";
-import AddressModal from "../Component/AddressModel";
+import InputField from "../component/inputField";
+import MultiSelectDropdown from "../component/multiSelectDropdown";
+import SingleSelectDropdown from "../component/singleSelectDropdown";
+import MultiSelectField from "../component/multiSelectField";
+import AddressModal from "../component/addressModel";
 import FileUpload from "../Component/FileUpload";
 import { MdDone } from "react-icons/md";
 import { FaWindowClose } from "react-icons/fa";
-import CollegeAddressModal from "../Component/CollegeAddressModal";
-import { getCookie } from "../Utlis/cookieHelper";
+import CollegeAddressModal from "../component/collegeAddressModal";
+import { getCookie } from "../utlis/cookieHelper";
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
   try {

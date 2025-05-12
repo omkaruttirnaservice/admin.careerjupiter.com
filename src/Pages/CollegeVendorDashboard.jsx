@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 import {
   FaUniversity,
   FaPhone,
@@ -12,7 +12,7 @@ import {
   FaGraduationCap,
 } from "react-icons/fa";
 import { HiAcademicCap } from "react-icons/hi";
-import { getCookie } from "../Utlis/cookieHelper";
+import { getCookie } from "../utlis/cookieHelper";
 
 // const CollegeVendorDashboard = () => {
  

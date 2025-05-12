@@ -5,7 +5,7 @@ import { HomeIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
 import { BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
-import { clearAuthCookies } from "../Utlis/cookieHelper";
+import { clearAuthCookies } from "../utlis/cookieHelper";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
