@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
 import InputField from "../Component/InputField";
@@ -14,7 +14,8 @@ import AddressModal from "../Component/AddressModel";
 import FileUpload from "../Component/FileUpload";
 import { MdDone } from "react-icons/md";
 import { FaWindowClose } from "react-icons/fa";
-
+import CollegeAddressModal from "../Component/CollegeAddressModal";
+import { getCookie } from "../Utlis/cookieHelper";
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
   try {
@@ -50,13 +51,14 @@ const entranceExams = [
 ];
 const ManageCollege = () => {
   const navigate = useNavigate();
+  const { id: collegeIdFromParams } = useParams();
   const storedCollegeId = Cookies.get("collegeID");
   const [collegeId, setCollegeId] = useState(storedCollegeId || "");
   const [collegeDetails, setCollegeDetails] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showOtherInput, setShowOtherInput] = useState(false);
-  const [customCategory, setCustomCategory] = useState("");
+  // const [customCategory, setCustomCategory] = useState("");
   const [dynamicCategories, setDynamicCategories] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // ✅ Loading state
@@ -94,20 +96,54 @@ const ManageCollege = () => {
       label: "Authorized Person Phone",
       placeholder: "Enter phone number",
     },
+    {
+      name: "designation",
+      label: "Designation",
+      placeholder: "Enter designation",
+    }, // ✅ NEW
   ];
 
   console.log("📌 Retrieved College ID from Cookies:", collegeId);
 
+ // Get user role and subrole
+  const role = Cookies.get('role');
+  const subrole = Cookies.get('subrole');
+
+
   // Fetch College Details
+  // useEffect(() => {
+  //   const storedCollegeId = Cookies.get("collegeID");
+  //   if (storedCollegeId) {
+  //     setCollegeId(storedCollegeId);
+  //     console.log("College ID retrieved from cookies:", storedCollegeId);
+  //   } else {
+  //     console.warn("College ID not found in cookies!");
+  //   }
+  // }, []);
+
+  // Set collegeId from either URL params (admin) or cookies (vendor)
   useEffect(() => {
-    const storedCollegeId = Cookies.get("collegeID");
-    if (storedCollegeId) {
-      setCollegeId(storedCollegeId);
-      console.log("College ID retrieved from cookies:", storedCollegeId);
+    const collegeIdFromCookie = getCookie('collegeID');
+    const id = collegeIdFromParams || collegeIdFromCookie;
+    
+    if (id) {
+      setCollegeId(id);
+      console.log('College ID for editing:', id);
+      
+      // If admin is accessing, store the collegeId in cookie temporarily
+      if (role === 'ADMIN' && collegeIdFromParams) {
+        Cookies.set('collegeID', id, { expires: 1 }); // Expires in 1 day
+      }
     } else {
-      console.warn("College ID not found in cookies!");
+      console.warn('College ID not found!');
+      Swal.fire({
+        icon: 'error',
+        title: 'College ID Missing',
+        text: 'Please select a college first',
+      });
+      navigate(role === 'ADMIN' ? '/colleges' : '/vendor-college');
     }
-  }, []);
+  }, [collegeIdFromParams, role, navigate]);
 
   // useEffect(() => {
   //   const fetchCollegeDetails = async () => {
@@ -218,6 +254,7 @@ const ManageCollege = () => {
           nearbyLandmarks: "",
           authorizedName: "",
           authorizedPhone: "",
+          designation: "",
         },
       ],
       info: { description: "" },
@@ -313,9 +350,13 @@ const ManageCollege = () => {
           text: "✅ College updated successfully!",
           confirmButtonText: "OK",
         }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/vendor-college/college-dashboard");
-          }
+          // if (result.isConfirmed) {
+          //   navigate("/vendor-college/college-dashboard");
+          // }
+            if (result.isConfirmed) {
+        const role = Cookies.get('role');
+        navigate(role === 'ADMIN' ? '/colleges' : '/vendor-college/college-dashboard');
+      }
         });
       } catch (error) {
         console.error("❌ Error updating college:", error);
@@ -588,8 +629,13 @@ const ManageCollege = () => {
                             {addr.pincode}
                           </p>
                           <p className="text-gray-600 text-xs mt-1">
-                            👤 {addr.autorizedName} &nbsp; 📞{" "}
-                            {addr.autorizedPhono}
+                            👤 {addr.autorizedName}{" "}
+                            {addr.designation && (
+                              <span className="ml-1 italic text-gray-500">
+                                ({addr.designation})
+                              </span>
+                            )}{" "}
+                            &nbsp; 📞 {addr.autorizedPhono}
                           </p>
                         </div>
 
@@ -691,7 +737,7 @@ const ManageCollege = () => {
               </div>
             </form>
           </div>
-          <AddressModal
+          <CollegeAddressModal
             open={showAddressModal}
             onClose={() => setShowAddressModal(false)}
             onSave={(newAddress) => {

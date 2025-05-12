@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import CollegeVendorSideMenu from "./CollegeVendorSideMenu ";
+import UniversityVendorSideMenu from "./UniversityVendorSideMenu";
 
-const VendorCollegeLayout = () => {
+const VendorUniversityLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <>
       <button
         className="fixed top-5 left-4 p-3 rounded-full shadow-md md:hidden transition-all duration-300 transform hover:scale-110 active:scale-95
-                   bg-gradient-to-r from-blue-500 to-blue-700 opacity-60 hover:opacity-100 text-white z-80 cursor-pointer"
+                   bg-gradient-to-r from-green-500 to-green-700 opacity-60 hover:opacity-100 text-white z-80 cursor-pointer"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         <MdMenu size={24} />
       </button>
 
-      <CollegeVendorSideMenu
+      <UniversityVendorSideMenu
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
       />
@@ -34,4 +34,4 @@ const VendorCollegeLayout = () => {
   );
 };
 
-export default VendorCollegeLayout;
+export default VendorUniversityLayout;

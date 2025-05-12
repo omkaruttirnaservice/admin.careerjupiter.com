@@ -17,6 +17,10 @@ const InfoCard = ({ collegeData, onClose }) => {
       <hr />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-4">
+          <div>
+            <strong className="text-blue-700">🏫 College Id:</strong>
+            <p className="text-gray-800 font-medium">{collegeData?.collegeId || "N/A"}</p>
+          </div>
           {/* College Name */}
           <div>
             <strong className="text-blue-700">🏫 College Name:</strong>
@@ -48,6 +52,13 @@ const InfoCard = ({ collegeData, onClose }) => {
             <strong className="text-blue-700">📞 Contact:</strong>
             <p className="text-gray-800 font-medium">
               {collegeData?.contactDetails || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <strong className="text-blue-700">📞 Email Id:</strong>
+            <p className="text-gray-800 font-medium">
+              {collegeData?.email_id || "N/A"}
             </p>
           </div>
 

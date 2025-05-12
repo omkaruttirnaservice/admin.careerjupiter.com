@@ -757,27 +757,56 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getCookie } from "../Utlis/cookieHelper";
+import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 
 const Infrastructure = () => {
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
+ const { collegeId: collegeIdFromParams } = useParams();
   const [collegeId, setCollegeId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const collegeId = getCookie("collegeID");
-    if (collegeId) {
-      setCollegeId(collegeId);
-      console.log("collegeId for infrastructure",collegeId);
-    } else {
-      console.warn("College ID not found in cookies!");
-    }
-  }, []);
+ // Get role and subrole
+  const role = Cookies.get("role");
+  const subrole = Cookies.get("subrole");
 
+  // useEffect(() => {
+  //   const collegeId = getCookie("collegeID");
+  //   if (collegeId) {
+  //     setCollegeId(collegeId);
+  //     console.log("collegeId for infrastructure",collegeId);
+  //   } else {
+  //     console.warn("College ID not found in cookies!");
+  //   }
+  // }, []);
+
+   // Set collegeId from either URL params (admin) or cookies (vendor)
+  useEffect(() => {
+    const collegeIdFromCookie = getCookie("collegeID");
+    const id = collegeIdFromParams || collegeIdFromCookie;
+    
+    if (id) {
+      setCollegeId(id);
+      console.log("College ID for infrastructure:", id);
+      
+      // If admin is accessing, store the collegeId in cookie temporarily
+      if (role === "ADMIN" && collegeIdFromParams) {
+        Cookies.set("collegeID", id, { expires: 1 }); // Expires in 1 day
+      }
+    } else {
+      console.warn("College ID not found!");
+      Swal.fire({
+        icon: "error",
+        title: "College ID Missing",
+        text: "Please select a college first",
+      });
+      navigate(role === "ADMIN" ? "/colleges" : "/vendor-college");
+    }
+  }, [collegeIdFromParams, role, navigate]);
 
   const validationSchema = Yup.object({
         infrastructure: Yup.array().of(
@@ -895,7 +924,9 @@ const Infrastructure = () => {
             numberOfClassrooms: parseInt(infra.numberOfClassrooms) || 0,
             numberOfLabs: parseInt(infra.numberOfLabs) || 0,
             sportsFacilities: infra.sportsFacilities || [],
-            hostelAvailability: infra.hostelAvailability,
+            // hostelAvailability: infra.hostelAvailability,
+            // hostelDetails: infra.hostelAvailability ? infra.hostelDetails : "",
+            hostelAvailability: Boolean(infra.hostelAvailability),
             hostelDetails: infra.hostelAvailability ? infra.hostelDetails : "",
             canteenAndFoodServices: infra.canteenAndFoodServices,
             medicalFacilities: infra.medicalFacilities,
@@ -1333,7 +1364,7 @@ const Infrastructure = () => {
             </div>
 
             {/* Hostel Availability */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="block text-lg text-blue-700 font-medium mb-1">
                 Hostel Availability:
               </label>
@@ -1356,7 +1387,7 @@ const Infrastructure = () => {
             </div>
 
             {/* Hostel Details (conditionally shown) */}
-            {infra.hostelAvailability && (
+            {/* {infra.hostelAvailability && (
               <div className="mb-4">
                 <label className="block text-lg text-blue-700 font-medium mb-1">
                   Hostel Details:
@@ -1377,7 +1408,69 @@ const Infrastructure = () => {
                     </p>
                   )}
               </div>
-            )}
+            )} */}
+
+
+
+{/* Hostel Availability */}
+<div className="mb-4">
+  <label className="block text-lg text-blue-700 font-medium mb-1">
+    Hostel Availability:
+  </label>
+  <select
+    name={`infrastructure[${index}].hostelAvailability`}
+    value={infra.hostelAvailability}
+    onChange={(e) => {
+      const isAvailable = e.target.value === "true";
+      formik.setFieldValue(
+        `infrastructure[${index}].hostelAvailability`,
+        isAvailable
+      );
+      // Clear details when disabling hostel
+      if (!isAvailable) {
+        formik.setFieldValue(
+          `infrastructure[${index}].hostelDetails`,
+          ""
+        );
+      }
+    }}
+    onBlur={formik.handleBlur}
+    className="w-full px-4 py-2 border border-blue-300 rounded-lg bg-white focus:ring focus:ring-blue-300 focus:border-blue-500"
+  >
+    <option value="false">Not Available</option>
+    <option value="true">Available</option>
+  </select>
+  {formik.touched.infrastructure?.[index]?.hostelAvailability &&
+    formik.errors.infrastructure?.[index]?.hostelAvailability && (
+      <p className="text-red-500 text-sm mt-1">
+        {formik.errors.infrastructure[index].hostelAvailability}
+      </p>
+    )}
+</div>
+
+{/* Hostel Details (conditionally shown) */}
+{infra.hostelAvailability && (
+  <div className="mb-4">
+    <label className="block text-lg text-blue-700 font-medium mb-1">
+      Hostel Details:
+    </label>
+    <input
+      type="text"
+      name={`infrastructure[${index}].hostelDetails`}
+      value={infra.hostelDetails}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      className="w-full px-4 py-2 border border-blue-300 rounded-lg bg-white focus:ring focus:ring-blue-300 focus:border-blue-500"
+      placeholder="eg. Separate for Boys & Girls"
+    />
+    {formik.touched.infrastructure?.[index]?.hostelDetails &&
+      formik.errors.infrastructure?.[index]?.hostelDetails && (
+        <p className="text-red-500 text-sm mt-1">
+          {formik.errors.infrastructure[index].hostelDetails}
+        </p>
+      )}
+  </div>
+)}
 
             {/* Canteen and Medical Facilities */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -20,6 +20,8 @@ import SingleSelectDropdown from "../Component/SingleSelectDropdown";
 import Swal from "sweetalert2";
 import { setAuthCookies } from "../Utlis/cookieHelper";
 import { useNavigate } from "react-router-dom";
+import CollegeFileUpload from "../Component/CollegeFileUpload";
+import CollegeAddressModal from "../Component/CollegeAddressModal";
 
 // Constant Values for Accreditations
 const accreditationOptions = [
@@ -313,6 +315,10 @@ const AddNewCollege = () => {
           formData.append(
             `address[${idx}][autorizedPhono]`,
             address.autorizedPhono
+          );
+          formData.append(
+            `address[${idx}][designation]`,
+            address.designation
           );
         });
 
@@ -836,7 +842,7 @@ const AddNewCollege = () => {
             />
 
             {/* Image Gallery  */}
-            <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
+            {/* <div className="border-2 border-dashed rounded-lg p-5 text-center shadow-md bg-white hover:border-blue-400 transition">
               <label className="block font-semibold text-blue-800 mb-2">
                 Gallery Images{" "}
                 <span className="text-red-500">(Max: 100KB, JPG/JPEG/PNG)</span>
@@ -867,7 +873,7 @@ const AddNewCollege = () => {
                 )}
               </div>
               {/* Gallery Image Input  */}
-              <input
+              {/* <input
                 type="file"
                 id="galleryImages"
                 accept="image/jpeg,image/jpg,image/png"
@@ -880,7 +886,14 @@ const AddNewCollege = () => {
                   {formik.errors.gallery_image}
                 </p>
               )}
-            </div>
+            </div> */} 
+
+<CollegeFileUpload
+                  label="Gallery Images"
+                  name="gallery_image"
+                  multiple
+                  formik={formik}
+                />
           </div>
 
           {/* Address Section */}
@@ -939,7 +952,11 @@ const AddNewCollege = () => {
                           {addr.pincode}
                         </p>
                         <p className="text-gray-600 text-xs mt-1">
-                          👤 {addr.autorizedName} &nbsp; 📞{" "}
+                          👤 {addr.autorizedName}  {addr.designation && (
+                  <span className="ml-1 italic text-gray-500">
+                    ({addr.designation})
+                  </span>
+                )}&nbsp; 📞{" "}
                           {addr.autorizedPhono}
                         </p>
                       </div>
@@ -1030,7 +1047,7 @@ const AddNewCollege = () => {
         </form>
 
         {/* Address Modal */}
-        <AddressModal
+        <CollegeAddressModal
           open={showAddressModal}
           onClose={() => setShowAddressModal(false)}
           initialData={
