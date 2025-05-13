@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import EditClassDetails from "./EditClassDetails";
+import EditClassDetails from "./editClassDetails";
 import ClassInfoCard from "./ClassInforCard";
 import Swal from "sweetalert2";
 

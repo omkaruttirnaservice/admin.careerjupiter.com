@@ -19,7 +19,7 @@ import { HiAcademicCap } from "react-icons/hi"; // More educational & attractive
 
 
 import { getCookie } from "../Utlis/cookieHelper"; // ✅ Import getCookie function
-import ClassVendorSideMenu from "./ClassVendorSideMenu";
+import ClassVendorSideMenu from "./classVendorSideMenu";
 
 const ClassVendorDashboard = () => {
   const [classDetails, setClassDetails] = useState(null);

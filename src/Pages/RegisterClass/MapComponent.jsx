@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import SearchBar from "./SearchBar";
+import SearchBar from "./searchBar";
 import { FaTrash } from "react-icons/fa";
 
 const defaultLocation = { lat: 19.7515, lan: 75.7139 };

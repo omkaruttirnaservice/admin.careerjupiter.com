@@ -756,7 +756,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { useNavigate, useParams } from "react-router-dom";
 import { getCookie } from "../Utlis/cookieHelper";
 import Cookies from "js-cookie";

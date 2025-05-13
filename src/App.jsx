@@ -18,7 +18,7 @@ import ProfilePage from "./Pages/ProfilePage";
 import CollegeCourses from "./Courses/CollegeCourses";
 import EditCollegeDetails from "./Component/EditCollegeDetails";
 import AddUniversity from "./University/AddUniversity";
-import EditUniversity from "./University/EditUniversity";
+// import EditUniversity from "./University/EditUniversity";
 import UniversityList from "./University/UniversityLIst.jsx";
 
 import UniversityTableDetails from "./Pages/UniversityTableDetails";

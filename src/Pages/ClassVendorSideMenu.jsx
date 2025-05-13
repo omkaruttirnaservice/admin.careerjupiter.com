@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import { getCookie } from "../Utlis/cookieHelper";
+import { getCookie } from "../utlis/cookieHelper";
 import {
   HomeIcon,
   ClipboardCheckIcon,
@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/solid"; // ✅ HeroIcons
 import { BookAIcon } from "lucide-react";
 import { FaUserCircle, FaUserGraduate } from "react-icons/fa";
-import { clearAuthCookies } from "../Utlis/cookieHelper";
+import { clearAuthCookies } from "../utlis/cookieHelper";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 

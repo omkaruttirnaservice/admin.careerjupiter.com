@@ -10,7 +10,7 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import { fetchAllUniversities, deleteUniversity } from "./Universityapi";
-import ViewUniversityModal from "./ViewUniversityModal";
+import ViewUniversityModal from "./viewUniversityModal";
 import DeleteConfirmationModal from "./DeleteUniversitymodal";
 import { useEffect } from "react";
 

@@ -2,7 +2,7 @@
 
 
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl.jsx";
+import { API_BASE_URL } from "../Constant/constantBaseUrl.js";
 
 
 export const api = axios.create({

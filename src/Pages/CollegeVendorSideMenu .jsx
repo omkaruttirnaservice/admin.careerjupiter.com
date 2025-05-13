@@ -194,7 +194,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
-import { getCookie, clearAuthCookies } from "../Utlis/cookieHelper";
+import { getCookie, clearAuthCookies } from "../utlis/cookieHelper";
 import { HomeIcon, LogoutIcon, AcademicCapIcon } from "@heroicons/react/solid";
 import { FaUniversity } from "react-icons/fa";
 import { motion } from "framer-motion";
