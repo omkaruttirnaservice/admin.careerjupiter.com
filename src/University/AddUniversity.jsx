@@ -6,7 +6,6 @@ import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import { fetchUniversityCategories, createUniversity } from "./universityapi"
-// import UniversityForm from "./UniversityForm"
 import UniversityForm from "./universityfrom"
 
 // State and district data for dropdowns

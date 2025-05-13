@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { Doughnut, Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { Link, useNavigate } from "react-router-dom";

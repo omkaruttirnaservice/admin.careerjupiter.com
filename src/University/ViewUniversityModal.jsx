@@ -7,7 +7,7 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
 } from "react-icons/fa";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 
 const ViewUniversityModal = ({ university, isOpen, onClose }) => {
   if (!isOpen || !university) return null;

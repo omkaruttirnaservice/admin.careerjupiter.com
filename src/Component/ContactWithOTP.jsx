@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaCheckCircle, FaSms } from "react-icons/fa";
 import axios from "axios";
 import Swal from "sweetalert2"; // ✅ Import SweetAlert
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
-
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 const ContactWithOTP = ({ formik, setVerifiedOtp }) => {
   const [otpSent, setOtpSent] = useState(false); // ✅ Controls OTP input visibility
   const [referenceId, setReferenceId] = useState(""); // ✅ Stores reference ID

@@ -11,11 +11,11 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
-import UniversityInfoCard from "../Component/UniversityInfoCard"; // Import the InfoCard component
-import EditUniversityDetails from "../Component/EditUniversityDetails"; // Import the EdituniversityDetails component
-// import Infrastructure from "../Component/Infrastructure";
-import UniversityPlacement from "../Component/UniversityPlacement";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
+import UniversityInfoCard from "../component/universityInfoCard"; // Import the InfoCard component
+import EditUniversityDetails from "../component/editUniversityDetails"; // Import the EdituniversityDetails component
+// import Infrastructure from "../component/Infrastructure";
+import UniversityPlacement from "../component/universityPlacement";
 
 const UniversityTableDetails = () => {
   const [universityData, setUniversityData] = useState([]);

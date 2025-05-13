@@ -4,19 +4,18 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { API_BASE_URL } from "../Constant/constantBaseUrl";
+import { API_BASE_URL } from "../constant/constantBaseUrl";
 import * as Yup from "yup";
-import InputField from "../Component/InputField";
-import RadioGroup from "../Component/RadioGroup";
-import CheckboxGroup from "../Component/CheckboxGroup";
-import MultiSelectDropdown from "../Component/MultiSelectDropdown";
-import { getCookie } from "../Utlis/cookieHelper";
-import AddressModal from "../Component/AddressModel";
+import InputField from "../component/inputField";
+import RadioGroup from "../component/radioGroup";
+import CheckboxGroup from "../component/checkboxGroup";
+import MultiSelectDropdown from "../component/multiSelectDropdown";
+import { getCookie } from "../utlis/cookieHelper";
+import AddressModal from "../component/addressModel";
 import Swal from "sweetalert2";
 import { MdDone } from "react-icons/md";
-import FileUpload from "../Component/FileUpload";
+import FileUpload from "../component/fileUpload";
 
-// Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
   try {
     return typeof field === "string" ? JSON.parse(field) : field;

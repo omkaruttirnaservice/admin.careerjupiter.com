@@ -22,7 +22,7 @@ import {
   LibraryBig,
   Building2,
 } from "lucide-react";
-import { clearAuthCookies } from "../utlis/cookieHelper"; // adjust path as needed
+import { clearAuthCookies } from "../utlis/cookieHelper";
 import Swal from "sweetalert2";
 
 // Sidebar items
@@ -45,12 +45,7 @@ const navigation = [
 
         color: "text-blue-400",
       },
-      // {
-      //   name: "Add New College",
-      //   href: "/add-college",
-      //   icon: FilePlus,
-      //   color: "text-green-400",
-      // },
+      
     ],
   },
   {

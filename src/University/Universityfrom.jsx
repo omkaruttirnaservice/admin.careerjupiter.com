@@ -4,8 +4,6 @@
 import { motion } from "framer-motion";
 import { FaUniversity } from "react-icons/fa";
 import Select from "react-select";
-
-// Constants
 const UniversityCategories = ["Private", "Government", "Autonomous", "Deemed"];
 const facilities = ["Library", "Hostel", "Sport Complex", "WiFi Campus"];
 const accreditationOptions = [

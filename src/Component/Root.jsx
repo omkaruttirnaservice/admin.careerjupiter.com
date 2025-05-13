@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom"; // ✅ Import useLocation
-import SideMenu from "../pages/SideMenu"; // Import the SideMenu component
+import SideMenu from "../pages/sideMenu"; // Import the SideMenu component
 
 const Root = () => {
   const location = useLocation();
