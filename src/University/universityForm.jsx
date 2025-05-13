@@ -1,6 +1,4 @@
 
-"use client";
-
 import { motion } from "framer-motion";
 import { FaUniversity } from "react-icons/fa";
 import Select from "react-select";

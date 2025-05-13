@@ -339,6 +339,42 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
                     </div>
                   )}
 
+                  {/* Inside the edit form section (where editCategoryId === cat._id) */}
+{/* <div className="flex flex-col gap-2 mt-4">
+  <label className="font-semibold mb-1">Entrance Exams Required:</label>
+  {editEntranceExams.map((exam, index) => (
+    <div key={index} className="flex gap-2 mb-2">
+      <input
+        type="text"
+        value={exam}
+        onChange={(e) => {
+          const updated = [...editEntranceExams];
+          updated[index] = e.target.value;
+          setEditEntranceExams(updated);
+        }}
+        placeholder={`Exam ${index + 1}`}
+        className="border px-3 py-2 rounded-lg w-full"
+      />
+      {editEntranceExams.length > 1 && (
+        <button
+          onClick={() =>
+            setEditEntranceExams(editEntranceExams.filter((_, i) => i !== index))
+          }
+          className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
+        >
+          <Trash2 size={18} />
+        </button>
+      )}
+    </div>
+  ))}
+  <button
+    className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mt-1 flex items-center gap-2"
+    onClick={() => setEditEntranceExams([...editEntranceExams, ""])}
+  >
+    <Plus size={18} /> Add Exam
+  </button>
+</div> */}
+
                   <div className="flex gap-2 mt-4">
                     <button
                       className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg shadow"

@@ -13,7 +13,7 @@ import {
   fetchUniversityById,
   updateUniversity,
   fetchUniversityCategories,
-} from "./Universityapi";
+} from "./universityapi";
 import UniversityForm from "./universityForm";
 import "react-toastify/dist/ReactToastify.css";
 

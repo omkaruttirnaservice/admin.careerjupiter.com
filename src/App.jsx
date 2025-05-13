@@ -181,7 +181,7 @@ function App() {
                 chekc && </vendor-college/edit-college
               } */}
 
-              {subrole === "university" && (
+              {subrole === "UNIVERSITY" && (
                 <Route path="/vendor-university" element={<VendorUniversityLayout />}>
                   <Route index element={<UniversityVendorDashboard />} />
                   <Route
