@@ -7,54 +7,47 @@ import {
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
-import Root from "./Component/Root";
+import Root from "./component/root";
 
-import Login from "./Pages/Login";
-import CollegeTableDetails from "./Pages/CollegeTableDetails";
-import MultiStepForm from "./Pages/AddNewCollege";
-import ReportandAnalytics from "./Pages/ReportandAnalytics";
-import AdminDashboard from "./Pages/AdminDashboard";
-import ProfilePage from "./Pages/ProfilePage";
-import CollegeCourses from "./Courses/CollegeCourses";
+import Login from "./pages/login";
+import CollegeTableDetails from "./pages/collegeTableDetails";
+import MultiStepForm from "./pages/addNewCollege";
+import ReportandAnalytics from "./pages/reportandAnalytics";
+import AdminDashboard from "./pages/adminDashboard";
+import ProfilePage from "./pages/profilePage";
+import CollegeCourses from "./courses/collegeCourses";
 // import EditCollegeDetails from "./Component/EditCollegeDetails";
-import AddUniversity from "./University/AddUniversity";
-import UniversityList from "./University/UniversityLIst.jsx";
-
-import UniversityTableDetails from "./Pages/UniversityTableDetails";
-import UniversityPlacement from "./Component/UniversityPlacement";
-
-// import TableList from "./Component/IQTestPage/TableList";
-// import AddTest from "./Component/IQTestPage/AddTest.jsx";
-// import ViewExcelPage from "./Component/IQTestPage/ViewExcelPage.jsx";
-
-import Infrastructure from "./Component/Infrastructure";
-import Placement from "./Component/Placement";
-import UniversityInfrastructure from "./Component/UniversityInfrastructure";
-import IQTest from "./Pages/IQTest";
-import ClassForm from "./Pages/RegisterClass/ClassForm.jsx";
-import ClassVendorDashboard from "./Pages/ClassVendorDashboard.jsx";
+import AddUniversity from "./university/addUniversity";
+import UniversityList from "./university/universityLIst.jsx";
+import UniversityPlacement from "./component/universityPlacement";
+import Infrastructure from "./component/infrastructure";
+import Placement from "./component/placement";
+import UniversityInfrastructure from "./component/universityInfrastructure";
+import IQTest from "./pages/iQTest";
+import ClassForm from "./pages/registerClass/classForm.jsx";
+import ClassVendorDashboard from "./pages/classVendorDashboard.jsx";
 import Cookies from "js-cookie";
-import ManageClass from "./Pages/ManageClass.jsx";
-import VendorLayout from "./Pages/VendorLayout.jsx";
-import ClassTableDetails from "./Pages/ClassTableDetails.jsx";
-import FacultyManagement from "./Pages/FacultyManagement.jsx";
-import ClassCourses from "./Pages/ClassCourses.jsx";
-import ProtectedRoute from "./Component/ProtectedRoute"; // Import the ProtectedRoute
-import AddAdmin from "./Pages/AddAdmin.jsx";
-import ManageClassCategory from "./Component/ManageClassCategory.jsx";
-import ManageCollegeCategory from "./Component/ManageCollegeCategory.jsx";
-import ManageUniversityCategory from "./Component/ManageUniversityCategory.jsx";
-import AddNewCollege from "./Pages/AddNewCollege";
-import ManageCollege from "./Pages/ManageCollege.jsx";
+import ManageClass from "./pages/manageClass.jsx";
+import VendorLayout from "./pages/vendorLayout.jsx";
+import ClassTableDetails from "./pages/classTableDetails.jsx";
+import FacultyManagement from "./pages/facultyManagement.jsx";
+import ClassCourses from "./pages/classCourses.jsx";
+import ProtectedRoute from "./component/protectedRoute"; // Import the ProtectedRoute
+import AddAdmin from "./pages/addAdmin.jsx";
+import ManageCollegeCategory from "./component/manageCollegeCategory.jsx";
+import ManageUniversityCategory from "./component/manageUniversityCategory.jsx";
+import AddNewCollege from "./pages/addNewCollege";
+import ManageCollege from "./pages/manageCollege.jsx";
 import CollegeVendorDashboard from "./Pages/CollegeVendorDashboard.jsx";
-import VendorCollegeLayout from "./Pages/VendorCollegeLayout.jsx";
-import EditUniversity from "./University/EditUniversity.jsx";
-import UniversityVendorDashboard from "./Pages/UniversityVendorDashboard.jsx";
-import VendorUniversityLayout from "./Pages/VendorUniversityLayout.jsx";
-import ViewExcelPage from "./Component/iqTestPage/ViewExcelPage.jsx";
-import AddTest from "./Component/iqTestPage/addTest.jsx";
-import TableList from "./Component/iqTestPage/TableList.jsx";
+import VendorCollegeLayout from "./pages/vendorCollegeLayout.jsx";
+import EditUniversity from "./university/editUniversity.jsx";
+import UniversityVendorDashboard from "./pages/universityVendorDashboard.jsx";
+import VendorUniversityLayout from "./pages/vendorUniversityLayout.jsx";
+import ViewExcelPage from "./component/iqTestPage/viewExcelPage.jsx";
+import AddTest from "./component/iqTestPage/addTest.jsx";
+import TableList from "./component/iqTestPage/tableList.jsx";
 import EditCollegeDetails from "./component/editCollegeDetails.jsx";
+import ManageClassCategory from "./component/manageClassCategory.jsx";
 
 const queryClient = new QueryClient();
 
