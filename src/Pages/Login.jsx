@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
-
 import Swal from "sweetalert2";
 import {
   FaMobileAlt,
@@ -14,7 +12,6 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-// import { setAuthCookies } from "../Utlis/cookieHelper";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { setAuthCookies } from "../utlis/cookieHelper";
 
@@ -182,12 +179,11 @@ const Login = () => {
   return (
     // <div className="relative flex justify-center items-center min-h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-orange-500">
     <div
-  className="relative flex justify-center items-center min-h-screen overflow-hidden"
-  style={{
-    backgroundImage: 'linear-gradient(to bottom right, #6B21A8, #F97316)',
-  }}
->
-
+      className="relative flex justify-center items-center min-h-screen overflow-hidden"
+      style={{
+        backgroundImage: "linear-gradient(to bottom right, #6B21A8, #F97316)",
+      }}
+    >
       <div className="absolute inset-0 flex flex-wrap">
         {[FaBook, FaGraduationCap, FaLightbulb, FaBook, FaGraduationCap].map(
           (Icon, i) => (

@@ -14,7 +14,7 @@ import {
   updateUniversity,
   fetchUniversityCategories,
 } from "./Universityapi";
-import UniversityForm from "./Universityfrom";
+import UniversityForm from "./universityForm";
 import "react-toastify/dist/ReactToastify.css";
 
 const EditUniversity = () => {

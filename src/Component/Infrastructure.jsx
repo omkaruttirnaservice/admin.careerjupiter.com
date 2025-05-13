@@ -418,6 +418,15 @@ const Infrastructure = () => {
       >
         &times;
       </button> */}
+      {role === "ADMIN" && (
+  <button
+    onClick={() => navigate("/colleges")}
+    className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold cursor-pointer"
+  >
+    &times;
+  </button>
+)}
+
 
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-3xl font-bold text-blue-800 flex items-center">

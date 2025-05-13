@@ -539,7 +539,7 @@ const AddNewCollege = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/college/search`); // Api call for Categories value for dropdown
+        const response = await axios.get(`${API_BASE_URL}/api/college/all-college-category`); // Api call for Categories value for dropdown
         const categories = response.data.categories || [];
         setCategoryData(categories);
       } catch (error) {

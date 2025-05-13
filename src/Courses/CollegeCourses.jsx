@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Swal from "sweetalert2";
 import Select from "react-select"; // For multi-select dropdown
-import  Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 const CollegeCourses = () => {
   const defaultCourse = {
@@ -21,11 +21,13 @@ const CollegeCourses = () => {
     eligibility: "",
   };
 
-  const [initialValues, setInitialValues] = useState({ courses: [defaultCourse] });
+  const [initialValues, setInitialValues] = useState({
+    courses: [defaultCourse],
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-   const { collegeId: collegeIdFromParams } = useParams();
+  const { collegeId: collegeIdFromParams } = useParams();
   const [collegeId, setCollegeId] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -61,11 +63,11 @@ const CollegeCourses = () => {
   //   }
   // }, []);
 
-   // Set collegeId from either URL params (admin) or cookies (vendor)
+  // Set collegeId from either URL params (admin) or cookies (vendor)
   useEffect(() => {
     const collegeIdFromCookie = getCookie("collegeID");
     const id = collegeIdFromParams || collegeIdFromCookie;
-    
+
     if (id) {
       setCollegeId(id);
       // If admin is accessing, store the collegeId in cookie temporarily
@@ -87,7 +89,9 @@ const CollegeCourses = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/college/search`);
+        const response = await axios.get(
+          `${API_BASE_URL}/api/college/all-college-category`
+        );
         setCategoryData(response.data.categories || []);
       } catch (error) {
         console.error("Failed to fetch college categories", error);
@@ -99,23 +103,27 @@ const CollegeCourses = () => {
   // Fetch courses when collegeId is available
   useEffect(() => {
     if (!collegeId) return;
-  
+
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/college/course/${collegeId}`);
+        const response = await axios.get(
+          `${API_BASE_URL}/api/college/course/${collegeId}`
+        );
         const data = response.data.data?.courses?.[0]?.courses || [];
-  
+
         console.log("Fetched course list:", data);
-  
+
         if (data.length > 0) {
-          const formattedCourses = data.map(course => ({
+          const formattedCourses = data.map((course) => ({
             ...course,
-            subCategory: Array.isArray(course.subCategory) 
-              ? course.subCategory 
-              : course.subCategory ? [course.subCategory] : []
+            subCategory: Array.isArray(course.subCategory)
+              ? course.subCategory
+              : course.subCategory
+              ? [course.subCategory]
+              : [],
           }));
-  
+
           setInitialValues({ courses: formattedCourses });
           setIsEditMode(true);
         }
@@ -125,15 +133,16 @@ const CollegeCourses = () => {
         setLoading(false);
       }
     };
-  
+
     fetchCourses();
   }, [collegeId]);
-  
 
   const getSubCategoryOptions = (category) => {
-    const foundCategory = categoryData.find(cat => cat.category === category);
+    const foundCategory = categoryData.find((cat) => cat.category === category);
     return foundCategory?.subCategory
-      ? foundCategory.subCategory.filter(Boolean).map(sub => ({ value: sub, label: sub }))
+      ? foundCategory.subCategory
+          .filter(Boolean)
+          .map((sub) => ({ value: sub, label: sub }))
       : [];
   };
 
@@ -144,12 +153,12 @@ const CollegeCourses = () => {
 
       const courseData = {
         collegeId,
-        courses: values.courses.map(course => ({
+        courses: values.courses.map((course) => ({
           ...course,
           duration: Number(course.duration),
           annualFees: Number(course.annualFees),
-          subCategory: course.subCategory
-        }))
+          subCategory: course.subCategory,
+        })),
       };
 
       const url = isEditMode
@@ -161,7 +170,7 @@ const CollegeCourses = () => {
         method,
         url,
         data: courseData,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
 
       Swal.fire({
@@ -173,7 +182,11 @@ const CollegeCourses = () => {
 
       setIsEditMode(true);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || error.response?.data?.errMsg ||error.response?.data?.usrMsg ||"Failed to save courses";
+      const errorMsg =
+        error.response?.data?.message ||
+        error.response?.data?.errMsg ||
+        error.response?.data?.usrMsg ||
+        "Failed to save courses";
       Swal.fire({
         icon: "warning",
         title: "Warning",
@@ -189,6 +202,15 @@ const CollegeCourses = () => {
 
   return (
     <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
+      {role === "ADMIN" && (
+        <button
+          onClick={() => navigate("/colleges")}
+          className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold cursor-pointer"
+        >
+          &times;
+        </button>
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-3xl font-bold text-blue-800 flex items-center">
           📚 {isEditMode ? "Edit" : "Add"} Courses
@@ -262,7 +284,10 @@ const CollegeCourses = () => {
                       name={`courses.${index}.category`}
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
                       onChange={(e) => {
-                        setFieldValue(`courses.${index}.category`, e.target.value);
+                        setFieldValue(
+                          `courses.${index}.category`,
+                          e.target.value
+                        );
                         setFieldValue(`courses.${index}.subCategory`, []);
                       }}
                     >
@@ -285,16 +310,21 @@ const CollegeCourses = () => {
                   <label className="text-blue-700">Branch</label>
                   <Select
                     isMulti
-                    options={getSubCategoryOptions(values.courses[index].category)}
-                    value={values.courses[index].subCategory.map(sub => ({
+                    options={getSubCategoryOptions(
+                      values.courses[index].category
+                    )}
+                    value={values.courses[index].subCategory.map((sub) => ({
                       value: sub,
-                      label: sub
+                      label: sub,
                     }))}
                     onChange={(selectedOptions) => {
                       const selectedValues = selectedOptions
-                        ? selectedOptions.map(option => option.value)
+                        ? selectedOptions.map((option) => option.value)
                         : [];
-                      setFieldValue(`courses.${index}.subCategory`, selectedValues);
+                      setFieldValue(
+                        `courses.${index}.subCategory`,
+                        selectedValues
+                      );
                     }}
                     className="mt-1"
                     classNamePrefix="select"
@@ -344,7 +374,10 @@ const CollegeCourses = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setFieldValue("courses", [...values.courses, { ...defaultCourse }]);
+                  setFieldValue("courses", [
+                    ...values.courses,
+                    { ...defaultCourse },
+                  ]);
                 }}
                 className="flex items-center bg-blue-600 hover:bg-blue-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300 cursor-pointer"
               >

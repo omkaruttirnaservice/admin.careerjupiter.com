@@ -379,7 +379,7 @@ const ManageCollege = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/college/search`);
+        const response = await axios.get(`${API_BASE_URL}/api/college/all-college-category`);
         const categories = response.data.categories || [];
         setCategoryData(categories);
       } catch (error) {

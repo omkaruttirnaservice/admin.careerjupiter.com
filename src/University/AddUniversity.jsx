@@ -5,9 +5,11 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
-import { fetchUniversityCategories, createUniversity } from "./Universityapi"
+// import { fetchUniversityCategories, createUniversity } from "./Universityapi"
+import { fetchUniversityCategories, createUniversity } from "./universityapi"
 // import UniversityForm from "./UniversityForm"
-import UniversityForm from "./Universityfrom"
+// import UniversityForm from "./Universityfrom"
+import UniversityForm from "./universityForm"
 
 // State and district data for dropdowns
 const stateDistrictData = {

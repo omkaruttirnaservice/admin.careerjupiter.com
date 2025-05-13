@@ -1,8 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
-  LibraryIcon,
-  OfficeBuildingIcon,
   BookOpenIcon,
   ClipboardListIcon,
   PresentationChartBarIcon,
@@ -22,10 +20,10 @@ import {
   LibraryBig,
   Building2,
 } from "lucide-react";
-import { clearAuthCookies } from "../utlis/cookieHelper"; // adjust path as needed
+import { clearAuthCookies } from "../utlis/cookieHelper";
 import Swal from "sweetalert2";
 
-// Sidebar items
+//SideMenu Navigation Routes
 const navigation = [
   {
     name: "Dashboard",
@@ -45,19 +43,11 @@ const navigation = [
 
         color: "text-blue-400",
       },
-      // {
-      //   name: "Add New College",
-      //   href: "/add-college",
-      //   icon: FilePlus,
-      //   color: "text-green-400",
-      // },
     ],
   },
   {
     name: "University",
-
     icon: LibraryBig,
-
     color: "text-purple-400",
     children: [
       {
@@ -125,12 +115,6 @@ const navigation = [
     icon: UserCircleIcon,
     color: "text-pink-400",
   },
-  // {
-  //   name: "Logout",
-  //   href: "/",
-  //   icon: LogoutIcon,
-  //   color: "text-red-800",
-  // },
 ];
 
 const SideMenu = () => {
@@ -151,8 +135,8 @@ const SideMenu = () => {
         text: "See you soon! Want to log out now?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",  // Blue
-        cancelButtonColor: "#d33",      // Red
+        confirmButtonColor: "#3085d6",  
+        cancelButtonColor: "#d33",      
         confirmButtonText: "Yes, logout!",
       }).then((result) => {
         if (result.isConfirmed) {

@@ -9,6 +9,7 @@ import {
   FaGlobe,
   FaPlus,
 } from "react-icons/fa";
+// import { fetchAllUniversities, deleteUniversity } from "./universityapi";
 import { fetchAllUniversities, deleteUniversity } from "./Universityapi";
 import ViewUniversityModal from "./ViewUniversityModal";
 import DeleteConfirmationModal from "./DeleteUniversitymodal";

@@ -198,7 +198,14 @@ const Placement = () => {
 
   return (
     <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
-   
+    {role === "ADMIN" && (
+  <button
+    onClick={() => navigate("/colleges")}
+    className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold cursor-pointer"
+  >
+    &times;
+  </button>
+)}
 
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-3xl font-bold text-blue-800 flex items-center">📊 Placement Details</h3>
