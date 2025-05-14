@@ -4,11 +4,7 @@ import * as Yup from "yup"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-
-// import { fetchUniversityCategories, createUniversity } from "./Universityapi"
 import { fetchUniversityCategories, createUniversity } from "./universityapi"
-// import UniversityForm from "./UniversityForm"
-// import UniversityForm from "./Universityfrom"
 import UniversityForm from "./universityForm"
 
 // State and district data for dropdowns
@@ -118,6 +114,14 @@ const AddUniversity = () => {
         draggable: true,
       })
       console.log("API Response:", data)
+
+        // ✅ Extract university ID from API response
+    const universityId = data?.data?.university?._id;
+    console.log("University ID:", universityId);
+
+    // ✅ Set universityID cookie using your helper
+    setAuthCookies({ universityID: universityId });
+
       formik.resetForm()
       // Reset file inputs
       document.getElementById("universityImage").value = ""
@@ -126,7 +130,7 @@ const AddUniversity = () => {
     onError: (error) => {
       console.error("API Error:", error.response?.data || error.message)
       toast.error(
-        `${error.response?.data?.message || error.message || error.response?.data?.errMsg || "Something went wrong"}`,
+        `${error.response?.data?.message || error.message || error.response?.data?.errMsg || error.response?.data?.usrMsg || "Please Try Again"}`,
         {
           position: "top-right",
           autoClose: 5000,

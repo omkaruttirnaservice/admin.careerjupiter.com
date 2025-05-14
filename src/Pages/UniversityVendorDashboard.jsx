@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
+import { getCookie } from "../utlis/cookieHelper";
 import {
   FaUniversity,
   FaInfoCircle,
@@ -16,10 +17,22 @@ import { HiAcademicCap } from "react-icons/hi";
 
 const UniversityVendorDashboard = () => {
   const [universityDetails, setUniversityDetails] = useState(null);
-  const universityId = "681b4c97cba268f1865f558c"; // Static as per your request
+  const [universityId, setUniversityId] = useState(null);
+
+    // ✅ Step 1: Get university ID from cookie (or storage)
+  useEffect(() => {
+    const idFromCookie = getCookie("universityID"); // Your cookie key
+    if (idFromCookie) {
+      setUniversityId(idFromCookie);
+    } else {
+      console.warn("University ID not found in cookies!");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUniversityDetails = async () => {
+        if (!universityId) return;
+
       try {
         const response = await axios.get(`${API_BASE_URL}/api/university/${universityId}`);
         const data = response?.data?.data?.university;
@@ -36,7 +49,7 @@ const UniversityVendorDashboard = () => {
     };
 
     fetchUniversityDetails();
-  }, []);
+  }, [universityId]);
 
   return (
     <div className="flex flex-col bg-gradient-to-br from-green-50 via-emerald-50 to-lime-50 min-h-screen p-4">

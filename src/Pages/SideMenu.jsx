@@ -57,13 +57,13 @@ const navigation = [
         icon: Building2,
         color: "text-blue-400",
       },
-      {
-        name: "Add New University",
-        href: "/university",
+      // {
+      //   name: "Add New University",
+      //   href: "/university",
 
-        icon: FilePlus,
-        color: "text-green-400",
-      },
+      //   icon: FilePlus,
+      //   color: "text-green-400",
+      // },
     ],
   },
   {
@@ -102,6 +102,27 @@ const navigation = [
     href: "/iq-test",
     icon: PresentationChartBarIcon,
     color: "text-indigo-400",
+  },
+  {
+    name: "Roadmap",
+    icon: LibraryBig,
+    color: "text-purple-400",
+    children: [
+      {
+        name: "Manage Type ",
+        href: "/manage-type",
+
+        icon: Building2,
+        color: "text-blue-400",
+      },
+      {
+        name: "Manage Roadmap",
+        href: "/manage-roadmap",
+
+        icon: FilePlus,
+        color: "text-green-400",
+      },
+    ],
   },
   {
     name: "Reports & Analytics",

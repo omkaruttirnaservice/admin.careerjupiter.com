@@ -4,8 +4,11 @@ import { motion } from "framer-motion";
 import * as Yup from "yup";
 
 const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
+
+//if open is false then dont render
   if (!open) return null;
 
+  //Nalidation section
   const addressValidationSchema = Yup.object().shape({
     line1: Yup.string().required("Address Line 1 is required"),
     line2: Yup.string().required("Address Line 2 is required"),
@@ -63,9 +66,9 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-start overflow-y-auto py-10">
+    <div className="fixed inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center overflow-y-auto py-4 sm:py-10">
       <div
-        className="rounded-xl shadow-xl border border-blue-200 p-8 w-full max-w-3xl relative"
+        className="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 p-4 w-full max-w-2xl relative max-h-[90vh] sm:max-h-[95vh] overflow-y-auto"
         style={{
           backgroundImage: "linear-gradient(to bottom right, #EFF6FF, #FFFFFF)",
         }}
@@ -77,7 +80,7 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
           &times;
         </button>
 
-        <h3 className="text-3xl font-bold text-blue-800 mb-6">
+        <h3 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-4 sm:mb-6">
           🏠 Add Address
         </h3>
 
@@ -108,24 +111,26 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
             errors,
             touched,
           }) => (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 10 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4"
+                className="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 space-y-3"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-6">
                   {/* Address Line 1 */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">Address Line 1</label>
+                    <label className="text-blue-700 text-sm">
+                      Address Line 1
+                    </label>
                     <input
                       name="line1"
                       value={values.line1}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Enter line 1"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.line1 && errors.line1 && (
                       <div className="text-red-500 text-sm">{errors.line1}</div>
@@ -134,14 +139,16 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* Address Line 2 */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">Address Line 2</label>
+                    <label className="text-blue-700 text-sm">
+                      Address Line 2
+                    </label>
                     <input
                       name="line2"
                       value={values.line2}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Enter line 2"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.line2 && errors.line2 && (
                       <div className="text-red-500 text-sm">{errors.line2}</div>
@@ -150,14 +157,14 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* Landmark */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">Landmark</label>
+                    <label className="text-blue-700 text-sm">Landmark</label>
                     <input
                       name="nearbyLandmarks"
                       value={values.nearbyLandmarks}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Nearby landmark"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.nearbyLandmarks && errors.nearbyLandmarks && (
                       <div className="text-red-500 text-sm">
@@ -168,13 +175,13 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* State (Dropdown) */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">State</label>
+                    <label className="text-blue-700 text-sm">State</label>
                     <select
                       name="state"
                       value={values.state}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                       <option value="">Select State</option>
                       {indianStates.map((state) => (
@@ -187,14 +194,14 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* District */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">District</label>
+                    <label className="text-blue-700 text-sm">District</label>
                     <input
                       name="dist"
                       value={values.dist}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="District"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.dist && errors.dist && (
                       <div className="text-red-500 text-sm">{errors.dist}</div>
@@ -203,14 +210,14 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* Taluka */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">Taluka</label>
+                    <label className="text-blue-700 text-sm">Taluka</label>
                     <input
                       name="taluka"
                       value={values.taluka}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Taluka"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.taluka && errors.taluka && (
                       <div className="text-red-500 text-sm">
@@ -221,14 +228,14 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* Pincode */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">Pincode</label>
+                    <label className="text-blue-700 text-sm">Pincode</label>
                     <input
                       name="pincode"
                       value={values.pincode}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Pincode"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.pincode && errors.pincode && (
                       <div className="text-red-500 text-sm">
@@ -239,14 +246,16 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* Authorized Name */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">Authorized Name</label>
+                    <label className="text-blue-700 text-sm">
+                      Authorized Name
+                    </label>
                     <input
                       name="autorizedName"
                       value={values.autorizedName}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Enter Authorized Name"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.autorizedName && errors.autorizedName && (
                       <div className="text-red-500 text-sm">
@@ -257,7 +266,7 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* Authorized Phone */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">
+                    <label className="text-blue-700 text-sm">
                       Authorized Phone Number
                     </label>
                     <input
@@ -266,7 +275,7 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Enter Phone No."
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.autorizedPhono && errors.autorizedPhono && (
                       <div className="text-red-500 text-sm">
@@ -277,14 +286,14 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
 
                   {/* Designation */}
                   <div className="flex flex-col">
-                    <label className="text-blue-700">Designation</label>
+                    <label className="text-blue-700 text-sm">Designation</label>
                     <input
                       name="designation"
                       value={values.designation}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="Enter Designation"
-                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {touched.designation && errors.designation && (
                       <div className="text-red-500 text-sm">
@@ -298,7 +307,7 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-green-600 hover:bg-green-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300 cursor-pointer"
+                  className="bg-green-600 hover:bg-green-800 text-white py-2 px-4 sm:px-6 rounded-lg shadow-lg transition duration-300"
                 >
                   ✅ Save Address
                 </button>
