@@ -55,6 +55,7 @@ import ViewExcelPage from "./Component/iqTestPage/ViewExcelPage.jsx";
 import AddTest from "./Component/iqTestPage/addTest.jsx";
 import TableList from "./Component/iqTestPage/TableList.jsx";
 import EditCollegeDetails from "./component/editCollegeDetails.jsx";
+import RoadmapForm from "./Component/roadmap/roadmapFrom.jsx";
 
 const queryClient = new QueryClient();
 
@@ -207,6 +208,8 @@ function App() {
           <Route path="/register-class" element={<ClassForm />} />
           <Route path="/add-college" element={<AddNewCollege />} />
           <Route path="/university" element={<AddUniversity />} />
+          <Route path="/roadmap" element={<RoadmapForm />} />
+
         </Routes>
       </Router>
     </QueryClientProvider>

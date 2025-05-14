@@ -114,6 +114,12 @@ const navigation = [
     color: "text-indigo-400",
   },
   {
+    name: "Roadmap",
+    href: "/roadmap",
+    icon: PresentationChartBarIcon,
+    color: "text-indigo-400",
+  },
+  {
     name: "Reports & Analytics",
     href: "/reports",
     icon: ChartBarIcon,
