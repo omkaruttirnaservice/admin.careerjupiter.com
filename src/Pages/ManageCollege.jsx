@@ -418,7 +418,6 @@ const ManageCollege = () => {
       {/* ✅ Main Content */}
       <div className="flex-1 flex justify-center">
         <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
-          {/* Background Icons - Random Placement */}
 
           <div className="w-screen lg:w-[1100px] mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500 rounded-xl">
             {/* ✅ Form Title */}

@@ -48,6 +48,10 @@ import AddTest from "./component/iqTestPage/addTest.jsx";
 import TableList from "./component/iqTestPage/tableList.jsx";
 import EditCollegeDetails from "./component/editCollegeDetails.jsx";
 import ManageClassCategory from "./component/manageClassCategory.jsx";
+// import ManageRoadmap from "./pages/manageRoadmap.jsx";
+import TypeList from "./component/roadmap/typeList.jsx";
+import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
+import ManageRoadmaps from "./component/roadmap/manageRoadmapFrom.jsx";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +77,7 @@ function App() {
                 path="/university-details"
                 element={<UniversityList />}
               />
+               {/* <Route path="/manage-roadmap" element={<ManageRoadmap />}/> */}
               <Route
                 path="/university/placement/:universityId"
                 element={<UniversityPlacement />}
@@ -126,6 +131,12 @@ function App() {
               />
              
               <Route path="/edit-university/:id" element={<EditUniversity />} />
+              <Route path="/manage-type" element={<TypeList />} />
+
+              <Route path="/manage-roadmap" element={<ManageRoadmapForm/>} />
+
+
+
             </Route>
 
             {/* Protected Routes for Vendor-Class */}
@@ -200,6 +211,7 @@ function App() {
           <Route path="/register-class" element={<ClassForm />} />
           <Route path="/add-college" element={<AddNewCollege />} />
           <Route path="/university" element={<AddUniversity />} />
+         
         </Routes>
       </Router>
     </QueryClientProvider>

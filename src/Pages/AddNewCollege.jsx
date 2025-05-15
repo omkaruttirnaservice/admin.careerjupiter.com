@@ -8,8 +8,6 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import "react-toastify/dist/ReactToastify.css";
 import { FaUniversity, FaImage, FaCheckCircle } from "react-icons/fa";
-
-
 import MultiSelectDropdown from "../component/multiSelectDropdown";
 import MultiSelectField from "../component/multiSelectField";
 import InputField from "../component/inputField";
@@ -18,7 +16,7 @@ import AddressModal from "../component/addressModel";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import axios from "axios";
 // import FileUpload from "../component/fileUpload";
-import FileUpload from "../Component/FileUpload";
+import FileUpload from "../component/fileUpload";
 import SingleSelectDropdown from "../component/singleSelectDropdown";
 import Swal from "sweetalert2";
 import { setAuthCookies } from "../utlis/cookieHelper";
@@ -40,20 +38,7 @@ const accreditationOptions = [
 ];
 
 // Constant Values for College Type
-const collegeTypes = ["Private", "Government", "Autonomous", "Deemed"];
-
-//Constant Values for Entrance Exams
-const entranceExams = [
-  "JEE",
-  "NEET",
-  "CAT",
-  "GATE",
-  "CLAT",
-  "LSAT",
-  "XAT",
-  "CMAT",
-  "MAT",
-];
+const collegeTypes = ["Gov.-Aided (Granted)", "Private Unaided (Non-Granted)", "Autonomous College", "Deemed to be Universities", "Private", "Distance Learning"];
 
 // Established Year Dropdown Value
 const currentYear = new Date().getFullYear();
@@ -67,7 +52,6 @@ const AddNewCollege = () => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [editingAddressIndex, setEditingAddressIndex] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
-  const [filteredBranches, setFilteredBranches] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [verifiedOtp, setVerifiedOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
@@ -76,6 +60,8 @@ const AddNewCollege = () => {
   const [loading, setLoading] = useState(false);
   const [lastContactDetails, setLastContactDetails] = useState("");
    const navigate = useNavigate();
+   const [entranceExams, setEntranceExams] = useState([]); // Store the entrance exams based on selected category
+
 
   // used Mutation for api calling from createCollege component
   const mutation = useMutation({
@@ -453,7 +439,7 @@ const AddNewCollege = () => {
         icon: "warning",
         title: "Warning!",
         text:
-          response.usrMsg ||
+           error.response?.data?.usrMsg || 
           error.response?.data?.message ||
           error.response?.data?.errMessage ||
           "Please try again.",
@@ -536,37 +522,64 @@ const AddNewCollege = () => {
   };
 
   // Fetch college categories once on component mount from the backend API
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/api/college/all-college-category`); // Api call for Categories value for dropdown
-        const categories = response.data.categories || [];
-        setCategoryData(categories);
-      } catch (error) {
-        console.error("Failed to fetch college categories", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const response = await axios.get(`${API_BASE_URL}/api/college/all-college-category`); // Api call for Categories value for dropdown
+  //       const categories = response.data.categories || [];
+  //       setCategoryData(categories);
+  //     } catch (error) {
+  //       console.error("Failed to fetch college categories", error);
+  //     }
+  //   };
 
-    fetchCategories();
-  }, []);
+  //   fetchCategories();
+  // }, []);
+
+  useEffect(() => {
+  // Fetch college categories once when the component mounts
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/college/all-college-category`);
+      const categories = response.data.categories || [];
+      setCategoryData(categories);
+    } catch (error) {
+      console.error("Failed to fetch college categories", error);
+    }
+  };
+
+  fetchCategories();
+}, []);
 
   // Update branch list when selected category or category data changes
-  useEffect(() => {
-    const selectedCategory = formik.values.category;
-    const match = categoryData.find(
-      (item) => item.category === selectedCategory
-    );
-    setFilteredBranches(match ? match.subCategory : []);
-  }, [formik.values.category, categoryData]);
+  // useEffect(() => {
+  //   const selectedCategory = formik.values.category;
+  //   const match = categoryData.find(
+  //     (item) => item.category === selectedCategory
+  //   );
+  //   setFilteredBranches(match ? match.subCategory : []);
+  // }, [formik.values.category, categoryData]);
+
+  // Update entrance exams when category is selected
+useEffect(() => {
+  const selectedCategory = formik.values.category;  // Assuming category is being managed in Formik
+  const category = categoryData.find(item => item.category === selectedCategory);
+
+  // Set entrance exams based on the selected category
+  if (category) {
+    setEntranceExams(category.entrance_exam_required || []);
+  }
+}, [formik.values.category, categoryData]); // Dependency array ensures this runs when category or categoryData changes
+
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200 px-6"
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200 "
     >
-      <div className="w-full max-w-6xl bg-white shadow-xl rounded-xl p-8 border border-blue-300">
+      <div className="w-full max-w-5xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
       <div className="text-right mb-4">
           <button
             type="button"
@@ -590,7 +603,7 @@ const AddNewCollege = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* College ID  */}
             <InputField
-              label="College ID"
+              label="College DTE code / College ID"
               name="collegeId"
               type="text"
               placeholder="Enter College ID"

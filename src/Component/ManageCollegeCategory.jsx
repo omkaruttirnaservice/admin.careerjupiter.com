@@ -14,8 +14,7 @@ const ManageCollegeCategory = ({ onCategoriesChange }) => {
   const [editSubCategories, setEditSubCategories] = useState([]);
   const [collegeCategories, setCollegeCategories] = useState([]);
   const [entranceExams, setEntranceExams] = useState([""]);
-const [editEntranceExams, setEditEntranceExams] = useState([""]);
-
+  const [editEntranceExams, setEditEntranceExams] = useState([""]);
 
   const fetchCategories = async () => {
     try {
@@ -49,24 +48,26 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
     // };
 
     const payload = {
-  category: categoryInput.trim(),
-  subCategory: subcategories,
-  entrance_exam_required: entranceExams.filter((e) => e.trim() !== ""),
-  type,
-};
-
+      category: categoryInput.trim(),
+      subCategory: subcategories,
+      entrance_exam_required: entranceExams.filter((e) => e.trim() !== ""),
+      type,
+    };
 
     try {
       await axios.post(`${API_BASE_URL}/api/category/add`, payload);
 
-      await fetchCategories(); 
+      // After successful add, clear the entrance exams state
+      setEntranceExams([""]);
+
+      await fetchCategories();
       setCategoryInput("");
       setSubCategoryInputs([""]);
     } catch (error) {
       console.error("Error adding category:", error);
       Swal.fire({
         icon: "warning",
-        title: "Error",
+        title: "Warning",
         text:
           error.response?.data.errMsg || "Failed to add category. Try again.",
         confirmButtonColor: "#3085d6",
@@ -113,7 +114,6 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
     setEditCategoryName(cat.category);
     setEditSubCategories(cat.subCategory || []);
     setEditEntranceExams(cat.entrance_exam_required || [""]);
-
   };
 
   const handleUpdateCategory = async (id) => {
@@ -126,13 +126,18 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
       // };
 
       const payload = {
-  category: editCategoryName.trim(),
-  subCategory: editSubCategories,
-  entrance_exam_required: editEntranceExams.filter((e) => e.trim() !== ""),
-};
-
+        category: editCategoryName.trim(),
+        subCategory: editSubCategories,
+        entrance_exam_required: editEntranceExams.filter(
+          (e) => e.trim() !== ""
+        ),
+      };
 
       await axios.put(`${API_BASE_URL}/api/category/${id}`, payload);
+
+      // After successful update, clear the entrance exams state
+      setEditEntranceExams([""]);
+
       await fetchCategories(); // fetch fresh updated list
 
       setEditCategoryId(null);
@@ -226,8 +231,6 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
                 </button>
               )}
             </div>
-
-            
           ))}
           <button
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mt-2 flex items-center gap-2"
@@ -236,43 +239,43 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
             <Plus size={18} /> Add Subcategory
           </button>
         </div>
-        
       )}
       <div className="mb-6">
-  <label className="block font-semibold mb-2">Entrance Exams Required:</label>
-  {entranceExams.map((exam, index) => (
-    <div key={index} className="flex gap-2 mb-2">
-      <input
-        type="text"
-        value={exam}
-        onChange={(e) => {
-          const updated = [...entranceExams];
-          updated[index] = e.target.value;
-          setEntranceExams(updated);
-        }}
-        placeholder={`Exam ${index + 1}`}
-        className="border px-3 py-2 rounded-lg w-full"
-      />
-      {entranceExams.length > 1 && (
+        <label className="block font-semibold mb-2">
+          Entrance Exams Required:
+        </label>
+        {entranceExams.map((exam, index) => (
+          <div key={index} className="flex gap-2 mb-2">
+            <input
+              type="text"
+              value={exam}
+              onChange={(e) => {
+                const updated = [...entranceExams];
+                updated[index] = e.target.value;
+                setEntranceExams(updated);
+              }}
+              placeholder={`Exam ${index + 1}`}
+              className="border px-3 py-2 rounded-lg w-full"
+            />
+            {entranceExams.length > 1 && (
+              <button
+                onClick={() =>
+                  setEntranceExams(entranceExams.filter((_, i) => i !== index))
+                }
+                className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
+              >
+                <Trash2 size={18} />
+              </button>
+            )}
+          </div>
+        ))}
         <button
-          onClick={() =>
-            setEntranceExams(entranceExams.filter((_, i) => i !== index))
-          }
-          className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
+          className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mt-2 flex items-center gap-2"
+          onClick={() => setEntranceExams([...entranceExams, ""])}
         >
-          <Trash2 size={18} />
+          <Plus size={18} /> Add Exam
         </button>
-      )}
-    </div>
-  ))}
-  <button
-    className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mt-2 flex items-center gap-2"
-    onClick={() => setEntranceExams([...entranceExams, ""])}
-  >
-    <Plus size={18} /> Add Exam
-  </button>
-</div>
-
+      </div>
 
       {/* Add Category Button */}
       <button
@@ -340,40 +343,46 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
                   )}
 
                   {/* Inside the edit form section (where editCategoryId === cat._id) */}
-{/* <div className="flex flex-col gap-2 mt-4">
-  <label className="font-semibold mb-1">Entrance Exams Required:</label>
-  {editEntranceExams.map((exam, index) => (
-    <div key={index} className="flex gap-2 mb-2">
-      <input
-        type="text"
-        value={exam}
-        onChange={(e) => {
-          const updated = [...editEntranceExams];
-          updated[index] = e.target.value;
-          setEditEntranceExams(updated);
-        }}
-        placeholder={`Exam ${index + 1}`}
-        className="border px-3 py-2 rounded-lg w-full"
-      />
-      {editEntranceExams.length > 1 && (
-        <button
-          onClick={() =>
-            setEditEntranceExams(editEntranceExams.filter((_, i) => i !== index))
-          }
-          className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
-        >
-          <Trash2 size={18} />
-        </button>
-      )}
-    </div>
-  ))}
-  <button
-    className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mt-1 flex items-center gap-2"
-    onClick={() => setEditEntranceExams([...editEntranceExams, ""])}
-  >
-    <Plus size={18} /> Add Exam
-  </button>
-</div> */}
+                  <div className="flex flex-col gap-2 mt-4">
+                    <label className="font-semibold mb-1">
+                      Entrance Exams Required:
+                    </label>
+                    {editEntranceExams.map((exam, index) => (
+                      <div key={index} className="flex gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={exam}
+                          onChange={(e) => {
+                            const updated = [...editEntranceExams];
+                            updated[index] = e.target.value;
+                            setEditEntranceExams(updated);
+                          }}
+                          placeholder={`Exam ${index + 1}`}
+                          className="border px-3 py-2 rounded-lg w-full"
+                        />
+                        {editEntranceExams.length > 1 && (
+                          <button
+                            onClick={() =>
+                              setEditEntranceExams(
+                                editEntranceExams.filter((_, i) => i !== index)
+                              )
+                            }
+                            className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <button
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mt-1 flex items-center gap-2"
+                      onClick={() =>
+                        setEditEntranceExams([...editEntranceExams, ""])
+                      }
+                    >
+                      <Plus size={18} /> Add Exam
+                    </button>
+                  </div>
 
                   <div className="flex gap-2 mt-4">
                     <button
@@ -389,7 +398,6 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
                       <X size={18} />
                     </button>
                   </div>
-
 
                   {/* <div className="flex flex-col gap-2 mt-4">
   <label className="font-semibold mb-1">Entrance Exams Required:</label>
@@ -425,22 +433,33 @@ const [editEntranceExams, setEditEntranceExams] = useState([""]);
     <Plus size={18} /> Add Exam
   </button>
 </div> */}
-
                 </div>
-
-                
               ) : (
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="font-semibold text-gray-800">
                       {cat.category}
                     </p>
+
                     {cat.subCategory?.length > 0 && (
                       <ul className="ml-4 list-disc text-gray-600">
                         {cat.subCategory.map((sub, index) => (
                           <li key={index}>{sub}</li>
                         ))}
                       </ul>
+                    )}
+
+                    {cat.entrance_exam_required?.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-sm font-semibold text-gray-700">
+                          Entrance Exams Required:
+                        </p>
+                        <ul className="ml-4 list-disc text-gray-600">
+                          {cat.entrance_exam_required.map((exam, index) => (
+                            <li key={index}>{exam}</li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                   </div>
 
