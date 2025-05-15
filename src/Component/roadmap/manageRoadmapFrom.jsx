@@ -31,6 +31,11 @@ const ManageRoadmapForm = () => {
         setTypeOptions(res.data?.data);
       } catch (err) {
         console.error("Failed to fetch types:", err);
+        Swal.fire({
+  title: "Warning!",
+  text: err?.response?.data?.usrMsg || "Failed to fetch types. Please try again.",
+  icon: "warning",
+});
       }
     };
 
@@ -45,6 +50,11 @@ const ManageRoadmapForm = () => {
         console.log(res, "lksjdfl;jasf");
       } catch (err) {
         console.error("Failed to fetch roadmaps:", err);
+        Swal.fire({
+    title: "Warning!",
+    text: err?.response?.data?.usrMsg || "Failed to fetch roadmaps. Please try again.",
+    icon: "warning",
+  });
         setRoadmaps([]);
       }
     };
@@ -63,6 +73,12 @@ const ManageRoadmapForm = () => {
       setFilteredSubTypeOptions(res.data?.data || []); // Initialize filtered options
     } catch (err) {
       console.error("Error fetching subtypes:", err);
+      Swal.fire({
+  title: "Warning!",
+  text: err?.response?.data?.usrMsg || "Failed to fetch subtypes. Please try again.",
+  icon: "warning",
+});
+
       setSubTypeOptions([]);
       setFilteredSubTypeOptions([]);
     }
@@ -95,57 +111,60 @@ const ManageRoadmapForm = () => {
       type: Yup.string().required("Type is required"),
     }),
 
-  onSubmit: async (values, { resetForm }) => {
-  const subTypeIds = values.subTypes.map((sub) => sub.value);
+    onSubmit: async (values, { resetForm }) => {
+      const subTypeIds = values.subTypes.map((sub) => sub.value);
 
-  const payload = {
-    name: values.name,
-    type: values.type,
-    sub_type: selectedSubTypes.map((item) => item.value),
-  };
+      const payload = {
+        name: values.name,
+        type: values.type,
+        sub_type: selectedSubTypes.map((item) => item.value),
+      };
 
-  setIsSaving(true); // Start loading
+      setIsSaving(true); // Start loading
 
-  try {
-    if (isEditing && editingRoadmap) {
-      // Update
-      const res = await axios.put(
-        `${API_BASE_URL}/api/roadmap/${editingRoadmap._id}`,
-        payload
-      );
+      try {
+        if (isEditing && editingRoadmap) {
+          // Update
+          const res = await axios.put(
+            `${API_BASE_URL}/api/roadmap/${editingRoadmap._id}`,
+            payload
+          );
 
-      Swal.fire({
-        title: "Success!",
-        text: res.data?.usrMsg || "Roadmap updated successfully.",
-        icon: "success",
-      });
-    } else {
-      // Create
-      const res = await axios.post(`${API_BASE_URL}/api/roadmap/create`, payload);
+          Swal.fire({
+            title: "Success!",
+            text: res.data?.usrMsg || "Roadmap updated successfully.",
+            icon: "success",
+          });
+        } else {
+          // Create
+          const res = await axios.post(
+            `${API_BASE_URL}/api/roadmap/create`,
+            payload
+          );
 
-      Swal.fire({
-        title: "Success!",
-        text: res.data?.usrMsg || "Roadmap created successfully.",
-        icon: "success",
-      });
-    }
+          Swal.fire({
+            title: "Success!",
+            text: res.data?.usrMsg || "Roadmap created successfully.",
+            icon: "success",
+          });
+        }
 
-    const getRes = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
-    setRoadmaps(getRes.data?.data || []);
+        const getRes = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
+        setRoadmaps(getRes.data?.data || []);
 
-    setShowModal(false);
-    resetForm();
-  } catch (err) {
-    console.error("Failed to create roadmap:", err);
-    Swal.fire({
-      title: "Warning!",
-      text: err?.response?.data?.usrMsg || "Please try again.",
-      icon: "warning",
-    });
-  } finally {
-    setIsSaving(false); // Stop loading
-  }
-},
+        setShowModal(false);
+        resetForm();
+      } catch (err) {
+        console.error("Failed to create roadmap:", err);
+        Swal.fire({
+          title: "Warning!",
+          text: err?.response?.data?.usrMsg || "Please try again.",
+          icon: "warning",
+        });
+      } finally {
+        setIsSaving(false); // Stop loading
+      }
+    },
   });
 
   useEffect(() => {
@@ -178,35 +197,38 @@ const ManageRoadmapForm = () => {
   const isSubTypeSelected = (option) =>
     selectedSubTypes.some((item) => item.value === option.value);
 
-const handleDeleteRoadmap = async (id) => {
-  const confirm = await Swal.fire({
-    title: "Are you sure?",
-    text: "This roadmap will be deleted permanently.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
-  });
+  const handleDeleteRoadmap = async (id) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "This roadmap will be deleted permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
 
-  if (confirm.isConfirmed) {
-    try {
-      await axios.delete(`${API_BASE_URL}/api/roadmap/${id}`);
+    if (confirm.isConfirmed) {
+      try {
+        await axios.delete(`${API_BASE_URL}/api/roadmap/${id}`);
 
-      // Fetch updated roadmap list
-      const res = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
+        // Fetch updated roadmap list
+        const res = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
 
-      // ✅ Correctly update the roadmap list
-      setRoadmaps(res.data?.data || []);
+        // ✅ Correctly update the roadmap list
+        setRoadmaps(res.data?.data || []);
 
-      Swal.fire("Deleted!", "Stream has been deleted.", "success");
-    } catch (err) {
-      console.error("Failed to delete roadmap:", err);
-      Swal.fire("Error!", err?.response?.data?.usrMsg || "Failed to delete Stream.", "error");
+        Swal.fire("Deleted!", "Stream has been deleted.", "success");
+      } catch (err) {
+        console.error("Failed to delete roadmap:", err);
+        Swal.fire(
+          "Warning!",
+          err?.response?.data?.usrMsg || "Failed to delete Stream.",
+          "warning"
+        );
+      }
     }
-  }
-};
-
+  };
 
   return (
     // <div className="p-6">
@@ -287,8 +309,22 @@ const handleDeleteRoadmap = async (id) => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+          <div className="relative bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
             <h2 className="text-lg font-semibold mb-4">Add New Roadmap</h2>
+            {/* X (Close) Button */}
+            <button
+              type="button"
+              onClick={() => {
+                formik.resetForm();
+                setShowModal(false);
+                setIsEditing(false);
+                setEditingRoadmap(null);
+              }}
+              className="absolute top-3 right-3 text-3xl text-gray-500 hover:text-red-500 focus:outline-none"
+            >
+              &times;
+            </button>
+
             <form onSubmit={formik.handleSubmit}>
               {/*  Name */}
               <div className="mb-4">
@@ -451,7 +487,7 @@ const handleDeleteRoadmap = async (id) => {
 
               {/* Submit Button */}
               <div className="flex justify-end mt-6 gap-4">
-                <button
+                {/* <button
                   type="button"
                   onClick={() => {
                     formik.resetForm();
@@ -464,7 +500,7 @@ const handleDeleteRoadmap = async (id) => {
                   className="bg-gray-200 text-gray-700 py-2 px-6 rounded-lg hover:bg-gray-300 cursor-pointer"
                 >
                   Cancel
-                </button>
+                </button> */}
 
                 <button
                   type="submit"
@@ -475,7 +511,7 @@ const handleDeleteRoadmap = async (id) => {
                       : "bg-blue-600 hover:bg-blue-700"
                   }`}
                 >
-                {isSaving ? "Saving..." : "Save"}
+                  {isSaving ? "Saving..." : "Save"}
                 </button>
               </div>
             </form>
