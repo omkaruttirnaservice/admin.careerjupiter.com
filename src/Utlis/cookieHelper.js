@@ -31,15 +31,15 @@ import Cookies from "js-cookie";
 export const setAuthCookies = ({ token, role, subrole, userID, classID,  collegeID, universityID }) => {
   console.log("🚀 Storing Cookies:", { token, role, subrole, userID, classID,  collegeID, universityID });
 
-  Cookies.set("token", token, { expires: 1 / 24 }); // 1 hour
-  Cookies.set("role", role, { expires: 1 / 24 });
-  Cookies.set("userID", userID, { expires: 1 / 24 });
+  Cookies.set("token", token, { expires: 1 }); // 1 hour
+  Cookies.set("role", role, { expires: 1 });
+  Cookies.set("userID", userID, { expires: 1 });
 
   // Optional cookies only if they exist
-  if (subrole) Cookies.set("subrole", subrole, { expires: 1 / 24 });
-  if (classID) Cookies.set("classId", classID, { expires: 1 / 24 });
-  if (collegeID) Cookies.set("collegeID", collegeID, { expires: 1 / 24 }); // Store collegeId
-   if (universityID) Cookies.set("universityID", universityID, { expires: 1 / 24 });
+  if (subrole) Cookies.set("subrole", subrole, { expires: 1 });
+  if (classID) Cookies.set("classId", classID, { expires: 1 });
+  if (collegeID) Cookies.set("collegeID", collegeID, { expires: 1 }); // Store collegeId
+   if (universityID) Cookies.set("universityID", universityID, { expires: 1 });
   console.log("Classs Id from cookie helper", classID);
 
   console.log("College Id ***",collegeID);

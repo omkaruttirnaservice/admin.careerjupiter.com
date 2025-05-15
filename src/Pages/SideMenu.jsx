@@ -19,6 +19,9 @@ import {
   FilePlus,
   LibraryBig,
   Building2,
+  Map,
+  Settings2,
+  RouteIcon,
 } from "lucide-react";
 import { clearAuthCookies } from "../utlis/cookieHelper";
 import Swal from "sweetalert2";
@@ -105,21 +108,21 @@ const navigation = [
   },
   {
     name: "Roadmap",
-    icon: LibraryBig,
-    color: "text-purple-400",
+    icon: Map,
+    color: "text-red-400",
     children: [
       {
         name: "Manage Type ",
         href: "/manage-type",
 
-        icon: Building2,
+        icon: Settings2,
         color: "text-blue-400",
       },
       {
         name: "Manage Roadmap",
         href: "/manage-roadmap",
 
-        icon: FilePlus,
+        icon: RouteIcon,
         color: "text-green-400",
       },
     ],
