@@ -115,10 +115,25 @@ const navigation = [
   },
   {
     name: "Roadmap",
-    href: "/roadmap",
     icon: PresentationChartBarIcon,
-    color: "text-indigo-400",
+    color: "text-green-400",
+    children: [
+      {
+        name: "Manage Type",
+        href: "/manage-type",
+        icon: Building2,
+
+        color: "text-blue-400",
+      },
+      {
+        name: "Manage Roadmap",
+        href: "/manage-roadmap",
+        icon: FilePlus,
+        color: "text-green-400",
+      },
+    ],
   },
+ 
   {
     name: "Reports & Analytics",
     href: "/reports",
