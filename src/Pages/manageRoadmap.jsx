@@ -12,7 +12,7 @@
 // // import axios from "axios";
 // // import { useFormik } from "formik";
 // // import SingleSelectDropdown from "../component/singleSelectDropdown";
-// // import { API_BASE_URL } from "../constant/constantBaseUrl";
+// // import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 
 // // const subTypeOptions = [
 // //   "Mechanical",
@@ -116,7 +116,7 @@
 // //       try {
 // //         const res = await axios.get(`${API_BASE_URL}/api/type/all`);
 // //         const types = res.data.types.map((item) => item.type); // just extract type values
-        
+
 // //         setTypeOptions(types);
 // //       } catch (err) {
 // //         console.error("Failed to fetch types:", err);
@@ -265,14 +265,13 @@
 
 // // export default ManageRoadmap;
 
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
 // import SingleSelectDropdown from "../component/singleSelectDropdown";
 // import MultiSelectDropdown from "../component/multiSelectDropdown";
-// import { API_BASE_URL } from "../constant/constantBaseUrl";
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 
 // const ManageRoadmap = () => {
 //   const [categories, setCategories] = useState([]);
@@ -458,8 +457,6 @@
 //   options={subTypeOptions}
 //   formik={formik}
 // />
-
-
 
 //               {/* Buttons */}
 //               <div className="flex justify-end gap-3 mt-4">
