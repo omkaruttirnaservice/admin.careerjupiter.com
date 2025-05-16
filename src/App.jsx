@@ -21,7 +21,6 @@ import ManageCollegeCategory from './Component/ManageCollegeCategory.jsx';
 import ManageUniversityCategory from './Component/ManageUniversityCategory.jsx';
 import Placement from './Component/Placement';
 import ProtectedRoute from './Component/ProtectedRoute';
-import ManageRoadmapForm from './Component/Roadmap/ManageRoadmapForm.jsx';
 import TypeList from './Component/Roadmap/TypeList.jsx';
 import UniversityInfrastructure from './Component/UniversityInfrastructure';
 import UniversityPlacement from './Component/UniversityPlacement';
@@ -41,6 +40,7 @@ import VendorUniversityLayout from './Pages/VendorUniversityLayout.jsx';
 import AddUniversity from './university/AddUniversity';
 import EditUniversity from './university/EditUniversity.jsx';
 import UniversityList from './university/UniversityList.jsx';
+import ManageRoadmapForm from './Component/Roadmap/manageRoadmapFrom.jsx';
 
 const queryClient = new QueryClient();
 
