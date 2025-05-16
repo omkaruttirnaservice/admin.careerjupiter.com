@@ -37,9 +37,9 @@ import UniversityVendorDashboard from './Pages/UniversityVendorDashboard.jsx';
 import VendorCollegeLayout from './Pages/VendorCollegeLayout.jsx';
 import VendorLayout from './Pages/VendorLayout.jsx';
 import VendorUniversityLayout from './Pages/VendorUniversityLayout.jsx';
-import AddUniversity from './university/AddUniversity.jsx';
-import EditUniversity from './university/EditUniversity.jsx';
-import UniversityList from './university/UniversityList.jsx';
+import AddUniversity from './University/AddUniversity.jsx';
+import EditUniversity from './University/EditUniversity.jsx';
+import UniversityList from './University/UniversityList.jsx';
 import ManageRoadmapForm from './Component/Roadmap/manageRoadmapFrom.jsx';
 
 const queryClient = new QueryClient();
