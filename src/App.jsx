@@ -40,7 +40,7 @@ import VendorUniversityLayout from './Pages/VendorUniversityLayout.jsx';
 import AddUniversity from './University/AddUniversity.jsx';
 import EditUniversity from './University/EditUniversity.jsx';
 import ManageRoadmapForm from './Component/Roadmap/ManageRoadmapFrom.jsx';
-import UniversityList from './university/UniversityList.jsx';
+import UniversityList from './University/UniversityList.jsx';
 import ReportandAnalytics from './Pages/ReportandAnalytics.jsx';
 
 const queryClient = new QueryClient();
