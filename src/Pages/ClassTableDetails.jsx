@@ -269,7 +269,7 @@ const ClassTableDetails = () => {
                         <FaTrash size={15} />
                     </button>
                     {/* ✅ Manage Courses */}
-                    {/* <button className="bg-green-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-courses/${row._id}`)}>
+                    {/* <button className="bg-green-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-Courses/${row._id}`)}>
           📚 Courses
         </button> */}
 

@@ -4,7 +4,7 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-d
 
 import Root from './Component/Root.jsx';
 
-import CollegeCourses from './courses/CollegeCourses.jsx';
+import CollegeCourses from './Courses/CollegeCourses.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import CollegeTableDetails from './pages/CollegeTableDetails.jsx';
 import Login from './pages/Login';
@@ -93,7 +93,7 @@ function App() {
                             <Route path="/reports" element={<ReportandAnalytics />} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route
-                                path="/colleges/courses/:collegeId"
+                                path="/colleges/Courses/:collegeId"
                                 element={<CollegeCourses />}
                             />
                             <Route path="/colleges/edit/:collegeId" element={<ManageCollege />} />

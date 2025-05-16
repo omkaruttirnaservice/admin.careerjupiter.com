@@ -568,7 +568,7 @@ const CollegeTableDetails = () => {
         //         className="bg-green-500 hover:bg-green-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
         //         data-tooltip-id="courses-tooltip"
         //         data-tooltip-content="Manage Courses"
-        //         onClick={() => navigate(`/colleges/courses/${row._id}`)}
+        //         onClick={() => navigate(`/colleges/Courses/${row._id}`)}
         //       >
         //         <FaPlus size={17} />
         //       </button>
@@ -657,7 +657,7 @@ const CollegeTableDetails = () => {
                                 if (role === 'ADMIN') {
                                     Cookies.set('collegeID', row._id, { expires: 1 });
                                 }
-                                navigate(`/colleges/courses/${row._id}`);
+                                navigate(`/colleges/Courses/${row._id}`);
                             }}>
                             <FaPlus size={17} />
                         </button>
