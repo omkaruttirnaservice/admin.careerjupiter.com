@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { API_BASE_URL } from '../../Constant/ConstantBaseUrl.js';
-import AddTest from './addTest';
+import AddTest from './addTest.jsx';
 
 const TableList = () => {
     const { mainCategoryId, category } = useParams();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import api from '../../api/token_api';
+import api from '../../api/token_api.jsx';
 import Swal from 'sweetalert2';
 import { API_BASE_URL } from '../../Constant/ConstantBaseUrl.js';
 
