@@ -14,9 +14,9 @@ export const createRoadmap = async (roadmapData) => {
 };
 export const getAllType = async () => {
   const response = await axios.post(`${API_BASE_URL}/api/type/all`)
-    // console.log(response.data)
+   
   return response.data
-  // console.log(response.data)
+ 
 }
 export const getTypeById = async (id) => {
   const response = await axios.get(`${API_BASE_URL}/api/type/${id}`);

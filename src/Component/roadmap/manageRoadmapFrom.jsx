@@ -70,7 +70,7 @@ const ManageRoadmapForm = () => {
         type: selectedType,
       });
       setSubTypeOptions(res.data?.data || []);
-      setFilteredSubTypeOptions(res.data?.data || []); // Initialize filtered options
+      setFilteredSubTypeOptions(res.data?.data || []); 
     } catch (err) {
       console.error("Error fetching subtypes:", err);
       Swal.fire({
@@ -96,7 +96,6 @@ const ManageRoadmapForm = () => {
       })),
     });
 
-    // Fetch subtypes based on selected type
     handleTypeChange({ target: { value: roadmap.type?._id } });
   };
 
@@ -162,7 +161,7 @@ const ManageRoadmapForm = () => {
           icon: "warning",
         });
       } finally {
-        setIsSaving(false); // Stop loading
+        setIsSaving(false); 
       }
     },
   });

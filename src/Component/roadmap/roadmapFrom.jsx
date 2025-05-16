@@ -19,7 +19,6 @@ const AddTypeFrom = ({ onSuccess, onClose, editingType }) => {
       : createRoadmap,
     onSuccess: (data) => {
       Swal.fire("Success", data.usrMsg || "Operation successful", "success");
-      // console.log(data.usrMsg ,'aksdjfhkjashf')
       setTypeValue("");
       onSuccess?.();
     },
