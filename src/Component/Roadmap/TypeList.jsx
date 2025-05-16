@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getAllType, deleteType, getTypeById } from "./roadmap-api";
-import AddTypeFrom from "./roadmapFrom";
+import AddTypeFrom from "./RoadmapFrom";
 import Swal from "sweetalert2";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 

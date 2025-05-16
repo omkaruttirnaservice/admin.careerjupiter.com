@@ -21,7 +21,7 @@ import ManageCollegeCategory from './Component/ManageCollegeCategory.jsx';
 import ManageUniversityCategory from './Component/ManageUniversityCategory.jsx';
 import Placement from './Component/Placement';
 import ProtectedRoute from './Component/ProtectedRoute';
-import ManageRoadmapForm from './Component/Roadmap/ManageRoadmapForm.js';
+import ManageRoadmapForm from './Component/Roadmap/ManageRoadmapForm.jsx';
 import TypeList from './Component/Roadmap/TypeList.jsx';
 import UniversityInfrastructure from './Component/UniversityInfrastructure';
 import UniversityPlacement from './Component/UniversityPlacement';
