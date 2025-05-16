@@ -32,10 +32,12 @@ const ManageRoadmapForm = () => {
       } catch (err) {
         console.error("Failed to fetch types:", err);
         Swal.fire({
-  title: "Warning!",
-  text: err?.response?.data?.usrMsg || "Failed to fetch types. Please try again.",
-  icon: "warning",
-});
+          title: "Warning!",
+          text:
+            err?.response?.data?.usrMsg ||
+            "Failed to fetch types. Please try again.",
+          icon: "warning",
+        });
       }
     };
 
@@ -47,14 +49,15 @@ const ManageRoadmapForm = () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
         setRoadmaps(res.data?.data || []);
-        console.log(res, "lksjdfl;jasf");
       } catch (err) {
         console.error("Failed to fetch roadmaps:", err);
         Swal.fire({
-    title: "Warning!",
-    text: err?.response?.data?.usrMsg || "Failed to fetch roadmaps. Please try again.",
-    icon: "warning",
-  });
+          title: "Warning!",
+          text:
+            err?.response?.data?.usrMsg ||
+            "Failed to fetch roadmaps. Please try again.",
+          icon: "warning",
+        });
         setRoadmaps([]);
       }
     };
@@ -70,14 +73,16 @@ const ManageRoadmapForm = () => {
         type: selectedType,
       });
       setSubTypeOptions(res.data?.data || []);
-      setFilteredSubTypeOptions(res.data?.data || []); 
+      setFilteredSubTypeOptions(res.data?.data || []);
     } catch (err) {
       console.error("Error fetching subtypes:", err);
       Swal.fire({
-  title: "Warning!",
-  text: err?.response?.data?.usrMsg || "Failed to fetch subtypes. Please try again.",
-  icon: "warning",
-});
+        title: "Warning!",
+        text:
+          err?.response?.data?.usrMsg ||
+          "Failed to fetch subtypes. Please try again.",
+        icon: "warning",
+      });
 
       setSubTypeOptions([]);
       setFilteredSubTypeOptions([]);
@@ -161,7 +166,7 @@ const ManageRoadmapForm = () => {
           icon: "warning",
         });
       } finally {
-        setIsSaving(false); 
+        setIsSaving(false);
       }
     },
   });
