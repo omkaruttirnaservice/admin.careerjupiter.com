@@ -41,7 +41,6 @@ import AddUniversity from './University/AddUniversity.jsx';
 import EditUniversity from './University/EditUniversity.jsx';
 import ManageRoadmapForm from './Component/Roadmap/ManageRoadmapFrom.jsx';
 import ReportandAnalytics from './Pages/ReportandAnalytics.jsx';
-import UniversityList from './University/UniversityList.jsx'
 
 const queryClient = new QueryClient();
 
@@ -63,7 +62,7 @@ function App() {
                         <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
                             <Route path="/dashboard" element={<AdminDashboard />} />
                             <Route path="/colleges" element={<CollegeTableDetails />} />
-                            <Route path="/university-details" element={<UniversityList />} />
+                            {/* <Route path="/university-details" element={<UniversityList />} /> */}
                             {/* <Route path="/manage-roadmap" element={<ManageRoadmap />}/> */}
                             <Route
                                 path="/university/placement/:universityId"
