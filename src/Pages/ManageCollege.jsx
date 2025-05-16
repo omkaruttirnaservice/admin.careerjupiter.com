@@ -7,15 +7,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../Constant/ConstantBaseUrl.js';
 
-import InputField from '../component/inputField';
-import MultiSelectDropdown from '../component/multiSelectDropdown';
-import SingleSelectDropdown from '../component/singleSelectDropdown';
-import MultiSelectField from '../component/multiSelectField';
-import AddressModal from '../component/addressModel';
+import InputField from '../Component/inputField';
+import MultiSelectDropdown from '../Component/multiSelectDropdown';
+import SingleSelectDropdown from '../Component/singleSelectDropdown';
+import MultiSelectField from '../Component/multiSelectField';
+import AddressModal from '../Component/addressModel';
 import FileUpload from '../Component/FileUpload';
 import { MdDone } from 'react-icons/md';
 import { FaWindowClose } from 'react-icons/fa';
-import CollegeAddressModal from '../component/collegeAddressModal';
+import CollegeAddressModal from '../Component/collegeAddressModal';
 import { getCookie } from '../utlis/cookieHelper';
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {

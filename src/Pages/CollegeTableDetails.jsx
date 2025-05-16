@@ -14,8 +14,8 @@ import {
 import { Tooltip } from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../Constant/ConstantBaseUrl.js';
-import InfoCard from '../component/infoCard';
-import EditCollegeDetails from '../component/editCollegeDetails';
+import InfoCard from '../Component/infoCard';
+import EditCollegeDetails from '../Component/editCollegeDetails';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 

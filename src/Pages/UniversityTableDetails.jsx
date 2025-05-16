@@ -5,10 +5,10 @@ import { FaEye, FaEdit, FaPauseCircle, FaPlus, FaBuilding, FaBriefcase } from 'r
 import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import { API_BASE_URL } from '../Constant/ConstantBaseUrl.js';
-import UniversityInfoCard from '../component/universityInfoCard'; // Import the InfoCard component
-// import EditUniversityDetails from "../component/editUniversityDetails"; // Import the EdituniversityDetails component
+import UniversityInfoCard from '../Component/universityInfoCard'; // Import the InfoCard component
+// import EditUniversityDetails from "../Component/editUniversityDetails"; // Import the EdituniversityDetails component
 // import Infrastructure from "../Component/Infrastructure";
-// import UniversityPlacement from "../component/universityPlacement";
+// import UniversityPlacement from "../Component/universityPlacement";
 import EditUniversityDetails from '../Component/EditUniversityDetails';
 
 const UniversityTableDetails = () => {

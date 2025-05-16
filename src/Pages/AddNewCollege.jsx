@@ -8,21 +8,21 @@ import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaUniversity, FaImage, FaCheckCircle } from 'react-icons/fa';
-import MultiSelectDropdown from '../component/multiSelectDropdown';
-import MultiSelectField from '../component/multiSelectField';
-import InputField from '../component/inputField';
-import TextAreaField from '../component/textAreaField';
-import AddressModal from '../component/addressModel';
+import MultiSelectDropdown from '../Component/multiSelectDropdown';
+import MultiSelectField from '../Component/multiSelectField';
+import InputField from '../Component/inputField';
+import TextAreaField from '../Component/textAreaField';
+import AddressModal from '../Component/addressModel';
 import { API_BASE_URL } from '../Constant/ConstantBaseUrl.js';
 import axios from 'axios';
-// import FileUpload from "../component/fileUpload";
-import FileUpload from '../component/fileUpload';
-import SingleSelectDropdown from '../component/singleSelectDropdown';
+// import FileUpload from "../Component/fileUpload";
+import FileUpload from '../Component/fileUpload';
+import SingleSelectDropdown from '../Component/singleSelectDropdown';
 import Swal from 'sweetalert2';
 import { setAuthCookies } from '../utlis/cookieHelper';
 import { useNavigate } from 'react-router-dom';
-import CollegeFileUpload from '../component/collegeFileUpload';
-import CollegeAddressModal from '../component/collegeAddressModal';
+import CollegeFileUpload from '../Component/collegeFileUpload';
+import CollegeAddressModal from '../Component/collegeAddressModal';
 
 // Constant Values for Accreditations
 const accreditationOptions = [

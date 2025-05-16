@@ -11,7 +11,7 @@
 // // import React, { useState, useEffect } from "react";
 // // import axios from "axios";
 // // import { useFormik } from "formik";
-// // import SingleSelectDropdown from "../component/singleSelectDropdown";
+// // import SingleSelectDropdown from "../Component/singleSelectDropdown";
 // // import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 
 // // const subTypeOptions = [
@@ -269,8 +269,8 @@
 // import axios from "axios";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
-// import SingleSelectDropdown from "../component/singleSelectDropdown";
-// import MultiSelectDropdown from "../component/multiSelectDropdown";
+// import SingleSelectDropdown from "../Component/singleSelectDropdown";
+// import MultiSelectDropdown from "../Component/multiSelectDropdown";
 // import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 
 // const ManageRoadmap = () => {
