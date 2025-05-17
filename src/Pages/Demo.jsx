@@ -1,78 +1,71 @@
-  
-  
-  
-
-  const verifyOtp = async () => {
+const verifyOtp = async () => {
     if (!otp || !referenceId) {
-      Swal.fire("Error!", "OTP and Reference ID are required.", "error");
-      return;
-    }
-  
-    try {
-      setLoading(true);
-  
-      let endpoint = `${API_BASE_URL}/api/auth/signup?role=ADMIN`;
-  
-      console.log("📌 Trying Admin Signup...");
-  
-      let response = await axios.post(endpoint, {
-        mobile_no: mobileNo,
-        reference_id: referenceId,
-        otp: otp,
-      });
-  
-      if (response.data.success) {
-        console.log("✅ Admin Login Success");
-        Swal.fire("Success!", "Logged in as Admin!", "success").then(()=>{
-          const { token, userId } = response.data.data || {};
-          setAuthCookies({ token, role: "ADMIN", userId });
-    
-          window.location.href = "/dashboard";
-        });
-  
-       
+        Swal.fire('Error!', 'OTP and Reference ID are required.', 'error');
         return;
-      }
-    } catch (error) {
-      console.log("⚠️ Admin Login Failed. Trying Vendor...");
     }
-  
+
     try {
-      let vendorEndpoint = `${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`;
-      console.log("📌 Trying Vendor Signup...");
-  
-      let vendorResponse = await axios.post(vendorEndpoint, {
-        mobile_no: mobileNo,
-        reference_id: referenceId,
-        otp: otp,
-      });
-  
-      if (vendorResponse.data.success) {
-        console.log("✅ Vendor Login Success");
-        Swal.fire("Success!", "Logged in as Vendor!", "success").then(()=>{
-          const { token, userId, classId } = vendorResponse.data.data || {};
-          setAuthCookies({ token, role: "VENDOR", subrole: "Class", userId, classId });
-    
-          window.location.href = "/vendor-class/class-dashboard";
+        setLoading(true);
+
+        let endpoint = `${API_BASE_URL}/api/auth/signup?role=ADMIN`;
+
+        console.log('📌 Trying Admin Signup...');
+
+        let response = await axios.post(endpoint, {
+            mobile_no: mobileNo,
+            reference_id: referenceId,
+            otp: otp,
         });
-  
-       
-        return;
-      }
+
+        if (response.data.success) {
+            console.log('✅ Admin Login Success');
+            Swal.fire('Success!', 'Logged in as Admin!', 'success').then(() => {
+                const { token, userId } = response.data.data || {};
+                setAuthCookies({ token, role: 'ADMIN', userId });
+
+                window.location.href = '/dashboard';
+            });
+
+            return;
+        }
     } catch (error) {
-      console.log("❌ Vendor Login Failed.");
-      Swal.fire("Error!", "Invalid OTP or user not found!", "error");
+        console.log('⚠️ Admin Login Failed. Trying Vendor...');
+    }
+
+    try {
+        let vendorEndpoint = `${API_BASE_URL}/api/auth/signup?role=VENDOR&subrole=Class`;
+        console.log('📌 Trying Vendor Signup...');
+
+        let vendorResponse = await axios.post(vendorEndpoint, {
+            mobile_no: mobileNo,
+            reference_id: referenceId,
+            otp: otp,
+        });
+
+        if (vendorResponse.data.success) {
+            console.log('✅ Vendor Login Success');
+            Swal.fire('Success!', 'Logged in as Vendor!', 'success').then(() => {
+                const { token, userId, classId } = vendorResponse.data.data || {};
+                setAuthCookies({ token, role: 'VENDOR', subrole: 'Class', userId, classId });
+
+                window.location.href = '/vendor-class/class-dashboard';
+            });
+
+            return;
+        }
+    } catch (error) {
+        console.log('❌ Vendor Login Failed.');
+        Swal.fire('Error!', 'Invalid OTP or user not found!', 'error');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
-  
-  
-  // import React, { useState, useEffect } from "react";
+};
+
+// import React, { useState, useEffect } from "react";
 // import { Formik, Form, Field, ErrorMessage } from "formik";
 // import * as Yup from "yup";
 // import * as XLSX from "xlsx";
-// import { API_BASE_URL } from "../../Constant/constantBaseUrl";
+// import { API_BASE_URL } from "../../Constant/ConstantBaseUrl.js";
 // import axios from "axios";
 // import { useNavigate, useParams } from "react-router-dom";
 
@@ -424,73 +417,72 @@
 
 // export default AddTest;
 
+// const validationSchema = Yup.object({
+//   infrastructure: Yup.array().of(
+//     Yup.object().shape({
+//       campusArea: Yup.string().required("Campus area is required"),
+//       numberOfClassrooms: Yup.number()
+//         .min(1, "Must have at least 1 classroom")
+//         .required("Required"),
+//       numberOfLabs: Yup.number()
+//         .min(1, "Must have at least 1 lab")
+//         .required("Required"),
+//       sportsFacilities: Yup.array().min(1, "Select at least one sports facility"),
+//       hostelAvailability: Yup.boolean().required("Select hostel availability"),
+//       hostelDetails: Yup.string().when("hostelAvailability", {
+//         is: true,
+//         then: (schema) => schema.required("Provide hostel details"),
+//         otherwise: (schema) => schema.notRequired(),
+//       }),
+//       canteenAndFoodServices: Yup.boolean().required("Select canteen availability"),
+//       medicalFacilities: Yup.boolean().required("Select medical facilities"),
+//       transportFacility: Yup.array().min(1, "Select at least one transport option"),
+//       library: Yup.string().required("Library details are required"),
+//     })
+//   ),
+// });
 
- // const validationSchema = Yup.object({
-  //   infrastructure: Yup.array().of(
-  //     Yup.object().shape({
-  //       campusArea: Yup.string().required("Campus area is required"),
-  //       numberOfClassrooms: Yup.number()
-  //         .min(1, "Must have at least 1 classroom")
-  //         .required("Required"),
-  //       numberOfLabs: Yup.number()
-  //         .min(1, "Must have at least 1 lab")
-  //         .required("Required"),
-  //       sportsFacilities: Yup.array().min(1, "Select at least one sports facility"),
-  //       hostelAvailability: Yup.boolean().required("Select hostel availability"),
-  //       hostelDetails: Yup.string().when("hostelAvailability", {
-  //         is: true,
-  //         then: (schema) => schema.required("Provide hostel details"),
-  //         otherwise: (schema) => schema.notRequired(),
-  //       }),
-  //       canteenAndFoodServices: Yup.boolean().required("Select canteen availability"),
-  //       medicalFacilities: Yup.boolean().required("Select medical facilities"),
-  //       transportFacility: Yup.array().min(1, "Select at least one transport option"),
-  //       library: Yup.string().required("Library details are required"),
-  //     })
-  //   ),
-  // });
+// const validationSchema = Yup.object({
+//   // infrastructure: Yup.array().of(
+//   //   Yup.object().shape({
+//   //     campusArea: Yup.string().required("Campus area is required"),
+//   //     numberOfClassrooms: Yup.number()
+//   //       .min(1, "Must have at least 1 classroom")
+//   //       .required("Required"),
+//   //     numberOfLabs: Yup.number()
+//   //       .min(1, "Must have at least 1 lab")
+//   //       .required("Required"),
+//   //     sportsFacilities: Yup.array()
+//   //       .min(1, "Select at least one sports facility")
+//   //       .required("Required"),
+//   //     hostelAvailability: Yup.boolean().required(
+//   //       "Select hostel availability"
+//   //     ),
+//   //     hostelDetails: Yup.string().when("hostelAvailability", {
+//   //       is: true,
+//   //       then: (schema) =>
+//   //         schema.required(
+//   //           "Hostel details are required when hostel is available"
+//   //         ),
+//   //     }),
+//   //     canteenAndFoodServices: Yup.boolean().required(
+//   //       "Select canteen availability"
+//   //     ),
+//   //     medicalFacilities: Yup.boolean().required("Select medical facilities"),
+//   //     transportFacility: Yup.array()
+//   //       .min(1, "Select at least one transport option")
+//   //       .required("Required"),
+//   //     library: Yup.string().required("Library details are required"),
+//   //   })
+//   // ),
+// });
 
-  // const validationSchema = Yup.object({
-  //   // infrastructure: Yup.array().of(
-  //   //   Yup.object().shape({
-  //   //     campusArea: Yup.string().required("Campus area is required"),
-  //   //     numberOfClassrooms: Yup.number()
-  //   //       .min(1, "Must have at least 1 classroom")
-  //   //       .required("Required"),
-  //   //     numberOfLabs: Yup.number()
-  //   //       .min(1, "Must have at least 1 lab")
-  //   //       .required("Required"),
-  //   //     sportsFacilities: Yup.array()
-  //   //       .min(1, "Select at least one sports facility")
-  //   //       .required("Required"),
-  //   //     hostelAvailability: Yup.boolean().required(
-  //   //       "Select hostel availability"
-  //   //     ),
-  //   //     hostelDetails: Yup.string().when("hostelAvailability", {
-  //   //       is: true,
-  //   //       then: (schema) =>
-  //   //         schema.required(
-  //   //           "Hostel details are required when hostel is available"
-  //   //         ),
-  //   //     }),
-  //   //     canteenAndFoodServices: Yup.boolean().required(
-  //   //       "Select canteen availability"
-  //   //     ),
-  //   //     medicalFacilities: Yup.boolean().required("Select medical facilities"),
-  //   //     transportFacility: Yup.array()
-  //   //       .min(1, "Select at least one transport option")
-  //   //       .required("Required"),
-  //   //     library: Yup.string().required("Library details are required"),
-  //   //   })
-  //   // ),
-  // });
+// Login page
 
-  // Login page 
-
-  // import React, { useState } from "react";
+// import React, { useState } from "react";
 // import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 // import { setAuthCookies } from "../Utlis/cookieHelper";
 // import Swal from "sweetalert2";
 // import {
@@ -751,7 +743,7 @@
 // import { useNavigate } from "react-router-dom";
 // import Cookies from "js-cookie";
 // import axios from "axios";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 // import Swal from "sweetalert2";
 
 // const Login = () => {
@@ -946,7 +938,7 @@
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 // import Cookies from "js-cookie";
 // import Swal from "sweetalert2";
 // import {
@@ -1297,11 +1289,10 @@
 
 // export default Login;
 
-
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 // import Swal from "sweetalert2";
 // import {
 //   FaMobileAlt,
@@ -1520,13 +1511,10 @@
 
 // export default Login;
 
-
-
-
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 // import Swal from "sweetalert2";
 // import {
 //   FaMobileAlt,
@@ -1837,7 +1825,7 @@
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl";
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 // import Swal from "sweetalert2";
 // import {
 //   FaMobileAlt,
@@ -2056,13 +2044,12 @@
 
 // export default Login;
 
-
 // import React, { useState, useEffect } from "react";
 // import { Plus, Trash, CheckCheck } from "lucide-react";
 // import { motion } from "framer-motion";
 // import { useParams } from "react-router-dom";
 // import axios from "axios";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl"; 
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
 // import { useNavigate } from "react-router-dom"; // Import useNavigate
 // import { getCookie } from "../Utlis/cookieHelper";
 
@@ -2079,9 +2066,8 @@
 // const [selectedCategory, setSelectedCategory] = useState("");
 // const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
-
 //   //  const [collegeID, setCollegeId] = useState(null); // State for storing the collegeId
-    
+
 //       // Fetch the collegeId from cookies directly
 //       useEffect(() => {
 //         const collegeID = getCookie("collegeID"); // Directly fetch collegeId from cookies
@@ -2092,7 +2078,7 @@
 //           console.warn("College ID not found in cookies!"); // Log a warning if no collegeId found
 //         }
 //       }, []); // Only run this effect once when the component mounts
-    
+
 //       useEffect(() => {
 //         const fetchCategories = async () => {
 //           try {
@@ -2103,11 +2089,9 @@
 //             console.error("Failed to fetch college categories", error);
 //           }
 //         };
-      
+
 //         fetchCategories();
 //       }, []);
-      
-      
 
 //   // Fetch courses from the API on component mount
 //   useEffect(() => {
@@ -2118,12 +2102,12 @@
 //         const response = await axios.get(
 //           `${API_BASE_URL}/api/college/course/${collegeId}`
 //         );
-  
-//         const data = 
+
+//         const data =
 //           typeof response.data.data === "string"
 //             ? JSON.parse(response.data.data)
 //             : response.data.data;
-        
+
 //         // Access the nested courses array
 //         if (data && data.courses && data.courses[0] && data.courses[0].courses) {
 //           setCourses(data.courses[0].courses); // Now you are accessing the correct array
@@ -2140,7 +2124,6 @@
 //     };
 //     fetchCourses();
 //   }, [collegeId]);
-  
 
 //   console.log("//////////",collegeId);
 
@@ -2203,7 +2186,6 @@
 //     updatedCourses[courseIndex][field] = e.target.value; // Update the correct course field
 //     setCourses(updatedCourses); // Update state
 //   };
-  
 
 //   // Save the course data
 //   // const saveCourses = async () => {
@@ -2265,12 +2247,11 @@
 //   //   }
 //   // };
 
-
 //   const saveCourses = async () => {
 //     if (loading) return;
 //     setLoading(true);
 //     setError(null);
-  
+
 //     // Validate that all courses have the required fields
 //     const validCourses = courses.filter((course) => {
 //       return (
@@ -2279,13 +2260,13 @@
 //         course.annualFees
 //       );
 //     });
-  
+
 //     if (validCourses.length === 0) {
 //       setError("All fields (name, duration, and annual fees) are required.");
 //       setLoading(false);
 //       return;
 //     }
-  
+
 //     const courseData = {
 //       collegeId,
 //       courses: validCourses.map((course) => ({
@@ -2293,11 +2274,11 @@
 //         duration: Number(course.duration),
 //         annualFees: Number(course.annualFees),
 //         category: course.category,
-//         subCategory: course.subCategory, 
+//         subCategory: course.subCategory,
 //         eligibility: course.eligibility,
 //       })),
 //     };
-  
+
 //     try {
 //       const response = await axios.post(
 //         `${API_BASE_URL}/api/college/course/create`,
@@ -2308,7 +2289,7 @@
 //           },
 //         }
 //       );
-  
+
 //       if (response.data.success) {
 //         alert("Courses saved successfully!");
 //         setCourses([]); // Clear the courses after successful save
@@ -2322,7 +2303,7 @@
 //       setLoading(false);
 //     }
 //   };
-  
+
 //   // Update courses if any changes are made
 //   // const updateCourses = async () => {
 //   //   if (loading) return;
@@ -2367,12 +2348,11 @@
 //   //   }
 //   // };
 
-
 //   const updateCourses = async () => {
 //     if (loading) return;
 //     setLoading(true);
 //     setError(null);
-  
+
 //     const courseData = {
 //       collegeId,
 //       courses: courses.map((course) => ({
@@ -2380,11 +2360,11 @@
 //         duration: Number(course.duration),
 //         annualFees: Number(course.annualFees),
 //         category: course.category,
-//         subCategory: course.subCategory, 
+//         subCategory: course.subCategory,
 //         eligibility: course.eligibility,
 //       })),
 //     };
-  
+
 //     try {
 //       const response = await axios.put(
 //         `${API_BASE_URL}/api/college/course/${collegeId}`,
@@ -2395,7 +2375,7 @@
 //           },
 //         }
 //       );
-  
+
 //       if (response.data.success) {
 //         alert("Courses updated successfully!");
 //       } else {
@@ -2408,7 +2388,7 @@
 //       setLoading(false);
 //     }
 //   };
-  
+
 //   return (
 //     <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
 //       {/* Close Button (X) */}
@@ -2417,18 +2397,18 @@
 //         className="absolute top-4 right-4 text-red-600 hover:text-red-800 text-2xl font-bold cursor-pointer"
 //       >
 //         &times; {/* Unicode 'X' symbol */}
-//       </button>  
-  
+//       </button>
+
 //       <div className="flex justify-between items-center mb-6">
 //         <h3 className="text-3xl font-bold text-blue-800 flex items-center">📚 Add Courses</h3>
 //       </div>
-  
+
 //       {error && (
 //         <div className="bg-red-100 text-red-600 p-4 rounded-md mb-4">
 //           <strong>Error:</strong> {error}
 //         </div>
 //       )}
-  
+
 //       <div className="space-y-6">
 //         {courses.map((course, courseIndex) => (
 //           <motion.div
@@ -2460,7 +2440,7 @@
 //                 />
 //               </div>
 //             </div>
-  
+
 //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 //               <div className="flex flex-col">
 //                 <label className="text-blue-700">Annual Fees</label>
@@ -2504,7 +2484,6 @@
 //   </select>
 // </div>
 
-
 // <div className="mb-3">
 //   <label className="block text-blue-800 font-semibold mb-2">
 //     Branch
@@ -2526,7 +2505,7 @@
 // </div>
 
 //             </div>
-  
+
 //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 //               <div className="flex flex-col">
 //                 <label className="text-blue-700">Eligibility</label>
@@ -2539,7 +2518,7 @@
 //                 />
 //               </div>
 //             </div>
-  
+
 //             <div>
 //               <button
 //                 onClick={() => removeCourse(courseIndex)} // Pass courseIndex to removeCourse
@@ -2551,7 +2530,7 @@
 //           </motion.div>
 //         ))}
 //       </div>
-  
+
 //       <div className="mt-6 flex justify-between">
 //   <button
 //     onClick={addCourse}
@@ -2579,19 +2558,17 @@
 
 //     </section>
 //   );
-  
+
 // };
 
 // export default CollegeCourses;
-
-
 
 // import React, { useState, useEffect } from "react";
 // import { Plus, Trash } from "lucide-react";
 // import { motion } from "framer-motion";
 // import axios from "axios";
-// import { API_BASE_URL } from "../Constant/constantBaseUrl"; 
-// import { useNavigate } from "react-router-dom"; 
+// import { API_BASE_URL } from "../Constant/ConstantBaseUrl.js";
+// import { useNavigate } from "react-router-dom";
 // import { getCookie } from "../Utlis/cookieHelper";
 // import Swal from "sweetalert2";
 
@@ -2640,13 +2617,13 @@
 //         const data = typeof response.data.data === "string"
 //           ? JSON.parse(response.data.data)
 //           : response.data.data;
-        
+
 //         if (data && data.courses && data.courses[0] && Array.isArray(data.courses[0].courses)) {
 //           const fetchedCourses = data.courses[0].courses.map(course => {
 //             const cat = categoryData.find(item => item.category === course.category);
-//             return { 
-//               ...course, 
-//               availableSubCategories: cat && cat.subCategory ? cat.subCategory.filter(Boolean) : [] 
+//             return {
+//               ...course,
+//               availableSubCategories: cat && cat.subCategory ? cat.subCategory.filter(Boolean) : []
 //             };
 //           });
 //           setCourses(fetchedCourses);
@@ -2698,7 +2675,6 @@
 //       console.error("Failed to fetch courses:", error);
 //     }
 //   };
-  
 
 //   // Handle input changes for any field in the course object
 //   const handleChange = (e, index) => {
@@ -2709,7 +2685,7 @@
 //       // If the category changes, update availableSubCategories for that course
 //       if(name === "category") {
 //         const catObj = categoryData.find(item => item.category === value);
-//         updated[index].availableSubCategories = catObj && catObj.subCategory 
+//         updated[index].availableSubCategories = catObj && catObj.subCategory
 //           ? catObj.subCategory.filter(Boolean)
 //           : [];
 //         // reset subCategory if category changes
@@ -2729,7 +2705,7 @@
 //     const validCourses = courses.filter(course =>
 //       course.name && course.duration && course.annualFees && course.category
 //     );
-    
+
 //     if (validCourses.length === 0) {
 //       Swal.fire({
 //         icon: "warning",
@@ -2759,7 +2735,7 @@
 //         courseData,
 //         { headers: { "Content-Type": "application/json" } }
 //       );
-  
+
 //       if (response.data.success) {
 //         Swal.fire({
 //           icon: "success",
@@ -2800,7 +2776,7 @@
 //     if (loading) return;
 //     setLoading(true);
 //     setError(null);
-  
+
 //     const courseData = {
 //       collegeId,
 //       courses: courses.map(course => ({
@@ -2812,14 +2788,14 @@
 //         eligibility: course.eligibility,
 //       }))
 //     };
-  
+
 //     try {
 //       const response = await axios.put(
 //         `${API_BASE_URL}/api/college/course/${collegeId}`,
 //         courseData,
 //         { headers: { "Content-Type": "application/json" } }
 //       );
-  
+
 //       if (response.data.success) {
 //         // alert("Courses updated successfully!");
 //         Swal.fire({
@@ -2859,17 +2835,17 @@
 //       >
 //         &times;
 //       </button> */}
-  
+
 //       <div className="flex justify-between items-center mb-6">
 //         <h3 className="text-3xl font-bold text-blue-800 flex items-center">📚 Add Courses</h3>
 //       </div>
-  
+
 //       {/* {error && (
 //         <div className="bg-red-100 text-red-600 p-4 rounded-md mb-4">
 //           <strong>Error:</strong> {error}
 //         </div>
 //       )} */}
-  
+
 //       <div className="space-y-6">
 //         {courses.map((course, index) => (
 //           <motion.div
@@ -2902,7 +2878,7 @@
 //                 />
 //               </div>
 //             </div>
-  
+
 //             {/* Row for Annual Fees and Category */}
 //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 //               <div className="flex flex-col">
@@ -2932,7 +2908,7 @@
 //                 </select>
 //               </div>
 //             </div>
-  
+
 //             {/* Row for Subcategory (Branch) */}
 //             <div className="mb-4 w-full">
 //               <label className="block text-blue-800 font-semibold mb-2">
@@ -2954,7 +2930,7 @@
 //                 ))}
 //               </select>
 //             </div>
-  
+
 //             {/* Row for Eligibility */}
 //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 //               <div className="flex flex-col">
@@ -2968,7 +2944,7 @@
 //                 />
 //               </div>
 //             </div>
-  
+
 //             {/* Remove Course Button */}
 //             <div>
 //               <button
@@ -2981,7 +2957,7 @@
 //           </motion.div>
 //         ))}
 //       </div>
-  
+
 //       {/* Add / Save / Update Buttons */}
 //       <div className="mt-6 flex justify-between">
 //   {/* Add Course Button */}
@@ -3016,7 +2992,7 @@
 // };
 
 // export default CollegeCourses;
-//  for COllege Courses 
+//  for COllege Courses
 
 // university Id set
 // const universityID = getCookie("universityID");
