@@ -15,7 +15,7 @@ import AdminDashboard from "./pages/adminDashboard";
 import ProfilePage from "./pages/profilePage";
 import CollegeCourses from "./courses/collegeCourses";
 import AddUniversity from "./university/addUniversity";
-import UniversityList from "./university/universityLIst.jsx";
+import UniversityList from "./university/universityList.jsx";
 import UniversityPlacement from "./component/universityPlacement";
 import Infrastructure from "./component/infrastructure";
 import Placement from "./component/placement";
