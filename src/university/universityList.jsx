@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { fetchAllUniversities, deleteUniversity } from "./universityapi";
 import ViewUniversityModal from "./viewUniversityModal";
-import DeleteConfirmationModal from "./DeleteUniversitymodal";
+import DeleteConfirmationModal from "./deleteUniversitymodal";
 import { useNavigate } from "react-router-dom";
 
 const UniversityList = () => {
@@ -454,7 +454,7 @@ const UniversityList = () => {
   //     </div>
   //   );
 
-  return (
+  return(
     <section>
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-6 shadow-lg">
         {/* Header Section */}

@@ -1,202 +1,346 @@
-import { useState, useEffect } from "react"
-import { useFormik } from "formik"
-import * as Yup from "yup"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import { fetchUniversityCategories, createUniversity } from "./universityapi"
-import UniversityForm from "./universityForm"
 
-// State and district data for dropdowns
-const stateDistrictData = {
-  Maharashtra: ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad"],
-  Karnataka: ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum"],
-  Gujarat: ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"],
-  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"],
-  Delhi: ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi"],
-}
+
+import React, { useState, useEffect } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { createUniversity, fetchUniversityCategories } from "./universityapi";
+import UniversityForm from "./universityform";
+import Swal from "sweetalert2";
+import Cookies from "js-cookie";
+import { FaArrowLeft } from "react-icons/fa";
+
+// Default state options
+const defaultStateOptions = [
+ 
+];
+
 
 const AddUniversity = () => {
-  const [filteredBranches, setFilteredBranches] = useState([])
-  const [districts, setDistricts] = useState([])
+  const navigate = useNavigate();
+  const [filteredBranches, setFilteredBranches] = useState([]);
+  // const [stateOptions] = useState(defaultStateOptions);
+  // const [districtOptions, setDistrictOptions] = useState([]);
+  
 
-  // Fetch categories using React Query
-  const { data: categoryData = { categories: [] }, isLoading: isCategoriesLoading } = useQuery({
+  const { data: categoryData = { categories: [] } } = useQuery({
     queryKey: ["universityCategories"],
     queryFn: fetchUniversityCategories,
     staleTime: 5 * 60 * 1000,
-  })
+  });
 
-  // Validation schema
-  const validationSchema = Yup.object({
-    universityName: Yup.string().required("University name is required"),
-    universityID: Yup.string().required("University ID is required"),
-    category: Yup.string().required("Category is required"),
-    subCategory: Yup.array().min(1, "At least one sub-category is required"),
-    address: Yup.object({
-      line1: Yup.string().required("Address line 1 is required"),
-      pincode: Yup.string()
-        .matches(/^\d{6}$/, "Pincode must be exactly 6 digits")
-        .required("Pincode is required"),
-      state: Yup.string().required("State is required"),
-      dist: Yup.string().required("District is required"),
-      autorizedName: Yup.string().required("Authorized person name is required"),
-      autorizedPhono: Yup.string()
-        .matches(/^[6-9]\d{9}$/, "Phone number must be 10 digits and start with 6-9")
-        .required("Authorized person phone is required"),
-    }),
-    contactDetails: Yup.string().required("Contact details are required"),
-    password: Yup.string().min(4, "Password must be at least 4 characters").required("Password is required"),
-    email_id: Yup.string().email("Invalid email format").required("Email is required"),
-    info: Yup.object({
-      description: Yup.string()
-        .min(100, "Description must be at least 100 characters")
-        .max(1000, "Description must not exceed 1000 characters")
-        .required("Description is required"),
-    }),
-    keywords: Yup.array()
-      .min(1, "At least one keyword is required")
-      .max(5, "Maximum 5 keywords allowed")
-      .required("At least one keyword is required"),
-  })
-
-  const initialValues = {
-    universityName: "",
-    universityID: "",
-    category: "",
-    subCategory: [],
-    address: {
-      line1: "",
-      line2: "",
-      pincode: "",
-      state: "",
-      dist: "",
-      taluka: "",
-      autorizedName: "",
-      autorizedPhono: "",
-      nearbyLandmarks: "",
-    },
-    contactDetails: "",
-    password: "",
-    email_id: "",
-    info: {
-      description: "",
-    },
-    keywords: [],
-    image: null,
-    imageGallery: [],
-    websiteURL: "",
-    establishedYear: "",
-    accreditation: [],
-    facilities: [],
-    admissionProcess: [],
-    entrance_exam_required: [],
-    applicationFormURL: "",
-    admissionEntranceDetails: {
-      admissionStartDate: "",
-      admissionEndDate: "",
-      lastYearCutoffMarks: "",
-      scholarshipsAvailable: [],
-      quotaSystem: [],
-    },
-  }
-
-  // Create university mutation
   const mutation = useMutation({
     mutationFn: createUniversity,
     onSuccess: (data) => {
-      toast.success("University Created Successfully", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      })
-      console.log("API Response:", data)
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "University created successfully!",
+        confirmButtonColor: "#3085d6",
+      }).then(() => {
+        // Store university ID in cookies if needed
+        if (data?.data?.university?._id) {
+          Cookies.set("universityID", data.data.university._id, { expires: 1 });
+        }
 
-        // ✅ Extract university ID from API response
-    const universityId = data?.data?.university?._id;
-    console.log("University ID:", universityId);
+        // Reset form
+        formik.resetForm();
 
-    // ✅ Set universityID cookie using your helper
-    setAuthCookies({ universityID: universityId });
-
-      formik.resetForm()
-      // Reset file inputs
-      document.getElementById("universityImage").value = ""
-      document.getElementById("galleryImages").value = ""
+        // Navigate to university details
+        navigate("/university-details");
+      });
     },
     onError: (error) => {
-      console.error("API Error:", error.response?.data || error.message)
-      toast.error(
-        `${error.response?.data?.message || error.message || error.response?.data?.errMsg || error.response?.data?.usrMsg || "Please Try Again"}`,
-        {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        },
-      )
+      console.error("ERROR:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Creation Failed",
+        text:
+          error?.response?.data?.usrMsg ||
+          error?.message ||
+          "Failed to create university",
+        confirmButtonColor: "#d33",
+      });
     },
-  })
+  });
+
+  const validationSchema = Yup.object({
+    // universityName: Yup.string().required("University Name is required"),
+    // universityId: Yup.string().required("University ID is required"),
+    // category: Yup.string().required("Category is required"),
+    // subCategory: Yup.array().min(1, "At least one sub-category is required"),
+    // contactDetails: Yup.string()
+    //   .matches(/^\d{10}$/, "Contact number must be exactly 10 digits")
+    //   .required("Contact Details are required"),
+    // email_id: Yup.string().email("Invalid email").required("Email is required"),
+    // "address.line1": Yup.string().required("Address Line 1 is required"),
+    // "address.pincode": Yup.string().required("Pincode is required"),
+    // "address.state": Yup.string().required("State is required"),
+    // "address.dist": Yup.string().required("District is required"),
+    // "address.autorizedName": Yup.string().required("Authorized Person Name is required"),
+    // "address.autorizedPhono": Yup.string().required("Authorized Person Phone is required"),
+    password: Yup.string()
+      .min(4, "Password must be at least 4 characters")
+      .required("Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords do not match")
+      .required("Please confirm your password"),
+    // "info.description": Yup.string().required("Description is required"),
+    // keywords: Yup.array().min(1, "At least one keyword is required"),
+    // image: Yup.mixed().required("University Image is required"),
+  });
 
   const formik = useFormik({
-    initialValues,
+    initialValues: {
+      universityId:
+        "UNI" +
+        Math.floor(Math.random() * 1000)
+          .toString()
+          .padStart(3, "0"),
+      universityName: "",
+      category: "",
+      subCategory: [],
+      address: {
+        line1: "",
+        line2: "",
+        pincode: "",
+        state: "",
+        dist: "",
+        taluka: "",
+        autorizedName: "",
+        autorizedPhono: "",
+        nearbyLandmarks: "",
+      },
+      contactDetails: "",
+      password: "",
+      confirmPassword: "",
+      email_id: "",
+      isEmailVerified: false,
+      isVerified: false,
+      info: {
+        description: "",
+      },
+      keywords: [],
+      image: null,
+      imageGallery: [],
+      websiteURL: "",
+      establishedYear: "",
+      accreditation: [],
+      facilities: [],
+      admissionProcess: [],
+      entrance_exam_required: [],
+      applicationFormURL: "",
+      admissionEntranceDetails: {
+        admissionStartDate: "",
+        admissionEndDate: "",
+        lastYearCutoffMarks: "",
+        scholarshipsAvailable: [],
+        quotaSystem: [],
+      },
+      isHidden: true,
+      role: "VENDOR",
+      subrole: "university",
+    },
     validationSchema,
     onSubmit: (values) => {
-      console.log("Form submitted:", values)
-      mutation.mutate(values)
+      console.log("Form submission started with values:", values);
+        const { confirmPassword, ...filteredValues } = values;
+
+
+      const formData = new FormData();
+
+      // Append all form fields to formData exactly matching the API response structure
+      formData.append("universityId", values.universityId);
+      formData.append("universityName", values.universityName);
+      formData.append("category", values.category);
+
+      // Arrays
+      if (values.subCategory && values.subCategory.length > 0) {
+        values.subCategory.forEach((item, index) => {
+          formData.append(`subCategory[${index}]`, item);
+        });
+      }
+
+      // Address object
+      formData.append("address[line1]", values.address.line1);
+      formData.append("address[line2]", values.address.line2);
+      formData.append("address[pincode]", values.address.pincode);
+      formData.append("address[state]", values.address.state);
+      formData.append("address[dist]", values.address.dist);
+      formData.append("address[taluka]", values.address.taluka);
+      formData.append("address[autorizedName]", values.address.autorizedName);
+      formData.append("address[autorizedPhono]", values.address.autorizedPhono);
+      formData.append(
+        "address[nearbyLandmarks]",
+        values.address.nearbyLandmarks
+      );
+
+      // Basic fields
+      formData.append("contactDetails", values.contactDetails);
+      formData.append("password", filteredValues.password);
+      formData.append("email_id", values.email_id);
+      formData.append("info[description]", values.info.description);
+      formData.append("websiteURL", values.websiteURL);
+      formData.append("establishedYear", values.establishedYear);
+      formData.append("applicationFormURL", values.applicationFormURL);
+      formData.append("isHidden", values.isHidden);
+      formData.append("role", values.role);
+      formData.append("subrole", values.subrole);
+
+      // Arrays
+      if (values.keywords && values.keywords.length > 0) {
+        values.keywords.forEach((item, index) => {
+          formData.append(`keywords[${index}]`, item);
+        });
+      }
+
+      if (values.accreditation && values.accreditation.length > 0) {
+        values.accreditation.forEach((item, index) => {
+          formData.append(`accreditation[${index}]`, item);
+        });
+      }
+
+      if (values.facilities && values.facilities.length > 0) {
+        values.facilities.forEach((item, index) => {
+          formData.append(`facilities[${index}]`, item);
+        });
+      }
+
+      if (values.admissionProcess && values.admissionProcess.length > 0) {
+        values.admissionProcess.forEach((item, index) => {
+          formData.append(`admissionProcess[${index}]`, item);
+        });
+      }
+
+      if (
+        values.entrance_exam_required &&
+        values.entrance_exam_required.length > 0
+      ) {
+        values.entrance_exam_required.forEach((item, index) => {
+          formData.append(`entrance_exam_required[${index}]`, item);
+        });
+      }
+
+      // Admission entrance details
+      formData.append(
+        "admissionEntranceDetails[admissionStartDate]",
+        values.admissionEntranceDetails.admissionStartDate
+      );
+      formData.append(
+        "admissionEntranceDetails[admissionEndDate]",
+        values.admissionEntranceDetails.admissionEndDate
+      );
+      formData.append(
+        "admissionEntranceDetails[lastYearCutoffMarks]",
+        values.admissionEntranceDetails.lastYearCutoffMarks
+      );
+
+      if (
+        values.admissionEntranceDetails.scholarshipsAvailable &&
+        values.admissionEntranceDetails.scholarshipsAvailable.length > 0
+      ) {
+        values.admissionEntranceDetails.scholarshipsAvailable.forEach(
+          (item, index) => {
+            formData.append(
+              `admissionEntranceDetails[scholarshipsAvailable][${index}]`,
+              item
+            );
+          }
+        );
+      }
+
+      if (
+        values.admissionEntranceDetails.quotaSystem &&
+        values.admissionEntranceDetails.quotaSystem.length > 0
+      ) {
+        values.admissionEntranceDetails.quotaSystem.forEach((item, index) => {
+          formData.append(
+            `admissionEntranceDetails[quotaSystem][${index}]`,
+            item
+          );
+        });
+      }
+
+      // Image files
+      if (values.image instanceof File) {
+        formData.append("image", values.image);
+      }
+
+      if (values.imageGallery && values.imageGallery.length > 0) {
+        values.imageGallery.forEach((file) => {
+          if (file instanceof File) {
+            formData.append("imageGallery", file);
+          }
+        });
+      }
+
+      console.log("FormData prepared, calling mutation...");
+
+      // Log all FormData entries for debugging
+      for (const pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+
+      // Call the mutation with the FormData
+      mutation.mutate(formData);
     },
-  })
+  });
 
-  // Update subcategories when category changes
-  useEffect(() => {
-    const selectedCategory = formik.values.category
-    const match = categoryData.categories.find((item) => item.category === selectedCategory)
-    setFilteredBranches(match ? match.subCategory : [])
-  }, [formik.values.category, categoryData.categories])
-
-  // Update districts when state changes
-  useEffect(() => {
-    const selectedState = formik.values.address.state
-    setDistricts(stateDistrictData[selectedState] || [])
-    // Clear district if state changes
-    if (formik.values.address.dist && !stateDistrictData[selectedState]?.includes(formik.values.address.dist)) {
-      formik.setFieldValue("address.dist", "")
-    }
-  }, [formik.values.address.state])
+//   useEffect(() => {
+//   const selectedCategory = formik.values.category;
+//   if (Array.isArray(categoryData?.categories)) {
+//     const match = categoryData.categories.find(
+//       (item) => item.category === selectedCategory
+//     );
+//     setFilteredBranches(match ? match.subCategory : []);
+//   } else {
+//     setFilteredBranches([]);
+//   }
+// }, [formik.values.category, categoryData]);
 
   const handleImageChange = (event) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
-      console.log("Image selected:", file.name)
-      formik.setFieldValue("image", file)
+      formik.setFieldValue("image", file);
     }
-  }
+  };
 
   const handleImageGalleryChange = (event) => {
-    const files = Array.from(event.target.files || [])
+    const files = Array.from(event.target.files || []);
     if (files.length > 0) {
-      console.log("Gallery images selected:", files.map((f) => f.name).join(", "))
-      formik.setFieldValue("imageGallery", [...formik.values.imageGallery, ...files])
+      formik.setFieldValue("imageGallery", [
+        ...formik.values.imageGallery,
+        ...files,
+      ]);
     }
-  }
+  };
 
   return (
-    <UniversityForm
-      formik={formik}
-      isSubmitting={mutation.isPending}
-      handleImageChange={handleImageChange}
-      handleImageGalleryChange={handleImageGalleryChange}
-      categoryData={categoryData.categories}
-      filteredBranches={filteredBranches}
-      stateOptions={Object.keys(stateDistrictData)}
-      districtOptions={districts}
-    />
-  )
-}
+    <div className="space-y-4">
+      <div className="flex items-center mb-4">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+        >
+          <FaArrowLeft /> Back to Dashboard
+        </button>
+      </div>
 
-export default AddUniversity
+      <UniversityForm
+        formik={formik}
+        isSubmitting={mutation.isPending}
+        handleImageChange={handleImageChange}
+        handleImageGalleryChange={handleImageGalleryChange}
+       
+        submitButtonText="Create University"
+        // stateOptions={stateOptions}
+        // districtOptions={districtOptions}
+        
+      />
+     
+    </div>
+  );
+};
+
+export default AddUniversity;

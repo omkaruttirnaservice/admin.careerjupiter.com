@@ -14,7 +14,7 @@ import { getCookie } from "../utlis/cookieHelper";
 import AddressModal from "../component/addressModel";
 import Swal from "sweetalert2";
 import { MdDone } from "react-icons/md";
-import FileUpload from "../Component/FileUpload";
+import FileUpload from "../Component/fileUpload";
 import * as Yup from "yup";
 
 // Helper function to safely parse JSON fields
