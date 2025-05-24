@@ -20,6 +20,8 @@ const CollegeCourses = () => {
     subCategory: [],
     eligibility: "",
     choiceCode: "", // ✅ missing
+    mediumOfInstruction: "", // ✅ New field
+    sanctionedIntake: "", // ✅ New field
   };
 
   const [initialValues, setInitialValues] = useState({
@@ -47,6 +49,10 @@ const CollegeCourses = () => {
           .required("Branch selection is required"),
         eligibility: Yup.string().required("Eligibility is required"),
         choiceCode: Yup.string().required("Choice Code is required"), // ✅ Add this
+        mediumOfInstruction: Yup.string().required("Medium is required"), // ✅
+        sanctionedIntake: Yup.number()
+          .min(1, "Intake must be at least 1")
+          .required("Sanctioned intake is required"), // ✅
       })
     ),
   });
@@ -257,6 +263,37 @@ const CollegeCourses = () => {
                     />
                     <ErrorMessage
                       name={`courses.${index}.choiceCode`}
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">
+                      Medium of Instruction
+                    </label>
+                    <Field
+                      name={`courses.${index}.mediumOfInstruction`}
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
+                      placeholder="e.g., English / Marathi / Hindi"
+                    />
+                    <ErrorMessage
+                      name={`courses.${index}.mediumOfInstruction`}
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Sanctioned Intake</label>
+                    <Field
+                      name={`courses.${index}.sanctionedIntake`}
+                      type="number"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
+                      placeholder="e.g., 60 / 120"
+                    />
+                    <ErrorMessage
+                      name={`courses.${index}.sanctionedIntake`}
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />

@@ -697,7 +697,7 @@ formData.append("accreditation", finalAccreditation);
     try {
       setLoading(true);
 
-      const response = await axios.post(`${API_BASE_URL}/api/auth/verifyOtp`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/email-verifyOtp`, {
         email_id: formik.values.email_id, // ✅ Corrected key
         otp: emailOtp,
         reference_id: emailReferenceId,
@@ -752,7 +752,7 @@ formData.append("accreditation", finalAccreditation);
         const response = await axios.get(
           `${API_BASE_URL}/api/college/all-college-category`
         );
-        const categories = response.data.categories || [];
+        const categories = response.data.data || [];
         setCategoryData(categories);
       } catch (error) {
         console.error("Failed to fetch college categories", error);

@@ -14,20 +14,19 @@ const InfoCard = ({ collegeData, onClose }) => {
           </button>
         </div>
 
-      <hr />
+        <hr />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-4">
           <div>
-            <strong className="text-blue-700">🏫 College Id:</strong>
+            <strong className="text-blue-700">🆔 College ID:</strong>
             <p className="text-gray-800 font-medium">{collegeData?.collegeId || "N/A"}</p>
           </div>
-          {/* College Name */}
+
           <div>
             <strong className="text-blue-700">🏫 College Name:</strong>
             <p className="text-gray-800 font-medium">{collegeData?.collegeName || "N/A"}</p>
           </div>
 
-          {/* Affiliated University */}
           <div>
             <strong className="text-blue-700">🏛 Affiliated University:</strong>
             <p className="text-gray-800 font-medium">
@@ -35,36 +34,28 @@ const InfoCard = ({ collegeData, onClose }) => {
             </p>
           </div>
 
-          {/* Category */}
           <div>
             <strong className="text-blue-700">📌 Category:</strong>
             <p className="text-gray-800 font-medium">{collegeData?.category || "N/A"}</p>
           </div>
 
-          {/* College Type */}
           <div>
-            <strong className="text-blue-700">🏷 Type:</strong>
+            <strong className="text-blue-700">🏷️ Type:</strong>
             <p className="text-gray-800 font-medium">{collegeData?.collegeType || "N/A"}</p>
           </div>
 
-          {/* Contact Details */}
           <div>
             <strong className="text-blue-700">📞 Contact:</strong>
-            <p className="text-gray-800 font-medium">
-              {collegeData?.contactDetails || "N/A"}
-            </p>
+            <p className="text-gray-800 font-medium">{collegeData?.contactDetails || "N/A"}</p>
           </div>
 
           <div>
-            <strong className="text-blue-700">📞 Email Id:</strong>
-            <p className="text-gray-800 font-medium">
-              {collegeData?.email_id || "N/A"}
-            </p>
+            <strong className="text-blue-700">📧 Email ID:</strong>
+            <p className="text-gray-800 font-medium">{collegeData?.email_id || "N/A"}</p>
           </div>
 
-          {/* Website URL */}
           <div>
-            <strong className="text-blue-700">🌍 Website:</strong>
+            <strong className="text-blue-700">🌐 Website:</strong>
             <p className="text-blue-700">
               {collegeData?.websiteURL ? (
                 <a
@@ -81,29 +72,15 @@ const InfoCard = ({ collegeData, onClose }) => {
             </p>
           </div>
 
-          {/* Established Year */}
           <div>
             <strong className="text-blue-700">📅 Established Year:</strong>
             <p className="text-gray-800 font-medium">{collegeData?.establishedYear || "N/A"}</p>
           </div>
 
-          {/* Accreditation */}
           <div>
-            <strong className="text-blue-700">✅ Accreditation:</strong>
+            <strong className="text-blue-700">🎖️ Accreditation:</strong>
             <p className="text-gray-800 font-medium">{collegeData?.accreditation || "N/A"}</p>
           </div>
-
-          {/* Address */}
-          {/* <div>
-            <strong className="text-blue-700">📬 Address:</strong>
-            <p className="text-gray-800 font-medium">
-              {collegeData?.address
-                ? `${collegeData.address.line1}, ${collegeData.address.line2}, ${collegeData.address.dist}, ${collegeData.address.state} - ${collegeData.address.pincode}`
-                : "N/A"}
-            </p>
-          </div> */}
-
-          
         </div>
       </div>
     </div>
