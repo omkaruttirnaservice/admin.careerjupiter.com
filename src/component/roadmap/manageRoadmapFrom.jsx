@@ -23,6 +23,18 @@ const ManageRoadmapForm = () => {
   const [editingRoadmap, setEditingRoadmap] = useState(null);
   const [filteredSubTypeOptions, setFilteredSubTypeOptions] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+const filteredRoadmaps = roadmaps.filter((roadmap) => {
+  const nameMatch = roadmap.name
+    ?.toLowerCase()
+    .includes(searchTerm.toLowerCase());
+  const typeMatch = roadmap.type?.type
+    ?.toLowerCase()
+    .includes(searchTerm.toLowerCase());
+  return nameMatch || typeMatch;
+});
+
 
   useEffect(() => {
     const fetchTypes = async () => {
@@ -240,6 +252,16 @@ const ManageRoadmapForm = () => {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800">RoadMap 🗺️</h2>
+        <div className="mb-4 flex justify-end">
+  <input
+    type="text"
+    placeholder="Search by name or type..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="w-full max-w-xs px-4 py-1 border-2 border-blue-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-150"
+  />
+</div>
+
         <button
           onClick={() => setShowModal(true)}
           className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-3 cursor-pointer"
@@ -260,7 +282,7 @@ const ManageRoadmapForm = () => {
             </tr>
           </thead>
           <tbody>
-            {roadmaps.map((roadmap, index) => (
+            {filteredRoadmaps.map((roadmap, index) => (
               <tr
                 key={roadmap._id}
                 className={`border-b hover:bg-gray-100 ${
