@@ -20,8 +20,6 @@ const defaultStateOptions = [
 const AddUniversity = () => {
   const navigate = useNavigate();
   const [filteredBranches, setFilteredBranches] = useState([]);
-  // const [stateOptions] = useState(defaultStateOptions);
-  // const [districtOptions, setDistrictOptions] = useState([]);
   
 
   const { data: categoryData = { categories: [] } } = useQuery({
@@ -67,7 +65,7 @@ const AddUniversity = () => {
 
   const validationSchema = Yup.object({
     // universityName: Yup.string().required("University Name is required"),
-    // universityId: Yup.string().required("University ID is required"),
+  universityId: Yup.string().required("University ID is required"), // Add this line
     // category: Yup.string().required("Category is required"),
     // subCategory: Yup.array().min(1, "At least one sub-category is required"),
     // contactDetails: Yup.string()
@@ -93,11 +91,7 @@ const AddUniversity = () => {
 
   const formik = useFormik({
     initialValues: {
-      universityId:
-        "UNI" +
-        Math.floor(Math.random() * 1000)
-          .toString()
-          .padStart(3, "0"),
+       universityId: "", 
       universityName: "",
       category: "",
       subCategory: [],
@@ -323,7 +317,7 @@ const AddUniversity = () => {
           onClick={() => navigate("/")}
           className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
         >
-          <FaArrowLeft /> Back to Dashboard
+          <FaArrowLeft /> Back to Login
         </button>
       </div>
 

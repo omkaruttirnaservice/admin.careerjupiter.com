@@ -99,8 +99,6 @@ const UniversityForm = ({
   const [filteredBranches, setFilteredBranches] = useState([]);
   const [entranceExams, setEntranceExams] = useState([]);
 
-
-
   // Helper function to display error message
   const getErrorMessage = (fieldName) => {
     const path = fieldName.split(".");
@@ -458,34 +456,31 @@ const UniversityForm = ({
     formik.setFieldValue("imageGallery", newGallery);
   };
 
+  // Fetch categories once on component mount
+  useEffect(() => {
+    const getCategories = async () => {
+      const categories = await fetchUniversityCategories();
+      setCategoryData(categories);
+    };
 
-// Fetch categories once on component mount
-useEffect(() => {
-  const getCategories = async () => {
-    const categories = await fetchUniversityCategories();
-    setCategoryData(categories);
-  };
+    getCategories();
+  }, []);
+  // Update subcategories and entrance exams based on selected category
+  useEffect(() => {
+    const selectedCategory = formik.values.category;
 
-  getCategories();
-}, []);
-// Update subcategories and entrance exams based on selected category
-useEffect(() => {
-  const selectedCategory = formik.values.category;
+    if (Array.isArray(categoryData)) {
+      const match = categoryData.find(
+        (item) => item.category === selectedCategory
+      );
 
-  if (Array.isArray(categoryData)) {
-    const match = categoryData.find(
-      (item) => item.category === selectedCategory
-    );
-
-    setFilteredBranches(match ? match.subCategory : []);
-    setEntranceExams(match ? match.entrance_exam_required || [] : []);
-  } else {
-    setFilteredBranches([]);
-    setEntranceExams([]);
-  }
-}, [formik.values.category, categoryData]);
-
-
+      setFilteredBranches(match ? match.subCategory : []);
+      setEntranceExams(match ? match.entrance_exam_required || [] : []);
+    } else {
+      setFilteredBranches([]);
+      setEntranceExams([]);
+    }
+  }, [formik.values.category, categoryData]);
 
   // Custom dropdown component
   const CustomDropdown = ({
@@ -826,19 +821,26 @@ useEffect(() => {
             {/* University ID */}
             <div className="mb-3">
               <label className="block mb-1 text-blue-900 font-semibold">
-                University ID <span className="text-red-500">*</span>
+                University DTE Code <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                {...formik.getFieldProps("universityId")}
+                name="universityId"
+                value={formik.values.universityId}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.universityId && formik.errors.universityId
                     ? "border-red-500"
                     : "border-blue-600"
                 }`}
-                placeholder="Enter university ID"
+                placeholder="Enter university DTE Code (e.g., UNI001)"
               />
-              {getErrorMessage("universityId")}
+              {formik.touched.universityId && formik.errors.universityId ? (
+                <div className="text-red-500 text-sm mt-1">
+                  {formik.errors.universityId}
+                </div>
+              ) : null}
             </div>
 
             {/* University Category */}
@@ -851,8 +853,8 @@ useEffect(() => {
                 value={formik.values.category}
                 onChange={(e) => {
                   const selectedCategory = e.target.value;
-                  formik.setFieldValue("category", selectedCategory); // category सेट करा
-                  formik.setFieldValue("subCategory", ""); // subCategory reset करा
+                  formik.setFieldValue("category", selectedCategory); 
+                  formik.setFieldValue("subCategory", ""); 
                 }}
                 onBlur={formik.handleBlur}
                 className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
@@ -875,13 +877,12 @@ useEffect(() => {
 
             {/* University Sub Category */}
             <CustomDropdown
-  label="Sub Category"
-  options={filteredBranches}
-  fieldName="subCategory"
-  isOpen={showSubCategoryDropdown}
-  setIsOpen={setShowSubCategoryDropdown}
-/>
-
+              label="Sub Category"
+              options={filteredBranches}
+              fieldName="subCategory"
+              isOpen={showSubCategoryDropdown}
+              setIsOpen={setShowSubCategoryDropdown}
+            />
 
             {/* Mobile Number with OTP Verification */}
             <div className="mb-3">
