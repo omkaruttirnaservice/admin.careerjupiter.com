@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
@@ -17,7 +15,6 @@ import { Tooltip } from "react-tooltip";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import InfoCard from "../component/infoCard";
-import EditCollegeDetails from "../component/editCollegeDetails";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 
@@ -25,7 +22,6 @@ const CollegeTableDetails = () => {
   const [collegeData, setCollegeData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
@@ -37,7 +33,9 @@ const CollegeTableDetails = () => {
   const [heroImageError, setHeroImageError] = useState("");
   const [galleryImagesError, setGalleryImagesError] = useState("");
   const [refreshData, setRefreshData] = useState(false);
+  const navigate = useNavigate();
 
+  // Colour Maping for Category
   const categoryColorMapping = {
     HSC: "bg-blue-200 text-blue-800 transition-all duration-300",
     Diploma: "bg-pink-200 text-pink-800 transition-all duration-300",
@@ -45,6 +43,7 @@ const CollegeTableDetails = () => {
     Pharmacy: "bg-red-200 text-red-800 transition-all duration-300",
   };
 
+  // Colour Maping for Type
   const typeColorMapping = {
     Government: "bg-green-200 text-green-800",
     Private: "bg-purple-200 text-purple-800",
@@ -52,14 +51,7 @@ const CollegeTableDetails = () => {
     Deemed: "bg-pink-200 text-pink-800",
   };
 
-  //   const collegeId = Cookies.get("collegeID");
-  // console.log("9999999999999",collegeId)
-
-  // Fetch data from API
-  useEffect(() => {
-    fetchCollegeData();
-  }, [refreshData]);
-
+// Get method Logic - to fetch data
   const fetchCollegeData = () => {
     setLoading(true);
     axios
@@ -84,173 +76,29 @@ const CollegeTableDetails = () => {
       });
   };
 
-  const navigate = useNavigate();
+  // Fetch data from API
+  useEffect(() => {
+    fetchCollegeData();
+  }, [refreshData]);
 
-  // Handle modal close
+  // Handle modal - close
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedItem(null);
   };
 
-  // Handle View Profile click
+  // Handle View Profile - click
   const handleViewProfile = (item) => {
     setSelectedItem(item);
     setModalOpen(true);
   };
 
-  // Handle Edit click
-  const handleEdit = (item) => {
-    try {
-      const formattedItem = {
-        ...item,
-        admissionEntranceDetails: {
-          ...item.admissionEntranceDetails,
-          // Ensure scholarshipsAvailable is always an array of strings
-          scholarshipsAvailable: Array.isArray(
-            item.admissionEntranceDetails?.scholarshipsAvailable
-          )
-            ? item.admissionEntranceDetails.scholarshipsAvailable
-            : [],
-
-          // Ensure quotaSystem is always an array of strings
-          quotaSystem: Array.isArray(item.admissionEntranceDetails?.quotaSystem)
-            ? item.admissionEntranceDetails.quotaSystem
-            : [],
-        },
-      };
-
-      console.log("Parsed Data for Editing:", formattedItem);
-      setSelectedItem(formattedItem);
-      setEditModalOpen(true);
-    } catch (error) {
-      console.error("Error parsing JSON in handleEdit:", error);
-      Swal.fire({
-        icon: "warning",
-        title: "Warning",
-        text:
-          error.response?.data?.usrMsg ||
-          error.response?.data?.message ||
-          error.response?.data.errMsg ||
-          "Failed processing college data. Please check the format.",
-      });
-    }
-  };
-
-  //   const handleNavigateWithCollegeId = (path, collegeId) => {
-  //   Cookies.set("collegeID", collegeId); // Save in cookie
-  //   navigate(path);                      // Navigate without param
-  // };
-
-  const handleSaveEdit = (updatedData) => {
-    console.log("Updated Data Before Formatting:", updatedData);
-
-    if (!updatedData || !updatedData._id) {
-      Swal.fire({
-        icon: "warning",
-        title: "Warning",
-        text: "College data is missing or invalid.",
-      });
-      return;
-    }
-
-    const { _id, createAt, updateAt, __v, ...cleanData } = updatedData;
-
-    // Convert dates to "YYYY-MM-DD" format before sending
-    const formattedData = {
-      collegeName: cleanData.collegeName || "",
-      affiliatedUniversity: cleanData.affiliatedUniversity || "",
-      category: cleanData.category || "",
-      collegeType: cleanData.collegeType || "",
-      address: cleanData.address,
-      contactDetails: cleanData.contactDetails || "",
-      establishedYear: cleanData.establishedYear || "",
-      admissionProcess: cleanData.admissionProcess || "",
-      email_id: cleanData.email_id || "",
-      admissionEntranceDetails: JSON.stringify({
-        admissionStartDate: cleanData.admissionEntranceDetails
-          .admissionStartDate
-          ? cleanData.admissionEntranceDetails.admissionStartDate.split("T")[0]
-          : "",
-
-        admissionEndDate: cleanData.admissionEntranceDetails.admissionEndDate
-          ? cleanData.admissionEntranceDetails.admissionEndDate.split("T")[0]
-          : "",
-
-        lastYearCutoffMarks:
-          Number(cleanData.admissionEntranceDetails.lastYearCutoffMarks) || 0,
-
-        scholarshipsAvailable: Array.isArray(
-          cleanData.admissionEntranceDetails.scholarshipsAvailable
-        )
-          ? cleanData.admissionEntranceDetails.scholarshipsAvailable.filter(
-              (item) => typeof item === "string"
-            )
-          : [],
-
-        quotaSystem: Array.isArray(
-          cleanData.admissionEntranceDetails.quotaSystem
-        )
-          ? cleanData.admissionEntranceDetails.quotaSystem.filter(
-              (item) => typeof item === "string"
-            )
-          : [],
-      }),
-    };
-
-    console.log("Final Payload to API:", formattedData);
-
-    axios
-      .put(`${API_BASE_URL}/api/college/update/${_id}`, formattedData)
-      .then((response) => {
-        console.log("API Response:", response.data);
-
-        if (response.data.success) {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "College details updated successfully!",
-          });
-
-          // Update the local state with the updated data
-          setCollegeData((prevData) =>
-            prevData.map((college) =>
-              college._id === _id ? { ...college, ...formattedData } : college
-            )
-          );
-
-          setEditModalOpen(false);
-          // Refresh data from server to ensure we have the latest
-          setRefreshData(!refreshData);
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Failed to update college details",
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(
-          "Error updating college data:",
-          error.response?.data || error
-        );
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text:
-            error.response?.data?.usrMsg ||
-            error.response?.data?.message ||
-            error.response?.data.errMsg ||
-            `Error updating college details: ${error}`,
-        });
-      });
-  };
-
+  //Handle Images Uploading
   const handleUpload = (collegeId) => {
     if (!collegeId) {
       Swal.fire({
-        icon: "error",
-        title: "Error",
+        icon: "warning",
+        title: "Warning",
         text: "No college selected for upload",
       });
       return;
@@ -259,25 +107,20 @@ const CollegeTableDetails = () => {
     if (logoImageError || heroImageError || galleryImagesError) {
       Swal.fire({
         icon: "warning",
-        title: "Validation Error",
-        text: "Please fix the errors before uploading",
+        title: "Please check your fields",
+        text: "Please fix the highlights shown before uploading",
       });
       return;
     }
 
     const formData = new FormData();
 
-    // Append logo image with key "logo"
     if (logoImage) {
       formData.append("logo", logoImage);
     }
-
-    // Append hero image with key "image"
     if (heroImage) {
       formData.append("image", heroImage);
     }
-
-    // Append gallery images with key "imageGallery"
     if (galleryImages.length > 0) {
       Array.from(galleryImages).forEach((file) =>
         formData.append("imageGallery", file)
@@ -315,14 +158,15 @@ const CollegeTableDetails = () => {
       .catch((err) => {
         console.error("Upload error:", err.response?.data || err);
         Swal.fire({
-          icon: "error",
+          icon: "warning",
           title: "Upload Failed!",
-          text: err.response?.data?.message || "Please try again.",
+          text: err.response?.data?.message || err.response?.data?.usrMsg || "Please try again.",
           confirmButtonText: "OK",
         });
       });
   };
 
+  // Handle Delete College
   const handleDelete = (item) => {
     Swal.fire({
       title: "Are you sure?",
@@ -334,8 +178,6 @@ const CollegeTableDetails = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Here you would typically make an API call to delete the college
-        // For now, we'll just update the local state
         axios
           .delete(`${API_BASE_URL}/api/college/delete/${item._id}`)
           .then((response) => {
@@ -345,17 +187,18 @@ const CollegeTableDetails = () => {
               );
               Swal.fire("Deleted!", "College has been deleted.", "success");
             } else {
-              Swal.fire("Error!", "Failed to delete college.", "error");
+              Swal.fire("Warning!", "Failed to delete college.", "warning");
             }
           })
           .catch((error) => {
             console.error("Error deleting college:", error);
-            Swal.fire("Error!", "Failed to delete college.", "error");
+            Swal.fire("Warning!", "Failed to delete college.", "warning");
           });
       }
     });
   };
 
+  // Filter colleges as per the below mentioned fields
   const filteredData = collegeData.filter((row) => {
     if (!row) return false;
 
@@ -364,14 +207,9 @@ const CollegeTableDetails = () => {
        row.collegeId,
       row.affiliatedUniversity,
       row.collegeType,
+      row.category,
       row.contactDetails,
-      row.websiteURL,
       row.accreditation,
-      row.address?.line1,
-      row.address?.line2,
-      row.address?.dist,
-      row.address?.state,
-      row.address?.pincode,
     ];
 
     // Handle Category which might be an array or string
@@ -386,11 +224,11 @@ const CollegeTableDetails = () => {
         .includes(searchTerm.toLowerCase());
     }
 
-    // Handle establishedYear which might be a number
+    // Handle establishedYear 
     const yearMatch = row.establishedYear
       ? row.establishedYear.toString().includes(searchTerm)
       : false;
-    // console.log("/////////", row._id);
+
     // Check if any field matches the search term
     return (
       searchFields.some(
@@ -403,7 +241,9 @@ const CollegeTableDetails = () => {
     );
   });
 
+  // Table Columns 
   const columns = [
+    // Upload Images
     {
       name: "Upload",
       cell: (row) => (
@@ -421,24 +261,7 @@ const CollegeTableDetails = () => {
       ),
       width: "80px",
     },
-    // {
-    //   name: "College Logo",
-    //   cell: (row) => (
-    //     <div className="flex justify-center items-center">
-    //       {row.logo ? (
-    //         <img
-    //           src={row.logo || "/placeholder.svg"}
-    //           alt={`${row.collegeName} Logo`}
-    //           className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
-    //         />
-    //       ) : (
-    //         <FaUniversity className="text-gray-400" size={24} />
-    //       )}
-    //     </div>
-    //   ),
-    //   width: "100px",
-    // },
-
+    // College Logo displayed
     {
       name: "College Logo",
       cell: (row) => (
@@ -456,25 +279,28 @@ const CollegeTableDetails = () => {
       ),
       width: "100px",
     },
-
+    // College ID
     {
       name: "College Id",
       selector: (row) => row.collegeId,
       sortable: true,
       grow: 0,
     },
+    // College Name
     {
       name: "College Name",
       selector: (row) => row.collegeName,
       sortable: true,
       grow: 2,
     },
+    //Affiliated University
     {
       name: "Affiliated University",
       selector: (row) => row.affiliatedUniversity,
       sortable: true,
       grow: 2,
     },
+    // Category
     {
       name: "Category",
       selector: (row) => row.category,
@@ -494,6 +320,7 @@ const CollegeTableDetails = () => {
         );
       },
     },
+    // College Type
     {
       name: "Type",
       selector: (row) => row.collegeType,
@@ -510,11 +337,13 @@ const CollegeTableDetails = () => {
         );
       },
     },
+    // Contact - Mobile No.
     {
       name: "Contact",
       selector: (row) => row.contactDetails,
       sortable: true,
     },
+    // Website
     {
       name: "Website",
       selector: (row) => row.websiteURL,
@@ -540,89 +369,21 @@ const CollegeTableDetails = () => {
         </div>
       ),
     },
+    // Established Year
     {
       name: "Est. Year",
       selector: (row) => row.establishedYear,
       sortable: true,
       width: "100px",
     },
+    // Accreditation
     {
       name: "Accreditation",
       selector: (row) => row.accreditation,
       sortable: true,
     },
-    // {
-    //   name: "Actions",
-    //   selector: (row) => row._id,
-    //   sortable: false,
-    //   width: "250px",
-    //   cell: (row) => (
-    //     <div className="flex text-center space-x-1 min-w-[250px] gap-1">
-    //       <button
-    //         className="bg-blue-600 hover:bg-blue-800 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="view-tooltip"
-    //         data-tooltip-content="View Profile"
-    //         onClick={() => handleViewProfile(row)}
-    //       >
-    //         <FaEye size={17} />
-    //       </button>
 
-    //       <button
-    //         className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="edit-tooltip"
-    //         data-tooltip-content="Edit Details"
-    //         // onClick={() => handleEdit(row)}
-    //          onClick={() => navigate(`/vendor-college/edit-college`)}
-    //       >
-    //         <FaEdit size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="delete-tooltip"
-    //         data-tooltip-content="Delete College"
-    //         onClick={() => handleDelete(row)}
-    //       >
-    //         <FaPauseCircle size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-green-500 hover:bg-green-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="courses-tooltip"
-    //         data-tooltip-content="Manage Courses"
-    //         onClick={() => navigate(`/colleges/courses/${row._id}`)}
-    //       >
-    //         <FaPlus size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="infra-tooltip"
-    //         data-tooltip-content="Manage Infrastructure"
-    //         onClick={() => navigate(`/colleges/infrastructure/${row._id}`)}
-    //       >
-    //         <FaBuilding size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="placement-tooltip"
-    //         data-tooltip-content="Manage Placements"
-    //         onClick={() => navigate(`/colleges/placement/${row._id}`)}
-    //       >
-    //         <FaBriefcase size={17} />
-    //       </button>
-
-    //       <Tooltip id="view-tooltip" place="top" />
-    //       <Tooltip id="edit-tooltip" place="top" />
-    //       <Tooltip id="delete-tooltip" place="top" />
-    //       <Tooltip id="courses-tooltip" place="top" />
-    //       <Tooltip id="infra-tooltip" place="top" />
-    //       <Tooltip id="placement-tooltip" place="top" />
-    //     </div>
-    //   ),
-    // },
-
+    // Action buttons included over here
     {
       name: "Actions",
       selector: (row) => row._id,
@@ -644,7 +405,7 @@ const CollegeTableDetails = () => {
               <FaEye size={17} />
             </button>
 
-            {/* Edit Button - conditionally shown */}
+            {/* Edit Button */}
             {(role === "ADMIN" ||
               (role === "VENDOR" && subrole === "COLLEGE")) && (
               <button
@@ -689,6 +450,7 @@ const CollegeTableDetails = () => {
               <FaPlus size={17} />
             </button>
 
+              {/* Infrastrucute  */}
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
               data-tooltip-id="infra-tooltip"
@@ -704,6 +466,7 @@ const CollegeTableDetails = () => {
               <FaBuilding size={17} />
             </button>
 
+              {/* Placement */}
             <button
               className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
               data-tooltip-id="placement-tooltip"
@@ -718,7 +481,7 @@ const CollegeTableDetails = () => {
             >
               <FaBriefcase size={17} />
             </button>
-            {/* Other buttons with similar pattern */}
+           
             {/* Tooltips */}
             <Tooltip id="view-tooltip" place="top" />
             <Tooltip id="edit-tooltip" place="top" />
@@ -730,86 +493,19 @@ const CollegeTableDetails = () => {
         );
       },
     },
-    //     {
-    //   name: "Actions",
-    //   selector: (row) => row._id,
-    //   sortable: false,
-    //   width: "250px",
-    //   cell: (row) => (
-    //     <div className="flex text-center space-x-1 min-w-[250px] gap-1">
-    //       <button
-    //         className="bg-blue-600 hover:bg-blue-800 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="view-tooltip"
-    //         data-tooltip-content="View Profile"
-    //         onClick={() => handleViewProfile(row)}
-    //       >
-    //         <FaEye size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="edit-tooltip"
-    //         data-tooltip-content="Edit Details"
-    //         onClick={() => handleNavigateWithCollegeId(`/vendor-college/edit-college`, row._id)}
-    //       >
-    //         <FaEdit size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="delete-tooltip"
-    //         data-tooltip-content="Delete College"
-    //         onClick={() => handleDelete(row)}
-    //       >
-    //         <FaPauseCircle size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-green-500 hover:bg-green-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="courses-tooltip"
-    //         data-tooltip-content="Manage Courses"
-    //         onClick={() => handleNavigateWithCollegeId(`/vendor-college/add-college-courses`, row._id)}
-    //       >
-    //         <FaPlus size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="infra-tooltip"
-    //         data-tooltip-content="Manage Infrastructure"
-    //         onClick={() => handleNavigateWithCollegeId(`/vendor-college/add-college-infrastructure`, row._id)}
-    //       >
-    //         <FaBuilding size={17} />
-    //       </button>
-
-    //       <button
-    //         className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
-    //         data-tooltip-id="placement-tooltip"
-    //         data-tooltip-content="Manage Placements"
-    //         onClick={() => handleNavigateWithCollegeId(`/vendor-college/add-college-placement`, row._id)}
-    //       >
-    //         <FaBriefcase size={17} />
-    //       </button>
-
-    //       {/* Tooltips */}
-    //       <Tooltip id="view-tooltip" place="top" />
-    //       <Tooltip id="edit-tooltip" place="top" />
-    //       <Tooltip id="delete-tooltip" place="top" />
-    //       <Tooltip id="courses-tooltip" place="top" />
-    //       <Tooltip id="infra-tooltip" place="top" />
-    //       <Tooltip id="placement-tooltip" place="top" />
-    //     </div>
-    //   ),
-    // }
   ];
 
   return (
     <section>
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-6 shadow-lg">
+
+        {/* Header Section  */}
         <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-4">
           <h2 className="text-3xl font-semibold text-blue-800">
             🎓 College List
           </h2>
+
+          {/* Search Bar  */}
           <div className="ml-4">
             <input
               type="text"
@@ -821,6 +517,7 @@ const CollegeTableDetails = () => {
           </div>
         </div>
 
+       {/* Used DataTable Component for managing the table (List)   */}
         <DataTable
           columns={columns}
           data={filteredData}
@@ -830,12 +527,12 @@ const CollegeTableDetails = () => {
           highlightOnHover
           responsive
           progressPending={loading}
-          progressComponent={
-            <div className="p-4 flex justify-center items-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              <span className="ml-3 text-blue-500 font-medium">Loading...</span>
-            </div>
-          }
+         progressComponent={
+          <div className="p-6 flex justify-center items-center space-x-4">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+            <span className="text-blue-600 font-semibold text-lg">Loading Colleges...</span>
+          </div>
+        }
           noDataComponent={
             <div className="p-4 text-center text-gray-500">
               No colleges found. Try a different search term.
@@ -1081,7 +778,7 @@ const CollegeTableDetails = () => {
                 </div>
               </div>
 
-              {/* Selected College Info */}
+              {/* Selected College Info for image upload section */}
               <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <h3 className="font-medium text-blue-800">
                   Uploading images for:{" "}
@@ -1114,14 +811,6 @@ const CollegeTableDetails = () => {
           </div>
         )}
 
-        {/* Render EditCollegeDetails modal */}
-        {editModalOpen && (
-          <EditCollegeDetails
-            collegeData={selectedItem}
-            onSave={handleSaveEdit}
-            onCancel={() => setEditModalOpen(false)}
-          />
-        )}
       </div>
     </section>
   );

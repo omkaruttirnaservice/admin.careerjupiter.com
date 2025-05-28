@@ -117,16 +117,7 @@ const AddNewCollege = () => {
           error.response?.data.errMessage
       );
 
-      // Swal.fire({
-      //   icon: "warning",
-      //   title: "Submission Failed",
-      //   text:
-      //     error.response?.data?.usrMsg ||
-      //     error.response?.data?.message ||
-      //     error.response?.data.errMessage ||
-      //     "Please Try Again",
-      //   confirmButtonColor: "#d33",
-      // });
+     
     },
   });
 
@@ -273,32 +264,10 @@ const AddNewCollege = () => {
         formData.append("websiteURL", values.websiteURL);
         formData.append("establishedYear", values.establishedYear);
 
-        // formData.append(
-        //   "accreditation",
-        //   accreditationOptions.includes(values.accreditation)
-        //     ? values.accreditation
-        //     : ""
-        // );
-
-        // const { accreditation, accreditationOther, accreditationYears } =
-        //   formik.values;
-
-        // let finalAccreditation = accreditation;
-        // let durationText = accreditationYears.join(", ");
-        // if (isNaacOrNba(accreditation) && accreditationOther.trim() !== "") {
-        //   finalAccreditation = accreditation; // Keep original: "NAAC Accredited" or "NBA Accredited"
-        //   durationText = durationText || accreditationOther.trim();
-        // }
-
-        // // Combine final output
-        // const accreditationDetails = isNaacOrNba(accreditation)
-        //   ? `${finalAccreditation} (${durationText})`
-        //   : finalAccreditation;
 const { accreditation, accreditationOther, accreditationYears } = formik.values;
 
 let finalAccreditation = accreditation;
 
-// If user selects "Other", use accreditationOther field
 if (accreditation === "Other") {
   finalAccreditation = accreditationOther.trim(); // use user input
 } else if (isNaacOrNba(accreditation)) {
@@ -306,7 +275,6 @@ if (accreditation === "Other") {
   finalAccreditation = `${accreditation} (${durationText || "Not specified"})`;
 }
 
-// Final: append only one accreditation field
 formData.append("accreditation", finalAccreditation);
 
 
@@ -430,16 +398,6 @@ formData.append("accreditation", finalAccreditation);
   };
 
   const isVerified = formik.values.isVerified;
-
-  // Ensures a new OTP is sent for updated contact info
-  // useEffect(() => {
-  //   if (formik.values.contactDetails !== lastContactDetails) {
-  //     setOtpSent(false);
-  //     setOtp("");
-  //     setReferenceId("");
-  //     setLastContactDetails(formik.values.contactDetails);
-  //   }
-  // }, [formik.values.contactDetails, lastContactDetails]);
 
   useEffect(() => {
     if (
@@ -588,34 +546,7 @@ formData.append("accreditation", finalAccreditation);
     }
   };
 
-  // SEND EMAIL OTP
-  // const sendEmailOtp = async () => {
-  //   if (!formik.values.email || !formik.values.email.includes("@")) {
-  //     Swal.fire("Invalid Email", "Please enter a valid email.", "warning");
-  //     return;
-  //   }
-
-  //   try {
-  //     setLoading(true);
-
-  //     const response = await axios.post(`${API_BASE_URL}/api/auth/sendOtp`, {
-  //       email_id: formik.values.email, // Updated to match backend
-  //     });
-
-  //     if (response.data.success) {
-  //       setEmailReferenceId(response.data.data.reference_id);
-  //       setEmailOtpSent(true);
-  //       Swal.fire("OTP Sent", `OTP sent to ${formik.values.email}`, "success");
-  //     } else {
-  //       Swal.fire("Failed", response.data.usrMsg || "Could not send OTP", "error");
-  //     }
-  //   } catch (error) {
-  //     Swal.fire("Error", error?.response?.data?.message || "Try again.", "error");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+  
   const sendEmailOtp = async () => {
     if (!formik.values.email_id || !formik.values.email_id.includes("@")) {
       Swal.fire("Invalid Email", "Please enter a valid email.", "warning");
@@ -655,39 +586,6 @@ formData.append("accreditation", finalAccreditation);
     }
   };
 
-  // VERIFY EMAIL OTP
-  // const verifyEmailOtp = async () => {
-  //   if (!emailOtp || emailOtp.length !== 6 || !emailReferenceId) {
-  //     Swal.fire("Enter OTP", "Please enter the 6-digit OTP", "warning");
-  //     return;
-  //   }
-
-  //   try {
-  //     setLoading(true);
-
-  //     const response = await axios.post(`${API_BASE_URL}/api/auth/verifyOtp`, {
-  //       email_id: formik.values.email,
-  //       otp: emailOtp,
-  //       reference_id: emailReferenceId,
-  //     });
-
-  //     if (response.data.success) {
-  //       setEmailVerified(true);
-  //       formik.setFieldValue("isEmailVerified", true);
-  //       setEmailOtp("");
-  //       setEmailOtpSent(false);
-
-  //       Swal.fire("Verified", "Email OTP verified successfully!", "success");
-  //     } else {
-  //       Swal.fire("Failed", response.data.usrMsg || "Incorrect OTP", "error");
-  //     }
-  //   } catch (error) {
-  //     Swal.fire("Error", error?.response?.data?.message || "Try again.", "error");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const verifyEmailOtp = async () => {
     if (!emailOtp || emailOtp.length !== 6 || !emailReferenceId) {
       Swal.fire("Enter OTP", "Please enter the 6-digit OTP", "warning");
@@ -697,7 +595,7 @@ formData.append("accreditation", finalAccreditation);
     try {
       setLoading(true);
 
-      const response = await axios.post(`${API_BASE_URL}/api/auth/verifyOtp`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/email-verifyOtp`, {
         email_id: formik.values.email_id, // ✅ Corrected key
         otp: emailOtp,
         reference_id: emailReferenceId,
@@ -730,21 +628,6 @@ formData.append("accreditation", finalAccreditation);
     setShowAddressModal(true);
   };
 
-  // Fetch college categories once on component mount from the backend API
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     try {
-  //       const response = await axios.get(`${API_BASE_URL}/api/college/all-college-category`); // Api call for Categories value for dropdown
-  //       const categories = response.data.categories || [];
-  //       setCategoryData(categories);
-  //     } catch (error) {
-  //       console.error("Failed to fetch college categories", error);
-  //     }
-  //   };
-
-  //   fetchCategories();
-  // }, []);
-
   useEffect(() => {
     // Fetch college categories once when the component mounts
     const fetchCategories = async () => {
@@ -752,7 +635,7 @@ formData.append("accreditation", finalAccreditation);
         const response = await axios.get(
           `${API_BASE_URL}/api/college/all-college-category`
         );
-        const categories = response.data.categories || [];
+        const categories = response.data.data || [];
         setCategoryData(categories);
       } catch (error) {
         console.error("Failed to fetch college categories", error);
@@ -762,15 +645,7 @@ formData.append("accreditation", finalAccreditation);
     fetchCategories();
   }, []);
 
-  // Update branch list when selected category or category data changes
-  // useEffect(() => {
-  //   const selectedCategory = formik.values.category;
-  //   const match = categoryData.find(
-  //     (item) => item.category === selectedCategory
-  //   );
-  //   setFilteredBranches(match ? match.subCategory : []);
-  // }, [formik.values.category, categoryData]);
-
+  
   // Update entrance exams when category is selected
   useEffect(() => {
     const selectedCategory = formik.values.category; // Assuming category is being managed in Formik
@@ -979,61 +854,6 @@ formData.append("accreditation", finalAccreditation);
             </div>
 
            
-            {/* Email id  */}
-            {/* <InputField
-              label="Email"
-              name="email_id"
-              type="email"
-              placeholder="Enter email address"
-              formik={formik}
-            /> */}
-
-            {/* Email */}
-            {/* <InputField
-  label="Email"
-  name="email"
-  type="email"
-  placeholder="Enter Email Address"
-  formik={formik}
-/>
-
-{/* Email OTP Section */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-  <div>
-    <label className="text-blue-800 font-semibold block mb-2">Email OTP</label>
-    <input
-      type="text"
-      value={emailOtp}
-      onChange={(e) => setEmailOtp(e.target.value)}
-      placeholder="Enter OTP"
-      className="w-full px-4 py-3 border rounded-md"
-      disabled={!emailOtpSent}
-    />
-  </div>
-
-  <button
-    type="button"
-    onClick={sendEmailOtp}
-    className="bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition"
-    disabled={emailOtpSent || emailVerified}
-  >
-    {emailOtpSent ? "OTP Sent" : "Send OTP"}
-  </button>
-
-  <button
-    type="button"
-    onClick={verifyEmailOtp}
-    className="bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 transition"
-    disabled={!emailOtpSent || emailVerified}
-  >
-    Verify OTP
-  </button>
-</div>
-
-{emailVerified && (
-  <p className="text-green-600 mt-2 font-semibold">Email Verified ✔️</p>
-)} */}
-
             {/* <div className="p-1 col-span-full grid md:grid-cols-2 sm:grid-cols-1 gap-4"> */}
             <div className="p-1 flex flex-col gap-4">
 

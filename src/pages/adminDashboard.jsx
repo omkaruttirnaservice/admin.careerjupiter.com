@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
-import { Doughnut, Bar } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUniversity, FaSchool, FaChalkboardTeacher } from "react-icons/fa";
-import { FiActivity, FiUserPlus, FiBookOpen, FiCalendar } from "react-icons/fi";
-import api from "../api/token_api";
 import {
   Chart as ChartJS,
   BarElement,
@@ -15,9 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
 import { TbSmartHome, TbUserSquareRounded } from "react-icons/tb";
-
 import {
   GiGraduateCap,
   GiSchoolBag,
@@ -30,18 +26,7 @@ import { GraduationCap, Landmark, Puzzle, RouteIcon } from "lucide-react";
 // Register Chart.js components
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const categories = [
-  "Diploma",
-  "Engineering",
-  "Pharmacy",
-  "HSC",
-  "SSC",
-  "Under Graduate",
-  "Post Graduate",
-  "Begineer",
-  "Basic",
-];
-
+//Quick Shortcuts Routes
 const navigation = [
   {
     name: "Home",
@@ -77,32 +62,31 @@ const navigation = [
     name: "Road Map",
     href: "/manage-roadmap",
     icon: RouteIcon,
-    color: "text-orange-500",
+    color: "text-blue-500",
   },
   {
     name: "Analytics",
     href: "/reports",
     icon: GiNetworkBars,
-    color: "text-teal-500",
+    color: "text-red-500",
   },
   {
     name: "Profile",
     href: "/profile",
     icon: TbUserSquareRounded,
-    color: "text-red-500",
+    color: "text-purple-500",
   },
 ];
 
 const AdminDashboard = () => {
-  // Stats Data
   const [stats, setStats] = useState({
     universities: 0,
     colleges: 0,
     classes: 0,
   });
-  const [iqTestCounts, setIqTestCounts] = useState([]);
   const navigate = useNavigate();
 
+  //Stats Data for College, Class, University
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -112,20 +96,10 @@ const AdminDashboard = () => {
           axios.get(`${API_BASE_URL}/api/class/all`),
         ]);
 
-        console.log("Colleges API Response:", collegesRes);
-        console.log("Universities API Response:", universitiesRes);
-        console.log("Classes API Response:", classesRes);
-
         setStats({
-          universities: Array.isArray(universitiesRes.data.data.universities)
-            ? universitiesRes.data.data.universities.length
-            : 0,
-          colleges: Array.isArray(collegesRes.data.data.colleges)
-            ? collegesRes.data.data.colleges.length
-            : 0,
-          classes: Array.isArray(classesRes.data.data.classes)
-            ? classesRes.data.data.classes.length
-            : 0,
+          universities: universitiesRes?.data?.data?.universities?.length || 0,
+          colleges: collegesRes?.data?.data?.colleges?.length || 0,
+          classes: classesRes?.data?.data?.classes?.length || 0,
         });
       } catch (error) {
         console.error(
@@ -150,31 +124,19 @@ const AdminDashboard = () => {
     ],
   };
 
-  // Data
-  const barData = {
-    labels: categories,
-    datasets: [
-      {
-        label: "Total IQ Tests",
-        data: iqTestCounts,
-        backgroundColor: "rgba(79, 70, 229, 0.8)",
-      },
-    ],
-  };
-
-  // Options
-  const barOptions = {
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          stepSize: 1,
-          precision: 0,
+  // To move the donut colour instruction at bottom
+  const options = {
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          boxWidth: 20,
+          padding: 15,
         },
-        suggestedMax: 2, // Optional: set higher if needed
       },
     },
   };
+
   return (
     <div className="p-6 bg-gradient-to-br from-blue-100 to-blue-50 min-h-screen">
       {/* Stats Section */}
@@ -207,46 +169,25 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Charts Section */}
+      {/* Donut Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
-        {/* Donut Chart */}
-        {/* <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-blue-700 mb-3">
-            Data Distribution
-          </h2>
-          <div className="w-64">
-            <Doughnut data={donutData} />
-          </div>
-        </div> */}
-
         <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center space-y-4 hover:shadow-xl transition-shadow duration-300 ease-in-out">
           <h2 className="text-2xl font-extrabold text-blue-800 mb-3 tracking-wide">
             Data Distribution
           </h2>
 
           <div className="w-72 h-72 p-4 bg-blue-50 rounded-xl flex items-center justify-center shadow-md transform transition-all duration-500 ease-in-out hover:scale-105">
-            <Doughnut data={donutData} />
+            <Doughnut data={donutData} options={options} />
           </div>
         </div>
 
-        {/* Histogram */}
-        {/* <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-lg font-semibold text-blue-700 mb-3">
-            IQ Test Count by Category
-          </h2>
-          <div className="w-full h-64">
-            <Bar data={barData} options={barOptions} />
-          </div>
-        </div> */}
-
-        {/* Add Categories Section */}
-
+        {/* Added Categories Shortcut Section */}
         <div className="bg-white p-6 rounded-lg shadow-lg space-y-4">
           <h2 className="text-2xl font-extrabold text-blue-800 mb-6">
             🗂️ Add Categories
           </h2>
 
-          {/* Add Class Category */}
+          {/* Added Class Category */}
           <Link
             to="/add-class-category"
             className="flex items-center bg-blue-50 p-4 rounded-lg shadow hover:bg-blue-100 cursor-pointer"
@@ -261,7 +202,7 @@ const AdminDashboard = () => {
             </span>
           </Link>
 
-          {/* Add College Category */}
+          {/* Added College Category */}
           <Link
             to="/add-college-category"
             className="flex items-center bg-green-50 p-4 rounded-lg shadow hover:bg-green-100 cursor-pointer"
@@ -276,7 +217,7 @@ const AdminDashboard = () => {
             </span>
           </Link>
 
-          {/* Add University Category */}
+          {/* Added University Category */}
           <Link
             to="/add-university-category"
             className="flex items-center bg-purple-50 p-4 rounded-lg shadow hover:bg-purple-100 cursor-pointer"
@@ -299,6 +240,7 @@ const AdminDashboard = () => {
           🚀 Quick Shortcuts
         </h2>
 
+        {/* Shortcut Cards Design  */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {navigation.map((item, idx) => {
             const baseColor = item.color?.split("-")[1] ?? "blue";
