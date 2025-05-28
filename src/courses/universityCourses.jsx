@@ -113,9 +113,10 @@ const UniversityCourses = () => {
         const response = await axios.get(
           `${API_BASE_URL}/api/university/course/${universityId}`
         );
-        const data = response.data.data?.courses?.[0]?.courses || [];
+        const data =  response.data?.data?.[0]?.courses || [];
 
-        console.log("Fetched course list:", data);
+  console.log("Fetched course list:", response.data?.data?.[0]?.courses);
+
 
         if (data.length > 0) {
           const formattedCourses = data.map((course) => ({

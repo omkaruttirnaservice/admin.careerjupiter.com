@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import { clearAuthCookies } from "../utlis/cookieHelper";
 
+// Returns a greeting message, emoji, and color based on the current hour of the day.
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour < 12) return { text: "Good Morning", emoji: "🌞", color: "#facc15" };
@@ -14,6 +15,7 @@ const getGreeting = () => {
   return { text: "Good Evening", emoji: "🌙", color: "#60a5fa" };
 };
 
+// Navigations for the University Sidemenu
 const navigation = [
   {
     name: "Dashboard",
@@ -53,10 +55,12 @@ const UniversityVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [activeLink, setActiveLink] = useState(location.pathname);
   const greeting = getGreeting();
 
+  // Updates the active link state whenever the URL path changes.
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
 
+  // Handle the logout button
   const handleLogout = () => {
     Swal.fire({
       title: "👋 Ready to logout?",
@@ -67,6 +71,7 @@ const UniversityVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, logout!",
     }).then((result) => {
+      // Relocate to Login Page
       if (result.isConfirmed) {
         clearAuthCookies();
         window.location.href = "/";

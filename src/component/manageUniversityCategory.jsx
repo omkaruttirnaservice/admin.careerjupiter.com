@@ -4,7 +4,7 @@ import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { Pencil, Trash2, Save, X, Plus } from "lucide-react";
 import Swal from "sweetalert2";
 
-const ManageUniversityCategory = ({ onCategoriesChange }) => {
+const ManageUniversityCategory = () => {
   const [type, setType] = useState("university");
   const [categoryInput, setCategoryInput] = useState("");
   const [subCategoryInputs, setSubCategoryInputs] = useState([""]);
@@ -12,52 +12,63 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
   const [editCategoryId, setEditCategoryId] = useState(null);
   const [editCategoryName, setEditCategoryName] = useState("");
   const [editSubCategories, setEditSubCategories] = useState([]);
-  const [collegeCategories, setCollegeCategories] = useState([]);
+  const [entranceExams, setEntranceExams] = useState([""]);
+  const [editEntranceExams, setEditEntranceExams] = useState([""]);
 
-  // 👇 define this at the top (inside the component, but outside useEffect)
+  // Fetched all categories using get method
   const fetchCategories = async () => {
     try {
       const res = await axios.get(
         `${API_BASE_URL}/api/university/categories/all`
       );
-
       if (Array.isArray(res.data.categories)) {
         setCategories(res.data.categories);
       } else {
         console.error("Invalid response data: categories is not an array.");
       }
     } catch (err) {
-      console.error("Failed to fetch college categories", err);
+      console.error("Failed to fetch university categories", err);
     }
   };
 
+  // Called Once when mounted
   useEffect(() => {
-    fetchCategories(); 
+    fetchCategories();
   }, []);
 
+  // Handled Adding Categories
   const handleAddCategory = async () => {
     if (!categoryInput.trim()) return;
 
     const subcategories = subCategoryInputs
       .map((sub) => sub.trim())
       .filter((sub) => sub);
-
+    // Payload send
     const payload = {
       category: categoryInput.trim(),
       subCategory: subcategories,
+      entrance_exam_required: entranceExams.filter((e) => e.trim() !== ""),
       type,
     };
 
     try {
       await axios.post(`${API_BASE_URL}/api/category/add`, payload);
-      await fetchCategories(); 
+      Swal.fire({
+        icon: "success",
+        title: "Category Added",
+        text: "Categories added successfully!",
+        confirmButtonColor: "#3085d6",
+      });
+      // After successfully Added Empty all fields
+      await fetchCategories();
       setCategoryInput("");
       setSubCategoryInputs([""]);
+      setEntranceExams([""]);
     } catch (error) {
       console.error("Error adding category:", error);
       Swal.fire({
         icon: "warning",
-        title: "Error",
+        title: "Warning",
         text:
           error.response?.data.errMsg || "Failed to add category. Try again.",
         confirmButtonColor: "#3085d6",
@@ -65,26 +76,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
     }
   };
 
-  // const handleDeleteCategory = async (id) => {
-  //   try {
-  //     await axios.delete(`${API_BASE_URL}/api/category/${id}`);
-
-  //     const updated = {
-  //       ...categories,
-  //       [type]: categories[type].filter((cat) => cat._id !== id),
-  //     };
-  //     setCategories(updated);
-  //     onCategoriesChange && onCategoriesChange(updated);
-  //   } catch (error) {
-  //     console.error("Failed to delete category:", error);
-  //     Swal.fire({
-  //       icon: "warning",
-  //       title: "Delete Failed",
-  //       text: error.response?.data.errMsg || "Could not delete category.",
-  //       confirmButtonColor: "#d33"
-  //     });
-  //   }
-  // };
+  // Handled Deletion of Category
   const handleDeleteCategory = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -110,71 +102,45 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
       } catch (error) {
         console.error("Failed to delete category:", error);
         Swal.fire({
-          icon: "error",
-          title: "Delete Failed",
-          text: error.response?.data.errMsg || "Could not delete category.",
+          icon: "warning",
+          title: "Failed to Delete",
+          text: error.response?.data.errMsg || "Failed to Delete Category.",
           confirmButtonColor: "#d33",
         });
       }
     }
   };
 
+  // Handled when Edit Category is called
   const handleEditCategory = (cat) => {
     setEditCategoryId(cat._id);
     setEditCategoryName(cat.category);
     setEditSubCategories(cat.subCategory || []);
+    setEditEntranceExams(cat.entrance_exam_required || [""]);
   };
 
-  // const handleUpdateCategory = async (id) => {
-  //   if (!editCategoryName.trim()) return;
-
-  //   try {
-  //     const payload = {
-  //       category: editCategoryName.trim(),
-  //       subCategory: editSubCategories,
-  //     };
-
-  //     const res = await axios.put(`${API_BASE_URL}/api/category/${id}`, payload);
-  //     const updatedCat = res.data.data;
-
-  //     const updated = {
-  //       ...categories,
-  //       [type]: categories[type].map((cat) =>
-  //         cat._id === id ? { ...cat, category: updatedCat.category, subCategory: updatedCat.subCategory } : cat
-  //       ),
-  //     };
-
-  //     setCategories(updated);
-  //     onCategoriesChange && onCategoriesChange(updated);
-  //     setEditCategoryId(null);
-  //     setEditCategoryName("");
-  //     setEditSubCategories([]);
-  //   } catch (error) {
-  //     console.error("Error updating Category:", error);
-  //     Swal.fire({
-  //       icon: "warning",
-  //       title: "Update Failed",
-  //       text: error.response?.data.errMsg || "Could not update category. Try again.",
-  //       confirmButtonColor: "#d33"
-  //     });
-  //   }
-  // };
-
+  // Update Categories
   const handleUpdateCategory = async (id) => {
     if (!editCategoryName.trim()) return;
 
     try {
+      // Payload for update
       const payload = {
         category: editCategoryName.trim(),
         subCategory: editSubCategories,
+        entrance_exam_required: editEntranceExams.filter(
+          (e) => e.trim() !== ""
+        ),
       };
 
       await axios.put(`${API_BASE_URL}/api/category/${id}`, payload);
       await fetchCategories(); // fetch fresh updated list
 
+      // After successful update, clear the fields
       setEditCategoryId(null);
       setEditCategoryName("");
       setEditSubCategories([]);
+      setEditEntranceExams([""]);
       Swal.fire({
         icon: "success",
         title: "Updated",
@@ -193,31 +159,37 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
     }
   };
 
+  // Handled Sub Categories
   const handleSubCategoryChange = (index, value) => {
     const updated = [...subCategoryInputs];
     updated[index] = value;
     setSubCategoryInputs(updated);
   };
 
+  // Handled new input fields for sub categories
   const handleAddSubCategoryField = () => {
     setSubCategoryInputs([...subCategoryInputs, ""]);
   };
 
+  // Handled to remove the sub category input fields
   const handleRemoveSubCategoryField = (index) => {
     const updated = subCategoryInputs.filter((_, i) => i !== index);
     setSubCategoryInputs(updated);
   };
 
+  // Handled updation of sub Categories
   const handleEditSubCategoryChange = (index, value) => {
     const updated = [...editSubCategories];
     updated[index] = value;
     setEditSubCategories(updated);
   };
 
+  // Handled update and add new foeld for sub category field in the updation area (List)
   const handleAddEditSubCategoryField = () => {
     setEditSubCategories([...editSubCategories, ""]);
   };
 
+  // Handled remove the sub category field in the updation area (List)
   const handleRemoveEditSubCategoryField = (index) => {
     const updated = editSubCategories.filter((_, i) => i !== index);
     setEditSubCategories(updated);
@@ -241,7 +213,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
         />
       </div>
 
-      {/* SubCategory Inputs for college/university */}
+      {/* SubCategory Inputs for university */}
       {type === "university" && (
         <div className="mb-6">
           <label className="block font-semibold mb-2">Subcategories:</label>
@@ -255,6 +227,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
                 className="border px-3 py-2 rounded-lg w-full"
               />
               {subCategoryInputs.length > 1 && (
+                // Close Button for form area for sub category
                 <button
                   className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
                   onClick={() => handleRemoveSubCategoryField(index)}
@@ -264,6 +237,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
               )}
             </div>
           ))}
+          {/* Add New field for sub category in form section */}
           <button
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mt-2 flex items-center gap-2"
             onClick={handleAddSubCategoryField}
@@ -272,6 +246,46 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
           </button>
         </div>
       )}
+
+      {/* Entrance Exam Required field */}
+      <div className="mb-6">
+        <label className="block font-semibold mb-2">
+          Entrance Exams Required:
+        </label>
+        {entranceExams.map((exam, index) => (
+          <div key={index} className="flex gap-2 mb-2">
+            <input
+              type="text"
+              value={exam}
+              onChange={(e) => {
+                const updated = [...entranceExams];
+                updated[index] = e.target.value;
+                setEntranceExams(updated);
+              }}
+              placeholder={`Exam ${index + 1}`}
+              className="border px-3 py-2 rounded-lg w-full"
+            />
+            {entranceExams.length > 1 && (
+              // Remove button for entrance exam required in form field
+              <button
+                onClick={() =>
+                  setEntranceExams(entranceExams.filter((_, i) => i !== index))
+                }
+                className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
+              >
+                <Trash2 size={18} />
+              </button>
+            )}
+          </div>
+        ))}
+        {/* Add new input field for entrance exam required in form section */}
+        <button
+          className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mt-2 flex items-center gap-2"
+          onClick={() => setEntranceExams([...entranceExams, ""])}
+        >
+          <Plus size={18} /> Add Exam
+        </button>
+      </div>
 
       {/* Add Category Button */}
       <button
@@ -287,7 +301,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
           Categories for{" "}
           <span className="capitalize text-blue-700">{type}</span>
         </h4>
-
+        {/* Categories List  */}
         <ul className="space-y-4 max-h-60 overflow-y-auto pr-2">
           {(categories?.length > 0 ? categories : []).map((cat) => (
             <li
@@ -296,6 +310,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
             >
               {editCategoryId === cat._id ? (
                 <div className="flex flex-col gap-4">
+                  {/* Input Field for category in edit section */}
                   <input
                     type="text"
                     value={editCategoryName}
@@ -318,6 +333,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
                             className="border px-3 py-2 rounded-lg w-full"
                           />
                           {editSubCategories.length > 1 && (
+                            // Remove Sub Category field in edit section
                             <button
                               className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
                               onClick={() =>
@@ -329,6 +345,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
                           )}
                         </div>
                       ))}
+                      {/* Add new field for sub category in edit section  */}
                       <button
                         className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg mt-2 flex items-center gap-2"
                         onClick={handleAddEditSubCategoryField}
@@ -338,6 +355,51 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
                     </div>
                   )}
 
+                  {/* Inside the edit form section Entrance Exam field is handled */}
+                  <div className="flex flex-col gap-2 mt-4">
+                    <label className="font-semibold mb-1">
+                      Entrance Exams Required:
+                    </label>
+                    {editEntranceExams.map((exam, index) => (
+                      <div key={index} className="flex gap-2 mb-2">
+                        {/* edit input fields with the data in it for entrance exam required */}
+                        <input
+                          type="text"
+                          value={exam}
+                          onChange={(e) => {
+                            const updated = [...editEntranceExams];
+                            updated[index] = e.target.value;
+                            setEditEntranceExams(updated);
+                          }}
+                          placeholder={`Exam ${index + 1}`}
+                          className="border px-3 py-2 rounded-lg w-full"
+                        />
+                        {editEntranceExams.length > 1 && (
+                          // Remove Button for edit section
+                          <button
+                            onClick={() =>
+                              setEditEntranceExams(
+                                editEntranceExams.filter((_, i) => i !== index)
+                              )
+                            }
+                            className="bg-red-400 hover:bg-red-500 text-white p-2 rounded-lg"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    {/* Add New field section for entrance exam required field in edit section */}
+                    <button
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg mt-1 flex items-center gap-2"
+                      onClick={() =>
+                        setEditEntranceExams([...editEntranceExams, ""])
+                      }
+                    >
+                      <Plus size={18} /> Add Exam
+                    </button>
+                  </div>
+                  {/* Save Updation button for edit section - entrance exam required */}
                   <div className="flex gap-2 mt-4">
                     <button
                       className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg shadow"
@@ -345,6 +407,7 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
                     >
                       <Save size={18} />
                     </button>
+                    {/* Clode Button for edit section - entrance exam required */}
                     <button
                       className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded-lg shadow"
                       onClick={() => setEditCategoryId(null)}
@@ -355,10 +418,12 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
                 </div>
               ) : (
                 <div className="flex justify-between items-center">
+                  {/* List of Category */}
                   <div>
                     <p className="font-semibold text-gray-800">
                       {cat.category}
                     </p>
+                    {/* List of Sub Category */}
                     {cat.subCategory?.length > 0 && (
                       <ul className="ml-4 list-disc text-gray-600">
                         {cat.subCategory.map((sub, index) => (
@@ -366,15 +431,30 @@ const ManageUniversityCategory = ({ onCategoriesChange }) => {
                         ))}
                       </ul>
                     )}
+                    {/* List of Entrance Exam Required */}
+                    {cat.entrance_exam_required?.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-sm font-semibold text-gray-700">
+                          Entrance Exams Required:
+                        </p>
+                        <ul className="ml-4 list-disc text-gray-600">
+                          {cat.entrance_exam_required.map((exam, index) => (
+                            <li key={index}>{exam}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-2">
+                    {/* Edit Button */}
                     <button
                       className="bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded-lg shadow"
                       onClick={() => handleEditCategory(cat)}
                     >
                       <Pencil size={18} />
                     </button>
+                    {/* Close Button */}
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg shadow"
                       onClick={() => handleDeleteCategory(cat._id)}

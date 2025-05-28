@@ -291,12 +291,11 @@ const Infrastructure = () => {
         const { data } = await axios.get(
           `${API_BASE_URL}/api/college/infrastructure/${collegeId}`
         );
+if (data?.usrMsg) {
+  const infrastructureData = Array.isArray(data.data?.infrastructure)
+    ? data.data.infrastructure
+    : [data.data?.infrastructure];
 
-        if (data?.usrMsg) {
-          // Handle both array and single object cases
-          const infrastructureData = Array.isArray(data.usrMsg.infrastructure)
-            ? data.usrMsg.infrastructure
-            : [data.usrMsg];
 
           formik.setValues({
             infrastructure: infrastructureData.map((infra) => ({
