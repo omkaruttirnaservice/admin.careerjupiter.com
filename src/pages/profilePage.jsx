@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 const ProfilePage = () => {
@@ -9,7 +8,8 @@ const ProfilePage = () => {
     phone: "9876543210",
     designation: "Super Admin",
     institution: "XYZ Education Board",
-    profilePic: "https://static.vecteezy.com/system/resources/previews/029/156/453/non_2x/admin-business-icon-businessman-business-people-male-avatar-profile-pictures-man-in-suit-for-your-web-site-design-logo-app-ui-solid-style-illustration-design-on-white-background-eps-10-vector.jpg",
+    profilePic:
+      "https://static.vecteezy.com/system/resources/previews/029/156/453/non_2x/admin-business-icon-businessman-business-people-male-avatar-profile-pictures-man-in-suit-for-your-web-site-design-logo-app-ui-solid-style-illustration-design-on-white-background-eps-10-vector.jpg",
     bio: "Helping students with college admissions and issues.",
   });
 
@@ -43,9 +43,12 @@ const ProfilePage = () => {
             />
           )}
         </label>
-        <h2 className="text-2xl font-bold text-gray-800 mt-4">{adminData.name}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mt-4">
+          {adminData.name}
+        </h2>
         <p className="text-sm text-gray-600 font-medium mt-1">
-          {adminData.designation} at <span className="italic">{adminData.institution}</span>
+          {adminData.designation} at{" "}
+          <span className="italic">{adminData.institution}</span>
         </p>
       </div>
 
@@ -103,11 +106,21 @@ const ProfilePage = () => {
           </div>
         ) : (
           <div className="space-y-3 text-gray-700 leading-relaxed">
-            <p><strong>Email:</strong> {adminData.email}</p>
-            <p><strong>Phone:</strong> {adminData.phone}</p>
-            <p><strong>Designation:</strong> {adminData.designation}</p>
-            <p><strong>Institution:</strong> {adminData.institution}</p>
-            <p><strong>Bio:</strong> {adminData.bio}</p>
+            <p>
+              <strong>Email:</strong> {adminData.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {adminData.phone}
+            </p>
+            <p>
+              <strong>Designation:</strong> {adminData.designation}
+            </p>
+            <p>
+              <strong>Institution:</strong> {adminData.institution}
+            </p>
+            <p>
+              <strong>Bio:</strong> {adminData.bio}
+            </p>
           </div>
         )}
       </div>
