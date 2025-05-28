@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
-import CollegeVendorSideMenu from "./CollegeVendorSideMenu";
+import CollegeVendorSideMenu from "./collegeVendorSideMenu";
 // import CollegeVendorSideMenu from './CollegeVendorSideMenu.jsx'
 
 const VendorCollegeLayout = () => {

@@ -15,6 +15,7 @@ import {
 import { fetchAllUniversities, deleteUniversity } from "./universityapi";
 import ViewUniversityModal from "./viewUniversityModal";
 import DeleteConfirmationModal from "./deleteUniversitymodal";
+import DeleteConfirmationModal from "./deleteUniversitymodal";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 

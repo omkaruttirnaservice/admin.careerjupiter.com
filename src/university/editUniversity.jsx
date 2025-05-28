@@ -3,50 +3,45 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-// import { toast , ToastContainer } from "react-toastify";
 import { toast, ToastContainer, Slide } from "react-toastify";
-
-// import { ToastContainer } from 'react-toastify';
-
 import { FaArrowLeft } from "react-icons/fa";
 import {
   fetchUniversityById,
   updateUniversity,
   fetchUniversityCategories,
 } from "./universityapi";
-import UniversityForm from "./universityForm";
+import EditUniversityForm from "./edit-university-from";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
+import { useQueryClient } from "@tanstack/react-query";
 
 const role = Cookies.get("role");
 const subrole = Cookies.get("subrole");
 
 
 
+// Default district options by state
+const districtOptionsByState = {
+  
+};
+
 const EditUniversity = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [filteredBranches, setFilteredBranches] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-const [showErrorPopup, setShowErrorPopup] = useState(false);
-const [errorMessage, setErrorMessage] = useState("");
-const [universityId, setUniversityId] = useState("");
+  const [universityId, setUniversityId] = useState("");
+  // const [stateOptions, setStateOptions] = useState(defaultStateOptions);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const queryClient = useQueryClient();
 
-  // const { data: universityData, isLoading: isLoadingUniversity } = useQuery({
-  //   queryKey: ["university", id],
-  //   queryFn: () => fetchUniversityById(id),
-  //   enabled: !!id,
-  //   staleTime: 5 * 60 * 1000,
-  // });
-
-const { data: universityData, isLoading: isLoadingUniversity } = useQuery({
-  queryKey: ["university", universityId],
-  queryFn: () => fetchUniversityById(universityId),
-  enabled: !!universityId,
-  staleTime: 5 * 60 * 1000,
-});
-
+  const { data: universityData, isLoading: isLoadingUniversity } = useQuery({
+    queryKey: ["university", universityId],
+    queryFn: () => fetchUniversityById(universityId),
+    enabled: !!universityId,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const { data: categoryData = { categories: [] } } = useQuery({
     queryKey: ["universityCategories"],
@@ -54,35 +49,58 @@ const { data: universityData, isLoading: isLoadingUniversity } = useQuery({
     staleTime: 5 * 60 * 1000,
   });
 
-  // const mutation = useMutation({
-  //   mutationFn: (values) => updateUniversity(id, values),
-  //   onSuccess: (data) => {
-  //     setShowSuccessPopup(true);
-  //   },
-  //   onError: (error) => {
-  //     console.error("ERROR:", error);
-  //     setErrorMessage(error?.message || "Failed to update university");
-  //     setShowErrorPopup(true);
-  //   },
-  // });
-  
   const mutation = useMutation({
-  mutationFn: (values) => updateUniversity(universityId, values),
-  onSuccess: (data) => {
-    setShowSuccessPopup(true);
-  },
-  onError: (error) => {
-    console.error("ERROR:", error);
-    setErrorMessage(error?.message || "Failed to update university");
-    setShowErrorPopup(true);
-  },
-});
+    mutationFn: updateUniversity,
 
+    onSuccess: async (data) => {
+      await Promise.all([
+        queryClient.invalidateQueries(["university", universityId]),
+        queryClient.invalidateQueries(["universities"]),
+      ]);
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "University updated successfully!",
+        confirmButtonColor: "#3085d6",
+      }).then(() => {
+        navigate(
+          role === "ADMIN" ? "/university-details" : "/vendor-university"
+        );
+      });
+    },
+    onError: (error) => {
+      console.error("ERROR:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text:
+          error?.response?.data?.usrMsg ||
+          error?.message ||
+          "Failed to update university",
+        confirmButtonColor: "#d33",
+      });
+    },
+  });
+
+  const validationSchema = Yup.object({
+    // universityName: Yup.string().required("University Name is required"),
+    // category: Yup.string().required("Category is required"),
+    // subCategory: Yup.array().min(1, "At least one sub-category is required"),
+    // "address.line1": Yup.string().required("Address Line 1 is required"),
+    // "address.pincode": Yup.string().required("Pincode is required"),
+    // "address.state": Yup.string().required("State is required"),
+    // "address.dist": Yup.string().required("District is required"),
+    // "address.autorizedName": Yup.string().required("Authorized Person Name is required"),
+    // "address.autorizedPhono": Yup.string().required("Authorized Person Phone is required"),
+    // "info.description": Yup.string().required("Description is required"),
+    // keywords: Yup.array().min(1, "At least one keyword is required"),
+  });
 
   const formik = useFormik({
     initialValues: {
+      // universityId: "",
       universityName: "",
-      universityID: "",
       category: "",
       subCategory: [],
       address: {
@@ -97,7 +115,7 @@ const { data: universityData, isLoading: isLoadingUniversity } = useQuery({
         nearbyLandmarks: "",
       },
       contactDetails: "",
-      password: "",
+      // password: "",
       email_id: "",
       info: {
         description: "",
@@ -119,39 +137,173 @@ const { data: universityData, isLoading: isLoadingUniversity } = useQuery({
         scholarshipsAvailable: [],
         quotaSystem: [],
       },
+      isHidden: true,
+      role: "VENDOR",
+      subrole: "university",
     },
-    validationSchema: Yup.object({
-      universityName: Yup.string().required("University Name is required"),
-      email_id: Yup.string()
-        .email("Invalid email format")
-        .required("Email is required"),
-    }),
+    validationSchema,
     onSubmit: (values) => {
-      mutation.mutate(values);
+      const formData = new FormData();
+
+      // Append university ID
+      // formData.append("universityId", universityId)
+
+      // Append all form fields to formData exactly matching the API response structure
+      // formData.append("universityId", values.universityId)
+      formData.append("universityName", values.universityName);
+      formData.append("category", values.category);
+
+      // Arrays
+      if (values.subCategory && values.subCategory.length > 0) {
+        values.subCategory.forEach((item, index) => {
+          formData.append(`subCategory[${index}]`, item);
+        });
+      }
+
+      // Address object
+      formData.append("address[line1]", values.address.line1);
+      formData.append("address[line2]", values.address.line2);
+      formData.append("address[pincode]", values.address.pincode);
+      formData.append("address[state]", values.address.state);
+      formData.append("address[dist]", values.address.dist);
+      formData.append("address[taluka]", values.address.taluka);
+      formData.append("address[autorizedName]", values.address.autorizedName);
+      formData.append("address[autorizedPhono]", values.address.autorizedPhono);
+      formData.append(
+        "address[nearbyLandmarks]",
+        values.address.nearbyLandmarks
+      );
+
+      // Basic fields
+      formData.append("contactDetails", values.contactDetails);
+      // formData.append("password", values.password)
+      // formData.append("email_id", values.email_id)
+      formData.append("info[description]", values.info.description);
+      formData.append("websiteURL", values.websiteURL);
+      formData.append("establishedYear", values.establishedYear);
+      formData.append("applicationFormURL", values.applicationFormURL);
+      formData.append("isHidden", values.isHidden);
+      formData.append("role", values.role);
+      formData.append("subrole", values.subrole);
+
+      // Arrays
+      if (values.keywords && values.keywords.length > 0) {
+        values.keywords.forEach((item, index) => {
+          formData.append(`keywords[${index}]`, item);
+        });
+      }
+
+      if (values.accreditation && values.accreditation.length > 0) {
+        values.accreditation.forEach((item, index) => {
+          formData.append(`accreditation[${index}]`, item);
+        });
+      }
+
+      if (values.facilities && values.facilities.length > 0) {
+        values.facilities.forEach((item, index) => {
+          formData.append(`facilities[${index}]`, item);
+        });
+      }
+
+      if (values.admissionProcess && values.admissionProcess.length > 0) {
+        values.admissionProcess.forEach((item, index) => {
+          formData.append(`admissionProcess[${index}]`, item);
+        });
+      }
+
+      if (
+        values.entrance_exam_required &&
+        values.entrance_exam_required.length > 0
+      ) {
+        values.entrance_exam_required.forEach((item, index) => {
+          formData.append(`entrance_exam_required[${index}]`, item);
+        });
+      }
+
+      // Admission entrance details
+      formData.append(
+        "admissionEntranceDetails[admissionStartDate]",
+        values.admissionEntranceDetails.admissionStartDate
+      );
+      formData.append(
+        "admissionEntranceDetails[admissionEndDate]",
+        values.admissionEntranceDetails.admissionEndDate
+      );
+      formData.append(
+        "admissionEntranceDetails[lastYearCutoffMarks]",
+        values.admissionEntranceDetails.lastYearCutoffMarks
+      );
+
+      if (
+        values.admissionEntranceDetails.scholarshipsAvailable &&
+        values.admissionEntranceDetails.scholarshipsAvailable.length > 0
+      ) {
+        values.admissionEntranceDetails.scholarshipsAvailable.forEach(
+          (item, index) => {
+            formData.append(
+              `admissionEntranceDetails[scholarshipsAvailable][${index}]`,
+              item
+            );
+          }
+        );
+      }
+
+      if (
+        values.admissionEntranceDetails.quotaSystem &&
+        values.admissionEntranceDetails.quotaSystem.length > 0
+      ) {
+        values.admissionEntranceDetails.quotaSystem.forEach((item, index) => {
+          formData.append(
+            `admissionEntranceDetails[quotaSystem][${index}]`,
+            item
+          );
+        });
+      }
+
+      // Image files
+      if (values.image instanceof File) {
+        formData.append("image", values.image);
+      }
+
+      if (values.imageGallery && values.imageGallery.length > 0) {
+        values.imageGallery.forEach((file) => {
+          if (file instanceof File) {
+            formData.append("imageGallery", file);
+          }
+        });
+      }
+
+      // Log the form data for debugging
+      console.log("Submitting form data:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0] + ": " + pair[1]);
+      }
+
+      // Call the mutation with the university ID and form data
+      mutation.mutate({ id: universityId, data: formData });
     },
   });
 
-  
-useEffect(() => {
-  const universityIdFromCookie = Cookies.get("universityID");
-  const idFromParams = id; // from URL if admin
+  useEffect(() => {
+    const universityIdFromCookie = Cookies.get("universityID");
+    const idFromParams = id; // from URL if admin
 
-  const finalId = idFromParams || universityIdFromCookie;
+    const finalId = idFromParams || universityIdFromCookie;
 
-  if (finalId) {
-    setUniversityId(finalId);
-    console.log("University ID for editing:", finalId);
+    if (finalId) {
+      setUniversityId(finalId);
+      console.log("University ID for editing:", finalId);
 
-    // Store in cookie if admin comes from URL
-    if (role === "ADMIN" && idFromParams) {
-      Cookies.set("universityID", finalId, { expires: 1 });
+      // Store in cookie if admin comes from URL
+      if (role === "ADMIN" && idFromParams) {
+        Cookies.set("universityID", finalId, { expires: 1 });
+      }
+    } else {
+      console.warn("University ID not found!");
+      toast.error("University ID not found! Please select a university.");
+      navigate(role === "ADMIN" ? "/university-details" : "/vendor-university");
     }
-  } else {
-    console.warn("University ID not found!");
-    toast.error("University ID not found! Please select a university.");
-    navigate(role === "ADMIN" ? "/universities" : "/vendor-university");
-  }
-}, [id, role, navigate]);
+  }, [id, role, navigate]);
 
   useEffect(() => {
     if (universityData?.data?.university) {
@@ -159,12 +311,13 @@ useEffect(() => {
       const processArrayField = (field) => {
         if (typeof field === "string")
           return field.split(",").map((item) => item.trim());
-        return field || [];
+        if (Array.isArray(field)) return field;
+        return [];
       };
 
       formik.setValues({
+        // universityId: university.universityId || "",
         universityName: university.universityName || "",
-        universityID: university.universityId || "",
         category: university.category || "",
         subCategory: processArrayField(university.subCategory),
         address: {
@@ -179,7 +332,7 @@ useEffect(() => {
           nearbyLandmarks: university.address?.nearbyLandmarks || "",
         },
         contactDetails: university.contactDetails || "",
-        password: university.password || "",
+        // password: university.password || "",
         email_id: university.email_id || "",
         info: {
           description: university.info?.description || "",
@@ -218,21 +371,30 @@ useEffect(() => {
             university.admissionEntranceDetails?.quotaSystem
           ),
         },
+        isHidden:
+          university.isHidden !== undefined ? university.isHidden : true,
+        role: university.role || "VENDOR",
+        subrole: university.subrole || "university",
       });
 
       if (university.image) {
         setImagePreview(university.image);
       }
+
+      // Set district options based on state
+      if (university.address?.state) {
+        const state = university.address.state;
+        if (districtOptionsByState[state]) {
+          setDistrictOptions(districtOptionsByState[state]);
+        } else if (university.address?.dist) {
+          // If we don't have predefined districts for this state but have a district value
+          setDistrictOptions([university.address.dist]);
+        }
+      }
     }
   }, [universityData]);
 
-  useEffect(() => {
-    const selectedCategory = formik.values.category;
-    const match = categoryData.categories.find(
-      (item) => item.category === selectedCategory
-    );
-    setFilteredBranches(match ? match.subCategory : []);
-  }, [formik.values.category, categoryData.categories]);
+  
 
   const handleImageChange = (event) => {
     const file = event.target.files?.[0];
@@ -263,23 +425,26 @@ useEffect(() => {
   return (
     <div className="space-y-4">
       <div className="flex items-center mb-4">
-        <button
-          onClick={() => navigate("/university-details")}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-        >
-          <FaArrowLeft /> Back to Universities
-        </button>
+        {role === "ADMIN" && (
+          <button
+            onClick={() => navigate("/university-details")}
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+          >
+            <FaArrowLeft /> Back to Universities
+          </button>
+        )}
       </div>
 
-      <UniversityForm
+      <EditUniversityForm
         formik={formik}
         isSubmitting={mutation.isPending}
         handleImageChange={handleImageChange}
         handleImageGalleryChange={handleImageGalleryChange}
-        categoryData={categoryData.categories}
-        filteredBranches={filteredBranches}
+        // categoryData={categoryData.categories}
+        // filteredBranches={filteredBranches}
         submitButtonText="Update University"
-        imagePreview={imagePreview}
+        // stateOptions={stateOptions}
+        districtOptions={districtOptions}
       />
       <ToastContainer
         position="top-center"
@@ -292,43 +457,6 @@ useEffect(() => {
         transition={Slide}
         theme="colored"
       />
-
-{showSuccessPopup && (
-  <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50">
-    <div className="bg-white p-10 rounded-xl shadow-2xl text-center w-[400px] animate-bounceIn">
-      <div className="text-green-500 text-5xl mb-4">✓</div>
-      <h2 className="text-2xl font-bold mb-2">Success</h2>
-      <p className="mb-6 text-gray-700">University updated successfully!</p>
-      <button
-        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 text-lg"
-        onClick={() => {
-          setShowSuccessPopup(false);
-          navigate("/university-details");
-        }}
-      >
-        OK
-      </button>
-    </div>
-  </div>
-)}
-
-{showErrorPopup && (
-  <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50">
-    <div className="bg-white p-10 rounded-xl shadow-2xl text-center w-[400px] animate-bounceIn">
-      <div className="text-red-500 text-5xl mb-4">✕</div>
-      <h2 className="text-2xl font-bold mb-2">Error</h2>
-      <p className="mb-6 text-gray-700">{errorMessage}</p>
-      <button
-        className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 text-lg"
-        onClick={() => setShowErrorPopup(false)}
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
-
     </div>
   );
 };
