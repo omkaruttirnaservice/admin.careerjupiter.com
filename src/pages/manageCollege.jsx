@@ -380,7 +380,7 @@ const ManageCollege = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/college/all-college-category`);
-        const categories = response.data.categories || [];
+        const categories = response.data.data || [];
         setCategoryData(categories);
       } catch (error) {
         console.error("Failed to fetch college categories", error);
