@@ -8,6 +8,7 @@ const AddAdmin = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // handles the Saving method
   const handleSaveAdmin = async () => {
     if (!mobileNo || mobileNo.length !== 10) {
       Swal.fire(
@@ -44,10 +45,7 @@ const AddAdmin = () => {
           setPassword("");
         });
       } else {
-        Swal.fire(
-          response.data.errMsg || "Failed to add admin.",
-          "warning"
-        );
+        Swal.fire(response.data.errMsg || "Failed to add admin.", "warning");
       }
     } catch (error) {
       console.error(
@@ -69,10 +67,12 @@ const AddAdmin = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-br from-[#2cacdf] to-[#1d43a1]">
       <div className="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-lg w-96 border border-white/50">
+        {/* Heading */}
         <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
           Add Admin
         </h2>
 
+        {/* Input Field for Mobile Number */}
         <input
           type="text"
           className="w-full p-4 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fb7df] text-lg placeholder-gray-500 bg-white"
@@ -81,6 +81,7 @@ const AddAdmin = () => {
           onChange={(e) => setMobileNo(e.target.value)}
         />
 
+        {/* Input Field for Password */}
         <input
           type="password"
           className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fb7df] text-lg placeholder-gray-500 bg-white"
@@ -89,6 +90,7 @@ const AddAdmin = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        {/* Button to Save Admin */}
         <button
           onClick={handleSaveAdmin}
           disabled={loading}

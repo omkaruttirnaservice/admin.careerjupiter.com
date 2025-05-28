@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
 import UniversityVendorSideMenu from "./UniversityVendorSideMenu";
-// import UniversityVendorSideMenu from "./universityVendorSideMenu";
 
 const VendorUniversityLayout = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // to handle sideMenu
 
   return (
     <>
+      {/* Floating menu button for small screens */}
       <button
         className="fixed top-5 left-4 p-3 rounded-full shadow-md md:hidden transition-all duration-300 transform hover:scale-110 active:scale-95
                    bg-gradient-to-r from-green-500 to-green-700 opacity-60 hover:opacity-100 text-white z-80 cursor-pointer"
@@ -17,14 +17,18 @@ const VendorUniversityLayout = () => {
         <MdMenu size={24} />
       </button>
 
+      {/* Side menu component */}
       <UniversityVendorSideMenu
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
       />
+
+      {/* Main content outlet */}
       <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300 md:p-0">
         <Outlet />
       </div>
 
+      {/* shadow effect on background pages for mobile view when menu is open */}
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 bg-opacity-70 z-30 md:hidden"

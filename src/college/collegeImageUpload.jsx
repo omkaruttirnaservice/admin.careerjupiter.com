@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
-import { X } from "lucide-react"; // For cancel icon
+import { X } from "lucide-react"; 
 import toast from "react-hot-toast";
 
+// Component to handle single and multiple college image uploads
 const CollegeImageUpload = () => {
   const [image, setImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);

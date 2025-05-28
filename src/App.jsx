@@ -25,7 +25,7 @@ import ClassForm from "./pages/registerClass/classForm.jsx";
 import ClassVendorDashboard from "./pages/classVendorDashboard.jsx";
 import Cookies from "js-cookie";
 import ManageClass from "./pages/manageClass.jsx";
-import VendorLayout from "./pages/vendorLayout.jsx";
+import VendorClassLayout from "./pages/vendorClassLayout.jsx";
 import ClassTableDetails from "./pages/classTableDetails.jsx";
 import FacultyManagement from "./pages/facultyManagement.jsx";
 import ClassCourses from "./pages/classCourses.jsx";
@@ -131,7 +131,7 @@ function App() {
             {/* Protected Routes for VENDOR - All Subroles */}
             <Route element={<ProtectedRoute roleRequired="VENDOR" />}>
               {subrole === "CLASS" && (
-                <Route path="/vendor-class" element={<VendorLayout />}>
+                <Route path="/vendor-class" element={<VendorClassLayout />}>
                   <Route index element={<ClassVendorDashboard />} />
                   <Route
                     path="class-dashboard"

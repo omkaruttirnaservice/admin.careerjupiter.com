@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { FaUniversity } from "react-icons/fa";
 import InputField from "../../component/inputField";
 import CheckboxGroup from "../../component/checkboxGroup";
-// import FileUpload from "../../component/fileUpload";
 import TextAreaField from "../../component/textAreaField";
 import MultiSelectField from "../../component/multiSelectField";
 import RadioGroup from "../../component/radioGroup";
@@ -13,28 +12,25 @@ import { API_BASE_URL } from "../../constant/constantBaseUrl";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { setAuthCookies } from "../../utlis/cookieHelper";
-// import ContactWithOTP from "../../Component/contactWithOTP";
-// import ContactWithOTP from "../../Component/contactWithOTP";
 import MultiSelectDropdown from "../../component/multiSelectDropdown";
 import Swal from "sweetalert2";
 import AddressModal from "../../component/addressModel";
 import FileUpload from "../../component/fileUpload";
 import ContactWithOTP from "../../component/contactWithOTP";
 
-const ClassForm = ({ onClose }) => {
+const ClassForm = () => {
   const navigate = useNavigate();
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [editingAddressIndex, setEditingAddressIndex] = useState(null);
   const [showOtherInput, setShowOtherInput] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
   const [verifiedOtp, setVerifiedOtp] = useState(false);
-  // const [selectedDiscount, setSelectedDiscount] = useState("");
-  // const [validTill, setValidTill] = useState("");
   const [dynamicCategories, setDynamicCategories] = useState([]);
 
   <stateDistricts />;
 
   const discountOptions = [
+    { label: "Discount Not Applicable", value: 0},
     { label: "Discount 5%", value: 5 },
     { label: "Discount 10%", value: 10 },
     { label: "Discount 15%", value: 15 },
