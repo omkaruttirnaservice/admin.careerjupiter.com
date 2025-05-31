@@ -12,8 +12,7 @@ import {
   MenuIcon,
   UserAddIcon,
 } from "@heroicons/react/solid"; // ✅ HeroIcons
-import { BookAIcon } from "lucide-react";
-import { FaUserCircle, FaUserGraduate } from "react-icons/fa";
+import { FaUserGraduate } from "react-icons/fa";
 import { clearAuthCookies } from "../utlis/cookieHelper";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";

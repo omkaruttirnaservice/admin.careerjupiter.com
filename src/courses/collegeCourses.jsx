@@ -232,7 +232,7 @@ const CollegeCourses = () => {
   };
 
   return (
-    <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
+    <section className="p-2 md:p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
       {/* x button only for admin */}
       {role === "ADMIN" && (
         <button

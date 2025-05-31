@@ -105,7 +105,7 @@ const CollegeVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-700 to-blue-900 shadow-lg z-50 h-screen transition-transform duration-300 ${
+      className={`fixed inset-y-0 left-0 w-64 bg-gray-800 shadow-lg z-50 h-screen transition-transform duration-300 ${
         isMenuOpen ? "translate-x-0" : "-translate-x-64"
       } md:translate-x-0`}
     >
