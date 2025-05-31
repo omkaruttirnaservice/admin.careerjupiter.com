@@ -17,6 +17,7 @@ import { MdDone } from "react-icons/md";
 import { FaWindowClose } from "react-icons/fa";
 import CollegeAddressModal from "../component/collegeAddressModal";
 import { getCookie } from "../utlis/cookieHelper";
+import OtherField from "../component/otherField";
 // Helper function to safely parse JSON fields
 const parseJSONField = (field) => {
   try {
@@ -307,11 +308,46 @@ const ManageCollege = () => {
           formData.append("category", values.category);
         }
 
-        if (Array.isArray(values.subCategory)) {
-          values.subCategory.forEach((item) =>
-            formData.append("subCategory[]", item)
-          );
-        }
+        // if (Array.isArray(values.subCategory)) {
+        //   values.subCategory.forEach((item) =>
+        //     formData.append("subCategory[]", item)
+        //   );
+        // }
+
+
+// if (Array.isArray(values.subCategory)) {
+//   values.subCategory.forEach((item) => {
+//     if (item !== "Other") {
+//       formData.append("subCategory[]", item);
+//     }
+//   });
+
+//   // Append Other if selected
+//   if (values.subCategory.includes("Other") && values.subCategoryOther) {
+//     formData.append("subCategory[]", values.subCategoryOther);
+//   }
+// }
+
+if (Array.isArray(values.subCategory)) {
+  values.subCategory.forEach((item) => {
+    // Skip "Other" and "Others" because we'll handle them separately
+    if (item !== "Other" && item !== "Others") {
+      formData.append("subCategory[]", item);
+    }
+  });
+
+  // Append custom value for "Other" if selected and input is provided
+  if (values.subCategory.includes("Other") && values.subCategoryOther) {
+    formData.append("subCategory[]", values.subCategoryOther);
+  }
+
+  // Append custom value for "Others" if selected and input is provided
+  if (values.subCategory.includes("Others") && values.subCategoryOther) {
+    formData.append("subCategory[]", values.subCategoryOther);
+  }
+}
+
+
 
         if (Array.isArray(values.entrance_exam_required)) {
           values.entrance_exam_required.forEach((item) =>
@@ -493,14 +529,42 @@ const ManageCollege = () => {
                   )}
                 </div>
 
-                <div className="mb-3">
+                {/* <div className="mb-3">
                   <MultiSelectDropdown
                     label="Branch"
                     name="subCategory"
                     options={subCategories}
                     formik={formik}
                   />
-                </div>
+
+                  <OtherField
+  watchValue={formik.values.subjects}
+  triggerValue="Other"
+  onChange={(val) => formik.setFieldValue("subjectsOther", val)}
+  name="subjectsOther"
+  error={formik.errors.subjectsOther}
+  touched={formik.touched.subjectsOther}
+/>
+                </div> */}
+
+                <div className="mb-3">
+  <MultiSelectDropdown
+    label="Branch"
+    name="subCategory"
+    options={subCategories}
+    formik={formik}
+  />
+
+  <OtherField
+    watchValue={formik.values.subCategory} // 👈 should match MultiSelectDropdown field
+    triggerValue={["Other", "Others"]}
+    onChange={(val) => formik.setFieldValue("subCategoryOther", val)}
+    name="subCategoryOther"
+    error={formik.errors.subCategoryOther}
+    touched={formik.touched.subCategoryOther}
+  />
+</div>
+
 
                 <InputField
                   label="Year Established"

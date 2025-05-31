@@ -66,7 +66,13 @@ const AddTest = ({ onClose, onTestAdded }) => {
     passingMarks: Yup.number()
       .typeError("Passing Marks must be a number")
       .required("Passing Marks are required")
-      .min(0, "Passing Marks cannot be negative"),
+      .min(0, "Passing Marks cannot be negative")
+      .when("totalMarks", (totalMarks, schema) =>
+        schema.max(
+          totalMarks - 1,
+          "Passing Marks must be less than Total Marks"
+        )
+      ),
 
     totalMarks: Yup.number()
       .typeError("Total Marks must be a number")
@@ -266,67 +272,70 @@ const AddTest = ({ onClose, onTestAdded }) => {
             confirmButtonColor: "#f0ad4e",
           }).then(() => {
             setSelectedQuestions([]);
+            fileRef.current.value = ""; // Clear the file input
+          });
+          return;
+        }
+
+        // Get the current form values to check totalQuestions
+        const totalQuestions =
+          document.querySelector('input[name="totalQuestions"]')?.value || 0;
+
+        // Validate required columns
+        let error = false;
+        jsonData.some((question, index) => {
+          const requiredFields = [
+            "question",
+            "optionA",
+            "optionB",
+            "optionC",
+            "optionD",
+            "marks",
+            "chapterName",
+          ];
+
+          for (const field of requiredFields) {
+            if (question[field] === undefined) {
+              showWarnInQuestionUpload(index, field);
+              error = true;
+              return true; // Exit loop on first error
+            }
+          }
+          return false;
+        });
+
+        if (error) {
+          setSelectedQuestions([]);
+          fileRef.current.value = ""; // Clear the file input
+          return;
+        }
+
+        // Validate question count against totalQuestions
+        if (jsonData.length < parseInt(totalQuestions)) {
+          Swal.fire({
+            icon: "error",
+            title: "Insufficient Questions",
+            html: `
+            <div>
+              <p>You have uploaded <strong>${jsonData.length}</strong> questions, but <strong>${totalQuestions}</strong> are required.</p>
+              <p class="mt-2">Please update your Excel file with more questions.</p>
+            </div>
+          `,
+            confirmButtonColor: "#d33",
+          }).then(() => {
+            fileRef.current.value = ""; // Clear the file input
+            setSelectedQuestions([]);
+            setFileName(""); // Clear the file name
           });
         } else {
-          let error = false;
-          jsonData.some((question, index) => {
-            if (question.question === undefined) {
-              showWarnInQuestionUpload(index, "Main Question");
-              error = true;
-              return true;
-            }
-
-            if (question.optionA === undefined) {
-              showWarnInQuestionUpload(index, "Option A");
-              error = true;
-              return true;
-            }
-
-            if (question.optionB === undefined) {
-              showWarnInQuestionUpload(index, "Option B");
-              error = true;
-              return true;
-            }
-
-            if (question.optionC === undefined) {
-              error = true;
-              showWarnInQuestionUpload(index, "Option C");
-              return true;
-            }
-
-            if (question.optionD === undefined) {
-              error = true;
-              showWarnInQuestionUpload(index, "Option D");
-              return true;
-            }
-
-            if (question.marks === undefined) {
-              error = true;
-              showWarnInQuestionUpload(index, "Marks");
-              return true;
-            }
-
-            if (question.chapterName === undefined) {
-              error = true;
-              showWarnInQuestionUpload(index, "Chapter Name");
-              return true;
-            }
-
-            return false;
+          Swal.fire({
+            icon: "success",
+            title: `${jsonData.length} Question Found.`,
+            html: "All Question are perfect. Good to Go.",
+            confirmButtonColor: "#28a745",
+          }).then(() => {
+            setSelectedQuestions(jsonData);
           });
-          if (error === false) {
-            Swal.fire({
-              icon: "success",
-              title: `${jsonData.length} Question Found.`,
-              text: "All Question are perfect. Good to Go.",
-              confirmButtonColor: "#28a745",
-            }).then(() => {
-              setSelectedQuestions(jsonData);
-            });
-          } else {
-            fileRef.current.value = "";
-            setSelectedQuestions([]);
-          }
         }
       };
     }

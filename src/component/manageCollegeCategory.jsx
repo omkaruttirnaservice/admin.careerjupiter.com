@@ -35,44 +35,99 @@ const ManageCollegeCategory = () => {
   }, []);
 
   // Handled Adding Categories
-  const handleAddCategory = async () => {
-    if (!categoryInput.trim()) return;
+  // const handleAddCategory = async () => {
+  //   if (!categoryInput.trim()) return;
 
-    const subcategories = subCategoryInputs
-      .map((sub) => sub.trim())
-      .filter((sub) => sub);
-    // Payload send
-    const payload = {
-      category: categoryInput.trim(),
-      subCategory: subcategories,
-      entrance_exam_required: entranceExams.filter((e) => e.trim() !== ""),
-      type,
-    };
+  //   const subcategories = subCategoryInputs
+  //     .map((sub) => sub.trim())
+  //     .filter((sub) => sub);
+  //   // Payload send
+  //   const payload = {
+  //     category: categoryInput.trim(),
+  //     subCategory: subcategories,
+  //     entrance_exam_required: entranceExams.filter((e) => e.trim() !== ""),
+  //     type,
+  //   };
 
-    try {
-      await axios.post(`${API_BASE_URL}/api/category/add`, payload);
-      Swal.fire({
-        icon: "success",
-        title: "Category Added",
-        text: "Categories added successfully!",
-        confirmButtonColor: "#3085d6",
-      });
-      // After successfully Added Empty all fields
-      await fetchCategories();
-      setCategoryInput("");
-      setSubCategoryInputs([""]);
-      setEntranceExams([""]);
-    } catch (error) {
-      console.error("Error adding category:", error);
-      Swal.fire({
-        icon: "warning",
-        title: "Warning",
-        text:
-          error.response?.data.errMsg || "Failed to add category. Try again.",
-        confirmButtonColor: "#3085d6",
-      });
-    }
+  //   try {
+  //     await axios.post(`${API_BASE_URL}/api/category/add`, payload);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Category Added",
+  //       text: "Categories added successfully!",
+  //       confirmButtonColor: "#3085d6",
+  //     });
+  //     // After successfully Added Empty all fields
+  //     await fetchCategories();
+  //     setCategoryInput("");
+  //     setSubCategoryInputs([""]);
+  //     setEntranceExams([""]);
+  //   } catch (error) {
+  //     console.error("Error adding category:", error);
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "Warning",
+  //       text:
+  //         error.response?.data.errMsg || "Failed to add category. Try again.",
+  //       confirmButtonColor: "#3085d6",
+  //     });
+  //   }
+  // };
+
+const handleAddCategory = async () => {
+  const trimmedCategory = categoryInput.trim().toLowerCase();
+  if (!trimmedCategory) return;
+
+  // Check if category already exists
+  const isDuplicate = categories.some(
+    (cat) => cat.category.toLowerCase() === trimmedCategory
+  );
+
+  if (isDuplicate) {
+    Swal.fire({
+      icon: "warning",
+      title: "Duplicate Category",
+      text: `"${categoryInput}" already exists. Please enter a unique category.`,
+      confirmButtonColor: "#d33",
+    });
+    return;
+  }
+
+  const subcategories = subCategoryInputs
+    .map((sub) => sub.trim())
+    .filter((sub) => sub);
+
+  const payload = {
+    category: categoryInput.trim(),
+    subCategory: subcategories,
+    entrance_exam_required: entranceExams.filter((e) => e.trim() !== ""),
+    type,
   };
+
+  try {
+    await axios.post(`${API_BASE_URL}/api/category/add`, payload);
+    Swal.fire({
+      icon: "success",
+      title: "Category Added",
+      text: "Category added successfully!",
+      confirmButtonColor: "#3085d6",
+    });
+    await fetchCategories();
+    setCategoryInput("");
+    setSubCategoryInputs([""]);
+    setEntranceExams([""]);
+  } catch (error) {
+    console.error("Error adding category:", error);
+    Swal.fire({
+      icon: "warning",
+      title: "Warning",
+      text:
+        error.response?.data.errMsg || "Failed to add category. Try again.",
+      confirmButtonColor: "#3085d6",
+    });
+  }
+};
+
 
   // Handled Deletion of Category
   const handleDeleteCategory = async (id) => {

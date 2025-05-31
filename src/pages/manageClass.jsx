@@ -10,11 +10,10 @@ import RadioGroup from "../component/radioGroup";
 import CheckboxGroup from "../component/checkboxGroup";
 import MultiSelectDropdown from "../component/multiSelectDropdown";
 import { getCookie } from "../utlis/cookieHelper";
-// import AddressModal from "../Component/AddressModel";
 import AddressModal from "../component/addressModel";
 import Swal from "sweetalert2";
 import { MdDone } from "react-icons/md";
-import FileUpload from "../Component/fileUpload";
+import FileUpload from "../component/fileUpload";
 import * as Yup from "yup";
 
 // Helper function to safely parse JSON fields
@@ -26,7 +25,9 @@ const parseJSONField = (field) => {
   }
 };
 
+// Options for discount dropdown
 const discountOptions = [
+     { label: "Discount Not Applicable", value: 0},
   { label: "Discount 5%", value: 5 },
   { label: "Discount 10%", value: 10 },
   { label: "Discount 15%", value: 15 },
@@ -255,7 +256,7 @@ const ManageClass = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/class/search`);
+        const response = await axios.get(`${API_BASE_URL}/api/class/categories/all`);
         if (response.data.success && response.data.categories) {
           const formatted = response.data.categories.map((cat) => cat.category); // Just an array of strings
           setDynamicCategories(formatted);
@@ -448,14 +449,6 @@ const ManageClass = () => {
                               <label className="block text-sm font-semibold text-blue-800 mb-2">
                                 {field.label}
                               </label>
-                              {/* <input
-                                type="text"
-                                name={`address[${index}].${field.name}`}
-                                placeholder={field.placeholder}
-                                value={addr[field.name]}
-                                onChange={formik.handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                              /> */}
                               <input
                                 type="text"
                                 name={field.name}
