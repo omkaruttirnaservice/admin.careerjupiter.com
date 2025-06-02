@@ -497,10 +497,10 @@ const CollegeTableDetails = () => {
 
   return (
     <section>
-      <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-6 shadow-lg">
+      <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-2 px-4 shadow-lg">
 
         {/* Header Section  */}
-        <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-4">
+        <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-3">
           <h2 className="text-3xl font-semibold text-blue-800">
             🎓 College List
           </h2>
@@ -556,7 +556,7 @@ const CollegeTableDetails = () => {
             rows: {
               style: {
                 fontSize: "16px",
-                backgroundColor: "#f0f9ff",
+                backgroundColor: "#ffff",
                 color: "#1e3a8a",
                 borderBottom: "1px solid #3b82f6",
                 padding: "10px",
@@ -564,7 +564,7 @@ const CollegeTableDetails = () => {
             },
             pagination: {
               style: {
-                backgroundColor: "#ffffff",
+                backgroundColor: "#f0ffff",
                 borderTop: "1px solid #ddd",
                 padding: "8px",
               },
