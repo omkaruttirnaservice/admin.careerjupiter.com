@@ -48,6 +48,7 @@ import ManageClassCategory from "./component/manageClassCategory.jsx";
 import TypeList from "./component/roadmap/typeList.jsx";
 import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
 import UniversityCourses from "./courses/universityCourses.jsx";
+import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ function App() {
             {/* Public Route */}
             <Route index element={<Login />} />
             <Route path="/add-admin" element={<AddAdmin />} />
+            <Route path="/upload-college-excel" element={<UploadCollegeExcel/>} />
 
             {/* Protected Routes for Admin */}
             <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
