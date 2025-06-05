@@ -276,14 +276,14 @@ const ClassTableDetails = () => {
                   color: "white",
                   fontSize: "16px",
                   fontWeight: "bold",
-                  height: "60px",
+                  height: "50px",
                 },
               },
               rows: {
                 style: {
                   backgroundColor: "#eff6ff",
                   fontSize: "15px",
-                  minHeight: "60px",
+                  minHeight: "50px",
                 },
               },
             }}
