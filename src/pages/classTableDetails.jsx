@@ -229,7 +229,7 @@ const ClassTableDetails = () => {
   ];
 
   return (
-    <section className="min-h-screen bg-gradient-to-tr from-blue-100 to-white p-4">
+    <section className="min-w-full bg-gradient-to-tr from-blue-100 to-white p-4">
       <div className="bg-white p-8 shadow-2xl rounded-2xl border border-blue-200">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
@@ -276,14 +276,14 @@ const ClassTableDetails = () => {
                   color: "white",
                   fontSize: "16px",
                   fontWeight: "bold",
-                  height: "60px",
+                  height: "50px",
                 },
               },
               rows: {
                 style: {
                   backgroundColor: "#eff6ff",
                   fontSize: "15px",
-                  minHeight: "60px",
+                  minHeight: "50px",
                 },
               },
             }}

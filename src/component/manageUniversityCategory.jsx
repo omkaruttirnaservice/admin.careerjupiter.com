@@ -21,8 +21,8 @@ const ManageUniversityCategory = () => {
       const res = await axios.get(
         `${API_BASE_URL}/api/university/categories/all`
       );
-      if (Array.isArray(res.data.categories)) {
-        setCategories(res.data.categories);
+      if (Array.isArray(res.data.data)) {
+        setCategories(res.data.data);
       } else {
         console.error("Invalid response data: categories is not an array.");
       }

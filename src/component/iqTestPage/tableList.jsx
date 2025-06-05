@@ -124,7 +124,7 @@ const TableList = () => {
       </div>
 
       {/* Scrollable Table */}
-      <div className="overflow-y-auto max-h-155 rounded-lg shadow-lg">
+      <div className="overflow-y-auto max-h-154 rounded-lg shadow-lg">
         <table className="w-full border-collapse">
           <thead className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-700 text-white z-20">
             <tr>

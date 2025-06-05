@@ -351,65 +351,65 @@ if (data?.usrMsg) {
     });
   };
 
-  const handleDelete = async () => {
-    if (!collegeId) {
-      // alert("College ID is missing!");
-      Swal.fire({
-        icon: "warning",
-        title: "Missing College ID",
-        text: "Please login again or check your college session.",
-      });
+  // const handleDelete = async () => {
+  //   if (!collegeId) {
+  //     // alert("College ID is missing!");
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "Missing College ID",
+  //       text: "Please login again or check your college session.",
+  //     });
       
-      return;
-    }
+  //     return;
+  //   }
 
-    const confirmDelete = await Swal.fire({
-      title: "Are you sure?",
-      text: "This will delete all infrastructure data!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    });
-    try {
-      formik.setValues({
-        infrastructure: [
-          {
-            campusArea: "",
-            numberOfClassrooms: "",
-            numberOfLabs: "",
-            sportsFacilities: [],
-            hostelAvailability: false,
-            hostelDetails: "",
-            canteenAndFoodServices: false,
-            medicalFacilities: false,
-            transportFacility: [],
-            library: "",
-          },
-        ],
-      });
+  //   const confirmDelete = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "This will delete all infrastructure data!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#d33",
+  //     cancelButtonColor: "#3085d6",
+  //     confirmButtonText: "Yes, delete it!",
+  //   });
+  //   try {
+  //     formik.setValues({
+  //       infrastructure: [
+  //         {
+  //           campusArea: "",
+  //           numberOfClassrooms: "",
+  //           numberOfLabs: "",
+  //           sportsFacilities: [],
+  //           hostelAvailability: false,
+  //           hostelDetails: "",
+  //           canteenAndFoodServices: false,
+  //           medicalFacilities: false,
+  //           transportFacility: [],
+  //           library: "",
+  //         },
+  //       ],
+  //     });
 
-      setIsEditing(false);
-      Swal.fire({
-        icon: "success",
-        title: "Deleted!",
-        text: "Infrastructure details have been reset.",
-      });
-      // alert("Infrastructure details deleted!");
-    } catch (error) {
-      console.error("Error deleting infrastructure:", error);
-      Swal.fire({
-        icon: "warning",
-        title: "Deletion failed",
-        text: "Failed to delete infrastructure details.",
-      });
+  //     setIsEditing(false);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Deleted!",
+  //       text: "Infrastructure details have been reset.",
+  //     });
+  //     // alert("Infrastructure details deleted!");
+  //   } catch (error) {
+  //     console.error("Error deleting infrastructure:", error);
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "Deletion failed",
+  //       text: "Failed to delete infrastructure details.",
+  //     });
       
-    }
-  };
+  //   }
+  // };
 
   return (
-    <section className="p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
+    <section className="p-2 md:p-8 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-xl border border-blue-200 max-w-6xl mx-auto relative">
       {/* Close Button */}
       {/* <button
         onClick={() => navigate("/colleges")}
@@ -850,15 +850,7 @@ if (data?.usrMsg) {
 
           <div className="flex gap-4">
             {/* Delete Button */}
-            {isEditing && (
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="px-6 py-2 rounded-lg shadow-lg transition duration-300 bg-red-600 hover:bg-red-800 text-white"
-              >
-                🗑️ Delete All
-              </button>
-            )}
+            
 
             {/* Save Button */}
             <button

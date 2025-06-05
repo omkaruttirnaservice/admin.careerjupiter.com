@@ -26,7 +26,7 @@ const InputField = ({ label, type, name, placeholder, value, onChange, formik, d
   const isTouched = getNestedValue(formik?.touched, name);
 
   return (
-    <div className="mb-2">
+    <div className="mb-1">
       <label className="text-blue-900 font-semibold block mb-2 text-lg">
         {label}
       </label>

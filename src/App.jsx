@@ -15,8 +15,7 @@ import AdminDashboard from "./pages/adminDashboard";
 import ProfilePage from "./pages/profilePage";
 import CollegeCourses from "./courses/collegeCourses";
 import AddUniversity from "./university/addUniversity";
-
-import UniversityList from "./university/universityLIst.jsx";
+import UniversityList from "./university/universityList.jsx";
 import UniversityPlacement from "./component/universityPlacement";
 import Infrastructure from "./component/infrastructure";
 import Placement from "./component/placement";
@@ -49,6 +48,7 @@ import ManageClassCategory from "./component/manageClassCategory.jsx";
 import TypeList from "./component/roadmap/typeList.jsx";
 import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
 import UniversityCourses from "./courses/universityCourses.jsx";
+import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +64,7 @@ function App() {
             {/* Public Route */}
             <Route index element={<Login />} />
             <Route path="/add-admin" element={<AddAdmin />} />
+            <Route path="/upload-college-excel" element={<UploadCollegeExcel/>} />
 
             {/* Protected Routes for Admin */}
             <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
@@ -109,7 +110,7 @@ function App() {
                 element={<CollegeCourses />}
               />
               <Route
-                path="/colleges/edit/:collegeId"
+                path="/colleges/edit/:id"
                 element={<ManageCollege />}
               />
               <Route

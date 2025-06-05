@@ -364,7 +364,7 @@ const ClassForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/class/search`);
+        const response = await axios.get(`${API_BASE_URL}/api/class/categories/all`);
         if (response.data.success && response.data.categories) {
           const formatted = response.data.categories.map((cat) => cat.category);
           setDynamicCategories(formatted);

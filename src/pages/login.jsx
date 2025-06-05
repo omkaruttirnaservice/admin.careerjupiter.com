@@ -209,7 +209,7 @@ const Login = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md p-8 rounded-xl shadow-2xl bg-white text-gray-900 border-2 border-gray-300"
+        className="relative md:w-full w-95 max-w-md p-8 rounded-xl shadow-2xl bg-white text-gray-900 border-2 border-gray-300"
       >
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-purple-800">Login</h2>

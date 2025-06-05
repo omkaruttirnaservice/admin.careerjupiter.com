@@ -220,3 +220,340 @@ const ClassVendorDashboard = () => {
 
 export default ClassVendorDashboard;
 
+
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import { API_BASE_URL } from "../constant/constantBaseUrl";
+// import {
+//   FaPhone,
+//   FaCalendarAlt,
+//   FaTags,
+//   FaChalkboard,
+//   FaBuilding,
+//   FaLayerGroup,
+//   FaInfoCircle,
+//   FaMapMarkerAlt,
+//   FaEnvelope,
+//   FaGlobe,
+//   FaUsers,
+//   FaBook,
+//   FaGraduationCap,
+// } from "react-icons/fa";
+// import { HiAcademicCap } from "react-icons/hi";
+// import { getCookie } from "../utlis/cookieHelper";
+
+// const ClassVendorDashboard = () => {
+//   const [classDetails, setClassDetails] = useState(null);
+//   const [classID, setClassId] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [readMore, setReadMore] = useState(false);
+
+//   useEffect(() => {
+//     const storedClassId = getCookie("classId");
+//     if (storedClassId) {
+//       setClassId(storedClassId);
+//     } else {
+//       console.warn("Class ID not found in cookies!");
+//       setLoading(false);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     if (!classID) return;
+
+//     const fetchClassDetails = async () => {
+//       try {
+//         const res = await axios.get(`${API_BASE_URL}/api/class/${classID}`);
+//         const data = res.data?.data?.class;
+
+//         setClassDetails({
+//           ...data,
+//           category: data?.category || [],
+//           description: data?.info?.description || "No description available",
+//           address: data?.address?.[0] || {},
+//           imageGallery: Array.isArray(data?.imageGallery) ? data.imageGallery : [],
+//         });
+
+//         setLoading(false);
+//       } catch (error) {
+//         console.error("Error fetching class details:", error);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchClassDetails();
+//   }, [classID]);
+
+//   if (loading) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+//       </div>
+//     );
+//   }
+
+//   if (!classDetails) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen text-red-500">
+//         Failed to load class data. Please try again later.
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen md:p-8 p-2">
+//       {/* Header Section */}
+//       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+//         <div className="relative h-48 md:h-64">
+//           <img
+//             src={`${API_BASE_URL}${classDetails.image || "/default.jpg"}`}
+//             alt={classDetails.className}
+//             className="w-full h-full object-cover"
+//           />
+//           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+//           <div className="absolute bottom-4 left-4 flex items-end">
+//             <div className="ml-4 text-white">
+//               <h1 className="text-xl md:text-3xl font-bold">
+//                 {classDetails.className}
+//               </h1>
+//               <p className="text-sm md:text-base">
+//                 {classDetails.ownerOrInstituteName}
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Quick Info Bar */}
+//         <div className="p-4 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
+//           <div className="flex flex-wrap items-center justify-between gap-4">
+//             <div className="flex items-center gap-2">
+//               <FaGraduationCap />
+//               <span>{classDetails.franchiseOrIndependent}</span>
+//             </div>
+//             <div className="flex items-center gap-2">
+//               <FaCalendarAlt />
+//               <span>Est. {classDetails.yearEstablished}</span>
+//             </div>
+//             <div className="flex items-center gap-2">
+//               <FaLayerGroup />
+//               <span>{classDetails.category?.join(", ") || "N/A"}</span>
+//             </div>
+//             <div className="flex items-center gap-2">
+//               <FaMapMarkerAlt />
+//               <span>
+//                 {classDetails.address?.dist || "N/A"}, {classDetails.address?.state || "N/A"}
+//               </span>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Main Content */}
+//       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+//         {/* Left Column */}
+//         <div className="lg:col-span-2 space-y-8">
+//           {/* About Class */}
+//           <div className="bg-white rounded-xl shadow-md p-6">
+//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+//               <FaInfoCircle className="text-blue-600" />
+//               About the Class
+//             </h2>
+//             <p className="text-gray-700">
+//               {readMore
+//                 ? classDetails.description
+//                 : `${classDetails.description.substring(0, 200)}...`}
+//               {classDetails.description.length > 200 && (
+//                 <button
+//                   onClick={() => setReadMore(!readMore)}
+//                   className="ml-2 text-blue-600 font-medium hover:underline"
+//                 >
+//                   {readMore ? "Show Less" : "Read More"}
+//                 </button>
+//               )}
+//             </p>
+//           </div>
+
+//           {/* Key Highlights */}
+//           <div className="bg-white rounded-xl shadow-md p-6">
+//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+//               <FaBook className="text-blue-600" />
+//               Key Highlights
+//             </h2>
+//             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//               <HighlightCard
+//                 icon={<FaChalkboard className="text-green-600" />}
+//                 title="Teaching"
+//                 items={[
+//                   `Mode: ${classDetails.modeOfTeaching?.join(", ") || "N/A"}`,
+//                   `Type: ${classDetails.franchiseOrIndependent || "N/A"}`,
+//                   `Keywords: ${classDetails.keywords?.join(", ") || "N/A"}`,
+//                   `Category: ${classDetails.category?.join(", ") || "N/A"}`,
+//                 ]}
+//               />
+
+//               <HighlightCard
+//                 icon={<FaUsers className="text-red-600" />}
+//                 title="Facilities"
+//                 items={[
+//                   `Owner: ${classDetails.ownerOrInstituteName || "N/A"}`,
+//                   `Contact: ${classDetails.contactDetails || "N/A"}`,
+//                   `Email: ${classDetails.email_id || "N/A"}`,
+//                   `Website: ${classDetails.websiteURL || "N/A"}`,
+//                 ]}
+//               />
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Right Column */}
+//         <div className="space-y-8">
+//           {/* Quick Contact */}
+//           <div className="bg-white rounded-xl shadow-md p-6">
+//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+//               <FaPhone className="text-blue-600" />
+//               Quick Contact
+//             </h2>
+//             <div className="space-y-4">
+//               <ContactItem
+//                 icon={<FaPhone className="text-green-600" />}
+//                 label="Phone"
+//                 value={classDetails.contactDetails}
+//                 link={`tel:${classDetails.contactDetails}`}
+//               />
+//               <ContactItem
+//                 icon={<FaEnvelope className="text-red-600" />}
+//                 label="Email"
+//                 value={classDetails.email_id}
+//                 link={`mailto:${classDetails.email_id}`}
+//               />
+//               <ContactItem
+//                 icon={<FaGlobe className="text-blue-600" />}
+//                 label="Website"
+//                 value={classDetails.websiteURL}
+//                 link={classDetails.websiteURL}
+//               />
+//               {classDetails.address && (
+//                 <ContactItem
+//                   icon={<FaMapMarkerAlt className="text-purple-600" />}
+//                   label="Address"
+//                   value={`${classDetails.address.line1 || ''}, ${classDetails.address.dist || ''}, ${classDetails.address.state || ''} - ${classDetails.address.pincode || ''}`}
+//                 />
+//               )}
+//             </div>
+//           </div>
+
+//           {/* Additional Details */}
+//           <div className="bg-white rounded-xl shadow-md p-6">
+//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+//               <HiAcademicCap className="text-blue-600" />
+//               Class Details
+//             </h2>
+//             <div className="grid grid-cols-2 gap-4">
+//               <StatCard
+//                 icon={<FaCalendarAlt className="text-yellow-600" />}
+//                 title="Established"
+//                 value={classDetails.yearEstablished || "N/A"}
+//               />
+//               <StatCard
+//                 icon={<FaTags className="text-green-600" />}
+//                 title="Keywords"
+//                 value={classDetails.keywords?.join(", ") || "N/A"}
+//               />
+//               <StatCard
+//                 icon={<FaChalkboard className="text-red-600" />}
+//                 title="Teaching Mode"
+//                 value={classDetails.modeOfTeaching?.join(", ") || "N/A"}
+//               />
+//               <StatCard
+//                 icon={<FaBuilding className="text-purple-600" />}
+//                 title="Type"
+//                 value={classDetails.franchiseOrIndependent || "N/A"}
+//               />
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Gallery */}
+//       {classDetails.imageGallery?.length > 0 && (
+//         <div className="w-full mt-6">
+//           <div className="bg-white rounded-xl shadow-md p-6">
+//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+//               <HiAcademicCap className="text-blue-600" />
+//               Gallery
+//             </h2>
+
+//             <div className="overflow-x-auto">
+//               <div className="inline-flex gap-4">
+//                 {classDetails.imageGallery.map((image, index) => (
+//                   <img
+//                     key={index}
+//                     src={`${API_BASE_URL}${image}`}
+//                     alt={`Gallery ${index + 1}`}
+//                     className="h-40 rounded-lg cursor-pointer hover:opacity-80 transition"
+//                     onClick={() =>
+//                       window.open(`${API_BASE_URL}${image}`, "_blank")
+//                     }
+//                   />
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// // Reusable Components (same as in CollegeVendorDashboard)
+
+// // Component for Highlight Cards
+// const HighlightCard = ({ icon, title, items }) => (
+//   <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-100">
+//     <div className="flex items-center gap-2 mb-3">
+//       <div className="text-xl">{icon}</div>
+//       <h3 className="font-bold text-blue-800">{title}</h3>
+//     </div>
+//     <ul className="space-y-2 text-sm">
+//       {items.map((item, index) => (
+//         <li key={index} className="flex items-start gap-2">
+//           <span className="text-blue-500">•</span>
+//           <span>{item}</span>
+//         </li>
+//       ))}
+//     </ul>
+//   </div>
+// );
+
+// // Component for Contact Items
+// const ContactItem = ({ icon, label, value, link }) => (
+//   <div className="flex items-start gap-3">
+//     <div className="text-xl mt-1">{icon}</div>
+//     <div>
+//       <p className="font-medium text-gray-600">{label}</p>
+//       {link ? (
+//         <a
+//           href={link}
+//           target="_blank"
+//           rel="noopener noreferrer"
+//           className="text-blue-600 hover:underline"
+//         >
+//           {value}
+//         </a>
+//       ) : (
+//         <p>{value}</p>
+//       )}
+//     </div>
+//   </div>
+// );
+
+// // Component for Stat Cards
+// const StatCard = ({ icon, title, value }) => (
+//   <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-3 rounded-lg border border-blue-100 text-center">
+//     <div className="text-2xl mb-1">{icon}</div>
+//     <h4 className="font-medium text-blue-800">{title}</h4>
+//     <p className="text-gray-700">{value}</p>
+//   </div>
+// );
+
+// export default ClassVendorDashboard;
