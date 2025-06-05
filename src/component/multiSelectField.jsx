@@ -70,7 +70,7 @@ const MultiSelectField = ({ label, name, formik }) => {
           {formik.values[name]?.map((item, index) => (
             <span
               key={index}
-              className="flex items-center bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-2 rounded-full shadow-md 
+              className="flex items-center bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-3 py-2 rounded-xl shadow-md 
                  hover:scale-105 transition-all text-sm sm:text-base max-w-full"
             >
               {/* ✅ Ensure proper text wrapping */}

@@ -64,10 +64,11 @@ const CollegeVendorDashboard = () => {
     );
   }
 
-  const { college, courses, infrastructure, placements } = collegeData;
+  const { college, courses, infrastructure } = collegeData;
   const address = college.address?.[0] || {};
   const infra = infrastructure?.infrastructure?.[0] || {};
-  const placement = college.placements?.[0]?.placement?.[0] || {};
+  // const placement = college.placements?.[0]?.placement?.[0] || {};
+
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen md:p-8 p-2">

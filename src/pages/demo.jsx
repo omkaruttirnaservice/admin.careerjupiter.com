@@ -1709,3 +1709,378 @@
 // export default CollegeVendorDashboard;
 
 //college Vendot Dashboard cards
+
+
+
+  // return (
+//     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 md:p-3">
+//       {/* ✅ Main Content */}
+//       <div className="flex-1 flex justify-center">
+//         <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
+//           <div className="w-screen lg:w-[1100px] mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500 rounded-xl">
+//             {role === "ADMIN" && (
+//               <button
+//                 onClick={() => navigate("/colleges")}
+//                 className="absolute top-7 right-9 text-red-600 hover:text-red-800 text-3xl font-bold cursor-pointer"
+//               >
+//                 &times;
+//                 {/* <FiLogOut /> */}
+//               </button>
+//             )}
+
+//             {/* ✅ Form Title */}
+//             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 shadow-md text-center rounded-xl">
+//               <h2 className="text-2xl md:text-4xl font-bold">
+//                 Update College Details
+//               </h2>
+//             </div>
+
+//             {/* ✅ Form */}
+//             <form onSubmit={formik.handleSubmit} className="space-y-6 mt-6">
+//               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+//                 {/* 🔹 Basic Details */}
+
+//                 <InputField
+//                   label="College Name"
+//                   type="text"
+//                   name="collegeName"
+//                   formik={formik}
+//                 />
+//                 <InputField
+//                   label="Affiliated University"
+//                   name="affiliatedUniversity"
+//                   type="text"
+//                   placeholder="Enter University"
+//                   formik={formik}
+//                 />
+
+//                 <SingleSelectDropdown
+//                   label="College Type"
+//                   name="collegeType"
+//                   options={collegeTypes}
+//                   formik={formik}
+//                   placeholder="Select a College Type"
+//                 />
+
+//                 <div className="mb-4 w-full">
+//                   <label className="block text-blue-800 font-semibold mb-2">
+//                     College Category
+//                   </label>
+//                   <select
+//                     name="category"
+//                     value={formik.values.category}
+//                     onChange={(e) => {
+//                       const selected = e.target.value;
+//                       formik.setFieldValue("category", selected);
+
+//                       const selectedCategory = categoryData.find(
+//                         (item) => item.category === selected
+//                       );
+
+//                       formik.setFieldValue("subCategory", []); // Reset subcategory
+//                       setSubCategories(selectedCategory?.subCategory || []);
+
+//                       formik.setFieldValue("entrance_exam_required", []); // Reset subcategory
+//                       setEntranceExams(
+//                         selectedCategory?.entrance_exam_required || []
+//                       );
+//                     }}
+//                     className={`w-full px-4 py-3 rounded-lg border shadow-sm focus:outline-none transition-all ${
+//                       formik.touched.category && formik.errors.category
+//                         ? "border-red-500 focus:ring-2 focus:ring-red-300"
+//                         : "border-gray-300 focus:ring-2 focus:ring-blue-400"
+//                     }`}
+//                   >
+//                     <option value="">Select Category</option>
+//                     {categoryData.map((item, index) => (
+//                       <option key={index} value={item.category}>
+//                         {item.category}
+//                       </option>
+//                     ))}
+//                   </select>
+
+//                   {formik.touched.category && formik.errors.category && (
+//                     <p className="text-red-500 text-sm mt-1">
+//                       {formik.errors.category}
+//                     </p>
+//                   )}
+//                 </div>
+
+//                 <div className="mb-3">
+//                   <MultiSelectDropdown
+//                     label="Branch"
+//                     name="subCategory"
+//                     options={subCategories}
+//                     formik={formik}
+//                   />
+
+//                   <OtherField
+//                     watchValue={formik.values.subCategory} // 👈 should match MultiSelectDropdown field
+//                     triggerValue={["Other", "Others"]}
+//                     onChange={(val) =>
+//                       formik.setFieldValue("subCategoryOther", val)
+//                     }
+//                     name="subCategoryOther"
+//                     error={formik.errors.subCategoryOther}
+//                     touched={formik.touched.subCategoryOther}
+//                   />
+//                 </div>
+
+//                 <InputField
+//                   label="Year Established"
+//                   type="number"
+//                   name="establishedYear"
+//                   formik={formik}
+//                 />
+//                 <InputField
+//                   label="Website URL"
+//                   type="text"
+//                   name="websiteURL"
+//                   formik={formik}
+//                 />
+
+//                 <MultiSelectField
+//                   label="Keywords (Max 5)"
+//                   name="keywords"
+//                   formik={formik}
+//                 />
+
+//                 <div className="mb-3">
+//                   <SingleSelectDropdown
+//                     label="Accreditation"
+//                     name="accreditation"
+//                     options={accreditationOptions}
+//                     formik={formik}
+//                     placeholder="Select an Accreditation"
+//                   />
+//                   <OtherField
+//                     watchValue={formik.values.accreditation} // 👈 should match MultiSelectDropdown field
+//                     triggerValue={["Other", "Others"]}
+//                     onChange={(val) =>
+//                       formik.setFieldValue("accreditationOther", val)
+//                     }
+//                     name="accreditationOther"
+//                     error={formik.errors.accreditationOther}
+//                     touched={formik.touched.accreditationOther}
+//                   />
+//                 </div>
+
+//                 <MultiSelectDropdown
+//                   label="Entrance Exams Required"
+//                   name="entrance_exam_required"
+//                   options={entranceExams}
+//                   formik={formik}
+//                 />
+//               </div>
+
+//               {/* Address array */}
+//               {formik.values.address.map((addr, index) => {
+//                 const isEditing = editingIndex === index;
+
+//                 return (
+//                   <div
+//                     key={index}
+//                     className="p-6 mb-6 rounded-2xl shadow-xl bg-white border border-gray-200"
+//                   >
+//                     {/* If editing, show input form */}
+//                     {isEditing ? (
+//                       <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-200 mb-6">
+//                         {/* Header */}
+//                         <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-600 to-blue-400 px-4 py-2 rounded-md">
+//                           <h3 className="text-white text-lg font-semibold">
+//                             ✏ Editing Address {index + 1}
+//                           </h3>
+//                         </div>
+
+//                         {/* Form Grid */}
+//                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                           {[...formFields].map((field, idx) => (
+//                             <div key={idx}>
+//                               <label className="block text-sm font-semibold text-blue-800 mb-2">
+//                                 {field.label}
+//                               </label>
+//                               <input
+//                                 type="text"
+//                                 name={`address[${index}].${field.name}`}
+//                                 placeholder={field.placeholder}
+//                                 value={addr[field.name]}
+//                                 onChange={formik.handleChange}
+//                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+//                               />
+//                               {formik.errors.address?.[index]?.[field.name] && (
+//                                 <div className="text-red-500 text-sm mt-1">
+//                                   {formik.errors.address[index][field.name]}
+//                                 </div>
+//                               )}
+//                             </div>
+//                           ))}
+//                         </div>
+
+//                         {/* Cancel Button */}
+//                         <div className="mt-8 text-center justify-end flex gap-2">
+//                           <button
+//                             onClick={() => setEditingIndex(null)}
+//                             className="text-white bg-green-500 hover:bg-green-600 transition px-6 py-2 text-sm font-medium rounded-md flex gap-2 cursor-pointer"
+//                            type="button" // ✅ Prevent unintended submission
+//                           >
+//                             <span className="mt-1">
+//                               <MdDone />
+//                             </span>{" "}
+//                             Done
+//                           </button>
+
+//                           <button
+//                             onClick={() => setEditingIndex(null)}
+//                             className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-lg transition flex gap-2 cursor-pointer"
+//                            type="button" // ✅ Prevent unintended submission
+//                           >
+//                             <span className="mt-1">
+//                               <FaWindowClose />
+//                             </span>{" "}
+//                             Cancel
+//                           </button>
+//                         </div>
+//                       </div>
+//                     ) : (
+//                       <div
+//                         key={index}
+//                         className="relative bg-white border border-blue-200 rounded-2xl p-5 shadow-md hover:shadow-lg transition duration-300 col-span-full"
+//                       >
+//                         <div className="space-y-1 text-gray-800 text-sm">
+//                           <p className="font-medium">
+//                             🏠 {addr.line1}, {addr.line2}
+//                           </p>
+//                           {addr.nearbyLandmarks && (
+//                             <p>📍 Nearby: {addr.nearbyLandmarks}</p>
+//                           )}
+//                           <p>
+//                             🗺️ {addr.taluka}, {addr.dist}, {addr.state} -{" "}
+//                             {addr.pincode}
+//                           </p>
+//                           <p className="text-gray-600 text-xs mt-1">
+//                             👤 {addr.autorizedName}{" "}
+//                             {addr.designation && (
+//                               <span className="ml-1 italic text-gray-500">
+//                                 ({addr.designation})
+//                               </span>
+//                             )}{" "}
+//                             &nbsp; 📞 {addr.autorizedPhono}
+//                           </p>
+//                         </div>
+
+//                         {/* Action Buttons */}
+//                         <div className="flex justify-end gap-3 mt-4">
+//                           {/* Edit Button */}
+//                           <button
+//                             type="button"
+//                             onClick={() => setEditingIndex(index)}
+//                             className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1 cursor-pointer"
+//                           >
+//                             ✏️ Edit
+//                           </button>
+
+//                           {/* Delete Button */}
+//                           <button
+//                             type="button"
+//                             onClick={() => {
+//                               const updated = [...formik.values.address];
+//                               updated.splice(index, 1);
+//                               formik.setFieldValue("address", updated);
+//                               if (editingIndex === index) setEditingIndex(null);
+//                             }}
+//                             className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1 cursor-pointer"
+//                           >
+//                             🗑️ Remove
+//                           </button>
+//                         </div>
+//                       </div>
+//                     )}
+//                   </div>
+//                 );
+//               })}
+
+//               {/* Add new address */}
+//               <button
+//                 type="button"
+//                 onClick={() => setShowAddressModal(true)}
+//                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 cursor-pointer"
+//               >
+//                 ➕ Add Address
+//               </button>
+
+//               <div className="mt-6">
+//                 <h3 className="text-lg font-bold text-gray-800">
+//                   College Banner Cover Image (JPG/JPEG/PNG)
+//                 </h3>
+
+//                 <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-4">
+//                   {previewImage || formik.values.image ? (
+//                     <img
+//                       src={
+//                         previewImage
+//                           ? previewImage
+//                           : typeof formik.values.image === "string"
+//                           ? `${API_BASE_URL}${formik.values.image}`
+//                           : ""
+//                       }
+//                       alt="College"
+//                       className="relative w-80 h-40 object-cover rounded-lg shadow-md overflow-hidden before:absolute before:top-0 before:left-[-100%] 
+//           before:w-full before:h-full before:bg-white before:opacity-20 before:rotate-6 before:transition-all hover:before:left-full mb-2"
+//                     />
+//                   ) : (
+//                     <p className="text-gray-500 italic">No image available</p>
+//                   )}
+//                 </div>
+
+//                 <div className="w-100">
+//                   <FileUpload
+//                     label="College Banner Cover Image (JPG/JPEG/PNG)"
+//                     name="image"
+//                     formik={formik}
+//                   />
+//                 </div>
+//               </div>
+
+//               {/* ✅ Submit Button */}
+//               {/* <button
+//                 type="submit"
+//                 className="px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition bg-gradient-to-r from-blue-600 to-indigo-600  mt-6 hover:bg-gradient-to-r hover:from-blue-700 hover:to-indigo-700  duration-300"
+//               >
+//                 Update Details
+//               </button> */}
+
+//               <div className="flex justify-end">
+//                 <button
+//                   type="submit"
+//                   onClick={formik.handleSubmit}
+//                   disabled={
+//                     !(formik.isValid && formik.dirty) || formik.isSubmitting
+//                   }
+//                   // className="bg-indigo-600 text-white px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:scale-105 transition cursor-pointer"
+//                   className={`px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition ${
+//                     formik.isValid && formik.dirty
+//                       ? "bg-indigo-600 hover:bg-blue-700 cursor-pointer"
+//                       : "bg-gray-400 cursor-not-allowed"
+//                   }`}
+//                 >
+//                   {formik.isSubmitting ? "Updating..." : "Update College"}
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//           <CollegeAddressModal
+//             open={showAddressModal}
+//             onClose={() => setShowAddressModal(false)}
+//             onSave={(newAddress) => {
+//               formik.setFieldValue("address", [
+//                 ...(formik.values.address || []),
+//                 newAddress,
+//               ]);
+//             }}
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+  // Update college form 
