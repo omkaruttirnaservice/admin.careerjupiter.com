@@ -12,7 +12,6 @@ const CheckboxGroup = ({ label, name, options, formik }) => {
     } else {
       updatedValues = updatedValues.filter((item) => item !== value);
     }
-    //console.log(name,updatedValues)
   formik.setFieldValue(name, updatedValues);
   };
 

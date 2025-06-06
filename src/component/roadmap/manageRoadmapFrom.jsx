@@ -11,6 +11,7 @@ import {
   FaEdit,
   FaTrash,
 } from "react-icons/fa";
+import { Tooltip } from "react-tooltip";
 
 const ManageRoadmapForm = () => {
   const [showModal, setShowModal] = useState(false);
@@ -23,7 +24,20 @@ const ManageRoadmapForm = () => {
   const [editingRoadmap, setEditingRoadmap] = useState(null);
   const [filteredSubTypeOptions, setFilteredSubTypeOptions] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  // filter as per name and type
+  const filteredRoadmaps = roadmaps.filter((roadmap) => {
+    const nameMatch = roadmap.name
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const typeMatch = roadmap.type?.type
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    return nameMatch || typeMatch;
+  });
+
+  //  to Fetch types for the form dropdown
   useEffect(() => {
     const fetchTypes = async () => {
       try {
@@ -44,6 +58,7 @@ const ManageRoadmapForm = () => {
     fetchTypes();
   }, []);
 
+  // Fetch all roadmaps to display in table list
   useEffect(() => {
     const fetchRoadmaps = async () => {
       try {
@@ -64,6 +79,7 @@ const ManageRoadmapForm = () => {
     fetchRoadmaps();
   }, []);
 
+  // Handles the subtype as per the changes in type or selected type (shows the remaining types except the selected one)
   const handleTypeChange = async (e) => {
     const selectedType = e.target.value;
     formik.setFieldValue("type", selectedType);
@@ -88,6 +104,8 @@ const ManageRoadmapForm = () => {
       setFilteredSubTypeOptions([]);
     }
   };
+
+  // Edit the values of roadmap
   const handleEditRoadmap = (roadmap) => {
     setIsEditing(true);
     setEditingRoadmap(roadmap);
@@ -104,12 +122,15 @@ const ManageRoadmapForm = () => {
     handleTypeChange({ target: { value: roadmap.type?._id } });
   };
 
+  // Formik initial values
   const formik = useFormik({
     initialValues: {
       name: "",
       type: "",
       subTypes: [],
     },
+
+    // Validations
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       type: Yup.string().required("Type is required"),
@@ -118,17 +139,18 @@ const ManageRoadmapForm = () => {
     onSubmit: async (values, { resetForm }) => {
       const subTypeIds = values.subTypes.map((sub) => sub.value);
 
+      // Payload
       const payload = {
         name: values.name,
         type: values.type,
         sub_type: selectedSubTypes.map((item) => item.value),
       };
 
-      setIsSaving(true); // Start loading
+      setIsSaving(true);
 
       try {
         if (isEditing && editingRoadmap) {
-          // Update
+          // Update api
           const res = await axios.put(
             `${API_BASE_URL}/api/roadmap/${editingRoadmap._id}`,
             payload
@@ -140,7 +162,7 @@ const ManageRoadmapForm = () => {
             icon: "success",
           });
         } else {
-          // Create
+          // Create api
           const res = await axios.post(
             `${API_BASE_URL}/api/roadmap/create`,
             payload
@@ -152,10 +174,9 @@ const ManageRoadmapForm = () => {
             icon: "success",
           });
         }
-
+        //Render in table list
         const getRes = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
         setRoadmaps(getRes.data?.data || []);
-
         setShowModal(false);
         resetForm();
       } catch (err) {
@@ -171,6 +192,7 @@ const ManageRoadmapForm = () => {
     },
   });
 
+  // Closes the subtype dropdown if clicked outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -184,8 +206,10 @@ const ManageRoadmapForm = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Get selected subTypes
   const selectedSubTypes = formik.values.subTypes || [];
 
+  // Toggle subType selection
   const handleSubTypeSelect = (option) => {
     const exists = selectedSubTypes.find((item) => item.value === option.value);
     if (exists) {
@@ -198,9 +222,11 @@ const ManageRoadmapForm = () => {
     }
   };
 
+  // Check if a subType option is currently selected
   const isSubTypeSelected = (option) =>
     selectedSubTypes.some((item) => item.value === option.value);
 
+  // Delete roadmap by ID with confirmation and update the list
   const handleDeleteRoadmap = async (id) => {
     const confirm = await Swal.fire({
       title: "Are you sure?",
@@ -235,23 +261,36 @@ const ManageRoadmapForm = () => {
   };
 
   return (
-    // <div className="p-6">
-    <div className="max-w-full h-full mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-full h-full mx-auto p-6 bg-blue-100 shadow-md rounded-lg">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">RoadMap 🗺️</h2>
+      <div className="flex justify-between bg-white p-2 shadow-lg rounded-lg items-center mb-6">
+        {/* Heading */}
+        <h2 className="text-3xl font-bold text-gray-800"><span> 🗺️ </span> RoadMap </h2>
+        {/* Search Inpup Field */}
+        <div className="mb-2 flex justify-end">
+          <input
+            type="text"
+            placeholder="Search by name or type..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full max-w-xs px-4 py-1 border-2 border-blue-600 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-150"
+          />
+        </div>
+
+        {/* Add new roadmap button */}
         <button
           onClick={() => setShowModal(true)}
-          className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-3 cursor-pointer"
+          className="mb-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-3 cursor-pointer"
         >
           Add New Roadmap
         </button>
       </div>
 
       {/* Scrollable Table */}
-      <div className="overflow-x-auto rounded-lg max-h-[560px] shadow-lg border border-gray-200">
+      <div className="overflow-x-auto rounded-lg max-h-[590px] shadow-lg border border-gray-200">
         <table className="w-full border-collapse text-sm">
           <thead className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-700 text-white z-20">
+            {/* Table Heading */}
             <tr>
               <th className="p-3 text-left">Name of Streams</th>
               <th className="p-3 text-left">Type</th>
@@ -260,22 +299,25 @@ const ManageRoadmapForm = () => {
             </tr>
           </thead>
           <tbody>
-            {roadmaps.map((roadmap, index) => (
+            {filteredRoadmaps.map((roadmap, index) => (
               <tr
                 key={roadmap._id}
                 className={`border-b hover:bg-gray-100 ${
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
+                {/* Name */}
                 <td className="p-3 max-w-[250px] truncate" title={roadmap.name}>
                   {roadmap.name}
                 </td>
 
-                <td className="p-3">{roadmap.type?.type || "N/A"}</td>
+                {/* Type */}
+                <td className="p-3 w-70">{roadmap.type?.type || "N/A"}</td>
 
+                {/* Subtypes */}
                 <td className="p-3">
                   {roadmap.sub_type.length > 0 ? (
-                    <div className="max-h-24 overflow-y-auto pr-1 custom-scroll">
+                    <div className="max-h-24 overflow-y-auto pr-1 custom-scroll w-90">
                       <ul className="list-disc list-inside space-y-1 text-gray-800 text-sm">
                         {roadmap.sub_type.map((sub, idx) => (
                           <li key={idx}>{sub.type}</li>
@@ -289,33 +331,43 @@ const ManageRoadmapForm = () => {
                   )}
                 </td>
 
-                <td className="p-3 flex flex-wrap gap-2">
+                {/* Action section */}
+                <td className="p-3 flex  gap-2">
+                  {/* Edit Button */}
                   <button
                     className="px-3 py-1 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-all duration-200 shadow-sm flex items-center gap-1 cursor-pointer"
                     onClick={() => handleEditRoadmap(roadmap)}
+                    data-tooltip-id="edit-tooltip"
+                    data-tooltip-content="Edit Roadmap"
                   >
-                    <FaEdit className="text-lg" /> Edit
+                    <FaEdit className="text-lg" />
                   </button>
+                  {/* Delete Button */}
                   <button
                     className="px-3 py-1 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition-all duration-200 shadow-sm flex items-center gap-1 cursor-pointer"
                     onClick={() => handleDeleteRoadmap(roadmap._id)}
+                    data-tooltip-id="delete-tooltip"
+                    data-tooltip-content="Delete Roadmap"
                   >
-                    <FaTrash className="text-lg" /> Delete
+                    <FaTrash className="text-lg" />
                   </button>
+
+                  <Tooltip id="edit-tooltip" place="top" />
+                  <Tooltip id="delete-tooltip" place="top" />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      {/* </div> */}
 
-      {/* Modal */}
+      {/* Add New Roadmap Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm bg-opacity-40 flex items-center justify-center z-50">
           <div className="relative bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+            {/* Heading of Modal */}
             <h2 className="text-lg font-semibold mb-4">Add New Roadmap</h2>
-            {/* X (Close) Button */}
+            {/* X Button to close Modal */}
             <button
               type="button"
               onClick={() => {
@@ -329,6 +381,7 @@ const ManageRoadmapForm = () => {
               &times;
             </button>
 
+            {/* Form for add new roadmap */}
             <form onSubmit={formik.handleSubmit}>
               {/*  Name */}
               <div className="mb-4">
@@ -401,40 +454,6 @@ const ManageRoadmapForm = () => {
                   )}
                 </div>
 
-                {/* Dropdown List */}
-                {/* {isSubTypeOpen && (
-                  <div className="absolute z-30 w-full mt-2 rounded-xl bg-white border border-gray-200 shadow-lg animate-fadeIn max-h-60 overflow-y-auto transition-all duration-300">
-                    {subTypeOptions.map((option) => {
-                      const formatted = {
-                        label: option.type,
-                        value: option._id,
-                      };
-                      const isChecked = isSubTypeSelected(formatted);
-
-                      return (
-                        <div
-                          key={option._id}
-                          onClick={() => handleSubTypeSelect(formatted)}
-                          className={`flex justify-between items-center px-4 py-3 cursor-pointer transition-all duration-200 ${
-                            isChecked
-                              ? "bg-blue-50 hover:bg-blue-100"
-                              : "hover:bg-gray-100"
-                          }`}
-                        >
-                          <span className="text-gray-700 text-sm font-medium">
-                            {option.type}
-                          </span>
-                          {isChecked && (
-                            <span className="bg-green-100 text-green-600 rounded-full p-1">
-                              <FaCheck className="text-sm" />
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )} */}
-
                 {isSubTypeOpen && (
                   <div className="absolute z-30 w-full mt-2 rounded-xl bg-white border border-gray-200 shadow-lg animate-fadeIn max-h-60 overflow-y-auto transition-all duration-300">
                     {/* Add search input at the top */}
@@ -454,58 +473,46 @@ const ManageRoadmapForm = () => {
                     </div>
 
                     {/* Render filtered options */}
-                    {(filteredSubTypeOptions.length > 0
-                      ? filteredSubTypeOptions
-                      : subTypeOptions
-                    ).map((option) => {
-                      const formatted = {
-                        label: option.type,
-                        value: option._id,
-                      };
-                      const isChecked = isSubTypeSelected(formatted);
+                    {filteredSubTypeOptions.length > 0 ? (
+                      filteredSubTypeOptions.map((option) => {
+                        const formatted = {
+                          label: option.type,
+                          value: option._id,
+                        };
+                        const isChecked = isSubTypeSelected(formatted);
 
-                      return (
-                        <div
-                          key={option._id}
-                          onClick={() => handleSubTypeSelect(formatted)}
-                          className={`flex justify-between items-center px-4 py-3 cursor-pointer transition-all duration-200 ${
-                            isChecked
-                              ? "bg-blue-50 hover:bg-blue-100"
-                              : "hover:bg-gray-100"
-                          }`}
-                        >
-                          <span className="text-gray-700 text-sm font-medium">
-                            {option.type}
-                          </span>
-                          {isChecked && (
-                            <span className="bg-green-100 text-green-600 rounded-full p-1">
-                              <FaCheck className="text-sm" />
+                        return (
+                          <div
+                            key={option._id}
+                            onClick={() => handleSubTypeSelect(formatted)}
+                            className={`flex justify-between items-center px-4 py-3 cursor-pointer transition-all duration-200 ${
+                              isChecked
+                                ? "bg-blue-50 hover:bg-blue-100"
+                                : "hover:bg-gray-100"
+                            }`}
+                          >
+                            <span className="text-gray-700 text-sm font-medium">
+                              {option.type}
                             </span>
-                          )}
-                        </div>
-                      );
-                    })}
+                            {isChecked && (
+                              <span className="bg-green-100 text-green-600 rounded-full p-1">
+                                <FaCheck className="text-sm" />
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center text-gray-400 py-4">
+                        No results found.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
               {/* Submit Button */}
               <div className="flex justify-end mt-6 gap-4">
-                {/* <button
-                  type="button"
-                  onClick={() => {
-                    formik.resetForm();
-                    setShowModal(false);
-                    setIsEditing(false);
-                    setEditingRoadmap(null);
-
-                    //   setSelectedSubTypes([]); // Optional: reset subtype selection too
-                  }}
-                  className="bg-gray-200 text-gray-700 py-2 px-6 rounded-lg hover:bg-gray-300 cursor-pointer"
-                >
-                  Cancel
-                </button> */}
-
                 <button
                   type="submit"
                   disabled={isSaving}

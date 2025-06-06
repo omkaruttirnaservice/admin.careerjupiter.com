@@ -15,8 +15,7 @@ import AdminDashboard from "./pages/adminDashboard";
 import ProfilePage from "./pages/profilePage";
 import CollegeCourses from "./courses/collegeCourses";
 import AddUniversity from "./university/addUniversity";
-
-import UniversityList from "./university/universityLIst.jsx";
+import UniversityList from "./university/universityList.jsx";
 import UniversityPlacement from "./component/universityPlacement";
 import Infrastructure from "./component/infrastructure";
 import Placement from "./component/placement";
@@ -26,7 +25,7 @@ import ClassForm from "./pages/registerClass/classForm.jsx";
 import ClassVendorDashboard from "./pages/classVendorDashboard.jsx";
 import Cookies from "js-cookie";
 import ManageClass from "./pages/manageClass.jsx";
-import VendorLayout from "./pages/vendorLayout.jsx";
+import VendorClassLayout from "./pages/vendorClassLayout.jsx";
 import ClassTableDetails from "./pages/classTableDetails.jsx";
 import FacultyManagement from "./pages/facultyManagement.jsx";
 import ClassCourses from "./pages/classCourses.jsx";
@@ -49,7 +48,10 @@ import ManageClassCategory from "./component/manageClassCategory.jsx";
 import TypeList from "./component/roadmap/typeList.jsx";
 import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
 import UniversityCourses from "./courses/universityCourses.jsx";
+
 import Addexcel from "./component/excel/excel-upload.jsx";
+import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
+
 
 const queryClient = new QueryClient();
 
@@ -65,6 +67,7 @@ function App() {
             {/* Public Route */}
             <Route index element={<Login />} />
             <Route path="/add-admin" element={<AddAdmin />} />
+            <Route path="/upload-college-excel" element={<UploadCollegeExcel/>} />
 
             {/* Protected Routes for Admin */}
             <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
@@ -110,7 +113,7 @@ function App() {
                 element={<CollegeCourses />}
               />
               <Route
-                path="/colleges/edit/:collegeId"
+                path="/colleges/edit/:id"
                 element={<ManageCollege />}
               />
               <Route
@@ -136,7 +139,7 @@ function App() {
             {/* Protected Routes for VENDOR - All Subroles */}
             <Route element={<ProtectedRoute roleRequired="VENDOR" />}>
               {subrole === "CLASS" && (
-                <Route path="/vendor-class" element={<VendorLayout />}>
+                <Route path="/vendor-class" element={<VendorClassLayout />}>
                   <Route index element={<ClassVendorDashboard />} />
                   <Route
                     path="class-dashboard"

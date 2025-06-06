@@ -9,12 +9,14 @@ const ViewExcelPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Fetch Test details testId is mounted
   useEffect(() => {
     if (testId) {
       fetchTestDetails(testId);
     }
   }, [testId]);
 
+  // Fetch Test Details
   const fetchTestDetails = async () => {
     setLoading(true);
     setError(null);
@@ -44,7 +46,7 @@ const ViewExcelPage = () => {
         err.response?.data?.message ||
         "Failed to fetch test details";
 
-      setError(errorMessage); // Still setting error for UI
+      setError(errorMessage);
 
       Swal.fire({
         icon: "warning",
@@ -59,45 +61,52 @@ const ViewExcelPage = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Main content - takes full remaining space */}
+      {/* Header section */}
       <div className="bg-gray-800  py-4 px-8 shadow-lg z-20 mb-6">
         <h3 className="text-4xl font-bold text-center text-white tracking-wide leading-tight transition-transform transform hover:scale-110 font-poppins">
           📋 {test?.title || "Test Details"}
         </h3>
       </div>
-
+      {/* Main content area */}
       <div className="flex-1 overflow-auto p-6 bg-gradient-to-r from-blue-100 to-purple-100 shadow-xl rounded-lg">
         {loading && <p className="text-blue-500 text-center">Loading...</p>}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        {/* {test?.questions?.length > 0 ? (
+        {/* Render questions if available */}
+        {test?.questions?.length > 0 ? (
           test.questions.map((q, index) => (
             <div
               key={q._id}
-              className="mb-6 p-6 bg-white border-l-8 border-blue-500 shadow-md rounded-lg"
+              className="mb-4 p-6 bg-white border-l-8 border-blue-500 shadow-md rounded-lg"
             >
+              {/* Display question */}
               <p className="text-lg font-semibold text-gray-900">
                 {index + 1}. {q.question}
+                {/* Show Chapter Name */}
+                {q.chapterName && (
+                  <div className="text-md text-black italic text-right">
+                    Chapter: {q.chapterName}
+                  </div>
+                )}
               </p>
+
+              {/* Display options with correct one highlighted */}
               <div className="mt-3 space-y-2">
                 {["optionA", "optionB", "optionC", "optionD"].map((key, i) => {
-                  const optionValue = q[key]; // Option value (e.g., "V = IR")
-                  const optionLetter = String.fromCharCode(65 + i); // A, B, C, D
-
-                  // Check if correctAns matches the letter (A/B/C/D) OR the value (e.g., "V = IR")
+                  const optionValue = q[key];
+                  const optionLetter = String.fromCharCode(65 + i);
                   const isCorrect =
                     q.correctAns === optionLetter ||
                     q.correctAns === optionValue;
-
                   return (
                     <p
                       key={i}
                       className={`ml-6 p-2 border rounded-md cursor-pointer transition-all duration-300 
-                               ${
-                                 isCorrect
-                                   ? "bg-green-300 font-bold text-green-900"
-                                   : "bg-gray-100"
-                               }`}
+                ${
+                  isCorrect
+                    ? "bg-green-300 font-bold text-green-900"
+                    : "bg-gray-100"
+                }`}
                     >
                       {optionLetter}. {optionValue}
                     </p>
@@ -108,60 +117,7 @@ const ViewExcelPage = () => {
           ))
         ) : (
           <p className="text-gray-500 text-center">No questions available</p>
-        )} */}
-
-        {test?.questions?.length > 0 ? (
-  test.questions.map((q, index) => (
-    <div
-      key={q._id}
-      className="mb-4 p-6 bg-white border-l-8 border-blue-500 shadow-md rounded-lg"
-    >
-      {/* Question Text */}
-      <p className="text-lg font-semibold text-gray-900">
-        {index + 1}. {q.question}
-
-        {q.chapterName && (
-        <div className="text-md text-black italic text-right">
-          Chapter: {q.chapterName} 
-        </div>
-      )}
-      </p>
-
-      
-
-      {/* Options */}
-      <div className="mt-3 space-y-2">
-        {["optionA", "optionB", "optionC", "optionD"].map((key, i) => {
-          const optionValue = q[key];
-          const optionLetter = String.fromCharCode(65 + i);
-
-          const isCorrect =
-            q.correctAns === optionLetter || q.correctAns === optionValue;
-
-          return (
-            <p
-              key={i}
-              className={`ml-6 p-2 border rounded-md cursor-pointer transition-all duration-300 
-                ${
-                  isCorrect
-                    ? "bg-green-300 font-bold text-green-900"
-                    : "bg-gray-100"
-                }`}
-            >
-              {optionLetter}. {optionValue}
-            </p>
-          );
-        })}
-      </div>
-
-      {/* Chapter Name */}
-      
-    </div>
-  ))
-) : (
-  <p className="text-gray-500 text-center">No questions available</p>
-)}
-
+        )}
       </div>
     </div>
   );

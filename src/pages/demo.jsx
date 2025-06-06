@@ -1101,3 +1101,1286 @@
 // university Id set
 // const universityID = getCookie("universityID");
 // console.log("University ID:", universityID);
+
+
+// IQ Test hadling excel error 
+
+  // const handleExcelUpload = (event, setFieldValue) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     setFileName(file.name);
+  //     setFieldValue("excelFile", file);
+
+  //     const reader = new FileReader();
+  //     reader.readAsArrayBuffer(file);
+  //     reader.onload = (e) => {
+  //       const data = new Uint8Array(e.target.result);
+  //       const workbook = XLSX.read(data, { type: "array" });
+  //       const sheetName = workbook.SheetNames[0];
+  //       const sheet = workbook.Sheets[sheetName];
+  //       const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+  //       if (jsonData.length === 0) {
+  //         Swal.fire({
+  //           icon: "warning",
+  //           title: "Empty File",
+  //           text: "The uploaded file contains no data. Please check and try again.",
+  //           confirmButtonColor: "#f0ad4e",
+  //         }).then(() => {
+  //           setSelectedQuestions([]);
+  //         });
+  //       } else {
+  //         let error = false;
+  //         jsonData.some((question, index) => {
+  //           if (question.question === undefined) {
+  //             showWarnInQuestionUpload(index, "Main Question");
+  //             error = true;
+  //             return true;
+  //           }
+
+  //           if (question.optionA === undefined) {
+  //             showWarnInQuestionUpload(index, "Option A");
+  //             error = true;
+  //             return true;
+  //           }
+
+  //           if (question.optionB === undefined) {
+  //             showWarnInQuestionUpload(index, "Option B");
+  //             error = true;
+  //             return true;
+  //           }
+
+  //           if (question.optionC === undefined) {
+  //             error = true;
+  //             showWarnInQuestionUpload(index, "Option C");
+  //             return true;
+  //           }
+
+  //           if (question.optionD === undefined) {
+  //             error = true;
+  //             showWarnInQuestionUpload(index, "Option D");
+  //             return true;
+  //           }
+
+  //           if (question.marks === undefined) {
+  //             error = true;
+  //             showWarnInQuestionUpload(index, "Marks");
+  //             return true;
+  //           }
+
+  //           if (question.chapterName === undefined) {
+  //             error = true;
+  //             showWarnInQuestionUpload(index, "Chapter Name");
+  //             return true;
+  //           }
+
+  //           return false;
+  //         });
+  //         if (error === false) {
+  //           Swal.fire({
+  //             icon: "success",
+  //             title: `${jsonData.length} Question Found.`,
+  //             text: "All Question are perfect. Good to Go.",
+  //             confirmButtonColor: "#28a745",
+  //           }).then(() => {
+  //             setSelectedQuestions(jsonData);
+  //           });
+  //         } else {
+  //           fileRef.current.value = "";
+  //           setSelectedQuestions([]);
+  //         }
+  //       }
+  //     };
+  //   }
+  // };
+
+
+  // import { useEffect, useState } from "react";
+// import axios from "axios";
+// import { API_BASE_URL } from "../constant/constantBaseUrl";
+// import {
+//   FaUniversity,
+//   FaPhone,
+//   FaInfoCircle,
+//   FaCalendarAlt,
+//   FaTags,
+//   FaGlobe,
+//   FaLayerGroup,
+//   FaGraduationCap,
+// } from "react-icons/fa";
+// import { HiAcademicCap } from "react-icons/hi";
+// import { getCookie } from "../utlis/cookieHelper";
+
+// // const CollegeVendorDashboard = () => {
+
+// const CollegeVendorDashboard = () => {
+//     const [collegeDetails, setCollegeDetails] = useState(null);
+//     const [collegeID, setCollegeID] = useState(null); // State for storing the collegeId
+
+//     // Fetch the collegeId from cookies directly
+//     useEffect(() => {
+//       const collegeID = getCookie("collegeID"); // Directly fetch collegeId from cookies
+//     console.log("/////////////////",collegeID)
+//       if (collegeID) {
+//         setCollegeID(collegeID); // Set the retrieved collegeId in state
+//       } else {
+//         console.warn("College ID not found in cookies!"); // Log a warning if no collegeId found
+//       }
+//     }, []); // Only run this effect once when the component mounts
+
+//     console.log("**********",collegeID)
+//     // Fetch college details when collegeID changes
+//     useEffect(() => {
+//       const fetchCollegeDetails = async () => {
+//         if (!collegeID) return; // If collegeID is not available, do nothing
+
+//         try {
+//           const response = await axios.get(`${API_BASE_URL}/api/college/${collegeID}`);
+
+//           const data = response?.data?.data?.college;
+//           setCollegeDetails({
+//             ...data,
+//             address: Array.isArray(data?.address) ? data.address[0] : {},
+//             imageGallery: Array.isArray(data?.imageGallery) ? data.imageGallery : [],
+//             description: data?.info?.description || "No description available",
+//           });
+//         } catch (error) {
+//           console.error("Error fetching college details:", error?.response?.data || error.message);
+//         }
+//       };
+
+//       fetchCollegeDetails();
+//     }, [collegeID]); // Re-fetch data whenever collegeID changes
+
+// //   useEffect(() => {
+// //     const storedCollegeId = getCookie("collegeID");
+// //     if (storedCollegeId) {
+// //       setCollegeID(storedCollegeId);
+// //     } else {
+// //       console.warn("College ID not found in cookies!");
+// //     }
+// //   }, []);
+
+// //   useEffect(() => {
+// //     const fetchCollegeDetails = async () => {
+// //       if (!collegeID) return;
+
+// //       try {
+// //         const response = await axios.get(`${API_BASE_URL}/api/college/${collegeID}`);
+
+// //         console.log("**************",collegeID)
+// //         const data = response.data?.data?.college;
+
+// //         setCollegeDetails({
+// //           ...data,
+// //           address: Array.isArray(data?.address) ? data.address[0] : {},
+// //           imageGallery: Array.isArray(data?.imageGallery) ? data.imageGallery : [],
+// //           description: data?.info?.description || "No description available",
+// //         });
+// //       } catch (error) {
+// //         console.error("Error fetching college details:", error?.response?.data || error.message);
+// //       }
+// //     };
+
+// //     fetchCollegeDetails();
+// //   }, [collegeID]);
+
+//   return (
+//     <div className="flex flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen p-4">
+//       {/* Header */}
+//       <div className="relative bg-gradient-to-br from-white/80 to-indigo-100/90 backdrop-blur-lg shadow-2xl p-6 rounded-3xl flex flex-col sm:flex-row items-center gap-6 mb-8">
+//         <div className="relative w-24 h-24 flex items-center justify-center rounded-full bg-white shadow-xl">
+//           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[3px] animate-pulse" />
+//           <div className="relative z-10 w-full h-full flex items-center justify-center rounded-full bg-indigo-600">
+//             <HiAcademicCap className="text-white text-5xl" />
+//           </div>
+//         </div>
+//         <div className="text-center sm:text-left">
+//           <h2 className="text-3xl font-extrabold text-gray-800 mb-1">
+//             Welcome, <span className="text-indigo-600">{collegeDetails?.collegeName || "College Vendor"}</span> 👋
+//           </h2>
+//           <p className="text-lg text-gray-700 font-semibold">{collegeDetails?.affiliatedUniversity || "Affiliation"}</p>
+//         </div>
+//       </div>
+
+//       {/* Info Grid */}
+//       <div className="bg-white/80 shadow-xl p-4 rounded-2xl">
+//         <h3 className="text-2xl font-semibold text-gray-800 flex items-center gap-2 mb-6">
+//           <FaInfoCircle className="text-pink-500" /> College Details
+//         </h3>
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+//           {[
+//             {
+//               title: "College Name",
+//               value: collegeDetails?.collegeName,
+//               icon: <FaUniversity className="text-blue-600 text-3xl" />,
+//               bg: "from-blue-100 to-blue-200",
+//             },
+//             {
+//               title: "Affiliated University",
+//               value: collegeDetails?.affiliatedUniversity,
+//               icon: <FaGraduationCap className="text-green-600 text-3xl" />,
+//               bg: "from-green-100 to-green-200",
+//             },
+//             // {
+//             //   title: "Contact Details",
+//             //   value: collegeDetails?.contactDetails,
+//             //   icon: <FaPhone className="text-purple-600 text-3xl" />,
+//             //   bg: "from-orange-100 to-orange-200",
+//             // },
+//             {
+//               title: "Established Year",
+//               value: collegeDetails?.establishedYear,
+//               icon: <FaCalendarAlt className="text-pink-600 text-3xl" />,
+//               bg: "from-pink-100 to-pink-200",
+//             },
+//             {
+//               title: "Website",
+//               value: collegeDetails?.websiteURL,
+//               icon: <FaGlobe className="text-indigo-600 text-3xl" />,
+//               bg: "from-indigo-100 to-indigo-200",
+//             },
+//             {
+//               title: "Keywords",
+//               value:
+//                 collegeDetails?.keywords?.length > 0
+//                   ? collegeDetails.keywords.join(", ")
+//                   : "N/A",
+//               icon: <FaTags className="text-yellow-600 text-3xl" />,
+//               bg: "from-yellow-100 to-yellow-200",
+//             },
+//             // {
+//             //   title: "Category",
+//             //   value:
+//             //     collegeDetails?.category?.length > 0
+//             //       ? collegeDetails.category.join(", ")
+//             //       : "N/A",
+//             //   icon: <FaLayerGroup className="text-rose-600 text-3xl" />,
+//             //   bg: "from-rose-100 to-rose-200",
+//             // },
+//             {
+//               title: "Entrance Exams",
+//               value:
+//                 collegeDetails?.entrance_exam_required?.length > 0
+//                   ? collegeDetails.entrance_exam_required.join(", ")
+//                   : "N/A",
+//               icon: <FaGraduationCap className="text-teal-600 text-3xl" />,
+//               bg: "from-teal-100 to-teal-200",
+//             },
+//           ].map((info, idx) => (
+//             <div
+//               key={idx}
+//               className={`group bg-gradient-to-br ${info.bg} p-6 rounded-xl shadow-md flex items-start gap-4 hover:scale-105 transition duration-300`}
+//             >
+//               {info.icon}
+//               <div>
+//                 <h4 className="text-md font-bold text-gray-800">{info.title}</h4>
+//                 <p className="text-gray-700 text-sm break-words">{info.value || "N/A"}</p>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+
+//         {/* Description */}
+//         <div className="bg-gradient-to-br from-fuchsia-100 to-violet-200 p-6 rounded-xl shadow-md mb-6">
+//           <h4 className="text-md font-bold mb-2 text-violet-800 flex items-center gap-2">
+//             <FaInfoCircle /> College Description
+//           </h4>
+//           <p className="text-gray-800 text-sm">{collegeDetails?.description}</p>
+//         </div>
+
+//         {/* Image Section */}
+//         <div>
+//           <h4 className="text-md font-bold text-gray-800 mb-4">College Image</h4>
+//           {collegeDetails?.image ? (
+//             <div className="relative group overflow-hidden rounded-xl shadow-md border-4 border-indigo-300 w-full sm:w-96">
+//               <img
+//                 src={`${API_BASE_URL}${collegeDetails.image}`}
+//                 alt="College"
+//                 className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105 rounded-xl"
+//               />
+//             </div>
+//           ) : (
+//             <p className="text-gray-500 italic">No image available</p>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CollegeVendorDashboard;
+
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import { API_BASE_URL } from "../constant/constantBaseUrl";
+// import {
+//   FaUniversity,
+//   FaPhone,
+//   FaInfoCircle,
+//   FaCalendarAlt,
+//   FaTags,
+//   FaGlobe,
+//   FaLayerGroup,
+//   FaGraduationCap,
+//   FaTimes,
+// } from "react-icons/fa";
+// import { HiAcademicCap } from "react-icons/hi";
+// import { getCookie } from "../utlis/cookieHelper";
+
+// const tabs = [
+//   { id: "basic", label: "Basic Info" },
+//   { id: "keywords", label: "Keywords" },
+//   { id: "exams", label: "Entrance Exams" },
+// ];
+
+// const CollegeVendorDashboard = () => {
+//   const [collegeDetails, setCollegeDetails] = useState(null);
+//   const [collegeID, setCollegeID] = useState(null);
+//   const [activeTab, setActiveTab] = useState("basic");
+//   const [lightboxIndex, setLightboxIndex] = useState(null);
+//   //  const { college, courses, infrastructure, placements } = data;
+//   const [readMore, setReadMore] = useState(false);
+
+//   useEffect(() => {
+//     const id = getCookie("collegeID");
+//     if (id) setCollegeID(id);
+//     else console.warn("College ID not found in cookies!");
+//   }, []);
+
+//   useEffect(() => {
+//     if (!collegeID) return;
+
+//     const fetchCollegeDetails = async () => {
+//       try {
+//         const res = await axios.get(`${API_BASE_URL}/api/college/${collegeID}`);
+//         const data = res.data?.data?.college;
+
+//         setCollegeDetails({
+//           ...data,
+//           address: Array.isArray(data?.address) ? data.address[0] : {},
+//           imageGallery: Array.isArray(data?.imageGallery) ? data.imageGallery : [],
+//           description: data?.info?.description || "No description available",
+//         });
+//       } catch (error) {
+//         console.error("Error fetching college details:", error?.response?.data || error.message);
+//       }
+//     };
+
+//     fetchCollegeDetails();
+//   }, [collegeID]);
+
+//   if (!collegeDetails) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen text-indigo-600 font-semibold text-xl">
+//         Loading College Details...
+//       </div>
+//     );
+//   }
+
+//   const { collegeName, affiliatedUniversity, establishedYear, websiteURL, keywords, entrance_exam_required, description, imageGallery } = collegeDetails;
+
+//   return (
+//     <div className="max-w-7xl mx-auto p-6 font-sans text-gray-800">
+//       {/* Header/Hero */}
+//       <div className="relative rounded-lg overflow-hidden shadow-lg mb-8">
+//         <img
+//           src={collegeDetails.image}
+//           alt={collegeDetails.collegeName}
+//           className="w-full h-60 object-cover"
+//         />
+//         <img
+//           src={collegeDetails.logo}
+//           alt="Logo"
+//           className="absolute bottom-0 left-6 w-24 h-24 rounded-full border-4 border-white shadow-md -mb-12"
+//         />
+//       </div>
+//       <div className="ml-32 mb-6">
+//         <h1 className="text-4xl font-bold">{collegeDetails.collegeName}</h1>
+//         <div className="flex space-x-3 mt-2">
+//           <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+//             {collegeDetails.category}
+//           </span>
+//           <span className="bg-gray-300 text-gray-800 px-3 py-1 rounded-full text-sm font-semibold">
+//             Affiliated: {collegeDetails.affiliatedUniversity}
+//           </span>
+//         </div>
+//       </div>
+
+//       {/* Description */}
+//       <p className="mb-4 max-w-3xl text-gray-700">
+//         {readMore
+//           ? collegeDetails.info.description
+//           : collegeDetails.info.description.slice(0, 150) + '...'}
+//         <button
+//           onClick={() => setReadMore(!readMore)}
+//           className="ml-2 text-blue-600 font-semibold underline hover:text-blue-800"
+//         >
+//           {readMore ? 'Show Less' : 'Read More'}
+//         </button>
+//       </p>
+
+//       {/* Contact & Website Buttons */}
+//       <div className="flex space-x-4 mb-12">
+//         <a
+//           href={`tel:${collegeDetails.contactDetails}`}
+//           className="bg-green-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-700"
+//         >
+//           Call: {collegeDetails.contactDetails}
+//         </a>
+//         <a
+//           href={collegeDetails.websiteURL}
+//           target="_blank"
+//           rel="noreferrer"
+//           className="bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700"
+//         >
+//           Visit Website
+//         </a>
+//         <a
+//           href={`mailto:${collegeDetails.email_id}`}
+//           className="bg-gray-700 text-white px-5 py-2 rounded-lg shadow-md hover:bg-gray-800"
+//         >
+//           Email Principal
+//         </a>
+//       </div>
+
+//       {/* Key Info Cards */}
+//       <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-12">
+//         <InfoCard title="Established" value={collegeDetails.establishedYear} icon="🎓" />
+//         <InfoCard title="Accreditation" value={collegeDetails.accreditation} icon="🏅" />
+//         <InfoCard title="Type" value={collegeDetails.collegeType} icon="🏛️" />
+//         <InfoCard
+//           title="Entrance Exams"
+//           value={collegeDetails.entrance_exam_required.join(', ')}
+//           icon="📝"
+//         />
+//         <InfoCard title="Category" value={collegeDetails.category} icon="📚" />
+//       </div>
+
+//       {/* Courses Section */}
+//       {/* <section className="mb-12">
+//         <h2 className="text-3xl font-semibold mb-6 border-b-2 border-blue-600 inline-block">
+//           Courses Offered
+//         </h2>
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+//           {courses[0].courses.map((course) => (
+//             <CourseCard key={course._id} course={course} />
+//           ))}
+//         </div>
+//       </section> */}
+
+//       {/* Infrastructure */}
+//       {/* <section className="mb-12">
+//         <h2 className="text-3xl font-semibold mb-6 border-b-2 border-blue-600 inline-block">
+//           Infrastructure
+//         </h2>
+//         <InfrastructureCard infrastructure={infrastructure.infrastructure[0]} />
+//       </section> */}
+
+//       {/* Placements */}
+//       {/* <section className="mb-12">
+//         <h2 className="text-3xl font-semibold mb-6 border-b-2 border-blue-600 inline-block">
+//           Placements
+//         </h2>
+//         <PlacementCard placement={placements[0].placement[0]} />
+//       </section> */}
+
+//       {/* Address */}
+//       {/* <section className="mb-12 max-w-3xl mx-auto">
+//         <h2 className="text-3xl font-semibold mb-6 border-b-2 border-blue-600 inline-block">
+//           Address & Contact
+//         </h2>
+//         <AddressCard address={collegeDetails.address[0]} />
+//       </section> */}
+//     </div>
+//   );
+// }
+
+// function InfoCard({ title, value, icon }) {
+//   return (
+//     <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4 hover:shadow-lg transition-shadow duration-300">
+//       <div className="text-3xl">{icon}</div>
+//       <div>
+//         <h4 className="text-gray-500 text-sm">{title}</h4>
+//         <p className="font-semibold text-lg">{value}</p>
+//       </div>
+//     </div>
+//   );
+// }
+
+// function CourseCard({ course }) {
+//   return (
+//     <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+//       <h3 className="text-xl font-bold mb-1">{course.name}</h3>
+//       <div className="mb-2">
+//         {course.subCategory.map((sc) => (
+//           <span
+//             key={sc}
+//             className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full mr-2 text-xs font-semibold"
+//           >
+//             {sc}
+//           </span>
+//         ))}
+//       </div>
+//       <p className="mb-1">
+//         <strong>Duration:</strong> {course.duration} years
+//       </p>
+//       <p className="mb-1">
+//         <strong>Eligibility:</strong> {course.eligibility}
+//       </p>
+//       <p className="mb-1 font-semibold text-green-700">
+//         Fees: ₹{(course.annualFees / 100000).toLocaleString()} Lakhs/year
+//       </p>
+//     </div>
+//   );
+// }
+
+// function InfrastructureCard({ infrastructure }) {
+//   return (
+//     <div className="bg-white rounded-lg shadow-md p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+//       <IconInfo icon="📚" title="Library" value={infrastructure.library.size} />
+//       <IconInfo icon="🏫" title="Classrooms" value={infrastructure.numberOfClassrooms} />
+//       <IconInfo icon="🔬" title="Labs" value={infrastructure.numberOfLabs} />
+//       <IconInfo icon="🏅" title="Sports" value={infrastructure.sportsFacilities.join(', ')} />
+//       <IconInfo icon="🏠" title="Hostel" value={infrastructure.hostelAvailability ? 'Available' : 'No'} />
+//       <IconInfo icon="🍽️" title="Canteen" value={infrastructure.canteenAndFoodServices ? 'Yes' : 'No'} />
+//       <IconInfo icon="🏥" title="Medical" value={infrastructure.medicalFacilities ? 'Yes' : 'No'} />
+//       <IconInfo icon="🚌" title="Transport" value={infrastructure.transportFacility.join(', ')} />
+//     </div>
+//   );
+// }
+
+// function IconInfo({ icon, title, value }) {
+//   return (
+//     <div className="flex items-center space-x-3 p-2 border rounded-lg hover:bg-blue-50 transition-colors">
+//       <div className="text-2xl">{icon}</div>
+//       <div>
+//         <h5 className="font-semibold text-gray-600">{title}</h5>
+//         <p className="text-gray-700">{value}</p>
+//       </div>
+//     </div>
+//   );
+// }
+
+// function PlacementCard({ placement }) {
+//   return (
+//     <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col md:flex-row md:items-center md:space-x-12">
+//       <div className="text-center md:text-left mb-6 md:mb-0">
+//         <h3 className="text-4xl font-bold text-green-600">{placement.placementPercentage}%</h3>
+//         <p className="text-gray-500 font-semibold">Placement Rate</p>
+//       </div>
+//       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+//         <Stat label="Top Recruiters" value={placement.topRecruiters} />
+//         <Stat label="Highest Package (LPA)" value={placement.highestPackage} />
+//         <Stat label="Internships" value={placement.internshipOpportunities ? 'Available' : 'Not Available'} />
+//         <Stat label="Students Placed" value={placement.noOfStudents} />
+//       </div>
+//     </div>
+//   );
+// }
+
+// function Stat({ label, value }) {
+//   return (
+//     <div>
+//       <p className="font-semibold text-gray-700">{label}</p>
+//       <p className="text-lg">{value}</p>
+//     </div>
+//   );
+// }
+
+// function AddressCard({ address }) {
+//   return (
+//     <div className="bg-white rounded-lg shadow-md p-6">
+//       <p className="mb-1 font-semibold">{address.line1}</p>
+//       <p className="mb-1">{address.line2}</p>
+//       <p className="mb-1">
+//         {address.dist}, {address.taluka}, {address.state} - {address.pincode}
+//       </p>
+//       <p className="mb-1">Landmark: {address.nearbyLandmarks}</p>
+//       <p className="mb-1">
+//         Authorized Person: {address.autorizedName} ({address.designation})
+//       </p>
+//       <p>Phone: {address.autorizedPhono}</p>
+//     </div>
+//   );
+
+// };
+
+// export default CollegeVendorDashboard;
+
+//college Vendot Dashboard cards
+
+
+
+  // return (
+//     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 md:p-3">
+//       {/* ✅ Main Content */}
+//       <div className="flex-1 flex justify-center">
+//         <div className="flex flex-col md:flex-row min-h-screen md:p-4 relative bg-gradient-to-br from-blue-100 to-blue-300 overflow-hidden">
+//           <div className="w-screen lg:w-[1100px] mx-auto bg-white shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 border border-blue-500 rounded-xl">
+//             {role === "ADMIN" && (
+//               <button
+//                 onClick={() => navigate("/colleges")}
+//                 className="absolute top-7 right-9 text-red-600 hover:text-red-800 text-3xl font-bold cursor-pointer"
+//               >
+//                 &times;
+//                 {/* <FiLogOut /> */}
+//               </button>
+//             )}
+
+//             {/* ✅ Form Title */}
+//             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 shadow-md text-center rounded-xl">
+//               <h2 className="text-2xl md:text-4xl font-bold">
+//                 Update College Details
+//               </h2>
+//             </div>
+
+//             {/* ✅ Form */}
+//             <form onSubmit={formik.handleSubmit} className="space-y-6 mt-6">
+//               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+//                 {/* 🔹 Basic Details */}
+
+//                 <InputField
+//                   label="College Name"
+//                   type="text"
+//                   name="collegeName"
+//                   formik={formik}
+//                 />
+//                 <InputField
+//                   label="Affiliated University"
+//                   name="affiliatedUniversity"
+//                   type="text"
+//                   placeholder="Enter University"
+//                   formik={formik}
+//                 />
+
+//                 <SingleSelectDropdown
+//                   label="College Type"
+//                   name="collegeType"
+//                   options={collegeTypes}
+//                   formik={formik}
+//                   placeholder="Select a College Type"
+//                 />
+
+//                 <div className="mb-4 w-full">
+//                   <label className="block text-blue-800 font-semibold mb-2">
+//                     College Category
+//                   </label>
+//                   <select
+//                     name="category"
+//                     value={formik.values.category}
+//                     onChange={(e) => {
+//                       const selected = e.target.value;
+//                       formik.setFieldValue("category", selected);
+
+//                       const selectedCategory = categoryData.find(
+//                         (item) => item.category === selected
+//                       );
+
+//                       formik.setFieldValue("subCategory", []); // Reset subcategory
+//                       setSubCategories(selectedCategory?.subCategory || []);
+
+//                       formik.setFieldValue("entrance_exam_required", []); // Reset subcategory
+//                       setEntranceExams(
+//                         selectedCategory?.entrance_exam_required || []
+//                       );
+//                     }}
+//                     className={`w-full px-4 py-3 rounded-lg border shadow-sm focus:outline-none transition-all ${
+//                       formik.touched.category && formik.errors.category
+//                         ? "border-red-500 focus:ring-2 focus:ring-red-300"
+//                         : "border-gray-300 focus:ring-2 focus:ring-blue-400"
+//                     }`}
+//                   >
+//                     <option value="">Select Category</option>
+//                     {categoryData.map((item, index) => (
+//                       <option key={index} value={item.category}>
+//                         {item.category}
+//                       </option>
+//                     ))}
+//                   </select>
+
+//                   {formik.touched.category && formik.errors.category && (
+//                     <p className="text-red-500 text-sm mt-1">
+//                       {formik.errors.category}
+//                     </p>
+//                   )}
+//                 </div>
+
+//                 <div className="mb-3">
+//                   <MultiSelectDropdown
+//                     label="Branch"
+//                     name="subCategory"
+//                     options={subCategories}
+//                     formik={formik}
+//                   />
+
+//                   <OtherField
+//                     watchValue={formik.values.subCategory} // 👈 should match MultiSelectDropdown field
+//                     triggerValue={["Other", "Others"]}
+//                     onChange={(val) =>
+//                       formik.setFieldValue("subCategoryOther", val)
+//                     }
+//                     name="subCategoryOther"
+//                     error={formik.errors.subCategoryOther}
+//                     touched={formik.touched.subCategoryOther}
+//                   />
+//                 </div>
+
+//                 <InputField
+//                   label="Year Established"
+//                   type="number"
+//                   name="establishedYear"
+//                   formik={formik}
+//                 />
+//                 <InputField
+//                   label="Website URL"
+//                   type="text"
+//                   name="websiteURL"
+//                   formik={formik}
+//                 />
+
+//                 <MultiSelectField
+//                   label="Keywords (Max 5)"
+//                   name="keywords"
+//                   formik={formik}
+//                 />
+
+//                 <div className="mb-3">
+//                   <SingleSelectDropdown
+//                     label="Accreditation"
+//                     name="accreditation"
+//                     options={accreditationOptions}
+//                     formik={formik}
+//                     placeholder="Select an Accreditation"
+//                   />
+//                   <OtherField
+//                     watchValue={formik.values.accreditation} // 👈 should match MultiSelectDropdown field
+//                     triggerValue={["Other", "Others"]}
+//                     onChange={(val) =>
+//                       formik.setFieldValue("accreditationOther", val)
+//                     }
+//                     name="accreditationOther"
+//                     error={formik.errors.accreditationOther}
+//                     touched={formik.touched.accreditationOther}
+//                   />
+//                 </div>
+
+//                 <MultiSelectDropdown
+//                   label="Entrance Exams Required"
+//                   name="entrance_exam_required"
+//                   options={entranceExams}
+//                   formik={formik}
+//                 />
+//               </div>
+
+//               {/* Address array */}
+//               {formik.values.address.map((addr, index) => {
+//                 const isEditing = editingIndex === index;
+
+//                 return (
+//                   <div
+//                     key={index}
+//                     className="p-6 mb-6 rounded-2xl shadow-xl bg-white border border-gray-200"
+//                   >
+//                     {/* If editing, show input form */}
+//                     {isEditing ? (
+//                       <div className="bg-white shadow-xl rounded-2xl p-6 border border-gray-200 mb-6">
+//                         {/* Header */}
+//                         <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-600 to-blue-400 px-4 py-2 rounded-md">
+//                           <h3 className="text-white text-lg font-semibold">
+//                             ✏ Editing Address {index + 1}
+//                           </h3>
+//                         </div>
+
+//                         {/* Form Grid */}
+//                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                           {[...formFields].map((field, idx) => (
+//                             <div key={idx}>
+//                               <label className="block text-sm font-semibold text-blue-800 mb-2">
+//                                 {field.label}
+//                               </label>
+//                               <input
+//                                 type="text"
+//                                 name={`address[${index}].${field.name}`}
+//                                 placeholder={field.placeholder}
+//                                 value={addr[field.name]}
+//                                 onChange={formik.handleChange}
+//                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+//                               />
+//                               {formik.errors.address?.[index]?.[field.name] && (
+//                                 <div className="text-red-500 text-sm mt-1">
+//                                   {formik.errors.address[index][field.name]}
+//                                 </div>
+//                               )}
+//                             </div>
+//                           ))}
+//                         </div>
+
+//                         {/* Cancel Button */}
+//                         <div className="mt-8 text-center justify-end flex gap-2">
+//                           <button
+//                             onClick={() => setEditingIndex(null)}
+//                             className="text-white bg-green-500 hover:bg-green-600 transition px-6 py-2 text-sm font-medium rounded-md flex gap-2 cursor-pointer"
+//                            type="button" // ✅ Prevent unintended submission
+//                           >
+//                             <span className="mt-1">
+//                               <MdDone />
+//                             </span>{" "}
+//                             Done
+//                           </button>
+
+//                           <button
+//                             onClick={() => setEditingIndex(null)}
+//                             className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-lg transition flex gap-2 cursor-pointer"
+//                            type="button" // ✅ Prevent unintended submission
+//                           >
+//                             <span className="mt-1">
+//                               <FaWindowClose />
+//                             </span>{" "}
+//                             Cancel
+//                           </button>
+//                         </div>
+//                       </div>
+//                     ) : (
+//                       <div
+//                         key={index}
+//                         className="relative bg-white border border-blue-200 rounded-2xl p-5 shadow-md hover:shadow-lg transition duration-300 col-span-full"
+//                       >
+//                         <div className="space-y-1 text-gray-800 text-sm">
+//                           <p className="font-medium">
+//                             🏠 {addr.line1}, {addr.line2}
+//                           </p>
+//                           {addr.nearbyLandmarks && (
+//                             <p>📍 Nearby: {addr.nearbyLandmarks}</p>
+//                           )}
+//                           <p>
+//                             🗺️ {addr.taluka}, {addr.dist}, {addr.state} -{" "}
+//                             {addr.pincode}
+//                           </p>
+//                           <p className="text-gray-600 text-xs mt-1">
+//                             👤 {addr.autorizedName}{" "}
+//                             {addr.designation && (
+//                               <span className="ml-1 italic text-gray-500">
+//                                 ({addr.designation})
+//                               </span>
+//                             )}{" "}
+//                             &nbsp; 📞 {addr.autorizedPhono}
+//                           </p>
+//                         </div>
+
+//                         {/* Action Buttons */}
+//                         <div className="flex justify-end gap-3 mt-4">
+//                           {/* Edit Button */}
+//                           <button
+//                             type="button"
+//                             onClick={() => setEditingIndex(index)}
+//                             className="bg-yellow-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-yellow-600 transition flex items-center gap-1 cursor-pointer"
+//                           >
+//                             ✏️ Edit
+//                           </button>
+
+//                           {/* Delete Button */}
+//                           <button
+//                             type="button"
+//                             onClick={() => {
+//                               const updated = [...formik.values.address];
+//                               updated.splice(index, 1);
+//                               formik.setFieldValue("address", updated);
+//                               if (editingIndex === index) setEditingIndex(null);
+//                             }}
+//                             className="bg-red-500 text-white text-xs px-4 py-1.5 rounded-md shadow-sm hover:bg-red-600 transition flex items-center gap-1 cursor-pointer"
+//                           >
+//                             🗑️ Remove
+//                           </button>
+//                         </div>
+//                       </div>
+//                     )}
+//                   </div>
+//                 );
+//               })}
+
+//               {/* Add new address */}
+//               <button
+//                 type="button"
+//                 onClick={() => setShowAddressModal(true)}
+//                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 cursor-pointer"
+//               >
+//                 ➕ Add Address
+//               </button>
+
+//               <div className="mt-6">
+//                 <h3 className="text-lg font-bold text-gray-800">
+//                   College Banner Cover Image (JPG/JPEG/PNG)
+//                 </h3>
+
+//                 <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-4">
+//                   {previewImage || formik.values.image ? (
+//                     <img
+//                       src={
+//                         previewImage
+//                           ? previewImage
+//                           : typeof formik.values.image === "string"
+//                           ? `${API_BASE_URL}${formik.values.image}`
+//                           : ""
+//                       }
+//                       alt="College"
+//                       className="relative w-80 h-40 object-cover rounded-lg shadow-md overflow-hidden before:absolute before:top-0 before:left-[-100%] 
+//           before:w-full before:h-full before:bg-white before:opacity-20 before:rotate-6 before:transition-all hover:before:left-full mb-2"
+//                     />
+//                   ) : (
+//                     <p className="text-gray-500 italic">No image available</p>
+//                   )}
+//                 </div>
+
+//                 <div className="w-100">
+//                   <FileUpload
+//                     label="College Banner Cover Image (JPG/JPEG/PNG)"
+//                     name="image"
+//                     formik={formik}
+//                   />
+//                 </div>
+//               </div>
+
+//               {/* ✅ Submit Button */}
+//               {/* <button
+//                 type="submit"
+//                 className="px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition bg-gradient-to-r from-blue-600 to-indigo-600  mt-6 hover:bg-gradient-to-r hover:from-blue-700 hover:to-indigo-700  duration-300"
+//               >
+//                 Update Details
+//               </button> */}
+
+//               <div className="flex justify-end">
+//                 <button
+//                   type="submit"
+//                   onClick={formik.handleSubmit}
+//                   disabled={
+//                     !(formik.isValid && formik.dirty) || formik.isSubmitting
+//                   }
+//                   // className="bg-indigo-600 text-white px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:scale-105 transition cursor-pointer"
+//                   className={`px-8 py-3 rounded-md shadow text-lg text-white font-semibold  transition ${
+//                     formik.isValid && formik.dirty
+//                       ? "bg-indigo-600 hover:bg-blue-700 cursor-pointer"
+//                       : "bg-gray-400 cursor-not-allowed"
+//                   }`}
+//                 >
+//                   {formik.isSubmitting ? "Updating..." : "Update College"}
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//           <CollegeAddressModal
+//             open={showAddressModal}
+//             onClose={() => setShowAddressModal(false)}
+//             onSave={(newAddress) => {
+//               formik.setFieldValue("address", [
+//                 ...(formik.values.address || []),
+//                 newAddress,
+//               ]);
+//             }}
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+  // Update college form 
+
+
+
+    return (
+    <div className="p-8  max-w-7xl mx-auto space-y-8 bg-white">
+      <div className="bg-blue-50 p-4 rounded-xl">
+        <h2 className="text-3xl font-bold text-blue-800 flex items-center gap-2">
+          📁 Manage <span className="capitalize">{type}</span> Categories
+        </h2>
+      </div>
+
+      {/* Category Entry Section */}
+      <div className="space-y-4 bg-blue-50 p-4 rounded-xl">
+        {/* Category Name */}
+        <div>
+          <label className="font-semibold text-blue-800 flex items-center gap-2 text-lg">
+            <FaLayerGroup className="text-blue-600" />
+            Category Name
+          </label>
+          <input
+            type="text"
+            value={categoryInput}
+            onChange={(e) => setCategoryInput(e.target.value)}
+            placeholder="Enter category name"
+            className="mt-1 border px-4 py-2 rounded-lg w-full focus:ring focus:ring-blue-300"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Subcategories */}
+          {type === "college" && (
+            <div className="space-y-2">
+              <label className="font-semibold text-green-800 flex items-center gap-2 text-lg">
+                <FaBook className="text-green-600" />
+                Subcategories
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                {subCategoryInputs.map((sub, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      value={sub}
+                      onChange={(e) =>
+                        handleSubCategoryChange(index, e.target.value)
+                      }
+                      placeholder={`Subcategory ${index + 1}`}
+                      className="border px-3 py-2 rounded-lg w-full"
+                    />
+                    {subCategoryInputs.length > 1 && (
+                      <button
+                        onClick={() => handleRemoveSubCategoryField(index)}
+                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button
+                className="mt-2 text-md flex items-center gap-1 text-white bg-green-600 p-2 rounded-lg hover:underline"
+                onClick={handleAddSubCategoryField}
+              >
+                <Plus size={18} /> Add Subcategory
+              </button>
+            </div>
+          )}
+
+          {/* Entrance Exams */}
+          <div className="space-y-2">
+            <label className="font-semibold text-purple-800 flex items-center gap-2 text-lg">
+              <FaGraduationCap className="text-purple-600" />
+              Entrance Exams Required
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+              {entranceExams.map((exam, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    value={exam}
+                    onChange={(e) => {
+                      const updated = [...entranceExams];
+                      updated[index] = e.target.value;
+                      setEntranceExams(updated);
+                    }}
+                    placeholder={`Exam ${index + 1}`}
+                    className="border px-3 py-2 rounded-lg w-full"
+                  />
+                  {entranceExams.length > 1 && (
+                    <button
+                      onClick={() =>
+                        setEntranceExams(
+                          entranceExams.filter((_, i) => i !== index)
+                        )
+                      }
+                      className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <button
+              className="mt-2 text-md flex items-center gap-1 text-white bg-purple-700 p-2 rounded-lg hover:underline"
+              onClick={() => setEntranceExams([...entranceExams, ""])}
+            >
+              <Plus size={18} /> Add Exam
+            </button>
+          </div>
+        </div>
+
+        {/* Add Category Button */}
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg shadow mt-4 flex gap-1"
+          onClick={handleAddCategory}
+        >
+          <Plus size={18} /> Add Category
+        </button>
+      </div>
+
+      {/* List of Categories */}
+      <div>
+        <h4 className="text-xl font-semibold mb-3 text-gray-700">
+          Categories for{" "}
+          <span className="capitalize text-blue-700">{type}</span>
+        </h4>
+
+        <ul className="space-y-4 max-h-72 overflow-y-auto pr-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(categories || []).map((cat) => (
+              <li
+                key={cat._id}
+                className="bg-gray-50 border rounded-xl p-4 shadow-sm"
+              >
+                {editCategoryId === cat._id ? (
+                  <div className="space-y-4">
+                    {/* Edit Category Name */}
+                    <input
+                      type="text"
+                      value={editCategoryName}
+                      onChange={(e) => setEditCategoryName(e.target.value)}
+                      className="border px-3 py-2 rounded-lg w-full"
+                    />
+
+                    {/* Edit Subcategories */}
+                    {type === "college" && (
+                      <div className="space-y-2">
+                        <label className="text-green-700 font-medium">
+                          Subcategories
+                        </label>
+                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                          {editSubCategories.map((sub, index) => (
+                            <div
+                              key={index}
+                              className="flex gap-2 items-center"
+                            >
+                              <input
+                                type="text"
+                                value={sub}
+                                onChange={(e) =>
+                                  handleEditSubCategoryChange(
+                                    index,
+                                    e.target.value
+                                  )
+                                }
+                                className="border px-3 py-2 rounded-lg w-full"
+                              />
+                              {editSubCategories.length > 1 && (
+                                <button
+                                  onClick={() =>
+                                    handleRemoveEditSubCategoryField(index)
+                                  }
+                                  className="bg-red-500 text-white p-2 rounded-lg"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          className="text-sm text-white bg-green-600 p-2 rounded-lg hover:underline flex gap-1 items-center mt-1"
+                          onClick={handleAddEditSubCategoryField}
+                        >
+                          <Plus size={16} /> Add Subcategory
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Edit Entrance Exams */}
+                    <div className="space-y-2">
+                      <label className="text-purple-700 font-medium">
+                        Entrance Exams
+                      </label>
+                      <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                        {editEntranceExams.map((exam, index) => (
+                          <div key={index} className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              value={exam}
+                              onChange={(e) => {
+                                const updated = [...editEntranceExams];
+                                updated[index] = e.target.value;
+                                setEditEntranceExams(updated);
+                              }}
+                              className="border px-3 py-2 rounded-lg w-full"
+                            />
+                            {editEntranceExams.length > 1 && (
+                              <button
+                                onClick={() =>
+                                  setEditEntranceExams(
+                                    editEntranceExams.filter(
+                                      (_, i) => i !== index
+                                    )
+                                  )
+                                }
+                                className="bg-red-500 text-white p-2 rounded-lg"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        className="text-sm text-white bg-purple-700 p-2 rounded-lg hover:underline flex gap-1 items-center"
+                        onClick={() =>
+                          setEditEntranceExams([...editEntranceExams, ""])
+                        }
+                      >
+                        <Plus size={16} /> Add Exam
+                      </button>
+                    </div>
+
+                    {/* Save/Cancel Buttons */}
+                    <div className="flex gap-2 mt-2 justify-end">
+                      <button
+                        className="bg-green-600 text-white p-2 rounded-lg"
+                        onClick={() => handleUpdateCategory(cat._id)}
+                      >
+                       <span className="flex justify-center"> <Save size={18} />  </span>Save
+                      </button>
+                      <button
+                        className="bg-red-600 text-white p-2 rounded-lg"
+                        onClick={() => setEditCategoryId(null)}
+                      >
+                       <span className="flex justify-center"> <X size={18} /> </span> Delete
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-semibold text-gray-800">
+                        {cat.category}
+                      </p>
+                      {cat.subCategory?.length > 0 && (
+                        <ul className="ml-4 list-disc text-sm text-gray-600">
+                          {cat.subCategory.map((sub, i) => (
+                            <li key={i}>{sub}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {cat.entrance_exam_required?.length > 0 && (
+                        <div className="mt-1">
+                          <p className="text-sm font-semibold text-gray-700">
+                            Entrance Exams Required:
+                          </p>
+                          <ul className="ml-4 list-disc text-sm text-gray-600">
+                            {cat.entrance_exam_required.map((exam, i) => (
+                              <li key={i}>{exam}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        onClick={() => handleEditCategory(cat)}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg"
+                      >
+                        <Pencil size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCategory(cat._id)}
+                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </li>
+            ))}
+          </div>
+        </ul>
+      </div>
+    </div>
+  );

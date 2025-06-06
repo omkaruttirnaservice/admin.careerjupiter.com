@@ -312,14 +312,9 @@ const AddUniversity = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center mb-4">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-        >
-          <FaArrowLeft /> Back to Login
-        </button>
-      </div>
+      {/* <div className="flex items-center mb-4">
+        
+      </div> */}
 
       <UniversityForm
         formik={formik}

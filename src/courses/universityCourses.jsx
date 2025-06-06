@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Trash } from "lucide-react";
+import { Plus, Trash, ChevronDown, X } from "lucide-react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
@@ -8,10 +8,10 @@ import { getCookie } from "../utlis/cookieHelper";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Swal from "sweetalert2";
-import Select from "react-select"; // For multi-select dropdown
 import Cookies from "js-cookie";
 
 const UniversityCourses = () => {
+    // Default Values
   const defaultCourse = {
     name: "",
     duration: "",
@@ -19,7 +19,8 @@ const UniversityCourses = () => {
     category: "",
     subCategory: [],
     eligibility: "",
-    choiceCode: "", // ✅ missing
+    choiceCode: "",
+    sanctionedIntake: "",
   };
 
   const [initialValues, setInitialValues] = useState({
@@ -32,7 +33,9 @@ const UniversityCourses = () => {
   const [universityId, setUniversityId] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(Array(initialValues.courses.length).fill(false));
 
+    // Validations
   const validationSchema = Yup.object().shape({
     courses: Yup.array().of(
       Yup.object().shape({
@@ -46,56 +49,47 @@ const UniversityCourses = () => {
           .min(1, "At least one branch is required")
           .required("Branch selection is required"),
         eligibility: Yup.string().required("Eligibility is required"),
-        choiceCode: Yup.string().required("Choice Code is required"), // ✅ Add this
+        choiceCode: Yup.string().required("Choice Code is required"),
+        sanctionedIntake: Yup.number()
+          .min(1, "Intake must be at least 1")
+          .required("Sanctioned intake is required"),
       })
     ),
   });
 
-  // Get role and subrole
+    // Get role and subrole
   const role = Cookies.get("role");
   const subrole = Cookies.get("subrole");
 
-  // Fetch collegeId from cookie
-  // useEffect(() => {
-  //   const id = getCookie("collegeID");
-  //   if (id) {
-  //     setCollegeId(id);
-  //   } else {
-  //     console.warn("College ID not found in cookies!");
-  //   }
-  // }, []);
-
-  // Set collegeId from either URL params (admin) or cookies (vendor)
+    // Set collegeId from either URL params (admin) or cookies (vendor)
   useEffect(() => {
     const universityIdFromCookie = getCookie("universityID");
-       const id = universityIdFromParams || universityIdFromCookie;
-       
+    const id = universityIdFromParams || universityIdFromCookie;
+
     if (id) {
       setUniversityId(id);
-      console.log("University ID for infrastructure:", id);
-      // If admin is accessing, store the collegeId in cookie temporarily
+            // If admin is accessing, store the collegeId in cookie temporarily
       if (role === "ADMIN" && universityIdFromParams) {
-         Cookies.set("universityID", id, { expires: 1 }); // Expires in 1 day
+        Cookies.set("universityID", id, { expires: 1 });
       }
     } else {
       console.warn("University ID not found!");
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "University ID Missing",
         text: "Please select a University first",
       });
-    navigate(role === "ADMIN" ? "/university" : "/vendor-college");
+           //if Id not found navigate as per role
+      navigate(role === "ADMIN" ? "/university-details" : "/university-dashboard");
     }
   }, [universityIdFromParams, role, navigate]);
 
-  // Fetch categories from API
+    // Fetch categories from API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          `${API_BASE_URL}/api/university/search/cat`
-        );
-        setCategoryData(response.data.categories || []);
+        const response = await axios.get(`${API_BASE_URL}/api/university/search/cat`);
+        setCategoryData(response.data.data || []);
       } catch (error) {
         console.error("Failed to fetch university categories", error);
       }
@@ -110,25 +104,22 @@ const UniversityCourses = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `${API_BASE_URL}/api/university/course/${universityId}`
-        );
-        const data = response.data.data?.courses?.[0]?.courses || [];
-
-        console.log("Fetched course list:", data);
-
+        const response = await axios.get(`${API_BASE_URL}/api/university/course/${universityId}`);
+        const data = response.data?.data?.[0]?.courses || [];
+        
         if (data.length > 0) {
           const formattedCourses = data.map((course) => ({
             ...course,
             subCategory: Array.isArray(course.subCategory)
-              ? course.subCategory
+              ? course.subCategory // If already array,
               : course.subCategory
-              ? [course.subCategory]
-              : [],
+              ? [course.subCategory] // Convert single value to array
+              : [], // Default to empty array
           }));
 
           setInitialValues({ courses: formattedCourses });
           setIsEditMode(true);
+          setDropdownOpen(Array(formattedCourses.length).fill(false));
         }
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -140,13 +131,39 @@ const UniversityCourses = () => {
     fetchCourses();
   }, [universityId]);
 
+    // Get subcategory options based on selected category
   const getSubCategoryOptions = (category) => {
     const foundCategory = categoryData.find((cat) => cat.category === category);
-    return foundCategory?.subCategory
-      ? foundCategory.subCategory
-          .filter(Boolean)
-          .map((sub) => ({ value: sub, label: sub }))
-      : [];
+    return foundCategory?.subCategory?.filter(Boolean) || [];
+  };
+
+  const toggleDropdown = (index) => {
+    const newDropdownOpen = [...dropdownOpen];
+    newDropdownOpen[index] = !newDropdownOpen[index];
+    setDropdownOpen(newDropdownOpen);
+  };
+
+  const handleSubCategorySelect = (index, subCat, values, setFieldValue) => {
+    const currentSubCategories = [...values.courses[index].subCategory];
+    const subCatIndex = currentSubCategories.indexOf(subCat);
+
+    if (subCatIndex === -1) {
+      currentSubCategories.push(subCat);
+    } else {
+      currentSubCategories.splice(subCatIndex, 1);
+    }
+
+    setFieldValue(`courses.${index}.subCategory`, currentSubCategories);
+  };
+
+  const removeSubCategory = (index, subCat, values, setFieldValue) => {
+    const currentSubCategories = [...values.courses[index].subCategory];
+    const subCatIndex = currentSubCategories.indexOf(subCat);
+    
+    if (subCatIndex !== -1) {
+      currentSubCategories.splice(subCatIndex, 1);
+      setFieldValue(`courses.${index}.subCategory`, currentSubCategories);
+    }
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -165,7 +182,7 @@ const UniversityCourses = () => {
       };
 
       const url = isEditMode
-        ? `${API_BASE_URL}/api/university/course/${collegeId}`
+        ? `${API_BASE_URL}/api/university/course/${universityId}`
         : `${API_BASE_URL}/api/university/course/create`;
       const method = isEditMode ? "put" : "post";
 
@@ -237,6 +254,7 @@ const UniversityCourses = () => {
                 className="bg-white p-5 rounded-lg shadow-md border border-gray-200 space-y-4"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Course Name */}
                   <div className="flex flex-col">
                     <label className="text-blue-700">Course Name</label>
                     <Field
@@ -250,6 +268,7 @@ const UniversityCourses = () => {
                     />
                   </div>
 
+                  {/* Choice Code */}
                   <div className="flex flex-col">
                     <label className="text-blue-700">Choice Code</label>
                     <Field
@@ -263,6 +282,23 @@ const UniversityCourses = () => {
                     />
                   </div>
 
+                  {/* Sanctioned Intake */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700">Sanctioned Intake</label>
+                    <Field
+                      name={`courses.${index}.sanctionedIntake`}
+                      type="number"
+                      className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
+                      placeholder="e.g., 60 / 120"
+                    />
+                    <ErrorMessage
+                      name={`courses.${index}.sanctionedIntake`}
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  {/* Duration in years */}
                   <div className="flex flex-col">
                     <label className="text-blue-700">Duration (Years)</label>
                     <Field
@@ -278,6 +314,7 @@ const UniversityCourses = () => {
                   </div>
                 </div>
 
+                {/* Annual Fees */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col">
                     <label className="text-blue-700">Annual Fees (₹)</label>
@@ -293,6 +330,7 @@ const UniversityCourses = () => {
                     />
                   </div>
 
+                  {/* Category */}
                   <div className="flex flex-col">
                     <label className="text-blue-700">Category</label>
                     <Field
@@ -300,10 +338,7 @@ const UniversityCourses = () => {
                       name={`courses.${index}.category`}
                       className="mt-1 px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-300 shadow-sm"
                       onChange={(e) => {
-                        setFieldValue(
-                          `courses.${index}.category`,
-                          e.target.value
-                        );
+                        setFieldValue(`courses.${index}.category`, e.target.value);
                         setFieldValue(`courses.${index}.subCategory`, []);
                       }}
                     >
@@ -322,30 +357,77 @@ const UniversityCourses = () => {
                   </div>
                 </div>
 
+                {/* Custom Multi-Select Dropdown for SubCategory */}
                 <div className="flex flex-col">
                   <label className="text-blue-700">Branch</label>
-                  <Select
-                    isMulti
-                    options={getSubCategoryOptions(
-                      values.courses[index].category
+                  <div className="relative mt-1">
+                    <button
+                      type="button"
+                      onClick={() => toggleDropdown(index)}
+                      className={`w-full px-4 py-2 border-2 border-blue-200 cursor-not-allowed shadow-sm rounded-lg text-left flex justify-between items-center bg-white`}
+                      disabled={!values.courses[index].category}
+                    >
+                      <span>
+                        {values.courses[index].subCategory.length > 0
+                          ? values.courses[index].subCategory.join(", ")
+                          : "Select Branch"}
+                      </span>
+                      <ChevronDown
+                        className={`transition-transform ${
+                          dropdownOpen[index] ? "transform rotate-180" : ""
+                        }`}
+                        size={20}
+                      />
+                    </button>
+                    
+                    {dropdownOpen[index] && values.courses[index].category && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                        {getSubCategoryOptions(values.courses[index].category).map((subCat) => (
+                          <div
+                            key={subCat}
+                            className={`px-4 py-2 hover:bg-blue-50 cursor-pointer ${
+                              values.courses[index].subCategory.includes(subCat)
+                                ? "bg-blue-100"
+                                : ""
+                            }`}
+                            onClick={() => handleSubCategorySelect(index, subCat, values, setFieldValue)}
+                          >
+                            <div className="flex items-center">
+                              <input
+                                type="checkbox"
+                                checked={values.courses[index].subCategory.includes(subCat)}
+                                readOnly
+                                className="mr-2"
+                              />
+                              {subCat}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     )}
-                    value={values.courses[index].subCategory.map((sub) => ({
-                      value: sub,
-                      label: sub,
-                    }))}
-                    onChange={(selectedOptions) => {
-                      const selectedValues = selectedOptions
-                        ? selectedOptions.map((option) => option.value)
-                        : [];
-                      setFieldValue(
-                        `courses.${index}.subCategory`,
-                        selectedValues
-                      );
-                    }}
-                    className="mt-1"
-                    classNamePrefix="select"
-                    isDisabled={!values.courses[index].category}
-                  />
+                  </div>
+                  
+                  {/* Selected SubCategories Chips */}
+                  {values.courses[index].subCategory.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {values.courses[index].subCategory.map((subCat) => (
+                        <div
+                          key={subCat}
+                          className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center"
+                        >
+                          {subCat}
+                          <button
+                            type="button"
+                            onClick={() => removeSubCategory(index, subCat, values, setFieldValue)}
+                            className="ml-2 text-blue-600 hover:text-blue-900"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
                   <ErrorMessage
                     name={`courses.${index}.subCategory`}
                     component="div"
@@ -353,6 +435,7 @@ const UniversityCourses = () => {
                   />
                 </div>
 
+                {/* Eligibility */}
                 <div className="flex flex-col">
                   <label className="text-blue-700">Eligibility</label>
                   <Field
@@ -368,6 +451,7 @@ const UniversityCourses = () => {
                   />
                 </div>
 
+                {/* Remove Course Button */}
                 {values.courses.length > 1 && (
                   <div>
                     <button
@@ -376,6 +460,10 @@ const UniversityCourses = () => {
                         const newCourses = [...values.courses];
                         newCourses.splice(index, 1);
                         setFieldValue("courses", newCourses);
+                        
+                        const newDropdownOpen = [...dropdownOpen];
+                        newDropdownOpen.splice(index, 1);
+                        setDropdownOpen(newDropdownOpen);
                       }}
                       className="flex items-center bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded-lg shadow-md transition duration-300 cursor-pointer"
                     >
@@ -386,20 +474,20 @@ const UniversityCourses = () => {
               </motion.div>
             ))}
 
+            {/* Add New Course Button */}
             <div className="mt-6 flex justify-between">
               <button
                 type="button"
                 onClick={() => {
-                  setFieldValue("courses", [
-                    ...values.courses,
-                    { ...defaultCourse },
-                  ]);
+                  setFieldValue("courses", [...values.courses, { ...defaultCourse }]);
+                  setDropdownOpen([...dropdownOpen, false]);
                 }}
                 className="flex items-center bg-blue-600 hover:bg-blue-800 text-white py-2 px-6 rounded-lg shadow-lg transition duration-300 cursor-pointer"
               >
                 <Plus className="mr-2" size={20} /> Add Course
               </button>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isSubmitting || loading}

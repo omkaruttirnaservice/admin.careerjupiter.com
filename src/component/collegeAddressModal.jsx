@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import * as Yup from "yup";
 
 const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
-
-//if open is false then dont render
+  //if open is false then dont render
   if (!open) return null;
 
   //Nalidation section
@@ -244,6 +243,24 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
                     )}
                   </div>
 
+                  {/* Designation */}
+                  <div className="flex flex-col">
+                    <label className="text-blue-700 text-sm">Designation</label>
+                    <input
+                      name="designation"
+                      value={values.designation}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="Enter Designation"
+                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                    {touched.designation && errors.designation && (
+                      <div className="text-red-500 text-sm">
+                        {errors.designation}
+                      </div>
+                    )}
+                  </div>
+
                   {/* Authorized Name */}
                   <div className="flex flex-col">
                     <label className="text-blue-700 text-sm">
@@ -280,24 +297,6 @@ const CollegeAddressModal = ({ open, onClose, onSave, initialData = null }) => {
                     {touched.autorizedPhono && errors.autorizedPhono && (
                       <div className="text-red-500 text-sm">
                         {errors.autorizedPhono}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Designation */}
-                  <div className="flex flex-col">
-                    <label className="text-blue-700 text-sm">Designation</label>
-                    <input
-                      name="designation"
-                      value={values.designation}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      placeholder="Enter Designation"
-                      className="mt-1 px-3 py-1.5 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    />
-                    {touched.designation && errors.designation && (
-                      <div className="text-red-500 text-sm">
-                        {errors.designation}
                       </div>
                     )}
                   </div>

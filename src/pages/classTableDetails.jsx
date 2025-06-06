@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEye, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
-import EditClassDetails from "./editClassDetails";
 import ClassInfoCard from "./classInforCard";
 import Swal from "sweetalert2";
 
 const ClassTableDetails = () => {
   const [classData, setClassData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [editModalOpen, setEditModalOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
   const navigate = useNavigate();
 
   // ✅ Fetch Class Data from API
@@ -26,9 +23,8 @@ const ClassTableDetails = () => {
       .get(`${API_BASE_URL}/api/class/all`)
       .then((response) => {
         if (response.data.success && response.data.data.classes) {
-          const classArray = response.data.data.classes; // ✅ Extract `classes` array
+          const classArray = response.data.data.classes;
           console.log("✅ Fetched Class Data:", classArray);
-          // setClassData(classArray); // ✅ Update state with array
           const visibleClasses = classArray.filter(
             (classItem) => classItem.isHidden
           );
@@ -48,7 +44,7 @@ const ClassTableDetails = () => {
           error.response?.data?.usrMsg ||
             error.response?.data?.message ||
             error.response?.data.errMsg ||
-            "❌ Error fetching class data:",
+            "❌ Failed to fetch class data",
           error
         );
       })
@@ -63,44 +59,7 @@ const ClassTableDetails = () => {
     setModalOpen(true);
   };
 
-  // ✅ Delete Class
-  // const handleDelete = (item) => {
-  //   const { isConfirmed } = await Swal.fire({
-  //   title: 'Are you sure?',
-  //   text: "You won't be able to revert this!",
-  //   icon: 'warning',
-  //   showCancelButton: true,
-  //   confirmButtonText: 'Yes, delete it!',
-  //   cancelButtonText: 'No, keep it',
-  //   reverseButtons: true, // Reverses the positions of the buttons
-  // });
-
-  // if (!isConfirmed) return;
-
-  //   axios
-  //     .delete(`${API_BASE_URL}/api/class/delete/${item._id}`)
-  //     .then((response) => {
-  //       if (response.data.success) {
-  //         // ✅ Remove class from state
-  //         setClassData((prevData) =>
-  //           prevData.filter((classItem) => classItem._id !== item._id)
-  //         );
-  //         alert("✅ Class deleted successfully!");
-  //       } else {
-  //         alert("❌ Failed to delete class.");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("❌ Error deleting class:", error);
-  //       alert(
-  //         error.response?.data?.usrMsg ||
-  //           error.response?.data?.message ||
-  //           error.response?.data.errMsg ||
-  //           "❌ Failed deleting class!"
-  //       );
-  //     });
-  // };
-
+  // handle Category click to open modal
   const handleCategoryClick = (categories) => {
     if (Array.isArray(categories) && categories.length > 0) {
       setSelectedCategories(categories);
@@ -108,11 +67,13 @@ const ClassTableDetails = () => {
     }
   };
 
+  // Close the Modal
   const closeModal = () => {
     setShowModal(false);
     setSelectedCategories([]);
   };
 
+  // Delete the class
   const handleDelete = async (item) => {
     const { isConfirmed } = await Swal.fire({
       title: "Are you sure?",
@@ -151,8 +112,7 @@ const ClassTableDetails = () => {
     }
   };
 
-  // ✅ Search Functionality
-  // ✅ Search Functionality - Filters Across All Columns
+  // ✅ Search - Filters the columns
   const filteredData = classData.filter((row) => {
     const searchLower = searchTerm.toLowerCase();
 
@@ -163,7 +123,8 @@ const ClassTableDetails = () => {
       row.modeOfTeaching?.some((mode) =>
         mode.toLowerCase().includes(searchLower)
       ) ||
-      row.contactDetails?.toLowerCase().includes(searchLower)
+      row.contactDetails?.toLowerCase().includes(searchLower) ||
+      row.franchiseOrIndependent?.toLowerCase().includes(searchLower)
     );
   });
 
@@ -179,11 +140,6 @@ const ClassTableDetails = () => {
       selector: (row) => row.ownerOrInstituteName || "N/A",
       sortable: true,
     },
-    // {
-    //   name: "Category",
-    //   selector: (row) => row.category?.join(", ") || "N/A",
-    //   sortable: true,
-    // },
     {
       name: "Category",
       selector: (row) => (
@@ -217,24 +173,11 @@ const ClassTableDetails = () => {
       selector: (row) => row.yearEstablished || "N/A",
       sortable: true,
     },
-    // {
-    //   name: "Website",
-    //   selector: (row) => row.websiteURL || "N/A",
-    //   sortable: true,
-    // },
     {
       name: "Website",
       selector: (row) => (
         <div>
           {row.websiteURL && row.websiteURL.trim() !== "" ? (
-            // <a
-            //   href={row.websiteURL}
-            //   target="_blank"
-            //   rel="noopener noreferrer"
-            //   className="text-white bg-blue-600 hover:bg-blue-800 py-1 px-3 rounded-md cursor-pointer inline-block"
-            // >
-            //   Visit Website
-            // </a>
             <a
               href={
                 row.websiteURL.startsWith("http")
@@ -265,6 +208,7 @@ const ClassTableDetails = () => {
         <div className="flex gap-2">
           {/* ✅ View Profile */}
           <button
+            title="View"
             className="bg-blue-600 hover:bg-blue-800 text-white px-3 py-1 rounded-lg cursor-pointer"
             onClick={() => handleViewProfile(row)}
           >
@@ -273,68 +217,95 @@ const ClassTableDetails = () => {
 
           {/* ✅ Delete */}
           <button
+            title="Delete"
             className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded-lg cursor-pointer"
             onClick={() => handleDelete(row)}
           >
             <FaTrash size={15} />
           </button>
-          {/* ✅ Manage Courses */}
-          {/* <button className="bg-green-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-courses/${row._id}`)}>
-          📚 Courses
-        </button> */}
-
-          {/* ✅ Manage Faculty */}
-          {/* <button className="bg-purple-600 text-white px-3 py-1 rounded-lg cursor-pointer" onClick={() => navigate(`/manage-faculty/${row._id}`)}>
-          👨‍🏫 Faculty
-        </button> */}
         </div>
       ),
     },
   ];
 
   return (
-    <section className="min-h-screen bg-gray-100 p-6">
-      <div className="bg-white p-6 shadow-lg rounded-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-3xl font-bold text-blue-700">🏫 Class List</h2>
+    <section className="min-w-full bg-gradient-to-tr from-blue-100 to-white p-4">
+      {/* <div className="bg-white p-8 shadow-2xl rounded-2xl border border-blue-200"> */}
+        {/* Header */}
+        <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-4">
+          <h2 className="text-3xl font-semibold text-blue-800">
+            🏫 <span>Class List</span>
+          </h2>
 
-          {/* ✅ Search Input */}
+          {/* Search Section */}
           <input
             type="text"
-            placeholder="🔍 Search class..."
-            className="px-4 py-2 border border-blue-500 rounded-md"
+            placeholder="🔍 Search for a class..."
+            className="w-full md:w-72 px-5 py-3 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        {/* ✅ Data Table */}
-        <DataTable
-          columns={columns}
-          data={filteredData}
-          pagination
-          highlightOnHover
-          responsive
-          progressPending={loading}
-          // progressComponent={<div>Loading...</div>}
-           progressComponent={
-            <div className="p-4 flex justify-center items-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              <span className="ml-3 text-blue-500 font-medium">Loading...</span>
-            </div>
-          }
-          noDataComponent={
-            <div className="p-4 text-center text-gray-500">
-              No class found. Try a different search term.
-            </div>
-          }
-          customStyles={{
-            headRow: { style: { backgroundColor: "#2563eb", color: "white" } },
-            rows: { style: { backgroundColor: "#f0f9ff" } },
-          }}
-        />
+        {/* DataTable */}
+        <div className="overflow-hidden shadow">
+          <DataTable
+            columns={columns}
+            data={filteredData}
+            pagination
+            highlightOnHover
+            responsive
+            fixedHeader // ✅ Keeps header fixed
+            fixedHeaderScrollHeight="650px" // ✅ Set scrollable height for tbody
+            progressPending={loading}
+            progressComponent={
+              <div className="p-6 flex justify-center items-center space-x-4">
+                <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+                <span className="text-blue-600 font-semibold text-lg">
+                  Loading classes...
+                </span>
+              </div>
+            }
+            noDataComponent={
+              <div className="p-6 text-center text-gray-500 font-medium text-lg">
+                No classes found. Try a different search term.
+              </div>
+            }
+            customStyles={{
+              headRow: {
+                style: {
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  height: "50px",
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
+                },
+              },
+              rows: {
+                style: {
+                  backgroundColor: "#eff6ff",
+                  fontSize: "15px",
+                  minHeight: "50px",
+                },
+              },
+              pagination: {
+                style: {
+                  position: "sticky",
+                  bottom: 0,
+                  backgroundColor: "white",
+                  padding: "10px 20px",
+                  borderTop: "1px solid #e5e7eb",
+                  zIndex: 1,
+                },
+              },
+            }}
+          />
+        </div>
 
-        {/* ✅ View Class Details Modal */}
+        {/* View Class Details Modal */}
         {modalOpen && (
           <ClassInfoCard
             classData={selectedItem}
@@ -342,6 +313,7 @@ const ClassTableDetails = () => {
           />
         )}
 
+        {/* Category Modal */}
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 bg-opacity-50 backdrop-blur-sm">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto border-4 border-blue-500 space-y-6">
@@ -385,16 +357,7 @@ const ClassTableDetails = () => {
             </div>
           </div>
         )}
-
-        {/* ✅ Edit Class Details Modal */}
-        {/* {editModalOpen && (
-          <EditClassDetails
-            classData={selectedItem}
-            onSave={handleSaveEdit}
-            onCancel={() => setEditModalOpen(false)}
-          />
-        )} */}
-      </div>
+      {/* </div> */}
     </section>
   );
 };
