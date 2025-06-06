@@ -51,7 +51,7 @@ const CollegeTableDetails = () => {
     Deemed: "bg-pink-200 text-pink-800",
   };
 
-// Get method Logic - to fetch data
+  // Get method Logic - to fetch data
   const fetchCollegeData = () => {
     setLoading(true);
     axios
@@ -160,7 +160,10 @@ const CollegeTableDetails = () => {
         Swal.fire({
           icon: "warning",
           title: "Upload Failed!",
-          text: err.response?.data?.message || err.response?.data?.usrMsg || "Please try again.",
+          text:
+            err.response?.data?.message ||
+            err.response?.data?.usrMsg ||
+            "Please try again.",
           confirmButtonText: "OK",
         });
       });
@@ -204,7 +207,7 @@ const CollegeTableDetails = () => {
 
     const searchFields = [
       row.collegeName,
-       row.collegeId,
+      row.collegeId,
       row.affiliatedUniversity,
       row.collegeType,
       row.category,
@@ -224,7 +227,7 @@ const CollegeTableDetails = () => {
         .includes(searchTerm.toLowerCase());
     }
 
-    // Handle establishedYear 
+    // Handle establishedYear
     const yearMatch = row.establishedYear
       ? row.establishedYear.toString().includes(searchTerm)
       : false;
@@ -241,7 +244,7 @@ const CollegeTableDetails = () => {
     );
   });
 
-  // Table Columns 
+  // Table Columns
   const columns = [
     // Upload Images
     {
@@ -450,7 +453,7 @@ const CollegeTableDetails = () => {
               <FaPlus size={17} />
             </button>
 
-              {/* Infrastrucute  */}
+            {/* Infrastrucute  */}
             <button
               className="bg-purple-500 hover:bg-purple-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
               data-tooltip-id="infra-tooltip"
@@ -466,7 +469,7 @@ const CollegeTableDetails = () => {
               <FaBuilding size={17} />
             </button>
 
-              {/* Placement */}
+            {/* Placement */}
             <button
               className="bg-pink-500 hover:bg-pink-700 text-white px-2 py-1 rounded-lg shadow-md transition-all duration-300 cursor-pointer"
               data-tooltip-id="placement-tooltip"
@@ -481,7 +484,7 @@ const CollegeTableDetails = () => {
             >
               <FaBriefcase size={17} />
             </button>
-           
+
             {/* Tooltips */}
             <Tooltip id="view-tooltip" place="top" />
             <Tooltip id="edit-tooltip" place="top" />
@@ -498,7 +501,6 @@ const CollegeTableDetails = () => {
   return (
     <section>
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-2 px-4 shadow-lg">
-
         {/* Header Section  */}
         <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-3">
           <h2 className="text-3xl font-semibold text-blue-800">
@@ -517,7 +519,7 @@ const CollegeTableDetails = () => {
           </div>
         </div>
 
-       {/* Used DataTable Component for managing the table (List)   */}
+        {/* Used DataTable Component for managing the table (List)   */}
         <DataTable
           columns={columns}
           data={filteredData}
@@ -526,13 +528,17 @@ const CollegeTableDetails = () => {
           paginationRowsPerPageOptions={[10, 25, 50, 100]}
           highlightOnHover
           responsive
+          fixedHeader
+          fixedHeaderScrollHeight="calc(100vh - 160px)" // 👈 Adjust based on your layout height
           progressPending={loading}
-         progressComponent={
-          <div className="p-6 flex justify-center items-center space-x-4">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
-            <span className="text-blue-600 font-semibold text-lg">Loading Colleges...</span>
-          </div>
-        }
+          progressComponent={
+            <div className="p-6 flex justify-center items-center space-x-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+              <span className="text-blue-600 font-semibold text-lg">
+                Loading Colleges...
+              </span>
+            </div>
+          }
           noDataComponent={
             <div className="p-4 text-center text-gray-500">
               No colleges found. Try a different search term.
@@ -564,9 +570,12 @@ const CollegeTableDetails = () => {
             },
             pagination: {
               style: {
+                position: "sticky",
+                bottom: 0,
                 backgroundColor: "#f0ffff",
                 borderTop: "1px solid #ddd",
                 padding: "8px",
+                zIndex: 10,
               },
             },
           }}
@@ -810,7 +819,6 @@ const CollegeTableDetails = () => {
             </div>
           </div>
         )}
-
       </div>
     </section>
   );
