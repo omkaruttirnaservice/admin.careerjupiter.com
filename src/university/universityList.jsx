@@ -140,7 +140,7 @@ const UniversityList = () => {
     <section>
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-6 shadow-lg">
         {/* Header Section */}
-        <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-4">
+        <div className="sticky top-0 z-20 bg-white p-4 shadow-md rounded-lg mb-4 flex justify-between items-center">
           <h2 className="text-3xl font-semibold text-blue-800 flex items-center gap-3">
             <FaGlobe className="text-white bg-blue-600 p-2 rounded-full shadow-md text-5xl" />
             University List
@@ -160,10 +160,10 @@ const UniversityList = () => {
         {/* Table Container */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-blue-200">
           {/* Table */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[70vh]">
             <table className="w-full text-left">
               {/* Table Heading  */}
-              <thead className="bg-blue-600 text-white uppercase truncate">
+              <thead className="bg-blue-600 text-white uppercase truncate sticky top-0 z-10">
                 <tr>
                   <th className="px-6 py-4 font-bold">University ID</th>
                   <th className="px-6 py-4 font-bold">University Name</th>
@@ -408,7 +408,7 @@ const UniversityList = () => {
 
           {/* Pagination */}
           {filteredUniversities.length > 0 && (
-            <div className="flex justify-between items-center p-4 bg-blue-50 border-t border-blue-200">
+            <div className="sticky bottom-0 z-10 bg-blue-50 border-t border-blue-200 p-4 flex justify-between items-center">
               <div className="text-sm text-gray-600">
                 Showing {indexOfFirstUniversity + 1} to{" "}
                 {Math.min(indexOfLastUniversity, filteredUniversities.length)}{" "}

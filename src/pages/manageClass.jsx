@@ -351,6 +351,7 @@ const ManageClass = () => {
                   formik={formik}
                 />
 
+<div>
                 <MultiSelectDropdown
                   label="Category"
                   name="category"
@@ -364,7 +365,7 @@ const ManageClass = () => {
                       placeholder="Enter custom category"
                       value={customCategory}
                       onChange={(e) => setCustomCategory(e.target.value)}
-                      className="border border-gray-300 rounded px-3 py-2 w-full"
+                      className="w-full px-4 py-3 border rounded-lg shadow-md focus:outline-none transition-all duration-200 border-blue-300"
                     />
                     <button
                       type="button"
@@ -375,6 +376,7 @@ const ManageClass = () => {
                     </button>
                   </div>
                 )}
+              </div>
               </div>
 
               {/* Address array */}
@@ -397,7 +399,7 @@ const ManageClass = () => {
                         </div>
 
                         {/* Form Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
                           {[
                             {
                               label: "Address Line 1",

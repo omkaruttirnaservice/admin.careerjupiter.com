@@ -876,15 +876,15 @@ const ManageCollege = () => {
                   <div key={index} className="relative">
                     {isEditing ? (
                       <div className="bg-white rounded-xl shadow-md p-6 border-2 border-blue-200">
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex justify-between items-center mb-4 bg-blue-600 py-3 rounded-lg px-5">
                           {/* Heading for Editing Address section */}
-                          <h3 className="text-lg font-semibold text-blue-700">
-                            ✏️ Editing Address {index + 1}
+                          <h3 className="text-lg font-semibold text-white ">
+                           <span>✏️</span>  Editing Address {index + 1}
                           </h3>
                         </div>
 
                         {/* Prefilled value of the address section in the edit modal */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
                           {formFields.map((field, idx) => (
                             <div key={idx} className="mb-4">
                               <label className="block text-md font-medium text-blue-900 mb-1">

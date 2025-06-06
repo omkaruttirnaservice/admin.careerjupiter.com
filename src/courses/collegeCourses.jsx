@@ -267,7 +267,7 @@ const CollegeCourses = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="bg-white p-5 rounded-lg shadow-md border border-gray-200 space-y-4"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
                   {/* Course Name */}
                   <div className="flex flex-col">
                     <label className="text-blue-700">Course Name</label>
@@ -343,10 +343,10 @@ const CollegeCourses = () => {
                       className="text-red-500 text-sm mt-1"
                     />
                   </div>
-                </div>
+             
 
                 {/* Annual Fees */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
                   <div className="flex flex-col">
                     <label className="text-blue-700">Annual Fees (₹)</label>
                     <Field
@@ -389,7 +389,7 @@ const CollegeCourses = () => {
                       className="text-red-500 text-sm mt-1"
                     />
                   </div>
-                </div>
+                {/* </div> */}
 
                 {/* Custom Multi-Select Dropdown for SubCategory */}
                 <div className="flex flex-col">
@@ -486,6 +486,7 @@ const CollegeCourses = () => {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
+                   </div>
 
                 {/* Eligibility */}
                 <div className="flex flex-col">
@@ -502,6 +503,8 @@ const CollegeCourses = () => {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
+                
+                
 
                 {/* Remove Course Button to remove the course */}
                 {values.courses.length > 1 && (
@@ -515,7 +518,7 @@ const CollegeCourses = () => {
                       }}
                       className="flex items-center bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded-lg shadow-md transition duration-300 cursor-pointer"
                     >
-                      <Trash className="mr-2" size={20} /> Remove Course
+                      <Trash className="mr-2" size={20} /> Remove
                     </button>
                   </div>
                 )}

@@ -230,10 +230,10 @@ const ClassTableDetails = () => {
 
   return (
     <section className="min-w-full bg-gradient-to-tr from-blue-100 to-white p-4">
-      <div className="bg-white p-8 shadow-2xl rounded-2xl border border-blue-200">
+      {/* <div className="bg-white p-8 shadow-2xl rounded-2xl border border-blue-200"> */}
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-          <h2 className="text-4xl font-extrabold text-blue-700 tracking-tight flex items-center gap-2">
+        <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-4">
+          <h2 className="text-3xl font-semibold text-blue-800">
             🏫 <span>Class List</span>
           </h2>
 
@@ -248,13 +248,15 @@ const ClassTableDetails = () => {
         </div>
 
         {/* DataTable */}
-        <div className="rounded-lg overflow-hidden shadow">
+        <div className="overflow-hidden shadow">
           <DataTable
             columns={columns}
             data={filteredData}
             pagination
             highlightOnHover
             responsive
+            fixedHeader // ✅ Keeps header fixed
+            fixedHeaderScrollHeight="650px" // ✅ Set scrollable height for tbody
             progressPending={loading}
             progressComponent={
               <div className="p-6 flex justify-center items-center space-x-4">
@@ -277,6 +279,9 @@ const ClassTableDetails = () => {
                   fontSize: "16px",
                   fontWeight: "bold",
                   height: "50px",
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
                 },
               },
               rows: {
@@ -284,6 +289,16 @@ const ClassTableDetails = () => {
                   backgroundColor: "#eff6ff",
                   fontSize: "15px",
                   minHeight: "50px",
+                },
+              },
+              pagination: {
+                style: {
+                  position: "sticky",
+                  bottom: 0,
+                  backgroundColor: "white",
+                  padding: "10px 20px",
+                  borderTop: "1px solid #e5e7eb",
+                  zIndex: 1,
                 },
               },
             }}
@@ -342,7 +357,7 @@ const ClassTableDetails = () => {
             </div>
           </div>
         )}
-      </div>
+      {/* </div> */}
     </section>
   );
 };

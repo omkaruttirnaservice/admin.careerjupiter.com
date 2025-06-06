@@ -2,13 +2,20 @@ import React from "react";
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUniversity, FaCheckCircle, FaPlus, FaTimes } from "react-icons/fa";
+import {
+  FaUniversity,
+  FaCheckCircle,
+  FaPlus,
+  FaTimes,
+  FaArrowLeft,
+} from "react-icons/fa";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import stateDistricts from "../constant/constantData";
 import { fetchUniversityCategories } from "./universityapi";
+import { useNavigate } from "react-router-dom";
 
 // Constants
 const UniversityCategories = ["Private", "Government", "Autonomous", "Deemed"];
@@ -62,6 +69,7 @@ const UniversityForm = ({
   submitButtonText = "Submit",
 }) => {
   // States for OTP verification
+  const navigate = useNavigate();
   const [verifiedOtp, setVerifiedOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [referenceId, setReferenceId] = useState("");
@@ -789,6 +797,14 @@ const UniversityForm = ({
     >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
       <div className="w-[70%] bg-white shadow-xl rounded-xl p-8 border border-blue-300 relative z-10 my-4">
+        <div className="text-right mb-4">
+          <button
+            onClick={() => navigate("/")}
+            className="text-blue-600 underline hover:text-blue-800 transition cursor-pointer"
+          >
+            University Login
+          </button>
+        </div>
         <div className="flex justify-between items-center bg-gradient-to-r from-blue-700 to-blue-500 text-white p-5 rounded-t-lg shadow-lg">
           <h2 className="text-3xl font-bold flex items-center gap-4">
             <FaUniversity
@@ -853,8 +869,8 @@ const UniversityForm = ({
                 value={formik.values.category}
                 onChange={(e) => {
                   const selectedCategory = e.target.value;
-                  formik.setFieldValue("category", selectedCategory); 
-                  formik.setFieldValue("subCategory", ""); 
+                  formik.setFieldValue("category", selectedCategory);
+                  formik.setFieldValue("subCategory", "");
                 }}
                 onBlur={formik.handleBlur}
                 className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
