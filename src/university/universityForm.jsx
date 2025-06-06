@@ -1374,7 +1374,7 @@ const UniversityForm = ({
               </select>
             </div>
 
-            {/* Accreditation with Other option */}
+            Accreditation with Other option
             <CustomDropdown
               label="Accreditation"
               options={accreditationOptions}
@@ -1385,6 +1385,8 @@ const UniversityForm = ({
               otherValue={otherAccreditation}
               setOtherValue={setOtherAccreditation}
             />
+
+            
 
             {/* Facilities */}
             <CustomDropdown

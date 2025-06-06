@@ -54,16 +54,11 @@ const UniversityList = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteUniversity,
     onSuccess: () => {
-      toast.success("University deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["universities"] });
       setDeleteModalOpen(false);
     },
     onError: (error) => {
-      toast.error(
-        `Failed to delete university: ${
-          error.message || "Failed to delete university"
-        }`
-      );
+      console.error("Delete failed:", error.message || error);
     },
   });
 
@@ -454,7 +449,7 @@ const UniversityList = () => {
   //     </div>
   //   );
 
-  return(
+  return (
     <section>
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-6 shadow-lg">
         {/* Header Section */}

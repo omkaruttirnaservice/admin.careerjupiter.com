@@ -366,6 +366,8 @@ const AddTest = ({ onClose, onTestAdded }) => {
       passingMarks: Number(values.passingMarks),
       userType: Number(values.userType),
       reportType: Number(values.reportType),
+
+
     };
 
     console.log("Sending requestData to API:", requestData);
@@ -434,7 +436,9 @@ const AddTest = ({ onClose, onTestAdded }) => {
                 />
               </div>
 
-              {/* Category + Type Selection */}
+              {/* Category  +  Type Selection */}
+              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block font-medium text-gray-700 mb-1">

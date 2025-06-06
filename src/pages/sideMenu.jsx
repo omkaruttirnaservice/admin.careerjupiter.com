@@ -98,6 +98,13 @@ const navigation = [
         color: 'text-indigo-400',
     },
     {
+        name: 'Excel upload',
+        href: '/excel-upload',
+        icon: PresentationChartBarIcon,
+        color: 'text-indigo-400',
+    },
+
+    {
         name: 'Roadmap',
         icon: Map,
         color: 'text-red-400',

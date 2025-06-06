@@ -49,6 +49,7 @@ import ManageClassCategory from "./component/manageClassCategory.jsx";
 import TypeList from "./component/roadmap/typeList.jsx";
 import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
 import UniversityCourses from "./courses/universityCourses.jsx";
+import Addexcel from "./component/excel/excel-upload.jsx";
 
 const queryClient = new QueryClient();
 
@@ -127,6 +128,9 @@ function App() {
               <Route path="/edit-university/:id" element={<EditUniversity />} />
               <Route path="/manage-type" element={<TypeList />} />
               <Route path="/manage-roadmap" element={<ManageRoadmapForm />} />
+              <Route path="/excel-upload" element={<Addexcel />} />
+
+
             </Route>
 
             {/* Protected Routes for VENDOR - All Subroles */}
