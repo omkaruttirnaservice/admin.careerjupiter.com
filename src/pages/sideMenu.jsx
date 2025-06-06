@@ -87,6 +87,15 @@ const navigation = [
         name: "Add University Category",
         href: "/add-university-category",
         icon: GraduationCap,
+
+    {
+        name: 'Excel upload',
+        href: '/excel-upload',
+        icon: PresentationChartBarIcon,
+        color: 'text-indigo-400',
+    },
+
+   
         color: "text-purple-400",
       },
     ],
@@ -128,6 +137,7 @@ const navigation = [
     icon: UserCircleIcon,
     color: "text-pink-400",
   },
+
 ];
 
 const SideMenu = () => {

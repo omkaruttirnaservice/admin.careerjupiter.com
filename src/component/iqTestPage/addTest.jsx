@@ -402,6 +402,8 @@ const AddTest = ({ onClose, onTestAdded }) => {
       passingMarks: Number(values.passingMarks),
       userType: Number(values.userType),
       reportType: Number(values.reportType),
+
+
     };
 
     console.log("Sending requestData to API:", requestData);
@@ -461,6 +463,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
           </div>
         </div>
 
+
         <div className="p-5 space-y-6">
           <Formik
             initialValues={initialValues}
@@ -470,6 +473,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
             {({ isSubmitting, setFieldValue }) => (
               <Form className="space-y-6">
                 {/* Test Name */}
+
                 <div>
                   <label className="block font-medium text-blue-800 mb-1">
                     Test Name
