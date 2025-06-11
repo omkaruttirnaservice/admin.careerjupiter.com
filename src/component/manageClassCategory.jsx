@@ -202,7 +202,7 @@ const ManageClassCategory = ({ onCategoriesChange }) => {
   };
 
   return (
-    <div className="p-8 bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-2xl m-10 shadow-xl max-w-6xl mx-auto">
+    <div className="p-8 bg-white h-[690px] rounded-2xl m-4 shadow-xl max-w-6xl mx-auto">
       {/* Heading  */}
       <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2">
         📁 Manage Category <span className="capitalize">{type}</span>
@@ -246,7 +246,7 @@ const ManageClassCategory = ({ onCategoriesChange }) => {
             categories[type].map((cat) => (
               <li
                 key={cat._id}
-                className="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
+                className="flex items-center justify-between bg-white border-2 border-blue-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
               >
                 {editCategoryId === cat._id ? (
                   <div className="flex w-full items-center justify-between gap-4">

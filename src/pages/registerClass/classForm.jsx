@@ -11,7 +11,6 @@ import RadioGroup from "../../component/radioGroup";
 import { API_BASE_URL } from "../../constant/constantBaseUrl";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { setAuthCookies } from "../../utlis/cookieHelper";
 import MultiSelectDropdown from "../../component/multiSelectDropdown";
 import Swal from "sweetalert2";
 import AddressModal from "../../component/addressModel";
@@ -26,11 +25,13 @@ const ClassForm = () => {
   const [customCategory, setCustomCategory] = useState("");
   const [verifiedOtp, setVerifiedOtp] = useState(false);
   const [dynamicCategories, setDynamicCategories] = useState([]);
+  const [roadmapOptions, setRoadmapOptions] = useState([]);
 
   <stateDistricts />;
 
+  // Discount Dropdown Values
   const discountOptions = [
-    { label: "Discount Not Applicable", value: 0},
+    { label: "Discount Not Applicable", value: 0 },
     { label: "Discount 5%", value: 5 },
     { label: "Discount 10%", value: 10 },
     { label: "Discount 15%", value: 15 },
@@ -50,11 +51,13 @@ const ClassForm = () => {
   ];
 
   const formik = useFormik({
+    // Initial Value for the class form
     initialValues: {
       className: "",
       ownerOrInstituteName: "",
       typeOfClass: [],
       category: [],
+      roadmap: [],
       otherCategory: "",
       subjectsOrCourses: [],
       teachingMedium: [],
@@ -78,6 +81,7 @@ const ClassForm = () => {
       validTill: "",
     },
 
+    // Validations
     validationSchema: Yup.object({
       className: Yup.string().required("Class Name is required"),
       ownerOrInstituteName: Yup.string().required(
@@ -103,6 +107,9 @@ const ClassForm = () => {
           .max(1000, "Maximum 1000 characters allowed.")
           .required("Description is required."),
       }),
+      roadmap: Yup.array()
+        .required("Roadmap Category is required")
+        .min(1, "Select at least one roadmap category"),
       keywords: Yup.array()
         .of(Yup.string().min(1, "Each keyword must have at least 1 Keyword"))
         .min(1, "At least one keyword is required")
@@ -136,12 +143,6 @@ const ClassForm = () => {
           file ? file.size <= 102400 : true
         )
         .required("Image is required"),
-
-      // category: Yup.array()
-      //   .of(Yup.string().oneOf(dynamicCategories, "Invalid category selected"))
-      //   .min(1, "At least one category must be selected")
-      //   .required("Category is required"),
-
       category: Yup.array()
         .of(
           Yup.string().test(
@@ -165,21 +166,22 @@ const ClassForm = () => {
               .required("Valid till date is required")
               .min(new Date(), "Date must be today or later"),
         }),
-
       // otherCategory: Yup.string().when("Category", {
       //   is: (val) => Array.isArray(val) && val.includes("Others"),
       //   then: () => Yup.string().required("Please specify the other category"),
       //   otherwise: () => Yup.string().notRequired(),
       //   }),
       modeOfTeaching: Yup.array()
-        .min(1, "Please select at least one mode of teaching") // At least one option must be selected
+        .min(1, "Please select at least one mode of teaching")
         .required("Mode of teaching is required"),
     }),
 
+    // Main OnSubmit
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         const formData = new FormData();
 
+        // If OTP not verified show this popup and restrict form submission
         if (!verifiedOtp) {
           Swal.fire({
             icon: "warning",
@@ -190,6 +192,7 @@ const ClassForm = () => {
           return false;
         }
 
+        // For showing the popup for the address required field
         if (!values.address || values.address.length === 0) {
           Swal.fire({
             icon: "warning",
@@ -200,9 +203,9 @@ const ClassForm = () => {
           return;
         }
 
-        console.log("🚀 Original Form Values:", values); // ✅ Debugging
+        console.log("🚀 Original Form Values:", values);
 
-        // ✅ Properly format `address` and `info`
+        // ✅ Properly format `address`,Established Year and `info`
         const formattedData = {
           ...values,
           yearEstablished: values.yearEstablished
@@ -214,8 +217,7 @@ const ClassForm = () => {
           },
         };
 
-        console.log("✅ Formatted Data Before Sending:", formattedData);
-
+        // Handled Address Section
         values.address.forEach((address, idx) => {
           formData.append(`address[${idx}][line1]`, values.address[idx].line1);
           formData.append(`address[${idx}][line2]`, values.address[idx].line2);
@@ -243,41 +245,38 @@ const ClassForm = () => {
           );
         });
 
+        // RoadMap
+        values.roadmap.forEach((id) => {
+          formData.append("roadmap[]", id); // sends only _id
+        });
+
+        // Discount
         if (values.discount) {
           formData.append("discount", Number(values.discount));
         }
+
+        // Valid Till
         if (values.validTill) {
           formData.append("validTill", values.validTill);
         }
 
+        // Type ( Franchise Or Independent)
         formData.append(
           `franchiseOrIndependent`,
           formattedData.franchiseOrIndependent
         );
-        formData.append("info[description]", values.info?.description);
-        formData.append("contactDetails", formattedData.contactDetails);
-
-        values.locations.forEach((loc, index) => {
-          formData.append(`locations[${index}][lat]`, loc.lat);
-          formData.append(`locations[${index}][lan]`, loc.lan);
-        });
-
-        console.log("📌 Address Data:", values.address);
-        console.log(
-          "📌 FormData Sent:",
-          Object.fromEntries(formData.entries())
-        );
-
-        formData.append("className", formattedData.className);
+        formData.append("info[description]", values.info?.description); // Info Description
+        formData.append("contactDetails", formattedData.contactDetails); // Contact Details
+        formData.append("className", formattedData.className); // Class Name
         formData.append(
           "ownerOrInstituteName",
-          formattedData.ownerOrInstituteName
+          formattedData.ownerOrInstituteName // Owner or Institute Name
         );
-        formData.append("websiteURL", formattedData.websiteURL);
-        formData.append("yearEstablished", formattedData.yearEstablished);
+        formData.append("websiteURL", formattedData.websiteURL); // Website URL
+        formData.append("yearEstablished", formattedData.yearEstablished); // Established Year
+        formData.append("password", formattedData.password); // Password
 
-        formData.append("password", formattedData.password);
-
+        // Category Handled with Other
         const finalCategory = values.category.map((item) =>
           item === "Others" ? customCategory : item
         );
@@ -288,26 +287,25 @@ const ClassForm = () => {
 
         // formData.append("subjectsOrCourses", JSON.stringify(formattedData.subjectsOrCourses || []));
         formattedData.modeOfTeaching.forEach((mode) => {
-          formData.append("modeOfTeaching", mode);
+          formData.append("modeOfTeaching", mode); // Mode of Teaching
         });
 
+        // Image
         if (formattedData.image) {
           formData.append("image", formattedData.image);
         }
 
+        // Image Gallery
         formattedData.imageGallery.forEach((file) => {
           formData.append("imageGallery", file);
         });
 
+        // Keywords
         formattedData.keywords.forEach((keyword) => {
           formData.append("keywords", keyword);
         });
 
-        console.log(
-          "📌Final FormData Sent:",
-          Object.fromEntries(formData.entries())
-        );
-
+        // Post Method for sending data to backend
         const response = await axios.post(
           `${API_BASE_URL}/api/class/create`,
           formData,
@@ -360,11 +358,13 @@ const ClassForm = () => {
     },
   });
 
-  // Get dynamic categories from api
+  // Category Values for dropdown using api
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/class/categories/all`);
+        const response = await axios.get(
+          `${API_BASE_URL}/api/class/categories/all`
+        );
         if (response.data.success && response.data.categories) {
           const formatted = response.data.categories.map((cat) => cat.category);
           setDynamicCategories(formatted);
@@ -377,7 +377,7 @@ const ClassForm = () => {
     fetchCategories();
   }, []);
 
-  // 🔍 Watch for selection changes
+  // 🔍 Watch for selection changes in category field ( for others )
   useEffect(() => {
     if (formik.values.category?.includes("Others")) {
       setShowOtherInput(true);
@@ -393,36 +393,32 @@ const ClassForm = () => {
     const updated = formik.values.category.map((item) =>
       item === "Others" ? customCategory : item
     );
-
     formik.setFieldValue("category", updated);
-
     setCustomCategory("");
     setShowOtherInput(false);
   };
 
-  // Handle custom category
-  // const handleAddOtherCategory = () => {
-  //   if (!customCategory) return;
+  // Fetch roadmap categories once when the component mounts
+  useEffect(() => {
+    const fetchRoadmapOptions = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/type/types`);
+        const types = response.data?.data || [];
 
-  //   const exists = dynamicCategories.some(
-  //     (cat) => cat.value.toLowerCase() === customCategory.toLowerCase()
-  //   );
+        const formatted = types.map((item) => ({
+          _id: item._id,
+          type: item.type,
+        }));
+        setRoadmapOptions(formatted);
+      } catch (error) {
+        console.error("Failed to fetch roadmap types", error);
+      }
+    };
 
-  //   if (!exists) {
-  //     const newCat = { label: customCategory, value: customCategory };
-  //     setDynamicCategories((prev) => [...prev, newCat]);
-  //   }
+    fetchRoadmapOptions();
+  }, []);
 
-  //   formik.setFieldValue("Category", [
-  //     ...(formik.values.Category || []),
-  //     customCategory,
-  //   ]);
-
-  //   setCustomCategory("");
-  //   setShowOtherInput(false);
-  // };
-
-  // handle custom input if "Others" is selected
+  // Handle custom input if "Others" is selected
   useEffect(() => {
     if (formik.values.category?.includes("Others")) {
       setShowOtherInput(true);
@@ -432,10 +428,11 @@ const ClassForm = () => {
   }, [formik.values.category]);
 
   return (
+    // Backgroung Blury Image
     <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
       <div className="absolute inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm"></div>
       <div className="w-full max-w-5xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
-        {/* Form Title */}
+        {/* Route back to the login page */}
         <div className="text-right mb-4">
           <button
             type="button"
@@ -445,25 +442,29 @@ const ClassForm = () => {
             Class Login
           </button>
         </div>
+        {/* Form Title */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-t-md text-center">
           <h2 className="text-2xl font-bold flex items-center justify-center gap-3">
             <FaUniversity
               className="text-black bg-white p-2 rounded-full shadow-md"
               size={50}
             />
-            Register Class
+            Class Registration Form
           </h2>
         </div>
 
         {/* Form */}
         <form onSubmit={formik.handleSubmit} className="space-y-4 mt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Class Name */}
             <InputField
               label="Class Name"
               type="text"
               name="className"
               formik={formik}
             />
+
+            {/* Owner or Institute Name */}
             <InputField
               label="Owner Name"
               type="text"
@@ -471,12 +472,14 @@ const ClassForm = () => {
               formik={formik}
             />
 
+            {/* Contact Details + Otp verification */}
             <ContactWithOTP
               formik={formik}
               setVerifiedOtp={setVerifiedOtp}
               verifiedOtp={verifiedOtp}
             />
 
+            {/* Set Password */}
             <div className="col-span-full grid grid-cols-2 gap-4">
               <InputField
                 label="Set Password"
@@ -485,6 +488,7 @@ const ClassForm = () => {
                 formik={formik}
               />
 
+              {/* Confirm Password */}
               <InputField
                 label="Confirm Password"
                 type="password"
@@ -493,6 +497,7 @@ const ClassForm = () => {
               />
             </div>
 
+            {/* Established Year */}
             <InputField
               label="Established Year"
               type="number"
@@ -500,6 +505,7 @@ const ClassForm = () => {
               formik={formik}
             />
 
+            {/* Website URL */}
             <InputField
               label="Website URL"
               type="text"
@@ -507,12 +513,14 @@ const ClassForm = () => {
               formik={formik}
             />
 
+            {/* Category */}
             <MultiSelectDropdown
               label="Category"
               name="category"
               options={dynamicCategories}
               formik={formik}
             />
+            {/* Handled Other  */}
             {showOtherInput && (
               <div className="flex items-center gap-2 mt-3">
                 <input
@@ -532,39 +540,25 @@ const ClassForm = () => {
               </div>
             )}
 
-            {/* <MultiSelectDropdown
-              label="Category"
-              name="Category"
-              options={dynamicCategories}
+            {/* RoadMap Category */}
+            <MultiSelectDropdown
+              label="Roadmap Category"
+              name="roadmap"
+              options={roadmapOptions}
               formik={formik}
+              getOptionValue={(option) => option._id}
+              getOptionLabel={(option) => option.type}
             />
 
-            {showOtherInput && (
-              <div className="flex items-center gap-2 mt-3">
-                <input
-                  type="text"
-                  placeholder="Enter custom category"
-                  value={customCategory}
-                  onChange={(e) => setCustomCategory(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-2 w-full"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddOtherCategory}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Add
-                </button>
-              </div>
-            )} */}
-
+            {/* Info Description */}
             <TextAreaField
               label="Description"
               name="info.description"
               formik={formik}
             />
             <div className="col-span-full">
-              <div className="grid  gap-6 w-full ">
+              <div className="grid gap-6 w-full ">
+                {/* Keywords */}
                 <MultiSelectField
                   label="Keywords"
                   name="keywords"
@@ -573,12 +567,15 @@ const ClassForm = () => {
               </div>
             </div>
 
+            {/* Type */}
             <RadioGroup
               label="Type"
               name="franchiseOrIndependent"
               options={["Franchise", "Home Tution", "Group"]}
               formik={formik}
             />
+
+            {/* Mode Of Teaching */}
             <CheckboxGroup
               label="Mode of Teaching"
               name="modeOfTeaching"
@@ -586,6 +583,7 @@ const ClassForm = () => {
               formik={formik}
             />
 
+            {/* Discount */}
             <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex-1">
                 <label className="block text-blue-900 text-lg font-semibold mb-2">
@@ -593,9 +591,14 @@ const ClassForm = () => {
                 </label>
                 <select
                   name="discount"
-                  className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-3 rounded-lg border border-blue-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={formik.values.discount || ""}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    const selected = e.target.value;
+                    formik.setFieldValue("discount", selected);
+                    formik.setFieldValue("validTill", ""); // clear date every time discount changes
+                  }}
+                  // onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 >
                   <option value="">Select Discount</option>
@@ -613,26 +616,27 @@ const ClassForm = () => {
               </div>
 
               {/* Valid Till Date Picker */}
-              {formik.values.discount && (
-                <div className="flex-1">
-                  <label className="block text-blue-900 text-lg font-semibold mb-2">
-                    Valid Till
-                  </label>
-                  <input
-                    type="date"
-                    name="validTill"
-                    className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={formik.values.validTill || ""}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                  {formik.touched.validTill && formik.errors.validTill && (
-                    <div className="text-red-500 text-sm mt-2 font-semibold">
-                      {formik.errors.validTill}
-                    </div>
-                  )}
-                </div>
-              )}
+              {formik.values.discount !== "" &&
+                Number(formik.values.discount) !== 0 && (
+                  <div className="flex-1">
+                    <label className="block text-blue-900 text-lg font-semibold mb-2">
+                      Valid Till
+                    </label>
+                    <input
+                      type="date"
+                      name="validTill"
+                      className="w-full p-3 rounded-lg border border-blue-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      value={formik.values.validTill || ""}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.validTill && formik.errors.validTill && (
+                      <div className="text-red-500 text-sm mt-2 font-semibold">
+                        {formik.errors.validTill}
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
 
             <div className="col-span-full">
@@ -654,6 +658,7 @@ const ClassForm = () => {
               </div>
             </div>
 
+            {/* Address field to Add new Address (button) */}
             <div className="col-span-full justify-end ">
               <div className="flex justify-between items-center col-span-full gap-4">
                 <label
@@ -759,6 +764,8 @@ const ClassForm = () => {
           </div>
         </form>
       </div>
+
+      {/* Address Modal which Opens the Modal to add new address */}
       <AddressModal
         open={showAddressModal}
         onClose={() => {

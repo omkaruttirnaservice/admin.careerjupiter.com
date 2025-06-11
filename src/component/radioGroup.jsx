@@ -8,7 +8,7 @@ const RadioGroup = ({ label, name, options, formik }) => {
   const isTouched = formik?.touched?.[name];
 
   return (
-    <div className="mb-5 p-5 border border-blue-200 rounded-xl shadow-md bg-gradient-to-r from-blue-50 to-white">
+    <div className="mb-5 p-5 border border-blue-200 rounded-xl shadow-md bg-white">
       <label className="text-blue-900 font-semibold block mb-3 text-lg">{label}</label>
       <div className="lg:flex lg:flex-wrap gap-3 flex-row">
         {options.map((option, index) => (
