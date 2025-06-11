@@ -79,7 +79,7 @@ const ManageRoadmapForm = () => {
     fetchRoadmaps();
   }, []);
 
-  // Handles the subtype as per the changes in type or selected type (shows the remaining types except the selected one)
+  // shows the remaining types except the selected one
   const handleTypeChange = async (e) => {
     const selectedType = e.target.value;
     formik.setFieldValue("type", selectedType);
@@ -162,7 +162,7 @@ const ManageRoadmapForm = () => {
             icon: "success",
           });
         } else {
-          // Create api
+          // Create api for creating roadmap
           const res = await axios.post(
             `${API_BASE_URL}/api/roadmap/create`,
             payload
@@ -174,7 +174,8 @@ const ManageRoadmapForm = () => {
             icon: "success",
           });
         }
-        //Render in table list
+
+        // Render in table list
         const getRes = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
         setRoadmaps(getRes.data?.data || []);
         setShowModal(false);
@@ -245,7 +246,7 @@ const ManageRoadmapForm = () => {
         // Fetch updated roadmap list
         const res = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
 
-        // ✅ Correctly update the roadmap list
+        // Correctly update the roadmap list
         setRoadmaps(res.data?.data || []);
 
         Swal.fire("Deleted!", "Stream has been deleted.", "success");
@@ -265,7 +266,9 @@ const ManageRoadmapForm = () => {
       {/* Header Section */}
       <div className="flex justify-between bg-white p-2 shadow-lg rounded-lg items-center mb-6">
         {/* Heading */}
-        <h2 className="text-3xl font-bold text-gray-800"><span> 🗺️ </span> RoadMap </h2>
+        <h2 className="text-3xl font-bold text-gray-800">
+          <span> 🗺️ </span> RoadMap{" "}
+        </h2>
         {/* Search Inpup Field */}
         <div className="mb-2 flex justify-end">
           <input
@@ -481,6 +484,7 @@ const ManageRoadmapForm = () => {
                         };
                         const isChecked = isSubTypeSelected(formatted);
 
+                        // The selectedd subtype gets check mark
                         return (
                           <div
                             key={option._id}

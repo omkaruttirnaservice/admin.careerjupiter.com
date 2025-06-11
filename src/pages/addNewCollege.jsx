@@ -270,16 +270,6 @@ const AddNewCollege = () => {
 
       try {
         const formData = new FormData();
-        // // If not verified then show this error
-        // if (!verifiedOtp) {
-        //   Swal.fire({
-        //     icon: "warning",
-        //     title: "OTP Not Verified",
-        //     text: "Please verify your mobile number and OTP before submitting the form.",
-        //     confirmButtonColor: "#f0ad4e",
-        //   });
-        //   return false;
-        // }
 
         // Append data to backend
         formData.append("collegeId", values.collegeId); // College Id
@@ -353,9 +343,14 @@ const AddNewCollege = () => {
         });
 
         // RoadMap Category
-        values.roadmap.forEach((item) => {
-          formData.append("roadmap", item);
+        // values.roadmap.forEach((item) => {
+        //   formData.append("roadmap", item);
+        // });
+        values.roadmap.forEach((id) => {
+          formData.append("roadmap[]", id); // sends only _id
         });
+
+        // console.log("Roadmap***********", values.roadmap);
 
         // Entrance Exams
         values.entrance_exam_required.forEach(
@@ -700,7 +695,13 @@ const AddNewCollege = () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/type/types`);
         const types = response.data?.data || [];
-        const formatted = types.map((item) => item.type);
+        // const formatted = types.map((item) => item.type);
+        // setRoadmapOptions(formatted);
+
+        const formatted = types.map((item) => ({
+          _id: item._id,
+          type: item.type,
+        }));
         setRoadmapOptions(formatted);
       } catch (error) {
         console.error("Failed to fetch roadmap types", error);
@@ -723,18 +724,22 @@ const AddNewCollege = () => {
     }
   }, [formik.values.category, categoryData]); // Dependency array ensures this runs when category or categoryData changes
 
-  const isNaacOrNba = (value) =>
-    [
-      "NAAC A++",
-      "NAAC A+",
-      "NAAC A",
-      "NAAC B++",
-      "NAAC B+",
-      "NAAC B",
-      "NAAC C",
-      "NAAC D",
-      "NBA",
-    ].includes(value);
+  // const isNaacOrNba = (value) =>
+  //   [
+  //     "NAAC A++",
+  //     "NAAC A+",
+  //     "NAAC A",
+  //     "NAAC B++",
+  //     "NAAC B+",
+  //     "NAAC B",
+  //     "NAAC C",
+  //     "NAAC D",
+  //     "NBA",
+  //   ].includes(value);
+
+  const isNaacOrNba = (value) => {
+    return value.includes("NAAC") || value === "NBA";
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
@@ -1043,11 +1048,20 @@ const AddNewCollege = () => {
             />
 
             {/* RoadMap Category */}
+            {/* <MultiSelectDropdown
+              label="Roadmap Category"
+              name="roadmap"
+              options={roadmapOptions}
+              formik={formik}
+            /> */}
+
             <MultiSelectDropdown
               label="Roadmap Category"
               name="roadmap"
               options={roadmapOptions}
               formik={formik}
+              getOptionValue={(option) => option._id}
+              getOptionLabel={(option) => option.type}
             />
 
             {/* Description  */}

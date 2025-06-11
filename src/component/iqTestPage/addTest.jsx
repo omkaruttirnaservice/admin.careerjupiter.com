@@ -8,6 +8,7 @@ import { API_BASE_URL } from "../../constant/constantBaseUrl";
 import Cookies from "js-cookie";
 import { FiUpload, FiSave, FiDownload, FiFile } from "react-icons/fi";
 import Swal from "sweetalert2";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const AddTest = ({ onClose, onTestAdded }) => {
   let fileRef = useRef();
@@ -27,6 +28,11 @@ const AddTest = ({ onClose, onTestAdded }) => {
     subCategory: "",
     type: "",
   });
+  const [roadmapOptions, setRoadmapOptions] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  // const [roadmapOptions, setRoadmapOptions] = useState([]);
+const [selectedRoadmaps, setSelectedRoadmaps] = useState([]);
+
 
   // Initialized Value for the form
   const initialValues = {
@@ -41,6 +47,8 @@ const AddTest = ({ onClose, onTestAdded }) => {
     userType: "0",
     sub_category: "",
     reportType: "0",
+    roadmap: [],
+     selectedSubType: "",
   };
 
   const validateInput = (value) => {
@@ -91,6 +99,14 @@ const AddTest = ({ onClose, onTestAdded }) => {
     reportType: Yup.number()
       .required("Report type is required")
       .oneOf([0, 1], "Report type must be 0 or 1"),
+
+       sub_category: Yup.string().required("Subcategory is required"),
+    selectedSubType: Yup.string().required("Type is required"),
+    roadmap: Yup.array().min(1, "Select at least one roadmap"),
+
+    // roadmap: Yup.array()
+    //   .required("Roadmap Category is required")
+    //   .min(1, "Select at least one roadmap category"),
   });
 
   // Adding Sub Category is handled
@@ -352,25 +368,25 @@ const AddTest = ({ onClose, onTestAdded }) => {
 
   // Handle Form Submit
   const handleSubmit = async (values, { setSubmitting }) => {
-    let isValid = true;
-    let tempError = { subCategory: "", type: "" };
+    // let isValid = true;
+    // let tempError = { subCategory: "", type: "" };
 
-    if (!selectedSubCategory) {
-      tempError.subCategory = "Please select a subcategory";
-      isValid = false;
-    }
+    // if (!selectedSubCategory) {
+    //   tempError.subCategory = "Please select a subcategory";
+    //   isValid = false;
+    // }
 
-    if (!selectedSubType) {
-      tempError.type = "Please select a type";
-      isValid = false;
-    }
+    // if (!selectedSubType) {
+    //   tempError.type = "Please select a type";
+    //   isValid = false;
+    // }
 
-    setError(tempError);
+    // setError(tempError);
 
-    if (!isValid) {
-      setSubmitting(false);
-      return;
-    }
+    // if (!isValid) {
+    //   setSubmitting(false);
+    //   return;
+    // }
 
     const finalQuestions = selectedQuestions;
 
@@ -389,8 +405,9 @@ const AddTest = ({ onClose, onTestAdded }) => {
         mainCategoryId: mainCategoryId,
         name: category,
       },
-      sub_category: selectedSubCategory.name,
-      sub: selectedSubType,
+      // sub_category: selectedSubCategory.name,
+       sub_category: values.sub_category,
+      sub:  values.selectedSubType,
       title: values.testName,
       questions: finalQuestions,
       testDuration: {
@@ -402,6 +419,9 @@ const AddTest = ({ onClose, onTestAdded }) => {
       passingMarks: Number(values.passingMarks),
       userType: Number(values.userType),
       reportType: Number(values.reportType),
+      // roadmap: values.roadmap.map(id => id) // This will create an array of IDs
+        //  roadmap: selectedRoadmaps, // ✅ Add this
+        roadmap: values.roadmap,
     };
 
     console.log("Sending requestData to API:", requestData);
@@ -430,6 +450,28 @@ const AddTest = ({ onClose, onTestAdded }) => {
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    const fetchRoadmapOptions = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/type/types`);
+        const types = response.data?.data || [];
+        // const formatted = types.map((item) => item.type);
+        // setRoadmapOptions(formatted);
+
+        console.log(types);
+        const formatted = types.map((item) => ({
+          _id: item._id,
+          type: item.type,
+        }));
+        setRoadmapOptions(formatted);
+      } catch (error) {
+        console.error("Failed to fetch roadmap types", error);
+      }
+    };
+
+    fetchRoadmapOptions();
+  }, [])
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
@@ -467,7 +509,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ isSubmitting, setFieldValue }) => (
+            {({ isSubmitting, setFieldValue, formik,  values, errors, touched  }) => (
               <Form className="space-y-6">
                 {/* Test Name */}
                 <div>
@@ -493,7 +535,7 @@ const AddTest = ({ onClose, onTestAdded }) => {
                       Subcategory
                     </label>
                     <div className="flex gap-2 items-center">
-                      <select
+                      {/* <select
                         className="w-full px-4 py-3 bg-white border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200"
                         onChange={(e) => {
                           const selected = subCategories.find(
@@ -515,7 +557,29 @@ const AddTest = ({ onClose, onTestAdded }) => {
                             {subCat.name}
                           </option>
                         ))}
-                      </select>
+                      </select> */}
+
+                       <Field
+                        as="select"
+                        name="sub_category"
+                        className="w-full px-4 py-3 bg-white border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200"
+                        onChange={(e) => {
+                          const selected = subCategories.find(
+                            (sc) => sc.name === e.target.value
+                          );
+                          setSelectedSubCategory(selected);
+                          setSubItems(selected?.sub || []);
+                          setFieldValue("sub_category", e.target.value);
+                          setFieldValue("selectedSubType", ""); // Reset type when subcategory changes
+                        }}
+                      >
+                        <option value="">Select Subcategory</option>
+                        {subCategories.map((subCat) => (
+                          <option key={subCat._id} value={subCat.name}>
+                            {subCat.name}
+                          </option>
+                        ))}
+                      </Field>
                       {/* Add Sub Category Button */}
                       <button
                         type="button"
@@ -526,11 +590,17 @@ const AddTest = ({ onClose, onTestAdded }) => {
                       </button>
                     </div>
                     {/* Error Message for Sub Category */}
-                    {error.subCategory && (
+                    {/* {error.subCategory && (
                       <div className="text-red-500 text-sm mt-1">
                         {error.subCategory}
                       </div>
-                    )}
+                    )} */}
+
+                                        <ErrorMessage
+                      name="sub_category"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
                     {/* Show input field for adding new sub category */}
                     {showSubInput && (
                       <div className="flex gap-2 mt-2">
@@ -576,13 +646,14 @@ const AddTest = ({ onClose, onTestAdded }) => {
 
                   {/* Type Section */}
                   {/* Opens when sub category selected and opens the type field as per */}
-                  {selectedSubCategory && (
+                  {/* {selectedSubCategory && ( */}
+                    {values.sub_category && (
                     <div>
                       <label className="block text-md font-medium text-blue-800 mb-2 ml-1">
                         Type
                       </label>
                       <div className="flex gap-2 items-center">
-                        <select
+                        {/* <select
                           className="w-full px-4 py-3 bg-white border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200"
                           value={selectedSubType}
                           onChange={(e) => {
@@ -601,7 +672,20 @@ const AddTest = ({ onClose, onTestAdded }) => {
                               {item}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
+
+                          <Field
+                          as="select"
+                          name="selectedSubType"
+                          className="w-full px-4 py-3 bg-white border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200"
+                        >
+                          <option value="">Select Type</option>
+                          {subItems.map((item, index) => (
+                            <option key={index} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </Field>
                         {/* Add new type button */}
                         <button
                           type="button"
@@ -612,11 +696,17 @@ const AddTest = ({ onClose, onTestAdded }) => {
                         </button>
                       </div>
                       {/* shows error for the type dropdown */}
-                      {error.type && (
+                      {/* {error.type && (
                         <div className="text-red-500 text-sm mt-1">
                           {error.type}
                         </div>
-                      )}
+                      )} */}
+
+                       <ErrorMessage
+                        name="selectedSubType"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
                       {/* Add new type input field */}
                       {showTypeInput && (
                         <div className="flex gap-2 mt-2">
@@ -656,6 +746,74 @@ const AddTest = ({ onClose, onTestAdded }) => {
                     </div>
                   )}
                 </div>
+                
+                {/* Roadmap Multi-Select dropdown */}
+<div className="relative w-full">
+  <label className="block text-md font-medium text-blue-800 mb-2">
+    Select Roadmaps
+  </label>
+
+  {/* Dropdown Trigger */}
+  <div
+    className="w-full px-4 py-3 bg-white border-2 border-blue-300 rounded-lg cursor-pointer flex justify-between items-center"
+    onClick={() => setDropdownOpen((prev) => !prev)}
+  >
+    <span className="text-gray-700 font-medium truncate w-[90%]">
+  {values.roadmap.length > 0
+    ? roadmapOptions
+        .filter((opt) => values.roadmap.includes(opt._id))
+        .map((opt) => opt.type) 
+        .join(", ")
+    : "Select Roadmaps"}
+</span>
+    {dropdownOpen ? (
+      <FaChevronUp className="text-blue-600" />
+    ) : (
+      <FaChevronDown className="text-blue-600" />
+    )}
+  </div>
+
+  {/* Dropdown List */}
+  {dropdownOpen && (
+    <div className="absolute z-50 mt-2 w-full bg-white border-2 border-blue-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+      {roadmapOptions.map((option) => {
+  const isChecked = values.roadmap.includes(option._id);
+  return (
+    <label
+      key={option._id}
+      className="flex items-center px-4 py-2 hover:bg-blue-50 cursor-pointer"
+    >
+      <input
+        type="checkbox"
+        checked={isChecked}
+        onChange={() => {
+          const newSelected = isChecked
+            ? values.roadmap.filter((id) => id !== option._id)
+            : [...values.roadmap, option._id];
+          setFieldValue("roadmap",newSelected);
+        }}
+        className="mr-3"
+      />
+      <span className="text-gray-800">{option.type}</span> {/* <- if you're using "type" */}
+    </label>
+  );
+})}
+
+    </div>
+  )}
+
+  {/* Validation Error */}
+
+   <ErrorMessage
+                    name="roadmap"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+  {/* {formik.touched.roadmap && formik.errors.roadmap && (
+    <div className="text-red-500 text-sm mt-1">{formik.errors.roadmap}</div>
+  )} */}
+</div>
+
 
                 {/* Questions Count */}
                 <div className="grid grid-cols-4 gap-2">

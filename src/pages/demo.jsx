@@ -2087,300 +2087,404 @@
 
 
 
-    return (
-    <div className="p-8  max-w-7xl mx-auto space-y-8 bg-white">
-      <div className="bg-blue-50 p-4 rounded-xl">
-        <h2 className="text-3xl font-bold text-blue-800 flex items-center gap-2">
-          📁 Manage <span className="capitalize">{type}</span> Categories
-        </h2>
-      </div>
+  // return (
+  //   <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8 flex justify-center items-start">
+  //     <div className="max-w-5xl w-full bg-white rounded-2xl shadow-2xl border border-indigo-200 overflow-hidden">
+  //       {/* Header */}
+  //       <header className="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 text-white py-8 px-10 text-center">
+  //         <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide drop-shadow-md">
+  //           Update Class Details
+  //         </h1>
+  //       </header>
 
-      {/* Category Entry Section */}
-      <div className="space-y-4 bg-blue-50 p-4 rounded-xl">
-        {/* Category Name */}
-        <div>
-          <label className="font-semibold text-blue-800 flex items-center gap-2 text-lg">
-            <FaLayerGroup className="text-blue-600" />
-            Category Name
-          </label>
-          <input
-            type="text"
-            value={categoryInput}
-            onChange={(e) => setCategoryInput(e.target.value)}
-            placeholder="Enter category name"
-            className="mt-1 border px-4 py-2 rounded-lg w-full focus:ring focus:ring-blue-300"
-          />
-        </div>
+  //       {/* Form container */}
+  //       <form
+  //         onSubmit={formik.handleSubmit}
+  //         className="px-8 md:px-12 py-10 space-y-10"
+  //         noValidate
+  //       >
+  //         {/* Grid: Basic Fields + Categories */}
+  //         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+  //           <InputField
+  //             label="Class Name"
+  //             type="text"
+  //             name="className"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
+  //           <InputField
+  //             label="Owner Name"
+  //             type="text"
+  //             name="ownerOrInstituteName"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
+  //           <InputField
+  //             label="Year Established"
+  //             type="number"
+  //             name="yearEstablished"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
+  //           <InputField
+  //             label="Website URL"
+  //             type="url"
+  //             name="websiteURL"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Subcategories */}
-          {type === "college" && (
-            <div className="space-y-2">
-              <label className="font-semibold text-green-800 flex items-center gap-2 text-lg">
-                <FaBook className="text-green-600" />
-                Subcategories
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                {subCategoryInputs.map((sub, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <input
-                      type="text"
-                      value={sub}
-                      onChange={(e) =>
-                        handleSubCategoryChange(index, e.target.value)
-                      }
-                      placeholder={`Subcategory ${index + 1}`}
-                      className="border px-3 py-2 rounded-lg w-full"
-                    />
-                    {subCategoryInputs.length > 1 && (
-                      <button
-                        onClick={() => handleRemoveSubCategoryField(index)}
-                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-              <button
-                className="mt-2 text-md flex items-center gap-1 text-white bg-green-600 p-2 rounded-lg hover:underline"
-                onClick={handleAddSubCategoryField}
-              >
-                <Plus size={18} /> Add Subcategory
-              </button>
-            </div>
-          )}
+  //           <div>
+  //             <MultiSelectDropdown
+  //               label="Category"
+  //               name="category"
+  //               options={dynamicCategories}
+  //               formik={formik}
+  //               className="select-primary"
+  //             />
+  //             {showOtherInput && (
+  //               <div className="flex items-center gap-3 mt-3">
+  //                 <input
+  //                   type="text"
+  //                   placeholder="Enter custom category"
+  //                   value={customCategory}
+  //                   onChange={(e) => setCustomCategory(e.target.value)}
+  //                   className="flex-grow px-4 py-3 border border-indigo-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  //                 />
+  //                 <button
+  //                   type="button"
+  //                   onClick={handleAddOtherCategory}
+  //                   className="bg-indigo-600 text-white px-5 py-3 rounded-lg hover:bg-indigo-700 transition shadow-md"
+  //                 >
+  //                   Add
+  //                 </button>
+  //               </div>
+  //             )}
+  //           </div>
 
-          {/* Entrance Exams */}
-          <div className="space-y-2">
-            <label className="font-semibold text-purple-800 flex items-center gap-2 text-lg">
-              <FaGraduationCap className="text-purple-600" />
-              Entrance Exams Required
-            </label>
-            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-              {entranceExams.map((exam, index) => (
-                <div key={index} className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    value={exam}
-                    onChange={(e) => {
-                      const updated = [...entranceExams];
-                      updated[index] = e.target.value;
-                      setEntranceExams(updated);
-                    }}
-                    placeholder={`Exam ${index + 1}`}
-                    className="border px-3 py-2 rounded-lg w-full"
-                  />
-                  {entranceExams.length > 1 && (
-                    <button
-                      onClick={() =>
-                        setEntranceExams(
-                          entranceExams.filter((_, i) => i !== index)
-                        )
-                      }
-                      className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-            <button
-              className="mt-2 text-md flex items-center gap-1 text-white bg-purple-700 p-2 rounded-lg hover:underline"
-              onClick={() => setEntranceExams([...entranceExams, ""])}
-            >
-              <Plus size={18} /> Add Exam
-            </button>
-          </div>
-        </div>
+  //           <MultiSelectDropdown
+  //             label="Roadmap Category"
+  //             name="roadmap"
+  //             options={roadmapOptions}
+  //             formik={formik}
+  //             getOptionValue={(option) => option._id}
+  //             getOptionLabel={(option) => option.type}
+  //             className="select-primary"
+  //           />
+  //         </div>
 
-        {/* Add Category Button */}
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg shadow mt-4 flex gap-1"
-          onClick={handleAddCategory}
-        >
-          <Plus size={18} /> Add Category
-        </button>
-      </div>
+  //         {/* Addresses Section */}
+  //         <section className="space-y-6">
+  //           <h2 className="text-xl font-semibold text-indigo-700 border-b border-indigo-300 pb-2 mb-6">
+  //             Addresses
+  //           </h2>
+  //           {formik.values.address.map((addr, index) => {
+  //             const isEditing = editingIndex === index;
 
-      {/* List of Categories */}
-      <div>
-        <h4 className="text-xl font-semibold mb-3 text-gray-700">
-          Categories for{" "}
-          <span className="capitalize text-blue-700">{type}</span>
-        </h4>
+  //             return (
+  //               <div
+  //                 key={index}
+  //                 className="bg-indigo-50 rounded-2xl p-6 shadow-inner border border-indigo-200"
+  //               >
+  //                 {isEditing ? (
+  //                   <>
+  //                     <div className="flex justify-between items-center bg-indigo-600 rounded-md px-4 py-2 mb-6 text-white font-semibold">
+  //                       ✏️ Editing Address {index + 1}
+  //                     </div>
+  //                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  //                       {[
+  //                         {
+  //                           label: "Address Line 1",
+  //                           name: "line1",
+  //                           placeholder: "Line 1",
+  //                         },
+  //                         {
+  //                           label: "Address Line 2",
+  //                           name: "line2",
+  //                           placeholder: "Line 2",
+  //                         },
+  //                         {
+  //                           label: "Nearby Landmarks",
+  //                           name: "nearbyLandmarks",
+  //                           placeholder: "Nearby Landmarks",
+  //                         },
+  //                         {
+  //                           label: "Pincode",
+  //                           name: "pincode",
+  //                           placeholder: "Pincode",
+  //                         },
+  //                         {
+  //                           label: "State",
+  //                           name: "state",
+  //                           placeholder: "State",
+  //                         },
+  //                         {
+  //                           label: "District",
+  //                           name: "dist",
+  //                           placeholder: "District",
+  //                         },
+  //                         {
+  //                           label: "Taluka",
+  //                           name: "taluka",
+  //                           placeholder: "Taluka",
+  //                         },
+  //                         {
+  //                           label: "Authorized Name",
+  //                           name: "autorizedName",
+  //                           placeholder: "Authorized Name",
+  //                         },
+  //                         {
+  //                           label: "Authorized Phone",
+  //                           name: "autorizedPhono",
+  //                           placeholder: "Authorized Phone",
+  //                         },
+  //                       ].map((field, idx) => (
+  //                         <div key={idx}>
+  //                           <label className="block mb-1 text-indigo-700 font-medium">
+  //                             {field.label}
+  //                           </label>
+  //                           <input
+  //                             type="text"
+  //                             name={field.name}
+  //                             placeholder={field.placeholder}
+  //                             value={tempEditAddress?.[field.name] || ""}
+  //                             onChange={(e) =>
+  //                               setTempEditAddress((prev) => ({
+  //                                 ...prev,
+  //                                 [field.name]: e.target.value,
+  //                               }))
+  //                             }
+  //                             className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+  //                           />
+  //                           {formik.errors.address?.[index]?.[field.name] && (
+  //                             <p className="text-red-600 text-sm mt-1">
+  //                               {formik.errors.address[index][field.name]}
+  //                             </p>
+  //                           )}
+  //                         </div>
+  //                       ))}
+  //                     </div>
 
-        <ul className="space-y-4 max-h-72 overflow-y-auto pr-2">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {(categories || []).map((cat) => (
-              <li
-                key={cat._id}
-                className="bg-gray-50 border rounded-xl p-4 shadow-sm"
-              >
-                {editCategoryId === cat._id ? (
-                  <div className="space-y-4">
-                    {/* Edit Category Name */}
-                    <input
-                      type="text"
-                      value={editCategoryName}
-                      onChange={(e) => setEditCategoryName(e.target.value)}
-                      className="border px-3 py-2 rounded-lg w-full"
-                    />
+  //                     {/* Action Buttons */}
+  //                     <div className="flex justify-end gap-4 mt-8">
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           const updatedAddresses = [...formik.values.address];
+  //                           updatedAddresses[index] = tempEditAddress;
+  //                           formik.setFieldValue("address", updatedAddresses);
+  //                           setEditingIndex(null);
+  //                           setTempEditAddress(null);
+  //                         }}
+  //                         className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition flex items-center gap-2"
+  //                       >
+  //                         <MdDone className="text-lg" /> Done
+  //                       </button>
 
-                    {/* Edit Subcategories */}
-                    {type === "college" && (
-                      <div className="space-y-2">
-                        <label className="text-green-700 font-medium">
-                          Subcategories
-                        </label>
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                          {editSubCategories.map((sub, index) => (
-                            <div
-                              key={index}
-                              className="flex gap-2 items-center"
-                            >
-                              <input
-                                type="text"
-                                value={sub}
-                                onChange={(e) =>
-                                  handleEditSubCategoryChange(
-                                    index,
-                                    e.target.value
-                                  )
-                                }
-                                className="border px-3 py-2 rounded-lg w-full"
-                              />
-                              {editSubCategories.length > 1 && (
-                                <button
-                                  onClick={() =>
-                                    handleRemoveEditSubCategoryField(index)
-                                  }
-                                  className="bg-red-500 text-white p-2 rounded-lg"
-                                >
-                                  <Trash2 size={18} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                        <button
-                          className="text-sm text-white bg-green-600 p-2 rounded-lg hover:underline flex gap-1 items-center mt-1"
-                          onClick={handleAddEditSubCategoryField}
-                        >
-                          <Plus size={16} /> Add Subcategory
-                        </button>
-                      </div>
-                    )}
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           setEditingIndex(null);
+  //                           setTempEditAddress(null);
+  //                         }}
+  //                         className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition flex items-center gap-2"
+  //                       >
+  //                         <FaWindowClose className="text-lg" /> Cancel
+  //                       </button>
+  //                     </div>
+  //                   </>
+  //                 ) : (
+  //                   <>
+  //                     <div className="text-indigo-900 font-semibold text-lg mb-2">
+  //                       🏠 {addr.line1}, {addr.line2}
+  //                     </div>
+  //                     {addr.nearbyLandmarks && (
+  //                       <p className="text-indigo-700 italic mb-1">
+  //                         📍 Nearby: {addr.nearbyLandmarks}
+  //                       </p>
+  //                     )}
+  //                     <p className="text-indigo-700 mb-1">
+  //                       🗺️ {addr.taluka}, {addr.dist}, {addr.state} -{" "}
+  //                       {addr.pincode}
+  //                     </p>
+  //                     <p className="text-indigo-600 text-sm">
+  //                       👤 {addr.autorizedName} &nbsp; 📞 {addr.autorizedPhono}
+  //                     </p>
 
-                    {/* Edit Entrance Exams */}
-                    <div className="space-y-2">
-                      <label className="text-purple-700 font-medium">
-                        Entrance Exams
-                      </label>
-                      <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                        {editEntranceExams.map((exam, index) => (
-                          <div key={index} className="flex gap-2 items-center">
-                            <input
-                              type="text"
-                              value={exam}
-                              onChange={(e) => {
-                                const updated = [...editEntranceExams];
-                                updated[index] = e.target.value;
-                                setEditEntranceExams(updated);
-                              }}
-                              className="border px-3 py-2 rounded-lg w-full"
-                            />
-                            {editEntranceExams.length > 1 && (
-                              <button
-                                onClick={() =>
-                                  setEditEntranceExams(
-                                    editEntranceExams.filter(
-                                      (_, i) => i !== index
-                                    )
-                                  )
-                                }
-                                className="bg-red-500 text-white p-2 rounded-lg"
-                              >
-                                <Trash2 size={18} />
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <button
-                        className="text-sm text-white bg-purple-700 p-2 rounded-lg hover:underline flex gap-1 items-center"
-                        onClick={() =>
-                          setEditEntranceExams([...editEntranceExams, ""])
-                        }
-                      >
-                        <Plus size={16} /> Add Exam
-                      </button>
-                    </div>
+  //                     {/* Buttons */}
+  //                     <div className="flex justify-end gap-3 mt-6">
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           setEditingIndex(index);
+  //                           setTempEditAddress({ ...addr });
+  //                         }}
+  //                         className="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 px-4 py-2 rounded-lg shadow-sm flex items-center gap-2 transition"
+  //                       >
+  //                         ✏️ Edit
+  //                       </button>
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           const updated = [...formik.values.address];
+  //                           updated.splice(index, 1);
+  //                           formik.setFieldValue("address", updated);
+  //                           if (editingIndex === index) setEditingIndex(null);
+  //                         }}
+  //                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm flex items-center gap-2 transition"
+  //                       >
+  //                         🗑️ Remove
+  //                       </button>
+  //                     </div>
+  //                   </>
+  //                 )}
+  //               </div>
+  //             );
+  //           })}
 
-                    {/* Save/Cancel Buttons */}
-                    <div className="flex gap-2 mt-2 justify-end">
-                      <button
-                        className="bg-green-600 text-white p-2 rounded-lg"
-                        onClick={() => handleUpdateCategory(cat._id)}
-                      >
-                       <span className="flex justify-center"> <Save size={18} />  </span>Save
-                      </button>
-                      <button
-                        className="bg-red-600 text-white p-2 rounded-lg"
-                        onClick={() => setEditCategoryId(null)}
-                      >
-                       <span className="flex justify-center"> <X size={18} /> </span> Delete
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {cat.category}
-                      </p>
-                      {cat.subCategory?.length > 0 && (
-                        <ul className="ml-4 list-disc text-sm text-gray-600">
-                          {cat.subCategory.map((sub, i) => (
-                            <li key={i}>{sub}</li>
-                          ))}
-                        </ul>
-                      )}
-                      {cat.entrance_exam_required?.length > 0 && (
-                        <div className="mt-1">
-                          <p className="text-sm font-semibold text-gray-700">
-                            Entrance Exams Required:
-                          </p>
-                          <ul className="ml-4 list-disc text-sm text-gray-600">
-                            {cat.entrance_exam_required.map((exam, i) => (
-                              <li key={i}>{exam}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2 mt-2">
-                      <button
-                        onClick={() => handleEditCategory(cat)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-lg"
-                      >
-                        <Pencil size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteCategory(cat._id)}
-                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </li>
-            ))}
-          </div>
-        </ul>
-      </div>
-    </div>
-  );
+  //           <button
+  //             type="button"
+  //             onClick={() => setShowAddressModal(true)}
+  //             className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-3 shadow-md flex items-center justify-center gap-2 transition w-full md:w-auto"
+  //           >
+  //             ➕ Add Address
+  //           </button>
+  //         </section>
+
+  //         {/* Discount + Valid Till */}
+  //         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+  //           <div>
+  //             <label
+  //               htmlFor="discount"
+  //               className="block mb-2 font-semibold text-indigo-800"
+  //             >
+  //               Select Discount
+  //             </label>
+  //             <select
+  //               id="discount"
+  //               name="discount"
+  //               value={formik.values.discount}
+  //               onChange={formik.handleChange}
+  //               onBlur={formik.handleBlur}
+  //               className="w-full p-3 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  //             >
+  //               <option value="">Select Discount</option>
+  //               {discountOptions.map((option, i) => (
+  //                 <option key={i} value={option.value}>
+  //                   {option.label}
+  //                 </option>
+  //               ))}
+  //             </select>
+  //             {formik.touched.discount && formik.errors.discount && (
+  //               <p className="text-red-600 mt-1 font-semibold text-sm">
+  //                 {formik.errors.discount}
+  //               </p>
+  //             )}
+  //           </div>
+
+  //           {formik.values.discount && (
+  //             <div>
+  //               <label
+  //                 htmlFor="validTill"
+  //                 className="block mb-2 font-semibold text-indigo-800"
+  //               >
+  //                 Valid Till
+  //               </label>
+  //               <input
+  //                 type="date"
+  //                 id="validTill"
+  //                 name="validTill"
+  //                 value={formik.values.validTill}
+  //                 onChange={formik.handleChange}
+  //                 onBlur={formik.handleBlur}
+  //                 className="w-full p-3 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  //               />
+  //               {formik.touched.validTill && formik.errors.validTill && (
+  //                 <p className="text-red-600 mt-1 font-semibold text-sm">
+  //                   {formik.errors.validTill}
+  //                 </p>
+  //               )}
+  //             </div>
+  //           )}
+  //         </div>
+
+  //         {/* Radio & Checkbox groups */}
+  //         <div className="space-y-8">
+  //           <RadioGroup
+  //             label="Type"
+  //             name="franchiseOrIndependent"
+  //             options={["Franchise", "Home Tution", "Group"]}
+  //             formik={formik}
+  //             className="text-indigo-900"
+  //           />
+
+  //           <CheckboxGroup
+  //             label="Mode of Teaching"
+  //             name="modeOfTeaching"
+  //             options={["Online", "Offline"]}
+  //             formik={formik}
+  //             className="text-indigo-900"
+  //           />
+  //         </div>
+
+  //         {/* Image Upload */}
+  //         <div>
+  //           <h3 className="text-xl font-semibold text-indigo-700 mb-5">
+  //             Class Image
+  //           </h3>
+  //           <div className="mb-4">
+  //             {previewImage || formik.values.image ? (
+  //               <img
+  //                 src={
+  //                   previewImage
+  //                     ? previewImage
+  //                     : typeof formik.values.image === "string"
+  //                     ? `${API_BASE_URL}${formik.values.image}`
+  //                     : ""
+  //                 }
+  //                 alt="Class"
+  //                 className="w-full max-w-md h-48 object-cover rounded-lg shadow-lg mx-auto"
+  //               />
+  //             ) : (
+  //               <p className="text-center italic text-indigo-400">
+  //                 No image available
+  //               </p>
+  //             )}
+  //           </div>
+
+  //           <FileUpload label="Class Image" name="image" formik={formik} />
+  //         </div>
+
+  //         {/* Submit Button */}
+  //         <div className="flex justify-end">
+  //           <button
+  //             type="submit"
+  //             disabled={
+  //               !(formik.isValid && formik.dirty) || formik.isSubmitting
+  //             }
+  //             className={`px-10 py-3 rounded-xl shadow-lg text-lg font-semibold text-white transition
+  //             ${
+  //               formik.isValid && formik.dirty
+  //                 ? "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+  //                 : "bg-indigo-300 cursor-not-allowed"
+  //             }`}
+  //           >
+  //             {formik.isSubmitting ? "Updating..." : "Update Class"}
+  //           </button>
+  //         </div>
+  //       </form>
+
+  //       {/* Address Modal */}
+  //       <AddressModal
+  //         open={showAddressModal}
+  //         onClose={() => setShowAddressModal(false)}
+  //         onSave={(newAddress) => {
+  //           formik.setFieldValue("address", [
+  //             ...(formik.values.address || []),
+  //             newAddress,
+  //           ]);
+  //         }}
+  //       />
+  //     </div>
+  //   </div>
+  // );

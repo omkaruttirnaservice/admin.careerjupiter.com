@@ -479,12 +479,12 @@ const ManageCollegeCategory = () => {
                     <div className="flex justify-between items-start">
                       {/* List of Category */}
                       <div>
-                        <p className="font-semibold text-gray-800">
+                        <p className="font-semibold text-blue-800">
                           {cat.category}
                         </p>
                         {/* List of Sub Category */}
                         {cat.subCategory?.length > 0 && (
-                          <ul className="ml-4 list-disc text-sm text-gray-600">
+                          <ul className=" text-gray-700">
                             {cat.subCategory.map((sub, index) => (
                               <li key={index}>{sub}</li>
                             ))}

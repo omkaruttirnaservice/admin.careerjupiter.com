@@ -39,7 +39,7 @@ const InputField = ({ label, type, name, placeholder, value, onChange, formik, d
         value={getValue()}  // ✅ Uses either Formik or manual value
         disabled={disabled}
         className={`w-full px-4 py-3 border rounded-lg shadow-md focus:outline-none transition-all duration-200
-          ${disabled ? "bg-gray-200 cursor-not-allowed" : "border-blue-300 focus:ring-2 focus:ring-blue-500"}`}
+          ${disabled ? "bg-gray-200 cursor-not-allowed" : "border-blue-300 focus:ring-2 focus:ring-blue-500 bg-white"}`}
       />
       {isTouched && getError() && (
         <p className="text-red-500 text-sm mt-2 font-semibold">{getError()}</p>

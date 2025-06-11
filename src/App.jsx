@@ -27,8 +27,6 @@ import Cookies from "js-cookie";
 import ManageClass from "./pages/manageClass.jsx";
 import VendorClassLayout from "./pages/vendorClassLayout.jsx";
 import ClassTableDetails from "./pages/classTableDetails.jsx";
-import FacultyManagement from "./pages/facultyManagement.jsx";
-import ClassCourses from "./pages/classCourses.jsx";
 import ProtectedRoute from "./component/protectedRoute";
 import AddAdmin from "./pages/addAdmin.jsx";
 import ManageCollegeCategory from "./component/manageCollegeCategory.jsx";
@@ -71,36 +69,15 @@ function App() {
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/colleges" element={<CollegeTableDetails />} />
               <Route path="/university-details" element={<UniversityList />} />
-              <Route
-                path="/university/placement/:universityId"
-                element={<UniversityPlacement />}
-              />
-              <Route
-                path="/university/infrastructure/:universityId"
-                element={<UniversityInfrastructure />}
-              />
-              <Route
-                path="/university/courses/:universityId"
-                element={<UniversityCourses />}
-              />
+              <Route path="/university/placement/:universityId" element={<UniversityPlacement />} />
+              <Route path="/university/infrastructure/:universityId" element={<UniversityInfrastructure />} />
+              <Route path="/university/courses/:universityId" element={<UniversityCourses />} />
               <Route path="/class-list" element={<ClassTableDetails />} />
               <Route path="/iq-test" element={<IQTest />} />
-              <Route
-                path="/add-class-category"
-                element={<ManageClassCategory />}
-              />
-              <Route
-                path="add-college-category"
-                element={<ManageCollegeCategory />}
-              />
-              <Route
-                path="add-university-category"
-                element={<ManageUniversityCategory />}
-              />
-              <Route
-                path="/tests/:category/:mainCategoryId"
-                element={<TableList />}
-              />
+              <Route path="/add-class-category" element={<ManageClassCategory />} />
+              <Route path="add-college-category" element={<ManageCollegeCategory />} />
+              <Route path="add-university-category" element={<ManageUniversityCategory />} />
+              <Route path="/tests/:category/:mainCategoryId" element={<TableList />} />
               <Route path="/view-excel/:testId" element={<ViewExcelPage />} />
               <Route path="/add-test/:mainCategoryId" element={<AddTest />} />
               <Route path="/reports" element={<ReportandAnalytics />} />
