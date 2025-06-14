@@ -870,46 +870,6 @@ const UniversityForm = ({
             </div>
 
             {/* University Category */}
-            {/* <div className="mb-3">
-              <label className="block mb-1 text-blue-900 font-semibold">
-                University Category <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="category"
-                value={formik.values.category}
-                onChange={(e) => {
-                  const selectedCategory = e.target.value;
-                  formik.setFieldValue("category", selectedCategory);
-                  formik.setFieldValue("subCategory", "");
-                }}
-                onBlur={formik.handleBlur}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
-                  formik.touched.category && formik.errors.category
-                    ? "border-red-500"
-                    : "border-blue-600"
-                }`}
-              >
-                <option value="">Select Category</option>
-
-                {Array.isArray(categoryData) &&
-                  categoryData.map((cat, index) => (
-                    <option key={index} value={cat.category}>
-                      {cat.category}
-                    </option>
-                  ))}
-              </select>
-              {getErrorMessage("category")}
-            </div>
-
-            {/* University Sub Category */}
-            {/* <CustomDropdown
-              label="Sub Category"
-              options={filteredBranches}
-              fieldName="subCategory"
-              isOpen={showSubCategoryDropdown}
-              setIsOpen={setShowSubCategoryDropdown}
-            /> */}
-
             <div className="mb-4 w-full">
               <label className="block text-blue-800 font-semibold mb-2">
                 University Streams
@@ -1186,7 +1146,7 @@ const UniversityForm = ({
                     : "border-gray-300"
                 }`}
               >
-                <option value="">Select State</option>
+                <option value="" disabled>Select State</option>
                 {Object.keys(stateDistricts).map((state) => (
                   <option key={state} value={state}>
                     {state}
@@ -1222,7 +1182,7 @@ const UniversityForm = ({
                     : ""
                 }`}
               >
-                <option value="">Select District</option>
+                <option value="" disabled>Select District</option>
                 {formik.values.address.state &&
                   stateDistricts[formik.values.address.state]?.map(
                     (district) => (
@@ -1323,7 +1283,11 @@ const UniversityForm = ({
                 className="absolute top-9 right-3 text-gray-600 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <AiOutlineEyeInvisible className="text-blue-800" /> : <AiOutlineEye  className="text-blue-800" />}
+                {showPassword ? (
+                  <AiOutlineEyeInvisible className="text-blue-800" />
+                ) : (
+                  <AiOutlineEye className="text-blue-800" />
+                )}
               </span>
               {getErrorMessage("password")}
             </div>
@@ -1349,9 +1313,9 @@ const UniversityForm = ({
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
-                  <AiOutlineEyeInvisible  className="text-blue-800"/>
+                  <AiOutlineEyeInvisible className="text-blue-800" />
                 ) : (
-                  <AiOutlineEye  className="text-blue-800" />
+                  <AiOutlineEye className="text-blue-800" />
                 )}
               </span>
               {getErrorMessage("confirmPassword")}
@@ -1396,6 +1360,12 @@ const UniversityForm = ({
                   type="text"
                   value={keywordInput}
                   onChange={(e) => setKeywordInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // Prevent form submit
+                      handleAddKeyword(); // Add keyword
+                    }
+                  }}
                   className="border px-4 py-3 flex-grow rounded-lg shadow-sm bg-white border-gray-300"
                   placeholder="Enter keyword"
                 />

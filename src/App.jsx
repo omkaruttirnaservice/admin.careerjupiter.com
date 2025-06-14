@@ -46,7 +46,10 @@ import ManageClassCategory from "./component/manageClassCategory.jsx";
 import TypeList from "./component/roadmap/typeList.jsx";
 import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
 import UniversityCourses from "./courses/universityCourses.jsx";
-import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
+// import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
+import CollegeCutoffForm from "./pages/collegeCutoffForm.jsx";
+import CutoffTable from "./pages/cutoffTable.jsx";
+import ManageCaste from "./pages/manageCaste.jsx";
 
 const queryClient = new QueryClient();
 
@@ -62,7 +65,6 @@ function App() {
             {/* Public Route */}
             <Route index element={<Login />} />
             <Route path="/add-admin" element={<AddAdmin />} />
-            <Route path="/upload-college-excel" element={<UploadCollegeExcel/>} />
 
             {/* Protected Routes for Admin */}
             <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
@@ -82,29 +84,17 @@ function App() {
               <Route path="/add-test/:mainCategoryId" element={<AddTest />} />
               <Route path="/reports" element={<ReportandAnalytics />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route
-                path="/colleges/courses/:collegeId"
-                element={<CollegeCourses />}
-              />
-              <Route
-                path="/colleges/edit/:id"
-                element={<ManageCollege />}
-              />
-              <Route
-                path="/colleges/infrastructure/:collegeId"
-                element={<Infrastructure />}
-              />
-              <Route
-                path="/colleges/placement/:collegeId"
-                element={<Placement />}
-              />
-              <Route
-                path="/edit-college/:id"
-                element={<EditCollegeDetails />}
-              />
+              <Route path="/add-cutoff-eligibility" element={<CollegeCutoffForm/>} />
+              <Route path="/colleges/courses/:collegeId" element={<CollegeCourses />} />
+              <Route path="/colleges/edit/:id" element={<ManageCollege />} />
+              <Route path="/colleges/infrastructure/:collegeId" element={<Infrastructure />} />
+              <Route path="/colleges/placement/:collegeId" element={<Placement />} />
+              <Route path="/edit-college/:id" element={<EditCollegeDetails />} />
               <Route path="/edit-university/:id" element={<EditUniversity />} />
               <Route path="/manage-type" element={<TypeList />} />
               <Route path="/manage-roadmap" element={<ManageRoadmapForm />} />
+               <Route path="/cutoff-table" element={<CutoffTable />} />
+                        <Route path="/add-caste-category" element={<ManageCaste />} />
             </Route>
 
             {/* Protected Routes for VENDOR - All Subroles */}
