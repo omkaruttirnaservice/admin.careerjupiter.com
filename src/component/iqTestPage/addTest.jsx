@@ -419,9 +419,11 @@ const [selectedRoadmaps, setSelectedRoadmaps] = useState([]);
       passingMarks: Number(values.passingMarks),
       userType: Number(values.userType),
       reportType: Number(values.reportType),
+
       // roadmap: values.roadmap.map(id => id) // This will create an array of IDs
         //  roadmap: selectedRoadmaps, // ✅ Add this
         roadmap: values.roadmap,
+
     };
 
     console.log("Sending requestData to API:", requestData);
@@ -503,6 +505,7 @@ const [selectedRoadmaps, setSelectedRoadmaps] = useState([]);
           </div>
         </div>
 
+
         <div className="p-5 space-y-6">
           <Formik
             initialValues={initialValues}
@@ -512,6 +515,7 @@ const [selectedRoadmaps, setSelectedRoadmaps] = useState([]);
             {({ isSubmitting, setFieldValue, formik,  values, errors, touched  }) => (
               <Form className="space-y-6">
                 {/* Test Name */}
+
                 <div>
                   <label className="block font-medium text-blue-800 mb-1">
                     Test Name

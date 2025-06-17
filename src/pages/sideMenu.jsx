@@ -90,9 +90,9 @@ const navigation = [
         name: "Add University Category",
         href: "/add-university-category",
         icon: GraduationCap,
-        color: "text-purple-400",
-      },
+      }
     ],
+
   },
   // {
   //   name: "Add Eligibility",
@@ -163,6 +163,7 @@ const navigation = [
     icon: UserCircleIcon,
     color: "text-pink-400",
   },
+
 ];
 
 const SideMenu = () => {

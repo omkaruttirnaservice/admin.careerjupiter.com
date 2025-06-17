@@ -55,16 +55,11 @@ const UniversityList = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteUniversity,
     onSuccess: () => {
-      toast.success("University deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["universities"] });
       setDeleteModalOpen(false);
     },
     onError: (error) => {
-      toast.error(
-        `Failed to delete university: ${
-          error.message || "Failed to delete university"
-        }`
-      );
+      console.error("Delete failed:", error.message || error);
     },
   });
 
@@ -135,6 +130,7 @@ const UniversityList = () => {
       </div>
     );
   }
+
 
   return (
     <section>

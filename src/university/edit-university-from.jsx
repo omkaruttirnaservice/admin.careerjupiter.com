@@ -8,9 +8,6 @@ import React from "react"
 import { fetchUniversityCategories } from "./universityapi";
 import stateDistricts from "../constant/constantData";
 
-
-
-// Constants
 const UniversityCategories = ["Private", "Government", "Autonomous", "Deemed"]
 const facilities = ["Library", "Hostel", "Sport Complex", "WiFi Campus"]
 const accreditationOptions = [
@@ -24,6 +21,7 @@ const accreditationOptions = [
   "NIRF Ranked",
   "Other",
 ]
+
 const scholarshipAvailable = ["Merit-based", "Need-based", "Sports-based", "Other"]
 const quotaSystem = ["Management", "SC/ST", "OBC", "General"]
 // const entranceExams = ["JEE", "NEET", "CAT", "GATE", "CLAT", "LSAT", "XAT", "CMAT", "MAT", "Other"]
@@ -225,7 +223,7 @@ const EditUniversityForm = ({
   // Custom dropdown component
   const CustomDropdown = ({
     label,
-    options,
+    options,  
     fieldName,
     isOpen,
     setIsOpen,
@@ -250,6 +248,7 @@ const EditUniversityForm = ({
       return () => {
         document.removeEventListener("mousedown", handleClickOutside)
       }
+
     }, [isOpen, setIsOpen])
 
     return (

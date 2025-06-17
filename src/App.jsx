@@ -46,10 +46,17 @@ import ManageClassCategory from "./component/manageClassCategory.jsx";
 import TypeList from "./component/roadmap/typeList.jsx";
 import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
 import UniversityCourses from "./courses/universityCourses.jsx";
+<<<<<<< HEAD
 // import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
 import CollegeCutoffForm from "./pages/collegeCutoffForm.jsx";
 import CutoffTable from "./pages/cutoffTable.jsx";
 import ManageCaste from "./pages/manageCaste.jsx";
+=======
+
+import Addexcel from "./component/excel/excel-upload.jsx";
+import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
+>>>>>>> c832d6de9271489d715a42e75d3961ddddb5e767
+
 
 const queryClient = new QueryClient();
 
