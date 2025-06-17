@@ -631,7 +631,7 @@ const CollegeCutoffForm = () => {
     onSubmit: async (values) => {
   setIsSubmitting(true);
   const cutoff = selectedCastes.map((item) => ({
-    caste: item._id,
+    caste: item.caste, // caste is now a name (string), not ID
     marks: Number(item.percent),
   }));
 
@@ -655,7 +655,7 @@ const CollegeCutoffForm = () => {
     formik.resetForm();
     setSelectedCastes([]);
     setEditingId(null);
-    navigate("/cutoff-table");
+    // navigate("/cutoff-table");
   } catch (err) {
     console.error("Submission failed:", err);
     alert("Submission failed");
@@ -684,8 +684,8 @@ useEffect(() => {
       setCollegeIdInput(data.collegeId);
       setSelectedCastes(
         (data.cutoff || []).map((cut) => ({
-          _id: cut.caste,
-          caste: allCastes.find((c) => c._id === cut.caste)?.caste || "",
+          caste: cut.caste, 
+          // caste: allCastes.find((c) => c._id === cut.caste)?.caste || "",
           percent: cut.marks,
         }))
       );
@@ -715,7 +715,7 @@ const handleAddCaste = () => {
 
   setSelectedCastes([
     ...selectedCastes,
-    { _id: selected._id, caste: selected.caste, percent: castePercent },
+    {  caste: selected.caste, percent: castePercent },
   ]);
 
   setCasteCategory("");
@@ -890,7 +890,7 @@ const handleAddCaste = () => {
         <button
           type="button"
           onClick={() =>
-            setSelectedCastes(selectedCastes.filter((c) => c._id !== item._id))
+            setSelectedCastes(selectedCastes.filter((c) => c.caste  !== item.caste ))
           }
         >
           ❌

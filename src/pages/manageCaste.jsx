@@ -10,7 +10,6 @@ const ManageCaste = () => {
   const [editingName, setEditingName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-
   // Fetch all castes
   const fetchCastes = async () => {
     try {
@@ -42,7 +41,11 @@ const ManageCaste = () => {
       fetchCastes();
     } catch (err) {
       console.error("Failed to add caste", err);
-      alert("Error adding caste");
+      const serverMsg =
+        err?.response?.data?.usrMsg ||
+        err?.response?.data?.message ||
+        "Error adding caste";
+      alert(serverMsg); // ✅ Show user-friendly backend message
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +74,9 @@ const ManageCaste = () => {
 
   // Delete caste
   const handleDelete = async (id) => {
-    const confirm = window.confirm("Are you sure you want to delete this caste?");
+    const confirm = window.confirm(
+      "Are you sure you want to delete this caste?"
+    );
     if (!confirm) return;
 
     try {
@@ -85,28 +90,23 @@ const ManageCaste = () => {
   };
 
   const filteredCastes = casteList.filter((caste) =>
-  caste.caste.toLowerCase().includes(searchQuery.toLowerCase())
-);
-
+    caste.caste.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-blue-50 py-10 px-4">
       <div className="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-md border">
-       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-3">
-  <h2 className="text-2xl font-bold text-blue-700">
-    ➕ Manage Castes
-  </h2>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-3">
+          <h2 className="text-2xl font-bold text-blue-700">➕ Manage Castes</h2>
 
-  <input
-    type="text"
-    placeholder="Search caste..."
-    className="md:w-72 w-full p-2 border rounded"
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-  />
-</div>
-
-
+          <input
+            type="text"
+            placeholder="Search caste..."
+            className="md:w-72 w-full p-2 border rounded"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
 
         {/* Add Form */}
         <div className="flex items-center gap-4 mb-6">
@@ -127,162 +127,87 @@ const ManageCaste = () => {
         </div>
 
         {/* Caste List Table */}
-        {/* <h3 className="text-lg font-semibold text-blue-600 mb-2">📋 Existing Castes</h3>
-        <div className="overflow-x-auto max-h-[calc(110vh-200px)]">
-          <table className="w-full border text-sm">
-            <thead className="bg-blue-100">
-              <tr>
-                <th className="border px-3 py-2 text-left">#</th>
-                <th className="border px-3 py-2 text-left">Caste Name</th>
-                <th className="border px-3 py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {casteList.map((caste, i) => (
-                <tr key={caste._id} className="hover:bg-gray-50">
-                  <td className="border px-3 py-2">{i + 1}</td>
-                  <td className="border px-3 py-2">
-                    {editingId === caste._id ? (
-                      <input
-                        className="border p-1 rounded w-full"
-                        value={editingName}
-                        onChange={(e) => setEditingName(e.target.value)}
-                      />
-                    ) : (
-                      caste.caste
-                    )}
-                  </td>
-                  <td className="border px-3 py-2 whitespace-nowrap">
-                    {editingId === caste._id ? (
-                      <>
-                        <button
-                          className="bg-green-600 text-white px-2 py-1 rounded mr-2"
-                          onClick={() => handleSaveEdit(caste._id)}
-                        >
-                          💾 Save
-                        </button>
-                        <button
-                          className="text-gray-600 hover:underline"
-                          onClick={() => setEditingId(null)}
-                        >
-                          ❌ Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="text-blue-600 hover:underline mr-3"
-                          onClick={() => {
-                            setEditingId(caste._id);
-                            setEditingName(caste.caste);
-                          }}
-                        >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          className="text-red-600 hover:underline"
-                          onClick={() => handleDelete(caste._id)}
-                        >
-                          🗑️ Delete
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-              {casteList.length === 0 && (
+        <h3 className="text-lg font-semibold text-blue-600 mb-2">
+          📋 Existing Castes
+        </h3>
+        <div className="overflow-x-auto">
+          <div className="max-h-[420px] overflow-y-auto border rounded">
+            <table className="w-full border text-sm">
+              <thead className="bg-blue-100 sticky top-0 z-10">
                 <tr>
-                  <td colSpan="3" className="text-center py-4 text-gray-500">
-                    No castes found.
-                  </td>
+                  <th className="border px-3 py-2 text-left">#</th>
+                  <th className="border px-3 py-2 text-left">Caste Name</th>
+                  <th className="border px-3 py-2 text-left">Actions</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div> */}
-
-        {/* Caste List Table */}
-<h3 className="text-lg font-semibold text-blue-600 mb-2">📋 Existing Castes</h3>
-<div className="overflow-x-auto">
-  <div className="max-h-[420px] overflow-y-auto border rounded">
-    <table className="w-full border text-sm">
-      <thead className="bg-blue-100 sticky top-0 z-10">
-        <tr>
-          <th className="border px-3 py-2 text-left">#</th>
-          <th className="border px-3 py-2 text-left">Caste Name</th>
-          <th className="border px-3 py-2 text-left">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredCastes.map((caste, i) => (
-          <tr key={caste._id} className="hover:bg-gray-50">
-            <td className="border px-3 py-2">{i + 1}</td>
-            <td className="border px-3 py-2">
-              {editingId === caste._id ? (
-                <input
-                  className="border p-1 rounded w-full"
-                  value={editingName}
-                  onChange={(e) => setEditingName(e.target.value)}
-                />
-              ) : (
-                caste.caste
-              )}
-            </td>
-            <td className="border px-3 py-2 whitespace-nowrap">
-         {/* <td className="border px-3 py-2 whitespace-nowrap"> */}
-  <div className="flex gap-2 flex-wrap">
-    {editingId === caste._id ? (
-      <>
-        <button
-          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
-          onClick={() => handleSaveEdit(caste._id)}
-        >
-          💾 <span>Save</span>
-        </button>
-        <button
-          className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
-          onClick={() => setEditingId(null)}
-        >
-          ❌ <span>Cancel</span>
-        </button>
-      </>
-    ) : (
-      <>
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
-          onClick={() => {
-            setEditingId(caste._id);
-            setEditingName(caste.caste);
-          }}
-        >
-          ✏️ <span>Edit</span>
-        </button>
-        <button
-          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
-          onClick={() => handleDelete(caste._id)}
-        >
-          🗑️ <span>Delete</span>
-        </button>
-      </>
-    )}
-  </div>
-{/* </td> */}
-
-            </td>
-          </tr>
-        ))}
-        {casteList.length === 0 && (
-          <tr>
-            <td colSpan="3" className="text-center py-4 text-gray-500">
-              No caste found.
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-</div>
-
+              </thead>
+              <tbody>
+                {filteredCastes.map((caste, i) => (
+                  <tr key={caste._id} className="hover:bg-gray-50">
+                    <td className="border px-3 py-2">{i + 1}</td>
+                    <td className="border px-3 py-2">
+                      {editingId === caste._id ? (
+                        <input
+                          className="border p-1 rounded w-full"
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
+                        />
+                      ) : (
+                        caste.caste
+                      )}
+                    </td>
+                    <td className="border px-3 py-2 whitespace-nowrap">
+                      {/* <td className="border px-3 py-2 whitespace-nowrap"> */}
+                      <div className="flex gap-2 flex-wrap">
+                        {editingId === caste._id ? (
+                          <>
+                            <button
+                              className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
+                              onClick={() => handleSaveEdit(caste._id)}
+                            >
+                              💾 <span>Save</span>
+                            </button>
+                            <button
+                              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
+                              onClick={() => setEditingId(null)}
+                            >
+                              ❌ <span>Cancel</span>
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
+                              onClick={() => {
+                                setEditingId(caste._id);
+                                setEditingName(caste.caste);
+                              }}
+                            >
+                              ✏️ <span>Edit</span>
+                            </button>
+                            <button
+                              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shadow-sm transition duration-200 flex items-center gap-1"
+                              onClick={() => handleDelete(caste._id)}
+                            >
+                              🗑️ <span>Delete</span>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      {/* </td> */}
+                    </td>
+                  </tr>
+                ))}
+                {casteList.length === 0 && (
+                  <tr>
+                    <td colSpan="3" className="text-center py-4 text-gray-500">
+                      No caste found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

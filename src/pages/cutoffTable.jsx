@@ -51,17 +51,17 @@ const CutoffTable = () => {
       return acc;
     }, {});
 
-  const handleInlineChange = (rowId, casteId, val) => {
+  const handleInlineChange = (rowId, casteName, val) => {
     const updated = cutoffList.map((item) => {
       if (item._id !== rowId) return item;
 
       const newCutoff = Array.isArray(item.cutoff) ? [...item.cutoff] : [];
-      const index = newCutoff.findIndex((cut) => cut.caste === casteId);
+      const index = newCutoff.findIndex((cut) => cut.caste === casteName);
 
       if (index > -1) {
         newCutoff[index].marks = val;
       } else {
-        newCutoff.push({ caste: casteId, marks: val });
+        newCutoff.push({ caste: casteName, marks: val });
       }
 
       return { ...item, cutoff: newCutoff };
@@ -177,24 +177,10 @@ const CutoffTable = () => {
                         ? item.subCategory.join(", ")
                         : item.subCategory}
                     </td>
-                    {/* {allCastes.map((caste) => {
-                      const mark = Array.isArray(item.cutoff)
-                        ? item.cutoff.find((cut) => cut.caste === caste._id)
-                            ?.marks || "-"
-                        : "-";
-                      return (
-                        <td
-                          key={caste._id}
-                          className="border px-3 py-2 text-center"
-                        >
-                          {mark}
-                        </td>
-                      );
-                    })} */}
 
                     {allCastes.map((caste) => {
                       const value = Array.isArray(item.cutoff)
-                        ? item.cutoff.find((cut) => cut.caste === caste._id)
+                        ? item.cutoff.find((cut) => cut.caste === caste.caste)
                             ?.marks ?? ""
                         : "";
 
@@ -213,36 +199,40 @@ const CutoffTable = () => {
                               onChange={(e) =>
                                 handleInlineChange(
                                   item._id,
-                                  caste._id,
+                                  caste.caste,
                                   e.target.value
                                 )
                               }
                             />
+                          ) : // value || "-"
+                          value !== "" ? (
+                            parseFloat(value).toFixed(2)
                           ) : (
-                            value || "-"
+                            "-"
                           )}
                         </td>
                       );
                     })}
 
-                    {/* 
-                    <td className="border px-3 py-2 text-center whitespace-nowrap">
-                      {/* <button
-                        className="text-blue-600 hover:underline mr-3"
-                        onClick={() => navigate(`/edit-Cutoff/${item._id}`)}
-                      >
-                        ✏️ Edit
-                      </button> */}
-
-                    {/* <button
-  onClick={() => setEditingRowId(item._id)}
-  className="text-blue-600 hover:underline mr-3"
->
-  ✏️ Edit
-</button>
+                    <td className="border px-3 py-2 text-left whitespace-nowrap flex gap-2">
+                      {editingRowId === item._id ? (
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg shadow transition duration-200 flex items-center gap-1"
+                          onClick={() => handleSaveInlineEdit(item)}
+                        >
+                          💾 <span>Save</span>
+                        </button>
+                      ) : (
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg shadow transition duration-200 flex items-center gap-1"
+                          onClick={() => setEditingRowId(item._id)}
+                        >
+                          ✏️ <span>Edit</span>
+                        </button>
+                      )}
 
                       <button
-                        className="text-red-600 hover:underline"
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shadow transition duration-200 flex items-center gap-1"
                         onClick={async () => {
                           const confirmDelete = window.confirm(
                             "Are you sure you want to delete this cutoff?"
@@ -260,46 +250,9 @@ const CutoffTable = () => {
                           }
                         }}
                       >
-                        🗑️ Delete
+                        🗑️ <span>Delete</span>
                       </button>
-                    </td> */}
-
-                   <td className="border px-3 py-2 text-left whitespace-nowrap flex gap-2">
-  {editingRowId === item._id ? (
-    <button
-      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg shadow transition duration-200 flex items-center gap-1"
-      onClick={() => handleSaveInlineEdit(item)}
-    >
-      💾 <span>Save</span>
-    </button>
-  ) : (
-    <button
-      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg shadow transition duration-200 flex items-center gap-1"
-      onClick={() => setEditingRowId(item._id)}
-    >
-      ✏️ <span>Edit</span>
-    </button>
-  )}
-
-  <button
-    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shadow transition duration-200 flex items-center gap-1"
-    onClick={async () => {
-      const confirmDelete = window.confirm("Are you sure you want to delete this cutoff?");
-      if (!confirmDelete) return;
-      try {
-        await axios.delete(`${API_BASE_URL}/api/cutoff/${item._id}`);
-        alert("Deleted successfully");
-        fetchCutoffList();
-      } catch (err) {
-        console.error("Delete failed:", err);
-        alert("Failed to delete");
-      }
-    }}
-  >
-    🗑️ <span>Delete</span>
-  </button>
-</td>
-
+                    </td>
                   </tr>
                 ))
               )}
