@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import studentProfile from "../assets/studentProfile.jpg"
 
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -30,7 +31,7 @@ const ProfilePage = () => {
       <div className="flex flex-col items-center text-center">
         <label htmlFor="profilePic" className="cursor-pointer relative">
           <img
-            src={adminData.profilePic}
+            src={studentProfile}
             alt="Profile"
             className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-md hover:opacity-90 transition"
           />

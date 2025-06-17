@@ -11,7 +11,7 @@ const VendorUniversityLayout = () => {
       {/* Floating menu button for small screens */}
       <button
         className="fixed top-5 left-4 p-3 rounded-full shadow-md md:hidden transition-all duration-300 transform hover:scale-110 active:scale-95
-                   bg-gradient-to-r from-green-500 to-green-700 opacity-60 hover:opacity-100 text-white z-80 cursor-pointer"
+                   bg-gradient-to-r from-blue-500 to-blue-700 opacity-60 hover:opacity-100 text-white z-80 cursor-pointer"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         <MdMenu size={24} />
@@ -24,7 +24,7 @@ const VendorUniversityLayout = () => {
       />
 
       {/* Main content outlet */}
-      <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300 md:p-0">
+      <div className="flex-1 min-h-screen bg-blue-100 transition-all duration-300 md:p-0">
         <Outlet />
       </div>
 
