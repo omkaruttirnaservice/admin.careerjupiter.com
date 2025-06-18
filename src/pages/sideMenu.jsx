@@ -25,6 +25,7 @@ import {
   RouteIcon,
   UserCheckIcon,
   ScaleIcon,
+  FileSpreadsheet,
 } from "lucide-react";
 import { clearAuthCookies } from "../utlis/cookieHelper";
 import Swal from "sweetalert2";
@@ -106,6 +107,12 @@ const navigation = [
     icon: UserCheckIcon,
     color: "text-emerald-500",
     children: [
+      {
+        name: "Add CutOff Excel",
+        href: "/add-cutoff-excel",
+        icon: FileSpreadsheet,
+        color: "text-gray-400",
+      },
       {
         name: "Add CutOff Form",
         href: "/add-cutoff-eligibility",
