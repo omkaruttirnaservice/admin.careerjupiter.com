@@ -151,11 +151,11 @@ const ExcelUpload = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center flex-column" style={{ padding: '40px' }}>
-      <div className="border border-2 rounded shadow p-4 bg-light" style={{ width: '100%', maxWidth: '600px' }}>
+      <div className=" border-2 rounded shadow p-4 bg-light" style={{ width: '100%', maxWidth: '600px' }}>
         <h4 className="text-center text-primary fw-bold mb-4">Upload Excel File</h4>
 
         <div
-          className="border border-dashed border-2 rounded d-flex flex-column justify-content-center align-items-center p-5 bg-white"
+          className="border-dashed border-2 rounded d-flex flex-column justify-content-center align-items-center p-5 bg-white"
           style={{ cursor: 'pointer' }}
           onClick={() => document.getElementById('fileInput').click()}
         >

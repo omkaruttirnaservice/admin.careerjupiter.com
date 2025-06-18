@@ -24,11 +24,32 @@ const CutoffTable = () => {
     fetchCutoffList();
   }, []);
 
-  useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/caste/all`).then((res) => {
-      setAllCastes(res.data?.data?.castes || []);
+  // useEffect(() => {
+  //   axios.get(`${API_BASE_URL}/api/caste/all`).then((res) => {
+  //     setAllCastes(res.data?.data?.castes || []);
+  //   });
+  // }, []);
+
+useEffect(() => {
+  axios.get(`${API_BASE_URL}/api/caste/all`).then((res) => {
+    const casteGroups = res.data?.data?.castes || [];
+
+    // Flatten caste arrays and make unique set
+    const casteSet = new Set();
+    casteGroups.forEach((group) => {
+      (group.caste || []).forEach((c) => casteSet.add(c.trim()));
     });
-  }, []);
+
+    // Convert Set to Array of objects (with dummy _id for mapping key)
+    const uniqueCastes = Array.from(casteSet).map((casteName) => ({
+      _id: casteName, // using casteName as key
+      caste: casteName,
+    }));
+
+    setAllCastes(uniqueCastes);
+  });
+}, []);
+
 
   const grouped = cutoffList
     .filter((item) => {

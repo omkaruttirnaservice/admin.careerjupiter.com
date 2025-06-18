@@ -50,6 +50,7 @@ import UniversityCourses from "./courses/universityCourses.jsx";
 import CollegeCutoffForm from "./pages/collegeCutoffForm.jsx";
 import CutoffTable from "./pages/cutoffTable.jsx";
 import ManageCaste from "./pages/manageCaste.jsx";
+import CutoffExcelUploader from "./pages/cuttoffExcelUploader.jsx";
 
 
 const queryClient = new QueryClient();
@@ -94,8 +95,10 @@ function App() {
               <Route path="/edit-university/:id" element={<EditUniversity />} />
               <Route path="/manage-type" element={<TypeList />} />
               <Route path="/manage-roadmap" element={<ManageRoadmapForm />} />
-               <Route path="/cutoff-table" element={<CutoffTable />} />
-                        <Route path="/add-caste-category" element={<ManageCaste />} />
+              <Route path="/cutoff-table" element={<CutoffTable />} />
+              <Route path="/add-caste-category" element={<ManageCaste />} />
+              <Route path="/add-cutoff-excel" element={<CutoffExcelUploader />} />
+                          
             </Route>
 
             {/* Protected Routes for VENDOR - All Subroles */}
