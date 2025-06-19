@@ -46,16 +46,23 @@ const CollegeCutoffForm = () => {
       try {
         if (editingId) {
           await axios.put(`${API_BASE_URL}/api/cutoff/${editingId}`, payload);
-          alert("Cutoff updated successfully");
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Cutoff updated successfully",
+          });
         } else {
           await axios.post(`${API_BASE_URL}/api/cutoff/create`, payload);
-          alert("Cutoff created successfully");
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Cutoff created successfully",
+          });
         }
 
         formik.resetForm();
         setSelectedCastes([]);
         setEditingId(null);
-        // navigate("/cutoff-table");
       } catch (err) {
         console.error("Submission failed:", err);
         alert("Submission failed");

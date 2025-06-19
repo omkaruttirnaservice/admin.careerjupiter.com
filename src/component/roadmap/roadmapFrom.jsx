@@ -23,7 +23,7 @@ const AddTypeFrom = ({ onSuccess, onClose, editingType }) => {
       onSuccess?.();
     },
     onError: (error) => {
-      Swal.fire("Error", error.response?.data.usrMsg || "Something went wrong", "error");
+      Swal.fire("Warning", error.response?.data.usrMsg || "Please Try Again", "warning");
     },
   });
 
