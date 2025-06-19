@@ -127,9 +127,9 @@ const ExcelUpload = () => {
       setSelectedFile(null);
     },
     onError: (error) => {
-      const errMsg = error?.response?.data?.usrMsg || 'Something went wrong, please try again.';
+      const errMsg = error?.response?.data?.usrMsg || 'Please Try Again.';
       Swal.fire({
-        icon: 'error',
+        icon: 'warning',
         title: 'Upload Failed',
         text: errMsg,
         confirmButtonColor: '#d33',
