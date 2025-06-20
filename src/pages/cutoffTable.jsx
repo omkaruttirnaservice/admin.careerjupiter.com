@@ -153,18 +153,18 @@ useEffect(() => {
 
         <div className="overflow-x-auto overflow-y-auto max-h-[70vh]">
           <table className="min-w-[1500px] border text-sm text-left">
-            <thead className="bg-blue-100 text-blue-900">
+            <thead className="sticky top-0 bg-blue-100 text-blue-900">
               <tr>
-                <th className="border px-3 py-2">College ID</th>
-                <th className="border px-3 py-2">College Name</th>
-                <th className="border px-3 py-2">Category</th>
-                <th className="border px-3 py-2">Subcategory</th>
+                <th className="sticky top-0 border px-3 py-2">College ID</th>
+                <th className="sticky top-0 border px-3 py-2">College Name</th>
+                <th className="sticky top-0 border px-3 py-2">Category</th>
+                <th className="sticky top-0 border px-3 py-2">Subcategory</th>
                 {allCastes.map((caste) => (
-                  <th key={caste._id} className="border px-3 py-2">
+                  <th key={caste._id} className="sticky top-0 border px-3 py-2">
                     {caste.caste}
                   </th>
                 ))}
-                <th className="border px-3 py-2">Actions</th>
+                <th className="sticky top-0 border px-3 py-2">Actions</th>
               </tr>
             </thead>
             <tbody>

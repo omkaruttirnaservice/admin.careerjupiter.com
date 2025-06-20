@@ -174,6 +174,15 @@ const CutoffExcelUploader = () => {
   //     }
   //   };
 
+ const getBracketValue = (val) => {
+  if (typeof val === "string" && val.includes("(")) {
+    const parts = val.split("(");
+    return parts[parts.length - 1].replace(")", "").trim();
+  }
+  return val;
+};
+
+
   const handleUpload = async () => {
     const fileInput = document.getElementById("excelFile");
     const file = fileInput?.files?.[0];
@@ -286,7 +295,7 @@ const CutoffExcelUploader = () => {
                 </tr>
               </thead>
               <tbody>
-                {excelData.map((row, rowIndex) => (
+                {/* {excelData.map((row, rowIndex) => (
                   <tr key={rowIndex} className="even:bg-gray-50">
                     {Object.values(row).map((val, colIndex) => (
                       <td
@@ -296,8 +305,27 @@ const CutoffExcelUploader = () => {
                         {val}
                       </td>
                     ))}
+                    <td
+                      key={colIndex}
+                      className="border px-3 py-1 text-gray-700"
+                    >
+                      {getBracketValue(val)}
+                    </td>
                   </tr>
-                ))}
+                ))} */}
+
+                <tbody>
+  {excelData.map((row, rowIndex) => (
+    <tr key={rowIndex} className="even:bg-gray-50">
+      {Object.values(row).map((val, colIndex) => (
+        <td key={colIndex} className="border px-3 py-1 text-gray-700">
+          {getBracketValue(val)} {/* ✅ FIXED HERE */}
+        </td>
+      ))}
+    </tr>
+  ))}
+</tbody>
+
               </tbody>
             </table>
           </div>
