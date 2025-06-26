@@ -69,11 +69,10 @@ const CollegeVendorDashboard = () => {
   const infra = infrastructure?.infrastructure?.[0] || {};
   // const placement = college.placements?.[0]?.placement?.[0] || {};
 
-
   return (
     <div className="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen md:p-8 p-2">
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+      {/* <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden mb-8">
         <div className="relative h-48 md:h-64">
           <img
             src={`${API_BASE_URL}${college.image}`}
@@ -99,7 +98,7 @@ const CollegeVendorDashboard = () => {
         </div>
 
         {/* Quick Info Bar */}
-        <div className="p-4 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
+      {/* <div className="p-4 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <FaUniversity />
@@ -119,6 +118,64 @@ const CollegeVendorDashboard = () => {
                 {address.dist}, {address.state}
               </span>
             </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div className="relative h-48 md:h-64 overflow-hidden">
+        {/* College Image OR Fallback Gradient */}
+        {college.image ? (
+          <img
+            src={`${API_BASE_URL}${college.image}`}
+            alt={college.collegeName}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-blue-800 via-purple-800 to-black flex items-center justify-center relative">
+            {/* ✨ Starry Overlay Dots */}
+            {[...Array(30)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 rounded-full bg-white opacity-30 animate-pulse"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                }}
+              />
+            ))}
+
+            {/* Initial Letter for Fallback */}
+            <h1 className="text-white text-5xl md:text-6xl font-extrabold drop-shadow-md z-10">
+              {college.collegeName?.[0] || "C"}
+            </h1>
+          </div>
+        )}
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
+
+        {/* Logo & Info */}
+        <div className="absolute bottom-4 left-4 flex items-end z-10">
+          {college.logo ? (
+            <img
+              src={`${API_BASE_URL}${college.logo}`}
+              alt="Logo"
+              className="w-16 h-16 md:w-24 md:h-24 rounded-full border-4 border-white shadow-lg object-cover"
+            />
+          ) : (
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-gradient-to-tr from-blue-400 via-purple-400 to-pink-400 border-4 border-white shadow-lg flex items-center justify-center text-white text-2xl md:text-4xl font-bold">
+              {college.collegeName?.[0] || "C"}
+            </div>
+          )}
+
+          <div className="ml-4 text-white">
+            <h1 className="text-xl md:text-3xl font-bold">
+              {college.collegeName}
+            </h1>
+            <p className="text-sm md:text-base">
+              {college.affiliatedUniversity}
+            </p>
           </div>
         </div>
       </div>
@@ -274,7 +331,7 @@ const CollegeVendorDashboard = () => {
         </div>
       </div>
 
-    {/* Gallery */}
+      {/* Gallery */}
       {college.imageGallery?.length > 0 && (
         <div className="w-full mt-6">
           <div className="bg-white rounded-xl shadow-md p-6">
