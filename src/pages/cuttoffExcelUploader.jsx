@@ -1,117 +1,3 @@
-// import React, { useState } from "react";
-// import * as XLSX from "xlsx";
-// import axios from "axios";
-// import { API_BASE_URL } from "../constant/constantBaseUrl";
-
-// const CutoffExcelUploader = () => {
-//   const [excelData, setExcelData] = useState([]);
-//   const [fileName, setFileName] = useState("");
-
-//   const handleFileChange = async (e) => {
-//     const file = e.target.files[0];
-//     if (!file) return;
-
-//     setFileName(file.name);
-//     const reader = new FileReader();
-
-//     reader.onload = (event) => {
-//       const binaryStr = event.target.result;
-//       const workbook = XLSX.read(binaryStr, { type: "binary" });
-//       const sheetName = workbook.SheetNames[0];
-//       const sheet = workbook.Sheets[sheetName];
-//       const jsonData = XLSX.utils.sheet_to_json(sheet);
-//       setExcelData(jsonData);
-//     };
-
-//     reader.readAsBinaryString(file);
-//   };
-
-// const handleUpload = async () => {
-//   const fileInput = document.getElementById("excelFile");
-//   const file = fileInput?.files?.[0];
-
-//   if (!file) {
-//     alert("Please select an Excel file first.");
-//     return;
-//   }
-
-//   const formData = new FormData();
-//   formData.append("file", file); // ✅ exact key: 'file'
-
-//   try {
-//     const response = await axios.post(
-//        `${API_BASE_URL}/api/cutoff/upload-excel`, // 🔁 replace with your baseurl
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data", // ✅ Required for file upload
-//         },
-//       }
-//     );
-
-//     alert("Upload successful!");
-//     console.log(response.data);
-//   } catch (error) {
-//     console.error("Upload error:", error.response?.data || error);
-//     alert(
-//       error.response?.data?.usrMsg || "Upload failed due to server error."
-//     );
-//   }
-// };
-
-//   return (
-//     <div className="max-w-xl mx-auto bg-white shadow p-6 rounded-lg">
-//       <h2 className="text-xl font-bold mb-4 text-blue-600">Upload Cutoff Excel</h2>
-
-//       <input
-//         type="file"
-//         id="excelFile"
-//         accept=".xlsx, .xls"
-//         onChange={handleFileChange}
-//         className="mb-4"
-//       />
-
-//       {fileName && <p className="text-sm text-gray-600 mb-2">Selected File: {fileName}</p>}
-
-//       <button
-//         onClick={handleUpload}
-//         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-//       >
-//         Upload Excel
-//       </button>
-
-//       {excelData.length > 0 && (
-//         <div className="mt-6 max-h-60 overflow-auto border rounded">
-//           <table className="min-w-full text-sm">
-//             <thead>
-//               <tr>
-//                 {Object.keys(excelData[0]).map((head, i) => (
-//                   <th key={i} className="border px-2 py-1 bg-gray-100">
-//                     {head}
-//                   </th>
-//                 ))}
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {excelData.map((row, rowIndex) => (
-//                 <tr key={rowIndex}>
-//                   {Object.values(row).map((val, colIndex) => (
-//                     <td key={colIndex} className="border px-2 py-1">
-//                       {val}
-//                     </td>
-//                   ))}
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CutoffExcelUploader;
-
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
@@ -143,36 +29,13 @@ const CutoffExcelUploader = () => {
     reader.readAsBinaryString(file);
   };
 
-  //   const handleUpload = async () => {
-  //     const fileInput = document.getElementById("excelFile");
-  //     const file = fileInput?.files?.[0];
-
-  //     if (!file) {
-  //       alert("Please select an Excel file first.");
-  //       return;
-  //     }
-
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-
-  //     try {
-  //       const response = await axios.post(
-  //         `${API_BASE_URL}/api/cutoff/upload-excel`,
-  //         formData,
-  //         {
-  //           headers: {
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       );
-
-  //       alert("Upload successful!");
-  //       console.log(response.data);
-  //     } catch (error) {
-  //       console.error("Upload error:", error.response?.data || error);
-  //       alert(error.response?.data?.usrMsg || "Upload failed due to server error.");
-  //     }
-  //   };
+  const getBracketValue = (val) => {
+    if (typeof val === "string" && val.includes("(")) {
+      const parts = val.split("(");
+      return parts[parts.length - 1].replace(")", "").trim();
+    }
+    return val;
+  };
 
   const handleUpload = async () => {
     const fileInput = document.getElementById("excelFile");
@@ -253,15 +116,15 @@ const CutoffExcelUploader = () => {
           </div>
         )}
 
-        {/* <div className="mb-4">
+        <div className="mb-4">
           <a
             href="/sample_cutoff_format.xlsx"
             download
             className="inline-flex items-center text-blue-600 underline text-sm hover:text-blue-800"
           >
-            📄 Download Sample Excel Format
+            📄 Download Sample CutOff Excel Format
           </a>
-        </div> */}
+        </div>
 
         <button
           onClick={handleUpload}
@@ -286,7 +149,7 @@ const CutoffExcelUploader = () => {
                 </tr>
               </thead>
               <tbody>
-                {excelData.map((row, rowIndex) => (
+                {/* {excelData.map((row, rowIndex) => (
                   <tr key={rowIndex} className="even:bg-gray-50">
                     {Object.values(row).map((val, colIndex) => (
                       <td
@@ -296,8 +159,29 @@ const CutoffExcelUploader = () => {
                         {val}
                       </td>
                     ))}
+                    <td
+                      key={colIndex}
+                      className="border px-3 py-1 text-gray-700"
+                    >
+                      {getBracketValue(val)}
+                    </td>
                   </tr>
-                ))}
+                ))} */}
+
+                <tbody>
+                  {excelData.map((row, rowIndex) => (
+                    <tr key={rowIndex} className="even:bg-gray-50">
+                      {Object.values(row).map((val, colIndex) => (
+                        <td
+                          key={colIndex}
+                          className="border px-3 py-1 text-gray-700"
+                        >
+                          {getBracketValue(val)} {/* ✅ FIXED HERE */}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
               </tbody>
             </table>
           </div>

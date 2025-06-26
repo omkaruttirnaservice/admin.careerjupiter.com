@@ -6,6 +6,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { useParams } from "react-router-dom";
 import Select from "react-select";
+import Swal from "sweetalert2";
 
 const CollegeCutoffForm = () => {
   const [selectedCastes, setSelectedCastes] = useState([]);
@@ -28,8 +29,89 @@ const CollegeCutoffForm = () => {
       subCategory: "",
     },
 
+    // onSubmit: async (values) => {
+    //   setIsSubmitting(true);
+    //   const cutoff = selectedCastes.map((item) => ({
+    //     caste: item.caste, // caste is now a name (string), not ID
+    //     marks: Number(item.percent),
+    //   }));
+
+    //   const payload = {
+    //     collegeId: values.collegeId,
+    //     collegeName: values.collegeName,
+    //     category: values.category,
+    //     subCategory: [values.subCategory],
+    //     cutoff,
+    //   };
+
+    //   try {
+    //     if (editingId) {
+    //       await axios.put(`${API_BASE_URL}/api/cutoff/${editingId}`, payload);
+    //       Swal.fire({
+    //         icon: "success",
+    //         title: "Success",
+    //         text: "Cutoff updated successfully",
+    //       });
+    //     } else {
+    //       await axios.post(`${API_BASE_URL}/api/cutoff/create`, payload);
+    //       Swal.fire({
+    //         icon: "success",
+    //         title: "Success",
+    //         text: "Cutoff created successfully",
+    //       });
+    //     }
+
+    //     formik.resetForm();
+    //     setSelectedCastes([]);
+    //     setEditingId(null);
+    //   } catch (err) {
+    //     console.error("Submission failed:", err);
+    //     alert("Submission failed");
+    //   } finally {
+    //     setIsSubmitting(false);
+    //   }
+    // },
+
+    //       onSubmit: async (values) => {
+    //   setIsSubmitting(true);
+    //   setIsSubmitting(true);
+    //       const cutoff = selectedCastes.map((item) => ({
+    //         caste: item.caste, // caste is now a name (string), not ID
+    //         marks: Number(item.percent),
+    //       }));
+
+    //       const payload = {
+    //         collegeId: values.collegeId,
+    //         collegeName: values.collegeName,
+    //         category: values.category,
+    //         subCategory: [values.subCategory],
+    //         cutoff,
+    //       };
+
+    //   try {
+    //     if (editingId) {
+    //       await axios.put(`${API_BASE_URL}/api/cutoff/${editingId}`, payload);
+    //       alert("Cutoff updated successfully");
+    //     } else {
+    //       await axios.post(`${API_BASE_URL}/api/cutoff/create`, payload);
+    //       alert("Cutoff created successfully");
+    //     }
+
+    //     formik.resetForm();
+    //     setSelectedCastes([]);
+    //     setEditingId(null);
+    //     // navigate("/cutoff-table");
+    //   } catch (err) {
+    //     console.error("Submission failed:", err);
+    //     alert("Submission failed");
+    //   } finally {
+    //     setIsSubmitting(false);
+    //   }
+    // },
+
     onSubmit: async (values) => {
       setIsSubmitting(true);
+
       const cutoff = selectedCastes.map((item) => ({
         caste: item.caste, // caste is now a name (string), not ID
         marks: Number(item.percent),
@@ -42,30 +124,36 @@ const CollegeCutoffForm = () => {
         subCategory: [values.subCategory],
         cutoff,
       };
-
       try {
+        let res;
         if (editingId) {
-          await axios.put(`${API_BASE_URL}/api/cutoff/${editingId}`, payload);
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "Cutoff updated successfully",
-          });
+          res = await axios.put(
+            `${API_BASE_URL}/api/cutoff/${editingId}`,
+            payload
+          );
         } else {
-          await axios.post(`${API_BASE_URL}/api/cutoff/create`, payload);
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "Cutoff created successfully",
-          });
+          res = await axios.post(`${API_BASE_URL}/api/cutoff/create`, payload);
         }
+        console.log("222222222222222", res?.data?.usrMsg);
 
-        formik.resetForm();
-        setSelectedCastes([]);
-        setEditingId(null);
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: res?.data?.usrMsg || "Operation successful",
+        }).then(() => {
+          // Optional: only navigate after alert is closed
+          formik.resetForm();
+          setSelectedCastes([]);
+          setEditingId(null);
+          // navigate("/cutoff-table");
+        });
       } catch (err) {
-        console.error("Submission failed:", err);
-        alert("Submission failed");
+        console.error("Error:", err?.response?.data || err);
+        Swal.fire({
+          icon: "warning",
+          title: "Failed",
+          text: err?.response?.data?.usrMsg || "Submission failed",
+        });
       } finally {
         setIsSubmitting(false);
       }

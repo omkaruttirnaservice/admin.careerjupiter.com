@@ -51,6 +51,8 @@ import CollegeCutoffForm from "./pages/collegeCutoffForm.jsx";
 import CutoffTable from "./pages/cutoffTable.jsx";
 import ManageCaste from "./pages/manageCaste.jsx";
 import CutoffExcelUploader from "./pages/cuttoffExcelUploader.jsx";
+import CollegeExcelUploader from "./pages/collegeExcelUploader.jsx";
+import CollegeCoursesExcelUpload from "./pages/collegeCoursesExcelUpload.jsx";
 
 
 const queryClient = new QueryClient();
@@ -98,6 +100,8 @@ function App() {
               <Route path="/cutoff-table" element={<CutoffTable />} />
               <Route path="/add-caste-category" element={<ManageCaste />} />
               <Route path="/add-cutoff-excel" element={<CutoffExcelUploader />} />
+              <Route path="/add-college-excel" element={<CollegeExcelUploader />} />
+              <Route path="/add-college-courses-excel" element={<CollegeCoursesExcelUpload />} />
                           
             </Route>
 

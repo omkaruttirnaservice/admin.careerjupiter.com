@@ -26,6 +26,7 @@ import {
   UserCheckIcon,
   ScaleIcon,
   FileSpreadsheet,
+  BookAIcon,
 } from "lucide-react";
 import { clearAuthCookies } from "../utlis/cookieHelper";
 import Swal from "sweetalert2";
@@ -48,6 +49,18 @@ const navigation = [
         href: "/colleges",
         icon: Building2,
         color: "text-blue-400",
+      },
+      {
+        name: "Add College Excel",
+        href: "/add-college-excel",
+        icon: FileSpreadsheet,
+        color: "text-gray-400",
+      },
+      {
+        name: "Add College Courses Excel",
+        href: "/add-college-courses-excel",
+        icon: BookAIcon,
+        color: "text-orange-400",
       },
     ],
   },
