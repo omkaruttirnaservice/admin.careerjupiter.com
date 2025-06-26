@@ -11,17 +11,18 @@ import { clearAuthCookies } from "../utlis/cookieHelper";
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour < 12) return { text: "Good Morning", emoji: "🌞", color: "#facc15" };
-  if (hour < 16) return { text: "Good Afternoon", emoji: "☀️", color: "#fb923c" };
+  if (hour < 16)
+    return { text: "Good Afternoon", emoji: "☀️", color: "#fb923c" };
   return { text: "Good Evening", emoji: "🌙", color: "#60a5fa" };
 };
 
-// Navigations for the University Sidemenu
+// Navigation routes for the University Sidemenu
 const navigation = [
   {
     name: "Dashboard",
     href: "/vendor-university/university-dashboard",
     icon: HomeIcon,
-    color: "text-green-400",
+    color: "text-red-400",
   },
   {
     name: "Manage University",
@@ -81,7 +82,7 @@ const UniversityVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-700 to-blue-900 shadow-lg z-50 h-screen transition-transform duration-300 ${
+      className={`fixed inset-y-0 left-0 w-64 bg-gray-800 shadow-lg z-50 h-screen transition-transform duration-300 ${
         isMenuOpen ? "translate-x-0" : "-translate-x-64"
       } md:translate-x-0`}
     >
@@ -89,6 +90,7 @@ const UniversityVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
         {/* Profile Section */}
         <div className="flex flex-col items-center text-white mb-6">
           <FaUniversity className="h-16 w-16 text-blue-300" />
+          {/* Greeting Section */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -139,7 +141,9 @@ const UniversityVendorSideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
                 }`}
               >
                 <item.icon
-                  className={`mr-3 h-6 w-6 ${isActive ? "text-white" : item.color}`}
+                  className={`mr-3 h-6 w-6 ${
+                    isActive ? "text-white" : item.color
+                  }`}
                 />
                 {item.name}
               </button>

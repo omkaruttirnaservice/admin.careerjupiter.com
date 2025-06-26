@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import { FaEye, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import ClassInfoCard from "./classInforCard";
 import Swal from "sweetalert2";
@@ -15,7 +14,6 @@ const ClassTableDetails = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
 
   // ✅ Fetch Class Data from API
   useEffect(() => {
@@ -28,7 +26,7 @@ const ClassTableDetails = () => {
           const visibleClasses = classArray.filter(
             (classItem) => classItem.isHidden
           );
-          setClassData(visibleClasses); // ✅ Only show classes that are not hidden
+          setClassData(visibleClasses); //  Only show classes that are not hidden
         } else {
           console.error(
             error.response?.data?.usrMsg ||
@@ -59,7 +57,7 @@ const ClassTableDetails = () => {
     setModalOpen(true);
   };
 
-  // handle Category click to open modal
+  // handle Category - click to open modal
   const handleCategoryClick = (categories) => {
     if (Array.isArray(categories) && categories.length > 0) {
       setSelectedCategories(categories);
@@ -86,6 +84,7 @@ const ClassTableDetails = () => {
 
     if (!isConfirmed) return;
 
+    // Delete Api to delete the class
     try {
       const response = await axios.delete(
         `${API_BASE_URL}/api/class/delete/${item._id}`
@@ -230,119 +229,135 @@ const ClassTableDetails = () => {
 
   return (
     <section className="min-w-full bg-gradient-to-tr from-blue-100 to-white p-4">
-      <div className="bg-white p-8 shadow-2xl rounded-2xl border border-blue-200">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-          <h2 className="text-4xl font-extrabold text-blue-700 tracking-tight flex items-center gap-2">
-            🏫 <span>Class List</span>
-          </h2>
+      {/* Header */}
+      <div className="flex justify-between items-center bg-white p-4 shadow-md rounded-lg mb-4">
+        <h2 className="text-3xl font-semibold text-blue-800">
+          🏫 <span>Class List</span>
+        </h2>
 
-          {/* Search Section */}
-          <input
-            type="text"
-            placeholder="🔍 Search for a class..."
-            className="w-full md:w-72 px-5 py-3 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md shadow-sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        {/* Search Section input field */}
+        <input
+          type="text"
+          placeholder="🔍 Search for a class..."
+          className="w-full md:w-72 px-5 py-3 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-md shadow-sm"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
-        {/* DataTable */}
-        <div className="rounded-lg overflow-hidden shadow">
-          <DataTable
-            columns={columns}
-            data={filteredData}
-            pagination
-            highlightOnHover
-            responsive
-            progressPending={loading}
-            progressComponent={
-              <div className="p-6 flex justify-center items-center space-x-4">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
-                <span className="text-blue-600 font-semibold text-lg">
-                  Loading classes...
-                </span>
-              </div>
-            }
-            noDataComponent={
-              <div className="p-6 text-center text-gray-500 font-medium text-lg">
-                No classes found. Try a different search term.
-              </div>
-            }
-            customStyles={{
-              headRow: {
-                style: {
-                  backgroundColor: "#2563eb",
-                  color: "white",
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  height: "50px",
-                },
+      {/* DataTable */}
+      <div className="overflow-hidden shadow">
+        <DataTable
+          columns={columns}
+          data={filteredData}
+          pagination
+          highlightOnHover
+          responsive
+          fixedHeader
+          fixedHeaderScrollHeight="calc(100vh - 200px)"
+          progressPending={loading}
+          progressComponent={
+            <div className="p-6 flex justify-center items-center space-x-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+              <span className="text-blue-600 font-semibold text-lg">
+                Loading classes...
+              </span>
+            </div>
+          }
+          noDataComponent={
+            <div className="p-6 text-center text-gray-500 font-medium text-lg">
+              No classes found. Try a different search term.
+            </div>
+          }
+          customStyles={{
+            headRow: {
+              style: {
+                backgroundColor: "#2563eb",
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "bold",
+                minHeight: "50px",
               },
-              rows: {
-                style: {
-                  backgroundColor: "#eff6ff",
-                  fontSize: "15px",
-                  minHeight: "50px",
-                },
+            },
+            headCells: {
+              style: {
+                padding: "12px",
+                textTransform: "uppercase",
               },
-            }}
-          />
-        </div>
+            },
+            rows: {
+              style: {
+                backgroundColor: "#eff6ff",
+                fontSize: "15px",
+                minHeight: "48px",
+              },
+            },
+            pagination: {
+              style: {
+                position: "sticky",
+                bottom: 0,
+                backgroundColor: "white",
+                padding: "10px 20px",
+                borderTop: "1px solid #e5e7eb",
+                zIndex: 5,
+              },
+            },
+          }}
+        />
+      </div>
 
-        {/* View Class Details Modal */}
-        {modalOpen && (
-          <ClassInfoCard
-            classData={selectedItem}
-            onClose={() => setModalOpen(false)}
-          />
-        )}
+      {/* View Class Details Modal */}
+      {modalOpen && (
+        <ClassInfoCard
+          classData={selectedItem}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
 
-        {/* Category Modal */}
-        {showModal && (
-          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 bg-opacity-50 backdrop-blur-sm">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto border-4 border-blue-500 space-y-6">
-              {/* Header */}
-              <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 rounded-t-lg">
-                <h2 className="text-2xl font-semibold">📌 Category List</h2>
-                <button
-                  onClick={closeModal}
-                  className="text-white text-3xl hover:text-red-500 transition duration-300"
-                >
-                  &times;
-                </button>
-              </div>
+      {/* Category Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 bg-opacity-50 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto border-4 border-blue-500 space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 rounded-t-lg">
+              <h2 className="text-2xl font-semibold">📌 Category List</h2>
+              <button
+                onClick={closeModal}
+                className="text-white text-3xl hover:text-red-500 transition duration-300"
+              >
+                &times;
+              </button>
+            </div>
 
-              <hr />
+            <hr />
 
-              {/* Content */}
-              <div className="px-4">
-                {selectedCategories && selectedCategories.length > 0 ? (
-                  <ul className="list-disc pl-5 space-y-2">
-                    {selectedCategories.map((cat, idx) => (
-                      <li key={idx} className="text-gray-800 font-medium">
-                        {cat}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500">No categories available.</p>
-                )}
-              </div>
+            {/* Content */}
+            <div className="px-4">
+              {selectedCategories && selectedCategories.length > 0 ? (
+                <ul className="list-disc pl-5 space-y-2">
+                  {selectedCategories.map((cat, idx) => (
+                    <li key={idx} className="text-gray-800 font-medium">
+                      {cat}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500">No categories available.</p>
+              )}
+            </div>
 
-              {/* Footer */}
-              <div className="flex justify-end px-4">
-                <button
-                  onClick={closeModal}
-                  className="mt-2 px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-800 transition"
-                >
-                  Close
-                </button>
-              </div>
+            {/* Footer */}
+            <div className="flex justify-end px-4">
+              <button
+                onClick={closeModal}
+                className="mt-2 px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-800 transition"
+              >
+                Close
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 };

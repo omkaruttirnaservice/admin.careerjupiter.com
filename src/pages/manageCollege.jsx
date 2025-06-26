@@ -345,8 +345,14 @@ const ManageCollege = () => {
         }
 
         // Handles array fields for roadmap
+        // if (Array.isArray(values.roadmap)) {
+        //   values.roadmap.forEach((item) => formData.append("roadmap[]", item));
+        // }
+
         if (Array.isArray(values.roadmap)) {
-          values.roadmap.forEach((item) => formData.append("roadmap[]", item));
+          values.roadmap.forEach((id) => {
+            formData.append("roadmap[]", id); // append only IDs (strings)
+          });
         }
 
         // Category field
@@ -504,13 +510,28 @@ const ManageCollege = () => {
   }, [formik.values.image]);
 
   // This handles to fetch the roadmap categories value for the Roadmap dropdown
+  // useEffect(() => {
+  //   const fetchRoadmapOptions = async () => {
+  //     try {
+  //       const response = await axios.get(`${API_BASE_URL}/api/type/types`);
+  //       const types = response.data?.data || [];
+  //       const formatted = types.map((item) => item.type);
+  //       setRoadmapOptions(formatted);
+  //     } catch (error) {
+  //       console.error("Failed to fetch roadmap types", error);
+  //     }
+  //   };
+
+  //   fetchRoadmapOptions();
+  // }, []);
+
   useEffect(() => {
     const fetchRoadmapOptions = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/type/types`);
         const types = response.data?.data || [];
-        const formatted = types.map((item) => item.type);
-        setRoadmapOptions(formatted);
+        // Keep full objects with _id and type
+        setRoadmapOptions(types);
       } catch (error) {
         console.error("Failed to fetch roadmap types", error);
       }
@@ -530,18 +551,22 @@ const ManageCollege = () => {
   }, [formik.values]);
 
   // For NAAC and NBA Section in the accreditation form
-  const isNaacOrNba = (value) =>
-    [
-      "NAAC A++",
-      "NAAC A+",
-      "NAAC A",
-      "NAAC B++",
-      "NAAC B+",
-      "NAAC B",
-      "NAAC C",
-      "NAAC D",
-      "NBA",
-    ].includes(value);
+  // const isNaacOrNba = (value) =>
+  //   [
+  //     "NAAC A++",
+  //     "NAAC A+",
+  //     "NAAC A",
+  //     "NAAC B++",
+  //     "NAAC B+",
+  //     "NAAC B",
+  //     "NAAC C",
+  //     "NAAC D",
+  //     "NBA",
+  //   ].includes(value);
+
+  const isNaacOrNba = (value) => {
+    return value.includes("NAAC") || value === "NBA";
+  };
 
   // Checks these Address fields and then show the address card - (if address is available)
   const isAddressFilled = (addr) => {
@@ -718,6 +743,49 @@ const ManageCollege = () => {
                 className="bg-white"
               />
 
+              {/* RoadMap Category */}
+              {/* <MultiSelectDropdown
+                label="Roadmap Category"
+                name="roadmap"
+                options={roadmapOptions}
+                formik={formik}
+              /> */}
+
+              <MultiSelectDropdown
+                label="Roadmap Category"
+                name="roadmap"
+                options={roadmapOptions} // full objects [{_id, type}, ...]
+                formik={formik}
+                getOptionValue={(option) => option._id} // use _id as value
+                getOptionLabel={(option) => option.type} // use type as label
+              />
+
+              {/* Entrance Exams Required */}
+              <MultiSelectDropdown
+                label="Entrance Exams Required"
+                name="entrance_exam_required"
+                options={entranceExams}
+                formik={formik}
+                className="bg-white"
+              />
+
+              {/* College Info Description */}
+              <TextAreaField
+                label="Description"
+                name="info.description"
+                formik={formik}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {/* Keywords */}
+              <MultiSelectField
+                label="Keywords"
+                name="keywords"
+                formik={formik}
+                className="bg-white"
+              />
+
               {/* Accreditation */}
               <div>
                 <SingleSelectDropdown
@@ -822,37 +890,6 @@ const ManageCollege = () => {
                   </div>
                 )}
               </div>
-
-              {/* RoadMap Category */}
-              <MultiSelectDropdown
-                label="Roadmap Category"
-                name="roadmap"
-                options={roadmapOptions}
-                formik={formik}
-              />
-
-              {/* Entrance Exams Required */}
-              <MultiSelectDropdown
-                label="Entrance Exams Required"
-                name="entrance_exam_required"
-                options={entranceExams}
-                formik={formik}
-                className="bg-white"
-              />
-
-              {/* Keywords */}
-              <MultiSelectField
-                label="Keywords"
-                name="keywords"
-                formik={formik}
-                className="bg-white"
-              />
-              {/* College Info Description */}
-              <TextAreaField
-                label="Description"
-                name="info.description"
-                formik={formik}
-              />
             </div>
           </div>
 
@@ -876,15 +913,15 @@ const ManageCollege = () => {
                   <div key={index} className="relative">
                     {isEditing ? (
                       <div className="bg-white rounded-xl shadow-md p-6 border-2 border-blue-200">
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex justify-between items-center mb-4 bg-blue-600 py-3 rounded-lg px-5">
                           {/* Heading for Editing Address section */}
-                          <h3 className="text-lg font-semibold text-blue-700">
-                            ✏️ Editing Address {index + 1}
+                          <h3 className="text-lg font-semibold text-white ">
+                            <span>✏️</span> Editing Address {index + 1}
                           </h3>
                         </div>
 
                         {/* Prefilled value of the address section in the edit modal */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
                           {formFields.map((field, idx) => (
                             <div key={idx} className="mb-4">
                               <label className="block text-md font-medium text-blue-900 mb-1">

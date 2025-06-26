@@ -8,7 +8,7 @@ const AddAdmin = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // handles the Saving method
+  // handles the admin Saving method
   const handleSaveAdmin = async () => {
     if (!mobileNo || mobileNo.length !== 10) {
       Swal.fire(

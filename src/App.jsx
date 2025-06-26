@@ -27,8 +27,6 @@ import Cookies from "js-cookie";
 import ManageClass from "./pages/manageClass.jsx";
 import VendorClassLayout from "./pages/vendorClassLayout.jsx";
 import ClassTableDetails from "./pages/classTableDetails.jsx";
-import FacultyManagement from "./pages/facultyManagement.jsx";
-import ClassCourses from "./pages/classCourses.jsx";
 import ProtectedRoute from "./component/protectedRoute";
 import AddAdmin from "./pages/addAdmin.jsx";
 import ManageCollegeCategory from "./component/manageCollegeCategory.jsx";
@@ -48,7 +46,14 @@ import ManageClassCategory from "./component/manageClassCategory.jsx";
 import TypeList from "./component/roadmap/typeList.jsx";
 import ManageRoadmapForm from "./component/roadmap/manageRoadmapFrom.jsx";
 import UniversityCourses from "./courses/universityCourses.jsx";
-import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
+// import UploadCollegeExcel from "./pages/uploadCollegeExcel.jsx";
+import CollegeCutoffForm from "./pages/collegeCutoffForm.jsx";
+import CutoffTable from "./pages/cutoffTable.jsx";
+import ManageCaste from "./pages/manageCaste.jsx";
+import CutoffExcelUploader from "./pages/cuttoffExcelUploader.jsx";
+import CollegeExcelUploader from "./pages/collegeExcelUploader.jsx";
+import CollegeCoursesExcelUpload from "./pages/collegeCoursesExcelUpload.jsx";
+
 
 const queryClient = new QueryClient();
 
@@ -64,70 +69,40 @@ function App() {
             {/* Public Route */}
             <Route index element={<Login />} />
             <Route path="/add-admin" element={<AddAdmin />} />
-            <Route path="/upload-college-excel" element={<UploadCollegeExcel/>} />
 
             {/* Protected Routes for Admin */}
             <Route element={<ProtectedRoute roleRequired="ADMIN" />}>
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/colleges" element={<CollegeTableDetails />} />
               <Route path="/university-details" element={<UniversityList />} />
-              <Route
-                path="/university/placement/:universityId"
-                element={<UniversityPlacement />}
-              />
-              <Route
-                path="/university/infrastructure/:universityId"
-                element={<UniversityInfrastructure />}
-              />
-              <Route
-                path="/university/courses/:universityId"
-                element={<UniversityCourses />}
-              />
+              <Route path="/university/placement/:universityId" element={<UniversityPlacement />} />
+              <Route path="/university/infrastructure/:universityId" element={<UniversityInfrastructure />} />
+              <Route path="/university/courses/:universityId" element={<UniversityCourses />} />
               <Route path="/class-list" element={<ClassTableDetails />} />
               <Route path="/iq-test" element={<IQTest />} />
-              <Route
-                path="/add-class-category"
-                element={<ManageClassCategory />}
-              />
-              <Route
-                path="add-college-category"
-                element={<ManageCollegeCategory />}
-              />
-              <Route
-                path="add-university-category"
-                element={<ManageUniversityCategory />}
-              />
-              <Route
-                path="/tests/:category/:mainCategoryId"
-                element={<TableList />}
-              />
+              <Route path="/add-class-category" element={<ManageClassCategory />} />
+              <Route path="add-college-category" element={<ManageCollegeCategory />} />
+              <Route path="add-university-category" element={<ManageUniversityCategory />} />
+              <Route path="/tests/:category/:mainCategoryId" element={<TableList />} />
               <Route path="/view-excel/:testId" element={<ViewExcelPage />} />
               <Route path="/add-test/:mainCategoryId" element={<AddTest />} />
               <Route path="/reports" element={<ReportandAnalytics />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route
-                path="/colleges/courses/:collegeId"
-                element={<CollegeCourses />}
-              />
-              <Route
-                path="/colleges/edit/:id"
-                element={<ManageCollege />}
-              />
-              <Route
-                path="/colleges/infrastructure/:collegeId"
-                element={<Infrastructure />}
-              />
-              <Route
-                path="/colleges/placement/:collegeId"
-                element={<Placement />}
-              />
-              <Route
-                path="/edit-college/:id"
-                element={<EditCollegeDetails />}
-              />
+              <Route path="/add-cutoff-eligibility" element={<CollegeCutoffForm/>} />
+              <Route path="/colleges/courses/:collegeId" element={<CollegeCourses />} />
+              <Route path="/colleges/edit/:id" element={<ManageCollege />} />
+              <Route path="/colleges/infrastructure/:collegeId" element={<Infrastructure />} />
+              <Route path="/colleges/placement/:collegeId" element={<Placement />} />
+              <Route path="/edit-college/:id" element={<EditCollegeDetails />} />
               <Route path="/edit-university/:id" element={<EditUniversity />} />
               <Route path="/manage-type" element={<TypeList />} />
               <Route path="/manage-roadmap" element={<ManageRoadmapForm />} />
+              <Route path="/cutoff-table" element={<CutoffTable />} />
+              <Route path="/add-caste-category" element={<ManageCaste />} />
+              <Route path="/add-cutoff-excel" element={<CutoffExcelUploader />} />
+              <Route path="/add-college-excel" element={<CollegeExcelUploader />} />
+              <Route path="/add-college-courses-excel" element={<CollegeCoursesExcelUpload />} />
+                          
             </Route>
 
             {/* Protected Routes for VENDOR - All Subroles */}

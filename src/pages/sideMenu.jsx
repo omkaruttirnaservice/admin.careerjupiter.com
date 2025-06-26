@@ -10,6 +10,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   LogoutIcon,
+  IdentificationIcon,
 } from "@heroicons/react/solid";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,6 +23,10 @@ import {
   Map,
   Settings2,
   RouteIcon,
+  UserCheckIcon,
+  ScaleIcon,
+  FileSpreadsheet,
+  BookAIcon,
 } from "lucide-react";
 import { clearAuthCookies } from "../utlis/cookieHelper";
 import Swal from "sweetalert2";
@@ -44,6 +49,18 @@ const navigation = [
         href: "/colleges",
         icon: Building2,
         color: "text-blue-400",
+      },
+      {
+        name: "Add College Excel",
+        href: "/add-college-excel",
+        icon: FileSpreadsheet,
+        color: "text-gray-400",
+      },
+      {
+        name: "Add College Courses Excel",
+        href: "/add-college-courses-excel",
+        icon: BookAIcon,
+        color: "text-orange-400",
       },
     ],
   },
@@ -87,6 +104,44 @@ const navigation = [
         name: "Add University Category",
         href: "/add-university-category",
         icon: GraduationCap,
+      }
+    ],
+
+  },
+  // {
+  //   name: "Add Eligibility",
+  //   href: "/add-cutoff-eligibility",
+  //   icon: UserCheckIcon,
+  //   color: "text-emerald-500",
+  // },
+
+    {
+    name: "Add Eligibility",
+    icon: UserCheckIcon,
+    color: "text-emerald-500",
+    children: [
+      {
+        name: "Add CutOff Excel",
+        href: "/add-cutoff-excel",
+        icon: FileSpreadsheet,
+        color: "text-gray-400",
+      },
+      {
+        name: "Add CutOff Form",
+        href: "/add-cutoff-eligibility",
+        icon: Puzzle,
+        color: "text-blue-400",
+      },
+      {
+        name: "CuttOff Table",
+        href: "/cutoff-table",
+        icon: Landmark,
+        color: "text-green-400",
+      },
+      {
+        name: "Add Caste Category",
+        href: "/add-caste-category",
+        icon: GraduationCap,
         color: "text-purple-400",
       },
     ],
@@ -128,6 +183,7 @@ const navigation = [
     icon: UserCircleIcon,
     color: "text-pink-400",
   },
+
 ];
 
 const SideMenu = () => {

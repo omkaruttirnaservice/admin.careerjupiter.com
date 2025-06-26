@@ -2084,3 +2084,407 @@
 //   );
 // };
   // Update college form 
+
+
+
+  // return (
+  //   <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8 flex justify-center items-start">
+  //     <div className="max-w-5xl w-full bg-white rounded-2xl shadow-2xl border border-indigo-200 overflow-hidden">
+  //       {/* Header */}
+  //       <header className="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 text-white py-8 px-10 text-center">
+  //         <h1 className="text-3xl md:text-4xl font-extrabold tracking-wide drop-shadow-md">
+  //           Update Class Details
+  //         </h1>
+  //       </header>
+
+  //       {/* Form container */}
+  //       <form
+  //         onSubmit={formik.handleSubmit}
+  //         className="px-8 md:px-12 py-10 space-y-10"
+  //         noValidate
+  //       >
+  //         {/* Grid: Basic Fields + Categories */}
+  //         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+  //           <InputField
+  //             label="Class Name"
+  //             type="text"
+  //             name="className"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
+  //           <InputField
+  //             label="Owner Name"
+  //             type="text"
+  //             name="ownerOrInstituteName"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
+  //           <InputField
+  //             label="Year Established"
+  //             type="number"
+  //             name="yearEstablished"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
+  //           <InputField
+  //             label="Website URL"
+  //             type="url"
+  //             name="websiteURL"
+  //             formik={formik}
+  //             className="input-primary"
+  //           />
+
+  //           <div>
+  //             <MultiSelectDropdown
+  //               label="Category"
+  //               name="category"
+  //               options={dynamicCategories}
+  //               formik={formik}
+  //               className="select-primary"
+  //             />
+  //             {showOtherInput && (
+  //               <div className="flex items-center gap-3 mt-3">
+  //                 <input
+  //                   type="text"
+  //                   placeholder="Enter custom category"
+  //                   value={customCategory}
+  //                   onChange={(e) => setCustomCategory(e.target.value)}
+  //                   className="flex-grow px-4 py-3 border border-indigo-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  //                 />
+  //                 <button
+  //                   type="button"
+  //                   onClick={handleAddOtherCategory}
+  //                   className="bg-indigo-600 text-white px-5 py-3 rounded-lg hover:bg-indigo-700 transition shadow-md"
+  //                 >
+  //                   Add
+  //                 </button>
+  //               </div>
+  //             )}
+  //           </div>
+
+  //           <MultiSelectDropdown
+  //             label="Roadmap Category"
+  //             name="roadmap"
+  //             options={roadmapOptions}
+  //             formik={formik}
+  //             getOptionValue={(option) => option._id}
+  //             getOptionLabel={(option) => option.type}
+  //             className="select-primary"
+  //           />
+  //         </div>
+
+  //         {/* Addresses Section */}
+  //         <section className="space-y-6">
+  //           <h2 className="text-xl font-semibold text-indigo-700 border-b border-indigo-300 pb-2 mb-6">
+  //             Addresses
+  //           </h2>
+  //           {formik.values.address.map((addr, index) => {
+  //             const isEditing = editingIndex === index;
+
+  //             return (
+  //               <div
+  //                 key={index}
+  //                 className="bg-indigo-50 rounded-2xl p-6 shadow-inner border border-indigo-200"
+  //               >
+  //                 {isEditing ? (
+  //                   <>
+  //                     <div className="flex justify-between items-center bg-indigo-600 rounded-md px-4 py-2 mb-6 text-white font-semibold">
+  //                       ✏️ Editing Address {index + 1}
+  //                     </div>
+  //                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  //                       {[
+  //                         {
+  //                           label: "Address Line 1",
+  //                           name: "line1",
+  //                           placeholder: "Line 1",
+  //                         },
+  //                         {
+  //                           label: "Address Line 2",
+  //                           name: "line2",
+  //                           placeholder: "Line 2",
+  //                         },
+  //                         {
+  //                           label: "Nearby Landmarks",
+  //                           name: "nearbyLandmarks",
+  //                           placeholder: "Nearby Landmarks",
+  //                         },
+  //                         {
+  //                           label: "Pincode",
+  //                           name: "pincode",
+  //                           placeholder: "Pincode",
+  //                         },
+  //                         {
+  //                           label: "State",
+  //                           name: "state",
+  //                           placeholder: "State",
+  //                         },
+  //                         {
+  //                           label: "District",
+  //                           name: "dist",
+  //                           placeholder: "District",
+  //                         },
+  //                         {
+  //                           label: "Taluka",
+  //                           name: "taluka",
+  //                           placeholder: "Taluka",
+  //                         },
+  //                         {
+  //                           label: "Authorized Name",
+  //                           name: "autorizedName",
+  //                           placeholder: "Authorized Name",
+  //                         },
+  //                         {
+  //                           label: "Authorized Phone",
+  //                           name: "autorizedPhono",
+  //                           placeholder: "Authorized Phone",
+  //                         },
+  //                       ].map((field, idx) => (
+  //                         <div key={idx}>
+  //                           <label className="block mb-1 text-indigo-700 font-medium">
+  //                             {field.label}
+  //                           </label>
+  //                           <input
+  //                             type="text"
+  //                             name={field.name}
+  //                             placeholder={field.placeholder}
+  //                             value={tempEditAddress?.[field.name] || ""}
+  //                             onChange={(e) =>
+  //                               setTempEditAddress((prev) => ({
+  //                                 ...prev,
+  //                                 [field.name]: e.target.value,
+  //                               }))
+  //                             }
+  //                             className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+  //                           />
+  //                           {formik.errors.address?.[index]?.[field.name] && (
+  //                             <p className="text-red-600 text-sm mt-1">
+  //                               {formik.errors.address[index][field.name]}
+  //                             </p>
+  //                           )}
+  //                         </div>
+  //                       ))}
+  //                     </div>
+
+  //                     {/* Action Buttons */}
+  //                     <div className="flex justify-end gap-4 mt-8">
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           const updatedAddresses = [...formik.values.address];
+  //                           updatedAddresses[index] = tempEditAddress;
+  //                           formik.setFieldValue("address", updatedAddresses);
+  //                           setEditingIndex(null);
+  //                           setTempEditAddress(null);
+  //                         }}
+  //                         className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition flex items-center gap-2"
+  //                       >
+  //                         <MdDone className="text-lg" /> Done
+  //                       </button>
+
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           setEditingIndex(null);
+  //                           setTempEditAddress(null);
+  //                         }}
+  //                         className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition flex items-center gap-2"
+  //                       >
+  //                         <FaWindowClose className="text-lg" /> Cancel
+  //                       </button>
+  //                     </div>
+  //                   </>
+  //                 ) : (
+  //                   <>
+  //                     <div className="text-indigo-900 font-semibold text-lg mb-2">
+  //                       🏠 {addr.line1}, {addr.line2}
+  //                     </div>
+  //                     {addr.nearbyLandmarks && (
+  //                       <p className="text-indigo-700 italic mb-1">
+  //                         📍 Nearby: {addr.nearbyLandmarks}
+  //                       </p>
+  //                     )}
+  //                     <p className="text-indigo-700 mb-1">
+  //                       🗺️ {addr.taluka}, {addr.dist}, {addr.state} -{" "}
+  //                       {addr.pincode}
+  //                     </p>
+  //                     <p className="text-indigo-600 text-sm">
+  //                       👤 {addr.autorizedName} &nbsp; 📞 {addr.autorizedPhono}
+  //                     </p>
+
+  //                     {/* Buttons */}
+  //                     <div className="flex justify-end gap-3 mt-6">
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           setEditingIndex(index);
+  //                           setTempEditAddress({ ...addr });
+  //                         }}
+  //                         className="bg-yellow-400 hover:bg-yellow-500 text-indigo-900 px-4 py-2 rounded-lg shadow-sm flex items-center gap-2 transition"
+  //                       >
+  //                         ✏️ Edit
+  //                       </button>
+  //                       <button
+  //                         type="button"
+  //                         onClick={() => {
+  //                           const updated = [...formik.values.address];
+  //                           updated.splice(index, 1);
+  //                           formik.setFieldValue("address", updated);
+  //                           if (editingIndex === index) setEditingIndex(null);
+  //                         }}
+  //                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm flex items-center gap-2 transition"
+  //                       >
+  //                         🗑️ Remove
+  //                       </button>
+  //                     </div>
+  //                   </>
+  //                 )}
+  //               </div>
+  //             );
+  //           })}
+
+  //           <button
+  //             type="button"
+  //             onClick={() => setShowAddressModal(true)}
+  //             className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-3 shadow-md flex items-center justify-center gap-2 transition w-full md:w-auto"
+  //           >
+  //             ➕ Add Address
+  //           </button>
+  //         </section>
+
+  //         {/* Discount + Valid Till */}
+  //         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+  //           <div>
+  //             <label
+  //               htmlFor="discount"
+  //               className="block mb-2 font-semibold text-indigo-800"
+  //             >
+  //               Select Discount
+  //             </label>
+  //             <select
+  //               id="discount"
+  //               name="discount"
+  //               value={formik.values.discount}
+  //               onChange={formik.handleChange}
+  //               onBlur={formik.handleBlur}
+  //               className="w-full p-3 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  //             >
+  //               <option value="">Select Discount</option>
+  //               {discountOptions.map((option, i) => (
+  //                 <option key={i} value={option.value}>
+  //                   {option.label}
+  //                 </option>
+  //               ))}
+  //             </select>
+  //             {formik.touched.discount && formik.errors.discount && (
+  //               <p className="text-red-600 mt-1 font-semibold text-sm">
+  //                 {formik.errors.discount}
+  //               </p>
+  //             )}
+  //           </div>
+
+  //           {formik.values.discount && (
+  //             <div>
+  //               <label
+  //                 htmlFor="validTill"
+  //                 className="block mb-2 font-semibold text-indigo-800"
+  //               >
+  //                 Valid Till
+  //               </label>
+  //               <input
+  //                 type="date"
+  //                 id="validTill"
+  //                 name="validTill"
+  //                 value={formik.values.validTill}
+  //                 onChange={formik.handleChange}
+  //                 onBlur={formik.handleBlur}
+  //                 className="w-full p-3 rounded-lg border border-indigo-300 bg-white text-indigo-900 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+  //               />
+  //               {formik.touched.validTill && formik.errors.validTill && (
+  //                 <p className="text-red-600 mt-1 font-semibold text-sm">
+  //                   {formik.errors.validTill}
+  //                 </p>
+  //               )}
+  //             </div>
+  //           )}
+  //         </div>
+
+  //         {/* Radio & Checkbox groups */}
+  //         <div className="space-y-8">
+  //           <RadioGroup
+  //             label="Type"
+  //             name="franchiseOrIndependent"
+  //             options={["Franchise", "Home Tution", "Group"]}
+  //             formik={formik}
+  //             className="text-indigo-900"
+  //           />
+
+  //           <CheckboxGroup
+  //             label="Mode of Teaching"
+  //             name="modeOfTeaching"
+  //             options={["Online", "Offline"]}
+  //             formik={formik}
+  //             className="text-indigo-900"
+  //           />
+  //         </div>
+
+  //         {/* Image Upload */}
+  //         <div>
+  //           <h3 className="text-xl font-semibold text-indigo-700 mb-5">
+  //             Class Image
+  //           </h3>
+  //           <div className="mb-4">
+  //             {previewImage || formik.values.image ? (
+  //               <img
+  //                 src={
+  //                   previewImage
+  //                     ? previewImage
+  //                     : typeof formik.values.image === "string"
+  //                     ? `${API_BASE_URL}${formik.values.image}`
+  //                     : ""
+  //                 }
+  //                 alt="Class"
+  //                 className="w-full max-w-md h-48 object-cover rounded-lg shadow-lg mx-auto"
+  //               />
+  //             ) : (
+  //               <p className="text-center italic text-indigo-400">
+  //                 No image available
+  //               </p>
+  //             )}
+  //           </div>
+
+  //           <FileUpload label="Class Image" name="image" formik={formik} />
+  //         </div>
+
+  //         {/* Submit Button */}
+  //         <div className="flex justify-end">
+  //           <button
+  //             type="submit"
+  //             disabled={
+  //               !(formik.isValid && formik.dirty) || formik.isSubmitting
+  //             }
+  //             className={`px-10 py-3 rounded-xl shadow-lg text-lg font-semibold text-white transition
+  //             ${
+  //               formik.isValid && formik.dirty
+  //                 ? "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+  //                 : "bg-indigo-300 cursor-not-allowed"
+  //             }`}
+  //           >
+  //             {formik.isSubmitting ? "Updating..." : "Update Class"}
+  //           </button>
+  //         </div>
+  //       </form>
+
+  //       {/* Address Modal */}
+  //       <AddressModal
+  //         open={showAddressModal}
+  //         onClose={() => setShowAddressModal(false)}
+  //         onSave={(newAddress) => {
+  //           formik.setFieldValue("address", [
+  //             ...(formik.values.address || []),
+  //             newAddress,
+  //           ]);
+  //         }}
+  //       />
+  //     </div>
+  //   </div>
+  // );

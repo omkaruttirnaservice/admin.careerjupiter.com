@@ -19,12 +19,8 @@ import { useQueryClient } from "@tanstack/react-query";
 const role = Cookies.get("role");
 const subrole = Cookies.get("subrole");
 
-
-
 // Default district options by state
-const districtOptionsByState = {
-  
-};
+const districtOptionsByState = {};
 
 const EditUniversity = () => {
   const { id } = useParams();
@@ -65,7 +61,11 @@ const EditUniversity = () => {
         confirmButtonColor: "#3085d6",
       }).then(() => {
         navigate(
-          role === "ADMIN" ? "/university-details" : "/vendor-university"
+          role === "ADMIN"
+            ? "/university-details"
+            : role === "VENDOR"
+            ? "/vendor-university/university-dashboard"
+            : "/" // default fallback
         );
       });
     },
@@ -301,7 +301,9 @@ const EditUniversity = () => {
     } else {
       console.warn("University ID not found!");
       toast.error("University ID not found! Please select a university.");
-      navigate(role === "ADMIN" ? "/university-details" : "/vendor-university");
+      navigate(
+        role === "ADMIN" ? "/university-details" : "/university-dashboard"
+      );
     }
   }, [id, role, navigate]);
 
@@ -393,8 +395,6 @@ const EditUniversity = () => {
       }
     }
   }, [universityData]);
-
-  
 
   const handleImageChange = (event) => {
     const file = event.target.files?.[0];

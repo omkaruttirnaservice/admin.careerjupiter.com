@@ -2,13 +2,22 @@ import React from "react";
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUniversity, FaCheckCircle, FaPlus, FaTimes } from "react-icons/fa";
+import {
+  FaUniversity,
+  FaCheckCircle,
+  FaPlus,
+  FaTimes,
+  FaArrowLeft,
+} from "react-icons/fa";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import stateDistricts from "../constant/constantData";
 import { fetchUniversityCategories } from "./universityapi";
+import { useNavigate } from "react-router-dom";
+import MultiSelectDropdown from "../component/multiSelectDropdown";
+import OtherField from "../component/otherField";
 
 // Constants
 const UniversityCategories = ["Private", "Government", "Autonomous", "Deemed"];
@@ -17,11 +26,19 @@ const accreditationOptions = [
   "NAAC A++",
   "NAAC A+",
   "NAAC A",
-  "NBA Accredited",
-  "UGC Approved",
-  "AICTE Approved",
-  "ISO Certified",
-  "NIRF Ranked",
+  "NAAC B++",
+  "NAAC B+",
+  "NAAC B",
+  "NAAC C",
+  "NAAC D",
+  "NBA",
+  "ABET",
+  "AACSB",
+  "ACBSP",
+  "EQUIS",
+  "LCME",
+  "CCNE",
+  "ACNE",
   "Other",
 ];
 const scholarshipAvailable = [
@@ -62,6 +79,7 @@ const UniversityForm = ({
   submitButtonText = "Submit",
 }) => {
   // States for OTP verification
+  const navigate = useNavigate();
   const [verifiedOtp, setVerifiedOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [referenceId, setReferenceId] = useState("");
@@ -521,10 +539,10 @@ const UniversityForm = ({
           {label} <span className="text-red-500">*</span>
         </label>
         <div
-          className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white flex justify-between items-center cursor-pointer ${
+          className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white flex justify-between items-center cursor-pointer ${
             formik.touched[fieldName] && formik.errors[fieldName]
               ? "border-red-500"
-              : "border-blue-600"
+              : "border-gray-300"
           }`}
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -664,11 +682,11 @@ const UniversityForm = ({
           {label} <span className="text-red-500">*</span>
         </label>
         <div
-          className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white flex justify-between items-center cursor-pointer ${
+          className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white flex justify-between items-center cursor-pointer ${
             formik.touched[parentFieldName]?.[nestedFieldName] &&
             formik.errors[parentFieldName]?.[nestedFieldName]
               ? "border-red-500"
-              : "border-blue-600"
+              : "border-gray-300"
           }`}
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -753,7 +771,7 @@ const UniversityForm = ({
                         );
                       }
                     }}
-                    className="border border-gray-300 p-2 w-full rounded-md"
+                    className="border border-gray-300 shadow-sm p-2 w-full rounded-md"
                     placeholder={`Please specify other ${label.toLowerCase()}`}
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
@@ -789,6 +807,14 @@ const UniversityForm = ({
     >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
       <div className="w-[70%] bg-white shadow-xl rounded-xl p-8 border border-blue-300 relative z-10 my-4">
+        <div className="text-right mb-4">
+          <button
+            onClick={() => navigate("/")}
+            className="text-blue-600 underline hover:text-blue-800 transition cursor-pointer"
+          >
+            University Login
+          </button>
+        </div>
         <div className="flex justify-between items-center bg-gradient-to-r from-blue-700 to-blue-500 text-white p-5 rounded-t-lg shadow-lg">
           <h2 className="text-3xl font-bold flex items-center gap-4">
             <FaUniversity
@@ -808,12 +834,12 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("universityName")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.universityName && formik.errors.universityName
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
-                placeholder="Enter university name"
+                placeholder="Enter University name"
               />
               {getErrorMessage("universityName")}
             </div>
@@ -829,12 +855,12 @@ const UniversityForm = ({
                 value={formik.values.universityId}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.universityId && formik.errors.universityId
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
-                placeholder="Enter university DTE Code (e.g., UNI001)"
+                placeholder="Enter University DTE Code (e.g., UNI001)"
               />
               {formik.touched.universityId && formik.errors.universityId ? (
                 <div className="text-red-500 text-sm mt-1">
@@ -844,45 +870,70 @@ const UniversityForm = ({
             </div>
 
             {/* University Category */}
-            <div className="mb-3">
-              <label className="block mb-1 text-blue-900 font-semibold">
-                University Category <span className="text-red-500">*</span>
+            <div className="mb-4 w-full">
+              <label className="block text-blue-800 font-semibold mb-2">
+                University Streams
               </label>
               <select
-                name="category"
-                value={formik.values.category}
+                {...formik.getFieldProps("category")}
                 onChange={(e) => {
-                  const selectedCategory = e.target.value;
-                  formik.setFieldValue("category", selectedCategory); 
-                  formik.setFieldValue("subCategory", ""); 
+                  const selected = e.target.value;
+                  formik.setFieldValue("category", selected);
+
+                  const selectedCategory = categoryData.find(
+                    (item) => item.category === selected
+                  );
+
+                  // Reset subCategory based on selection
+                  formik.setFieldValue("subCategory", "");
+                  setShowSubCategoryDropdown(
+                    selectedCategory?.subCategory || []
+                  );
                 }}
-                onBlur={formik.handleBlur}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`w-full px-4 py-3 rounded-lg border shadow-sm focus:outline-none transition-all ${
                   formik.touched.category && formik.errors.category
-                    ? "border-red-500"
-                    : "border-blue-600"
+                    ? "focus:ring-0"
+                    : "border-gray-300 focus:ring-2 focus:ring-blue-400"
                 }`}
               >
-                <option value="">Select Category</option>
-
-                {Array.isArray(categoryData) &&
-                  categoryData.map((cat, index) => (
-                    <option key={index} value={cat.category}>
-                      {cat.category}
-                    </option>
-                  ))}
+                <option value="" disabled>
+                  Select University Stream
+                </option>
+                {categoryData.map((item, index) => (
+                  <option key={index} value={item.category}>
+                    {item.category}
+                  </option>
+                ))}
               </select>
-              {getErrorMessage("category")}
+
+              {formik.touched.category && formik.errors.category && (
+                <p className="text-red-500 text-sm mt-2 font-semibold">
+                  {formik.errors.category}
+                </p>
+              )}
             </div>
 
-            {/* University Sub Category */}
-            <CustomDropdown
-              label="Sub Category"
-              options={filteredBranches}
-              fieldName="subCategory"
-              isOpen={showSubCategoryDropdown}
-              setIsOpen={setShowSubCategoryDropdown}
-            />
+            {/* Sub Category */}
+            <div className="mb-3">
+              <MultiSelectDropdown
+                label="Branch"
+                name="subCategory"
+                options={filteredBranches}
+                formik={formik}
+              />
+              {/* Other field for sub category */}
+              <OtherField
+                watchValue={formik.values.subCategory}
+                triggerValue={["Other", "Others"]}
+                onChange={(val) =>
+                  formik.setFieldValue("subCategoryOther", val)
+                }
+                name="subCategoryOther"
+                error={formik.errors.subCategoryOther}
+                touched={formik.touched.subCategoryOther}
+                className="bg-white"
+              />
+            </div>
 
             {/* Mobile Number with OTP Verification */}
             <div className="mb-3">
@@ -1034,10 +1085,10 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("address.line1")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.address?.line1 && formik.errors.address?.line1
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
                 placeholder="Enter address line 1"
               />
@@ -1052,7 +1103,7 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("address.line2")}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
                 placeholder="Enter address line 2"
               />
             </div>
@@ -1065,11 +1116,11 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("address.pincode")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.address?.pincode &&
                   formik.errors.address?.pincode
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
                 maxLength={6}
                 placeholder="Enter 6-digit pincode"
@@ -1089,13 +1140,13 @@ const UniversityForm = ({
                   formik.setFieldValue("address.dist", ""); // Reset district when state changes
                 }}
                 onBlur={formik.handleBlur}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.address?.state && formik.errors.address?.state
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
               >
-                <option value="">Select State</option>
+                <option value="" disabled>Select State</option>
                 {Object.keys(stateDistricts).map((state) => (
                   <option key={state} value={state}>
                     {state}
@@ -1121,17 +1172,17 @@ const UniversityForm = ({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 disabled={!formik.values.address.state}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.address?.dist && formik.errors.address?.dist
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 } ${
                   !formik.values.address.state
                     ? "bg-gray-100 cursor-not-allowed"
                     : ""
                 }`}
               >
-                <option value="">Select District</option>
+                <option value="" disabled>Select District</option>
                 {formik.values.address.state &&
                   stateDistricts[formik.values.address.state]?.map(
                     (district) => (
@@ -1156,7 +1207,7 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("address.taluka")}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
                 placeholder="Enter taluka"
               />
             </div>
@@ -1169,11 +1220,11 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("address.autorizedName")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.address?.autorizedName &&
                   formik.errors.address?.autorizedName
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
                 placeholder="Enter authorized person name"
               />
@@ -1188,11 +1239,11 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("address.autorizedPhono")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.address?.autorizedPhono &&
                   formik.errors.address?.autorizedPhono
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
                 maxLength={10}
                 placeholder="Enter 10-digit mobile number"
@@ -1208,7 +1259,7 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("address.nearbyLandmarks")}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
                 placeholder="Enter nearby landmarks"
               />
             </div>
@@ -1221,10 +1272,10 @@ const UniversityForm = ({
               <input
                 type={showPassword ? "text" : "password"}
                 {...formik.getFieldProps("password")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white pr-10 ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white pr-10 ${
                   formik.touched.password && formik.errors.password
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
                 placeholder="Enter password (min 4 characters)"
               />
@@ -1232,7 +1283,11 @@ const UniversityForm = ({
                 className="absolute top-9 right-3 text-gray-600 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                {showPassword ? (
+                  <AiOutlineEyeInvisible className="text-blue-800" />
+                ) : (
+                  <AiOutlineEye className="text-blue-800" />
+                )}
               </span>
               {getErrorMessage("password")}
             </div>
@@ -1245,11 +1300,11 @@ const UniversityForm = ({
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 {...formik.getFieldProps("confirmPassword")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white pr-10 ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white pr-10 ${
                   formik.touched.confirmPassword &&
                   formik.errors.confirmPassword
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
                 placeholder="Re-enter password"
               />
@@ -1258,9 +1313,9 @@ const UniversityForm = ({
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? (
-                  <AiOutlineEyeInvisible />
+                  <AiOutlineEyeInvisible className="text-blue-800" />
                 ) : (
-                  <AiOutlineEye />
+                  <AiOutlineEye className="text-blue-800" />
                 )}
               </span>
               {getErrorMessage("confirmPassword")}
@@ -1276,11 +1331,11 @@ const UniversityForm = ({
               </label>
               <textarea
                 {...formik.getFieldProps("info.description")}
-                className={`border-2 p-2 w-full rounded-lg shadow-sm bg-white ${
+                className={`border px-4 py-3 w-full rounded-lg shadow-sm bg-white ${
                   formik.touched.info?.description &&
                   formik.errors.info?.description
                     ? "border-red-500"
-                    : "border-blue-600"
+                    : "border-gray-300"
                 }`}
                 rows={4}
                 minLength={100}
@@ -1305,7 +1360,13 @@ const UniversityForm = ({
                   type="text"
                   value={keywordInput}
                   onChange={(e) => setKeywordInput(e.target.value)}
-                  className="border-2 p-2 flex-grow rounded-lg shadow-sm bg-white border-blue-600"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // Prevent form submit
+                      handleAddKeyword(); // Add keyword
+                    }
+                  }}
+                  className="border px-4 py-3 flex-grow rounded-lg shadow-sm bg-white border-gray-300"
                   placeholder="Enter keyword"
                 />
                 <button
@@ -1323,7 +1384,7 @@ const UniversityForm = ({
                 {formik.values.keywords.map((keyword, index) => (
                   <div
                     key={index}
-                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center gap-1"
+                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-xl border border-blue-600 flex items-center gap-1"
                   >
                     <span>{keyword}</span>
                     <button
@@ -1351,7 +1412,7 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("websiteURL")}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
                 placeholder="Enter Website URL"
               />
             </div>
@@ -1363,7 +1424,7 @@ const UniversityForm = ({
               </label>
               <select
                 {...formik.getFieldProps("establishedYear")}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
               >
                 <option value="">Select Year</option>
                 {establishedYears.map((year) => (
@@ -1374,7 +1435,7 @@ const UniversityForm = ({
               </select>
             </div>
 
-            {/* Accreditation with Other option */}
+            Accreditation with Other option
             <CustomDropdown
               label="Accreditation"
               options={accreditationOptions}
@@ -1385,6 +1446,8 @@ const UniversityForm = ({
               otherValue={otherAccreditation}
               setOtherValue={setOtherAccreditation}
             />
+
+            
 
             {/* Facilities */}
             <CustomDropdown
@@ -1429,7 +1492,7 @@ const UniversityForm = ({
               <input
                 type="text"
                 {...formik.getFieldProps("applicationFormURL")}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
                 placeholder="Enter application form URL"
               />
             </div>
@@ -1446,7 +1509,7 @@ const UniversityForm = ({
                   formik.values.admissionEntranceDetails.admissionStartDate
                 }
                 onChange={formik.handleChange}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
               />
             </div>
 
@@ -1458,7 +1521,7 @@ const UniversityForm = ({
                 type="date"
                 name="admissionEntranceDetails.admissionEndDate"
                 value={formik.values.admissionEntranceDetails.admissionEndDate}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
                 onChange={formik.handleChange}
               />
             </div>
@@ -1475,7 +1538,7 @@ const UniversityForm = ({
                   formik.values.admissionEntranceDetails.lastYearCutoffMarks
                 }
                 onChange={formik.handleChange}
-                className="border-2 p-2 w-full rounded-lg shadow-sm bg-white border-blue-600"
+                className="border px-4 py-3 w-full rounded-lg shadow-sm bg-white border-gray-300"
                 placeholder="Enter last year cutoff marks"
               />
             </div>
@@ -1612,7 +1675,7 @@ const UniversityForm = ({
           <div className="mt-4 flex justify-center">
             <motion.button
               type="submit"
-              className="bg-blue-500 text-white p-3 rounded-lg w-full md:w-auto px-8 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue-700 font-semibold text-white p-3 rounded-lg w-full md:w-auto px-8 disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={!isSubmitting ? { scale: 1.05 } : {}}
               whileTap={!isSubmitting ? { scale: 0.95 } : {}}
               disabled={isSubmitting}

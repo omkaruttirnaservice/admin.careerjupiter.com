@@ -79,7 +79,7 @@ const ManageRoadmapForm = () => {
     fetchRoadmaps();
   }, []);
 
-  // Handles the subtype as per the changes in type or selected type (shows the remaining types except the selected one)
+  // shows the remaining types except the selected one
   const handleTypeChange = async (e) => {
     const selectedType = e.target.value;
     formik.setFieldValue("type", selectedType);
@@ -162,7 +162,7 @@ const ManageRoadmapForm = () => {
             icon: "success",
           });
         } else {
-          // Create api
+          // Create api for creating roadmap
           const res = await axios.post(
             `${API_BASE_URL}/api/roadmap/create`,
             payload
@@ -174,7 +174,8 @@ const ManageRoadmapForm = () => {
             icon: "success",
           });
         }
-        //Render in table list
+
+        // Render in table list
         const getRes = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
         setRoadmaps(getRes.data?.data || []);
         setShowModal(false);
@@ -245,7 +246,7 @@ const ManageRoadmapForm = () => {
         // Fetch updated roadmap list
         const res = await axios.get(`${API_BASE_URL}/api/roadmap/all`);
 
-        // ✅ Correctly update the roadmap list
+        // Correctly update the roadmap list
         setRoadmaps(res.data?.data || []);
 
         Swal.fire("Deleted!", "Stream has been deleted.", "success");
@@ -261,33 +262,35 @@ const ManageRoadmapForm = () => {
   };
 
   return (
-    <div className="max-w-full h-full mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-full h-full mx-auto p-6 bg-blue-100 shadow-md rounded-lg">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between bg-white p-2 shadow-lg rounded-lg items-center mb-6">
         {/* Heading */}
-        <h2 className="text-3xl font-bold text-gray-800">RoadMap 🗺️</h2>
+        <h2 className="text-3xl font-bold text-gray-800">
+          <span> 🗺️ </span> RoadMap{" "}
+        </h2>
         {/* Search Inpup Field */}
-        <div className="mb-4 flex justify-end">
+        <div className="mb-2 flex justify-end">
           <input
             type="text"
             placeholder="Search by name or type..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full max-w-xs px-4 py-1 border-2 border-blue-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-150"
+            className="w-full max-w-xs px-4 py-1 border-2 border-blue-600 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-150"
           />
         </div>
 
         {/* Add new roadmap button */}
         <button
           onClick={() => setShowModal(true)}
-          className="mb-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-3 cursor-pointer"
+          className="mb-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 mr-3 cursor-pointer"
         >
           Add New Roadmap
         </button>
       </div>
 
       {/* Scrollable Table */}
-      <div className="overflow-x-auto rounded-lg max-h-[560px] shadow-lg border border-gray-200">
+      <div className="overflow-x-auto rounded-lg max-h-[590px] shadow-lg border border-gray-200">
         <table className="w-full border-collapse text-sm">
           <thead className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-700 text-white z-20">
             {/* Table Heading */}
@@ -481,6 +484,7 @@ const ManageRoadmapForm = () => {
                         };
                         const isChecked = isSubTypeSelected(formatted);
 
+                        // The selectedd subtype gets check mark
                         return (
                           <div
                             key={option._id}

@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import {
-  FaUserCircle,
-  FaChalkboardTeacher,
   FaGraduationCap,
   FaInfoCircle,
+  FaBook,
+  FaEnvelope,
+  FaGlobe,
+  FaImage,
+  FaFire,
 } from "react-icons/fa";
 import {
   FaPhone,
@@ -13,23 +16,20 @@ import {
   FaTags,
   FaChalkboard,
   FaBuilding,
-  FaLayerGroup
+  FaLayerGroup,
 } from "react-icons/fa";
-import { HiAcademicCap } from "react-icons/hi"; // More educational & attractive
-
-
-import { getCookie } from "../utlis/cookieHelper"; // ✅ Import getCookie function
-import ClassVendorSideMenu from "./classVendorSideMenu";
+import { motion } from "framer-motion";
+import { getCookie } from "../utlis/cookieHelper";
 
 const ClassVendorDashboard = () => {
   const [classDetails, setClassDetails] = useState(null);
-  const [classID, setClassId] = useState(null); // ✅ State for classID
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [classID, setClassId] = useState(null);
+  const [readMore, setReadMore] = useState(false);
 
   // ✅ Fetch classID on component mount
   useEffect(() => {
-    const storedClassId = getCookie("classId"); // ✅ Use getCookie function
-    console.log("Fetched ClassId ", classID)
+    const storedClassId = getCookie("classId");
+    console.log("Fetched ClassId ", classID);
     if (storedClassId) {
       setClassId(storedClassId);
       console.log("Class ID retrieved from cookies:", storedClassId);
@@ -38,32 +38,31 @@ const ClassVendorDashboard = () => {
     }
   }, []);
 
+  // To Fetch Class Details using get method
   useEffect(() => {
-
     const fetchClassDetails = async () => {
       if (!classID) return;
-
       try {
         const response = await axios.get(
           `${API_BASE_URL}/api/class/${classID}`
         );
         console.log("Class details fetched:", response.data);
 
-        const classData = response.data?.data?.class; // ✅ Ensure correct path
+        const classData = response.data?.data?.class;
         setClassDetails({
           ...classData,
-          category: classData?.category || "N/A", // ✅ Fix Category Extraction
+          category: classData?.category || "N/A", // Category
           description:
-            classData?.info?.description || "No description available", // ✅ Fix Description Extraction
-          address: classData?.address || {}, // ✅ Fix Address Extraction
+            classData?.info?.description || "No description available", //  Info Description
+          address: classData?.address || {}, // Address
           imageGallery: Array.isArray(classData?.imageGallery)
             ? classData.imageGallery
-            : [], // ✅ Fix Image Gallery Extraction
+            : [], // Image Gallery Section
         });
       } catch (error) {
         console.error(
           "Error fetching class details:",
-          error?.response?.data || error.message ||  error.response?.data.errMsg 
+          error?.response?.data || error.message || error.response?.data.errMsg
         );
       }
     };
@@ -71,489 +70,360 @@ const ClassVendorDashboard = () => {
     fetchClassDetails();
   }, [classID]);
 
-  return (
-<div className="flex flex-col md:flex-row bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
-  {/* ✅ Main Content */}
-  <div className="flex-1 p-1 md:p-1 lg:p-4">
-    
-    {/* ✅ Profile Header */}
-    {/* <div className="bg-white/90 backdrop-blur-md shadow-2xl p-1 rounded-2xl flex flex-col sm:flex-row items-center gap-6 mb-8 lg:p-6">
-      <div className="w-24 h-24 flex items-center justify-center rounded-full bg-indigo-600 shadow-lg">
-        <FaUserCircle className="text-white text-6xl" />
+  // Card Section function
+  const HighlightCard = ({ icon, title, items }) => {
+    return (
+      <div className="bg-blue-50 rounded-lg p-4 shadow-md">
+        <div className="flex items-center gap-2 mb-2 text-blue-700">
+          {icon}
+          <h3 className="text-lg font-semibold">{title}</h3>
+        </div>
+        <p className="text-gray-700">{items}</p>
       </div>
-      <div className="text-center sm:text-left">
-        <h2 className="text-3xl font-bold text-gray-900">Welcome, {classDetails?.ownerOrInstituteName || "Vendor"} 👋</h2>
-        <p className="text-indigo-600 text-lg font-semibold">{classDetails?.className || "Your Class Name"}</p>
+    );
+  };
+
+  // Function for Contact Section
+  const ContactItem = ({ icon, label, value, link }) => {
+    if (!value) return null;
+
+    return (
+      <div className="flex items-start gap-3">
+        <div className="text-blue-600 mt-1">{icon}</div>
+        <div>
+          <p className="text-sm text-gray-500">{label}</p>
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-base text-blue-800 hover:underline"
+          >
+            {value}
+          </a>
+        </div>
       </div>
-    </div> */}
+    );
+  };
 
-<div className="relative bg-gradient-to-br from-white/80 to-indigo-100/90 backdrop-blur-lg shadow-2xl p-6 rounded-3xl flex flex-col sm:flex-row items-center gap-6 mb-8 transition-all duration-500 hover:shadow-indigo-300/40 overflow-hidden">
-  {/* Avatar with gradient ring */}
-  <div className="relative w-24 h-24 flex items-center justify-center rounded-full bg-white shadow-xl group">
-    <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[3px] animate-pulse" />
-    <div className="relative z-10 w-full h-full flex items-center justify-center rounded-full bg-indigo-600">
-      <HiAcademicCap className="text-white text-5xl" />
-    </div>
-  </div>
+  // Cards function
+  const Card = ({ children }) => (
+    <div className="bg-white rounded-xl shadow-md p-6">{children}</div>
+  );
 
-  {/* Text Section */}
-  <div className="text-center sm:text-left">
-    <h2 className="text-3xl font-extrabold text-gray-800 mb-1">
-      Welcome,{" "}
-      <span className="text-indigo-600">
-        {classDetails?.ownerOrInstituteName || "Vendor"}
-      </span>{" "}
-      👋
+  // Card Header function
+  const CardHeader = ({ icon, title }) => (
+    <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-3 select-none">
+      {icon} {title}
     </h2>
-    <p className="text-lg text-gray-700 font-semibold">
-      {classDetails?.className || "Your Class Name"}
-    </p>
-    
+  );
+
+  // Class Details Card function
+  const InfoBadge = ({ icon, label }) => (
+    <div className="flex items-center gap-2 bg-blue-800 bg-opacity-80 rounded-lg px-4 py-2 shadow-inner">
+      <div className="text-white text-lg">{icon}</div>
+      <span className="text-white">{label}</span>
+    </div>
+  );
+
+  // If no Description then handled here
+  if (!classDetails || !classDetails.description) {
+    return (
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+          <FaInfoCircle className="text-blue-600" />
+          About the Class
+        </h2>
+        <p className="text-gray-700">No description provided.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen md:p-12 p-4 font-sans text-gray-800">
+      {/* 🎓 Hero Header Section */}
+      <section className="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden mb-10 relative group hover:shadow-2xl transition-shadow duration-500">
+  {/* ✅ Main Image with Better Height Handling */}
+  {/* <div className="relative h-48 sm:h-60 md:h-72 lg:h-60">
+    <img
+      src={`${API_BASE_URL}${classDetails?.image}`}
+      alt={classDetails?.className}
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent h-full" />
+
+    {/* Avatar & Info in Mobile-Friendly Flex */}
+    {/* <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:items-center gap-4 z-10">
+      {/* Avatar Circle */}
+      {/* <div className="self-start sm:self-center">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 p-1 shadow-xl">
+          <div className="w-full h-full bg-white rounded-full flex items-center justify-center text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-700 select-none">
+            {classDetails?.className?.[0]}
+          </div>
+        </div>
+      </div> */}
+
+      {/* Info Glass Card */}
+      {/* <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="backdrop-blur-sm bg-white/10 border border-white/20 text-white px-4 py-3 rounded-xl shadow-lg w-full sm:w-auto"
+      >
+        <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold leading-snug drop-shadow-sm">
+          {classDetails?.className}
+        </h1>
+        <p className="mt-1 text-sm sm:text-base font-medium text-white/90 truncate">
+          {classDetails?.ownerOrInstituteName}
+        </p>
+      </motion.div>
+    </div>
+  </div> */} 
+
+<div className="relative h-48 sm:h-60 md:h-72 lg:h-60 rounded-xl overflow-hidden">
+  {/* Conditional Image OR Fallback */}
+  {classDetails?.image ? (
+    <img
+      src={`${API_BASE_URL}${classDetails.image}`}
+      alt={classDetails?.className}
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+    />
+  ) : (
+    <div className="w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center relative">
+      {/* ✨ Star Dots */}
+      {[...Array(30)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute w-1 h-1 rounded-full bg-white opacity-30 animate-pulse"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 3}s`,
+          }}
+        />
+      ))}
+
+      <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white drop-shadow-md z-10">
+        {classDetails?.className?.[0] || "C"}
+      </h1>
+    </div>
+  )}
+
+  {/* Overlay gradient */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
+  {/* Avatar & Info Section */}
+  <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:items-center gap-4 z-10">
+    {/* Avatar Circle */}
+    <div className="self-start sm:self-center">
+      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 p-1 shadow-xl">
+        <div className="w-full h-full bg-white rounded-full flex items-center justify-center text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-700 select-none">
+          {classDetails?.className?.[0]}
+        </div>
+      </div>
+    </div>
+
+    {/* Info Card */}
+    <motion.div
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="backdrop-blur-sm bg-white/10 border border-white/20 text-white px-4 py-3 rounded-xl shadow-lg w-full sm:w-auto"
+    >
+      <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold leading-snug drop-shadow-sm">
+        {classDetails?.className}
+      </h1>
+      <p className="mt-1 text-sm sm:text-base font-medium text-white/90 truncate">
+        {classDetails?.ownerOrInstituteName}
+      </p>
+    </motion.div>
   </div>
 </div>
 
 
+  {/* ✅ Info Bar */}
+  <div className="hidden sm:flex bg-gradient-to-r from-blue-900 to-blue-700 text-white px-4 py-3 flex-wrap justify-between items-center gap-3 text-sm sm:text-base font-semibold rounded-b-2xl">
+  <InfoBadge
+    icon={<FaCalendarAlt />}
+    label={`Established: ${classDetails?.yearEstablished || "N/A"}`}
+  />
+  <InfoBadge
+    icon={<FaPhone />}
+    label={classDetails?.contactDetails || "N/A"}
+  />
+  <InfoBadge
+    icon={<FaChalkboard />}
+    label={classDetails?.modeOfTeaching?.join(", ") || "N/A"}
+  />
+  <InfoBadge
+    icon={<FaTags />}
+    label={
+      classDetails?.keywords?.length > 0
+        ? `${classDetails.keywords.slice(0, 2).join(", ")}${
+            classDetails.keywords.length > 2 ? "..." : ""
+          }`
+        : "N/A"
+    }
+  />
+</div>
 
-    {/* ✅ Class Info */}
-    <div className="bg-white/80 shadow-xl p-2 rounded-2xl backdrop-blur-md lg:p-8">
-      <h3 className="text-2xl font-semibold text-gray-800 flex items-center gap-2 mb-6">
-        <FaInfoCircle className="text-pink-500" /> Class Details
-      </h3>
+</section>
 
-      {/* ✅ Info Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {[
-          {
-            title: "Class Name",
-            value: classDetails?.className,
-            icon: <FaChalkboardTeacher className="text-blue-600 text-3xl" />,
-            bg: "from-blue-100 to-blue-200"
-          },
-          {
-            title: "Owner Name",
-            value: classDetails?.ownerOrInstituteName,
-            icon: <FaGraduationCap className="text-green-600 text-3xl" />,
-            bg: "from-green-100 to-green-200"
-          },
-          {
-            title: "Contact Details",
-            value: classDetails?.contactDetails,
-            icon: <FaPhone className="text-purple-600 text-3xl" />,
-            bg: "from-orange-100 to-orange-200"
-          },
-          {
-            title: "Established Year",
-            value: classDetails?.yearEstablished,
-            icon: <FaCalendarAlt className="text-pink-600 text-3xl" />,
-            bg: "from-pink-100 to-pink-200"
-          },
-          {
-            title: "Keywords",
-            value: classDetails?.keywords?.length > 0 ? classDetails.keywords.join(", ") : "N/A",
-            icon: <FaTags className="text-yellow-600 text-3xl" />,
-            bg: "from-yellow-100 to-yellow-200"
-          },
-          {
-            title: "Mode of Teaching",
-            value: classDetails?.modeOfTeaching?.length > 0 ? classDetails.modeOfTeaching.join(", ") : "N/A",
-            icon: <FaChalkboard className="text-indigo-600 text-3xl" />,
-            bg: "from-indigo-100 to-indigo-200"
-          },
-          {
-            title: "Type",
-            value: classDetails?.franchiseOrIndependent,
-            icon: <FaBuilding className="text-teal-600 text-3xl" />,
-            bg: "from-teal-100 to-teal-200"
-          },
-          {
-            title: "Category",
-            value: classDetails?.category?.length > 0 ? classDetails.category.join(", ") : "N/A",
-            icon: <FaLayerGroup className="text-rose-600 text-3xl" />,
-            bg: "from-rose-100 to-rose-200"
-          },
-        ].map((info, index) => (
-          <div
-            key={index}
-            className={`group bg-gradient-to-br ${info.bg} p-6 rounded-xl shadow-md flex items-start gap-4 transform transition duration-300 hover:scale-105 hover:shadow-xl`}
-          >
-            {info.icon}
-            <div>
-              <h4 className="text-md font-bold text-gray-800">{info.title}</h4>
-              <p className="text-gray-700 text-sm">{info.value || "N/A"}</p>
+
+      {/* 📄 Main Content Grid */}
+      <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Left Side - Main Details */}
+        <section className="lg:col-span-2 flex flex-col gap-10">
+          {/* About Class */}
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
+              <FaInfoCircle className="text-blue-600" />
+              About the Class
+            </h2>
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line break-words">
+              {readMore
+                ? classDetails.description
+                : `${classDetails.description.substring(0, 200)}...`}
+              {classDetails.description.length > 200 && (
+                <button
+                  onClick={() => setReadMore(!readMore)}
+                  className="ml-2 text-blue-600 font-medium hover:underline"
+                >
+                  {readMore ? "Show Less" : "Read More"}
+                </button>
+              )}
+            </p>
+          </div>
+
+          {/* Highlights */}
+          <Card>
+            <CardHeader
+              icon={<FaBook className="text-blue-600" />}
+              title="Key Highlights"
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+              {/* Category */}
+              <HighlightCard
+                icon={<FaLayerGroup className="text-green-600" />}
+                title="Category"
+                items={[classDetails?.category?.join(", ") || "N/A"]}
+              />
+              {/* Type */}
+              <HighlightCard
+                icon={<FaBuilding className="text-red-600" />}
+                title="Type"
+                items={[classDetails?.franchiseOrIndependent || "N/A"]}
+              />
+              {/* Establised Year */}
+              <HighlightCard
+                icon={<FaCalendarAlt className="text-purple-600" />}
+                title="Established year"
+                items={[classDetails?.yearEstablished || "N/A"]}
+              />
+              {/* Mode Of Teaching */}
+              <HighlightCard
+                icon={<FaChalkboard className="text-pink-600" />}
+                title="Mode Of Teaching"
+                items={[classDetails?.modeOfTeaching?.join(", ") || "N/A"]}
+              />
+              {/* Keywords */}
+              <HighlightCard
+                icon={<FaTags className="text-pink-600" />}
+                title="Keywords"
+                items={[classDetails?.keywords?.join(", ") || "N/A"]}
+              />
+            </div>
+          </Card>
+        </section>
+
+        {/* Right Side - Sidebar */}
+        <aside className="flex flex-col gap-8">
+          {/* Quick Contact Section */}
+          <Card>
+            <CardHeader
+              icon={<FaPhone className="text-blue-600" />}
+              title="Quick Contact"
+            />
+            <div className="flex flex-col gap-5 mt-4">
+              {/* Contact Details */}
+              <ContactItem
+                icon={<FaPhone />}
+                label="Phone"
+                value={classDetails?.contactDetails}
+                link={`tel:${classDetails?.contactDetails}`}
+              />
+              {/* Website */}
+              <ContactItem
+                icon={<FaGlobe />}
+                label="Website"
+                value={classDetails?.websiteURL}
+                link={classDetails?.websiteURL}
+              />
+            </div>
+          </Card>
+
+          {/* Limited Time Offer -for discount and valid till field */}
+          <div className="relative bg-gradient-to-br from-yellow-200 via-orange-300 to-red-400 p-6 rounded-[2rem_0_2rem_0] shadow-2xl border-2 border-orange-400 select-none transition-transform hover:scale-[1.02] duration-300">
+            {/* 🎁 Discount Label Ribbon */}
+            <div className="absolute -top-4 left-4 bg-red-700 text-white px-4 py-1 text-xs font-bold rounded-br-xl shadow-md rotate-[-3deg]">
+              🎁 Our Special Discount
+            </div>
+
+            {/* 🔥 Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <FaTags className="text-red-700 text-6xl drop-shadow-sm" />
+                <h2 className="text-3xl font-extrabold text-red-900 uppercase tracking-wider drop-shadow-lg">
+                  Limited Time Offer
+                </h2>
+              </div>
+
+              <span className="bg-red-800 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg flex items-center justify-center animate-bounce min-w-[100px] text-center">
+                <FaFire /> Great Deals
+              </span>
+            </div>
+
+            {/* 💰 Discount Info and Valid Till Section */}
+            <div className="text-center text-red-900">
+              <p className="text-6xl font-extrabold mb-1 leading-none drop-shadow-md">
+                {classDetails?.discount || 0}
+                <span className="text-3xl align-top">%</span> OFF
+              </p>
+              <p className="text-sm text-gray-900 font-semibold">
+                Valid Till:{" "}
+                <span className="font-bold">
+                  {classDetails?.validTill
+                    ? new Date(classDetails.validTill).toLocaleDateString()
+                    : "N/A"}
+                </span>
+              </p>
             </div>
           </div>
-        ))}
-      </div>
+        </aside>
+      </main>
 
-      {/* ✅ Description Section */}
-      <div className="bg-gradient-to-br from-fuchsia-100 to-violet-200 p-6 rounded-xl shadow-md mb-6">
-  <h4 className="text-md font-bold mb-2 text-violet-800 flex items-center gap-2">
-    <FaInfoCircle /> Class Description
-  </h4>
-  <p className="text-gray-800 text-sm break-words">{classDetails?.description || "No description available"}</p>
-</div>
-
-
-      {/* ✅ Image Section */}
-      <div>
-        <h4 className="text-md font-bold text-gray-800 mb-4">Class Images</h4>
-        {classDetails?.image ? (
-         <div className="relative group overflow-hidden rounded-xl shadow-md border-4 border-indigo-300 w-full sm:w-96 md:w-80 lg:w-72 xl:w-64">
-            <img
-              src={`${API_BASE_URL}${classDetails.image}`}
-              alt="Class"
-              className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105 rounded-xl"
-            />
+      {/* Image Gallery */}
+      {classDetails?.imageGallery?.length > 0 && (
+        <section className="max-w-7xl mx-auto mt-12 bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-3xl font-bold text-blue-800 mb-6 flex items-center gap-3">
+            <FaImage className="text-blue-600" /> Image Gallery
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            {classDetails.imageGallery.map((img, i) => (
+              <img
+                key={i}
+                src={`${API_BASE_URL}${img}`}
+                alt={`Gallery Image ${i + 1}`}
+                className="w-full h-48 object-cover rounded-xl shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer"
+                loading="lazy"
+              />
+            ))}
           </div>
-        ) : (
-          <p className="text-gray-500 italic">No image available</p>
-        )}
-      </div>
+        </section>
+      )}
     </div>
-  </div>
-</div>
-
   );
-  
-  
 };
 
 export default ClassVendorDashboard;
-
-
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import { API_BASE_URL } from "../constant/constantBaseUrl";
-// import {
-//   FaPhone,
-//   FaCalendarAlt,
-//   FaTags,
-//   FaChalkboard,
-//   FaBuilding,
-//   FaLayerGroup,
-//   FaInfoCircle,
-//   FaMapMarkerAlt,
-//   FaEnvelope,
-//   FaGlobe,
-//   FaUsers,
-//   FaBook,
-//   FaGraduationCap,
-// } from "react-icons/fa";
-// import { HiAcademicCap } from "react-icons/hi";
-// import { getCookie } from "../utlis/cookieHelper";
-
-// const ClassVendorDashboard = () => {
-//   const [classDetails, setClassDetails] = useState(null);
-//   const [classID, setClassId] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [readMore, setReadMore] = useState(false);
-
-//   useEffect(() => {
-//     const storedClassId = getCookie("classId");
-//     if (storedClassId) {
-//       setClassId(storedClassId);
-//     } else {
-//       console.warn("Class ID not found in cookies!");
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     if (!classID) return;
-
-//     const fetchClassDetails = async () => {
-//       try {
-//         const res = await axios.get(`${API_BASE_URL}/api/class/${classID}`);
-//         const data = res.data?.data?.class;
-
-//         setClassDetails({
-//           ...data,
-//           category: data?.category || [],
-//           description: data?.info?.description || "No description available",
-//           address: data?.address?.[0] || {},
-//           imageGallery: Array.isArray(data?.imageGallery) ? data.imageGallery : [],
-//         });
-
-//         setLoading(false);
-//       } catch (error) {
-//         console.error("Error fetching class details:", error);
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchClassDetails();
-//   }, [classID]);
-
-//   if (loading) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-//       </div>
-//     );
-//   }
-
-//   if (!classDetails) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen text-red-500">
-//         Failed to load class data. Please try again later.
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen md:p-8 p-2">
-//       {/* Header Section */}
-//       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-//         <div className="relative h-48 md:h-64">
-//           <img
-//             src={`${API_BASE_URL}${classDetails.image || "/default.jpg"}`}
-//             alt={classDetails.className}
-//             className="w-full h-full object-cover"
-//           />
-//           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-//           <div className="absolute bottom-4 left-4 flex items-end">
-//             <div className="ml-4 text-white">
-//               <h1 className="text-xl md:text-3xl font-bold">
-//                 {classDetails.className}
-//               </h1>
-//               <p className="text-sm md:text-base">
-//                 {classDetails.ownerOrInstituteName}
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Quick Info Bar */}
-//         <div className="p-4 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
-//           <div className="flex flex-wrap items-center justify-between gap-4">
-//             <div className="flex items-center gap-2">
-//               <FaGraduationCap />
-//               <span>{classDetails.franchiseOrIndependent}</span>
-//             </div>
-//             <div className="flex items-center gap-2">
-//               <FaCalendarAlt />
-//               <span>Est. {classDetails.yearEstablished}</span>
-//             </div>
-//             <div className="flex items-center gap-2">
-//               <FaLayerGroup />
-//               <span>{classDetails.category?.join(", ") || "N/A"}</span>
-//             </div>
-//             <div className="flex items-center gap-2">
-//               <FaMapMarkerAlt />
-//               <span>
-//                 {classDetails.address?.dist || "N/A"}, {classDetails.address?.state || "N/A"}
-//               </span>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Main Content */}
-//       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-//         {/* Left Column */}
-//         <div className="lg:col-span-2 space-y-8">
-//           {/* About Class */}
-//           <div className="bg-white rounded-xl shadow-md p-6">
-//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
-//               <FaInfoCircle className="text-blue-600" />
-//               About the Class
-//             </h2>
-//             <p className="text-gray-700">
-//               {readMore
-//                 ? classDetails.description
-//                 : `${classDetails.description.substring(0, 200)}...`}
-//               {classDetails.description.length > 200 && (
-//                 <button
-//                   onClick={() => setReadMore(!readMore)}
-//                   className="ml-2 text-blue-600 font-medium hover:underline"
-//                 >
-//                   {readMore ? "Show Less" : "Read More"}
-//                 </button>
-//               )}
-//             </p>
-//           </div>
-
-//           {/* Key Highlights */}
-//           <div className="bg-white rounded-xl shadow-md p-6">
-//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
-//               <FaBook className="text-blue-600" />
-//               Key Highlights
-//             </h2>
-//             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//               <HighlightCard
-//                 icon={<FaChalkboard className="text-green-600" />}
-//                 title="Teaching"
-//                 items={[
-//                   `Mode: ${classDetails.modeOfTeaching?.join(", ") || "N/A"}`,
-//                   `Type: ${classDetails.franchiseOrIndependent || "N/A"}`,
-//                   `Keywords: ${classDetails.keywords?.join(", ") || "N/A"}`,
-//                   `Category: ${classDetails.category?.join(", ") || "N/A"}`,
-//                 ]}
-//               />
-
-//               <HighlightCard
-//                 icon={<FaUsers className="text-red-600" />}
-//                 title="Facilities"
-//                 items={[
-//                   `Owner: ${classDetails.ownerOrInstituteName || "N/A"}`,
-//                   `Contact: ${classDetails.contactDetails || "N/A"}`,
-//                   `Email: ${classDetails.email_id || "N/A"}`,
-//                   `Website: ${classDetails.websiteURL || "N/A"}`,
-//                 ]}
-//               />
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Right Column */}
-//         <div className="space-y-8">
-//           {/* Quick Contact */}
-//           <div className="bg-white rounded-xl shadow-md p-6">
-//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
-//               <FaPhone className="text-blue-600" />
-//               Quick Contact
-//             </h2>
-//             <div className="space-y-4">
-//               <ContactItem
-//                 icon={<FaPhone className="text-green-600" />}
-//                 label="Phone"
-//                 value={classDetails.contactDetails}
-//                 link={`tel:${classDetails.contactDetails}`}
-//               />
-//               <ContactItem
-//                 icon={<FaEnvelope className="text-red-600" />}
-//                 label="Email"
-//                 value={classDetails.email_id}
-//                 link={`mailto:${classDetails.email_id}`}
-//               />
-//               <ContactItem
-//                 icon={<FaGlobe className="text-blue-600" />}
-//                 label="Website"
-//                 value={classDetails.websiteURL}
-//                 link={classDetails.websiteURL}
-//               />
-//               {classDetails.address && (
-//                 <ContactItem
-//                   icon={<FaMapMarkerAlt className="text-purple-600" />}
-//                   label="Address"
-//                   value={`${classDetails.address.line1 || ''}, ${classDetails.address.dist || ''}, ${classDetails.address.state || ''} - ${classDetails.address.pincode || ''}`}
-//                 />
-//               )}
-//             </div>
-//           </div>
-
-//           {/* Additional Details */}
-//           <div className="bg-white rounded-xl shadow-md p-6">
-//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
-//               <HiAcademicCap className="text-blue-600" />
-//               Class Details
-//             </h2>
-//             <div className="grid grid-cols-2 gap-4">
-//               <StatCard
-//                 icon={<FaCalendarAlt className="text-yellow-600" />}
-//                 title="Established"
-//                 value={classDetails.yearEstablished || "N/A"}
-//               />
-//               <StatCard
-//                 icon={<FaTags className="text-green-600" />}
-//                 title="Keywords"
-//                 value={classDetails.keywords?.join(", ") || "N/A"}
-//               />
-//               <StatCard
-//                 icon={<FaChalkboard className="text-red-600" />}
-//                 title="Teaching Mode"
-//                 value={classDetails.modeOfTeaching?.join(", ") || "N/A"}
-//               />
-//               <StatCard
-//                 icon={<FaBuilding className="text-purple-600" />}
-//                 title="Type"
-//                 value={classDetails.franchiseOrIndependent || "N/A"}
-//               />
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Gallery */}
-//       {classDetails.imageGallery?.length > 0 && (
-//         <div className="w-full mt-6">
-//           <div className="bg-white rounded-xl shadow-md p-6">
-//             <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2">
-//               <HiAcademicCap className="text-blue-600" />
-//               Gallery
-//             </h2>
-
-//             <div className="overflow-x-auto">
-//               <div className="inline-flex gap-4">
-//                 {classDetails.imageGallery.map((image, index) => (
-//                   <img
-//                     key={index}
-//                     src={`${API_BASE_URL}${image}`}
-//                     alt={`Gallery ${index + 1}`}
-//                     className="h-40 rounded-lg cursor-pointer hover:opacity-80 transition"
-//                     onClick={() =>
-//                       window.open(`${API_BASE_URL}${image}`, "_blank")
-//                     }
-//                   />
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// // Reusable Components (same as in CollegeVendorDashboard)
-
-// // Component for Highlight Cards
-// const HighlightCard = ({ icon, title, items }) => (
-//   <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-100">
-//     <div className="flex items-center gap-2 mb-3">
-//       <div className="text-xl">{icon}</div>
-//       <h3 className="font-bold text-blue-800">{title}</h3>
-//     </div>
-//     <ul className="space-y-2 text-sm">
-//       {items.map((item, index) => (
-//         <li key={index} className="flex items-start gap-2">
-//           <span className="text-blue-500">•</span>
-//           <span>{item}</span>
-//         </li>
-//       ))}
-//     </ul>
-//   </div>
-// );
-
-// // Component for Contact Items
-// const ContactItem = ({ icon, label, value, link }) => (
-//   <div className="flex items-start gap-3">
-//     <div className="text-xl mt-1">{icon}</div>
-//     <div>
-//       <p className="font-medium text-gray-600">{label}</p>
-//       {link ? (
-//         <a
-//           href={link}
-//           target="_blank"
-//           rel="noopener noreferrer"
-//           className="text-blue-600 hover:underline"
-//         >
-//           {value}
-//         </a>
-//       ) : (
-//         <p>{value}</p>
-//       )}
-//     </div>
-//   </div>
-// );
-
-// // Component for Stat Cards
-// const StatCard = ({ icon, title, value }) => (
-//   <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-3 rounded-lg border border-blue-100 text-center">
-//     <div className="text-2xl mb-1">{icon}</div>
-//     <h4 className="font-medium text-blue-800">{title}</h4>
-//     <p className="text-gray-700">{value}</p>
-//   </div>
-// );
-
-// export default ClassVendorDashboard;

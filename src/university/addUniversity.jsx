@@ -6,7 +6,8 @@ import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createUniversity, fetchUniversityCategories } from "./universityapi";
-import UniversityForm from "./universityform";
+// import UniversityForm from "./universityform";
+import UniversityForm from "./universityForm";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import { FaArrowLeft } from "react-icons/fa";
@@ -95,6 +96,7 @@ const AddUniversity = () => {
       universityName: "",
       category: "",
       subCategory: [],
+         subCategoryOther: "",
       address: {
         line1: "",
         line2: "",
@@ -150,11 +152,34 @@ const AddUniversity = () => {
       formData.append("category", values.category);
 
       // Arrays
-      if (values.subCategory && values.subCategory.length > 0) {
-        values.subCategory.forEach((item, index) => {
-          formData.append(`subCategory[${index}]`, item);
-        });
-      }
+      // if (values.subCategory && values.subCategory.length > 0) {
+      //   values.subCategory.forEach((item, index) => {
+      //     formData.append(`subCategory[${index}]`, item);
+      //   });
+      // }
+
+  // Sub categories with others
+        if (Array.isArray(values.subCategory)) {
+          values.subCategory.forEach((item) => {
+            // Skip "Other" and "Others" because it is handled separately
+            if (item !== "Other" && item !== "Others") {
+              formData.append("subCategory[]", item);
+            }
+          });
+
+          // Append custom value for "Other" if selected and input is provided
+          if (values.subCategory.includes("Other") && values.subCategoryOther) {
+            formData.append("subCategory[]", values.subCategoryOther);
+          }
+
+          // Append custom value for "Others" if selected and input is provided
+          if (
+            values.subCategory.includes("Others") &&
+            values.subCategoryOther
+          ) {
+            formData.append("subCategory[]", values.subCategoryOther);
+          }
+        }
 
       // Address object
       formData.append("address[line1]", values.address.line1);
@@ -312,14 +337,9 @@ const AddUniversity = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center mb-4">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-        >
-          <FaArrowLeft /> Back to Login
-        </button>
-      </div>
+      {/* <div className="flex items-center mb-4">
+        
+      </div> */}
 
       <UniversityForm
         formik={formik}
