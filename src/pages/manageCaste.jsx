@@ -540,6 +540,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../constant/constantBaseUrl";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const ManageCaste = () => {
   const [casteList, setCasteList] = useState([]);
@@ -550,6 +551,7 @@ const ManageCaste = () => {
   const [editingRowId, setEditingRowId] = useState(null);
   const [editedNextLearn, setEditedNextLearn] = useState("");
   const [editedExams, setEditedExams] = useState([]);
+  const navigate = useNavigate();
 
   const fetchCastes = async () => {
     try {
@@ -908,7 +910,7 @@ const ManageCaste = () => {
                           </button>
                           <button
                             className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
-                            onClick={() => handleViewCaste(entry)}
+                            onClick={() => navigate(`/view-cutoff-list/${entry.groupId}`)}
                           >
                             👁️ View
                           </button>
