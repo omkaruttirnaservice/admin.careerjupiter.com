@@ -207,28 +207,51 @@ const CollegeCutoffForm = () => {
     setCastePercent("");
   };
 
-  useEffect(() => {
-    const fetchCastes = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/api/caste/all`);
-        const casteGroups = res.data?.data?.castes || [];
+  // useEffect(() => {
+  //   const fetchCastes = async () => {
+  //     try {
+  //       const res = await axios.get(`${API_BASE_URL}/api/cutoff/all-caste-cutoff`);
+  //       const casteGroups = res.data?.data?.castes || [];
 
-        // 🧠 Flatten and deduplicate all caste values
-        const uniqueCastes = Array.from(
-          new Set(casteGroups.flatMap((group) => group.caste))
-        ).map((caste, index) => ({
-          _id: `${index}-${caste}`, // Create a temporary unique _id
-          caste,
-        }));
+  //       // 🧠 Flatten and deduplicate all caste values
+  //       const uniqueCastes = Array.from(
+  //         new Set(casteGroups.flatMap((group) => group.caste))
+  //       ).map((caste, index) => ({
+  //         _id: `${index}-${caste}`, // Create a temporary unique _id
+  //         caste,
+  //       }));
 
-        setAllCastes(uniqueCastes);
-      } catch (error) {
-        console.error("Failed to fetch castes", error);
-      }
-    };
+  //       setAllCastes(uniqueCastes);
+  //     } catch (error) {
+  //       console.error("Failed to fetch castes", error);
+  //     }
+  //   };
 
-    fetchCastes();
-  }, []);
+  //   fetchCastes();
+  // }, []);
+
+useEffect(() => {
+  const fetchCastes = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/cutoff/all-caste-cutoff`);
+      const casteGroups = res.data?.data || [];
+
+      const uniqueCastes = Array.from(
+        new Set(casteGroups.map((item) => item.caste))
+      ).map((caste, index) => ({
+        _id: `${index}-${caste}`,
+        caste,
+      }));
+
+      setAllCastes(uniqueCastes);
+    } catch (error) {
+      console.error("Failed to fetch castes", error);
+    }
+  };
+
+  fetchCastes();
+}, []);
+
 
   useEffect(() => {
     const fetchCategories = async () => {

@@ -116,34 +116,35 @@ const navigation = [
   // },
 
     {
-    name: "Add Eligibility",
+    name: "Eligibility",
     icon: UserCheckIcon,
     color: "text-emerald-500",
     children: [
-      {
-        name: "Add CutOff Excel",
-        href: "/add-cutoff-excel",
-        icon: FileSpreadsheet,
-        color: "text-gray-400",
-      },
-      {
-        name: "Add CutOff Form",
-        href: "/add-cutoff-eligibility",
-        icon: Puzzle,
-        color: "text-blue-400",
-      },
-      {
-        name: "CuttOff Table",
-        href: "/cutoff-table",
-        icon: Landmark,
-        color: "text-green-400",
-      },
-      {
-        name: "Add Caste Category",
+       {
+        name: "Add Current Education",
         href: "/add-caste-category",
         icon: GraduationCap,
         color: "text-purple-400",
       },
+      {
+        name: "Add CutOff List",
+        href: "/add-cutoff-excel",
+        icon: FileSpreadsheet,
+        color: "text-gray-400",
+      },
+      // {
+      //   name: "Add CutOff Form",
+      //   href: "/add-cutoff-eligibility",
+      //   icon: Puzzle,
+      //   color: "text-blue-400",
+      // },
+      // {
+      //   name: "CuttOff Table",
+      //   href: "/cutoff-table",
+      //   icon: Landmark,
+      //   color: "text-green-400",
+      // },
+     
     ],
   },
   {
