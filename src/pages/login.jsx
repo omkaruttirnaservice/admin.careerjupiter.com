@@ -263,26 +263,27 @@ const Login = () => {
         </div>
 
         {/* Password */}
-        <label className="text-gray-700 text-lg font-medium mb-2">
-          Password
-        </label>
-        <div className="flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-6">
-          <FaLock className="text-purple-500 mr-3" />
-          <input
-            type={showPassword ? "text" : "password"}
-            className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="cursor-pointer text-gray-500 ml-2 z-10"
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
-        </div>
+      <label className="text-gray-700 text-lg font-medium mb-2">
+  Password
+</label>
+<div className="relative flex items-center bg-gray-100 p-3 rounded-lg border border-gray-400 mb-6">
+  <FaLock className="text-purple-500 mr-3" />
+  <input
+    type={showPassword ? "text" : "password"}
+    className="w-full outline-none bg-transparent text-gray-900 placeholder-gray-500 pr-10"
+    placeholder="Enter Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+  />
+  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-3 text-gray-500 focus:outline-none"
+  >
+    {showPassword ? <FaEyeSlash /> : <FaEye />}
+  </button>
+</div>
+
 
         {/* Dynamic Register Link */}
         <div className="text-center mb-2 flex flex-col">
