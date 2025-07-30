@@ -54,6 +54,8 @@ import CutoffExcelUploader from "./pages/cuttoffExcelUploader.jsx";
 import CollegeExcelUploader from "./pages/collegeExcelUploader.jsx";
 import CollegeCoursesExcelUpload from "./pages/collegeCoursesExcelUpload.jsx";
 import ViewCutoffTable from "./pages/viewCutoffTable.jsx";
+import CollegeTestPage from "./pages/CollegeTestPage.jsx";
+import CollegeTestDetailsPage from "./pages/CollegeTestDetailsPage.jsx";
 
 
 const queryClient = new QueryClient();
@@ -137,6 +139,8 @@ function App() {
                     element={<Infrastructure />}
                   />
                   <Route path="add-college-placement" element={<Placement />} />
+                   <Route path="assigned-tests" element={<CollegeTestPage />} />
+                     <Route path="test/:testId" element={<CollegeTestDetailsPage />} />
                 </Route>
               )}
 
