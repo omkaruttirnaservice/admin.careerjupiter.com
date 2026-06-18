@@ -24,7 +24,7 @@ const VendorCollegeLayout = () => {
       />
 
       {/* Main content area */}
-      <div className="flex-1 min-h-screen bg-gray-100 transition-all duration-300 md:p-0">
+      <div className="flex-1 min-h-screen bg-blue-100 transition-all duration-300 md:p-0">
         <Outlet /> {/* Loads current page content */}
       </div>
 
