@@ -299,9 +299,8 @@ const AddNewCollege = () => {
         } else if (isNaacOrNba(accreditation)) {
           const durationText =
             accreditationYears.join(", ") || accreditationOther.trim();
-          finalAccreditation = `${accreditation} (${
-            durationText || "Not specified"
-          })`;
+          finalAccreditation = `${accreditation} (${durationText || "Not specified"
+            })`;
         }
         formData.append("accreditation", finalAccreditation);
 
@@ -416,8 +415,8 @@ const AddNewCollege = () => {
         console.error(
           "API Error:******",
           error.response?.data?.usrMsg ||
-            error.response?.data?.message ||
-            error.response?.data.errMessage
+          error.response?.data?.message ||
+          error.response?.data.errMessage
         );
         Swal.fire({
           icon: "warning",
@@ -507,9 +506,9 @@ const AddNewCollege = () => {
         Swal.fire(
           "Failed!",
           response.data.usrMsg ||
-            error.response?.data?.message ||
-            error.response?.data.errMessage ||
-            "Could not send OTP.",
+          error.response?.data?.message ||
+          error.response?.data.errMessage ||
+          "Could not send OTP.",
           "warning"
         );
       }
@@ -814,11 +813,10 @@ const AddNewCollege = () => {
                   formik.setFieldValue("subCategory", "");
                   setSubCategories(selectedCategory?.subCategory || []);
                 }}
-                className={`w-full px-4 py-3 rounded-lg border shadow-sm focus:outline-none transition-all ${
-                  formik.touched.category && formik.errors.category
+                className={`w-full px-4 py-3 rounded-lg border shadow-sm focus:outline-none transition-all ${formik.touched.category && formik.errors.category
                     ? "focus:ring-0"
                     : "border-gray-300 focus:ring-2 focus:ring-blue-400"
-                }`}
+                  }`}
               >
                 <option value="" disabled>
                   Select College Stream
@@ -885,9 +883,8 @@ const AddNewCollege = () => {
                     }
                     onBlur={formik.handleBlur}
                     disabled={isVerified}
-                    className={`flex-grow px-4 py-3 focus:outline-none ${
-                      isVerified ? "bg-gray-200 cursor-not-allowed" : ""
-                    }`}
+                    className={`flex-grow px-4 py-3 focus:outline-none ${isVerified ? "bg-gray-200 cursor-not-allowed" : ""
+                      }`}
                   />
                   <div className="flex items-center">
                     {isVerified ? (
@@ -960,9 +957,8 @@ const AddNewCollege = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     disabled={emailVerified}
-                    className={`flex-grow px-4 py-3 focus:outline-none ${
-                      emailVerified ? "bg-gray-200 cursor-not-allowed" : ""
-                    }`}
+                    className={`flex-grow px-4 py-3 focus:outline-none ${emailVerified ? "bg-gray-200 cursor-not-allowed" : ""
+                      }`}
                   />
 
                   <div className="flex items-center">
