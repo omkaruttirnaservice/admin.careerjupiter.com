@@ -142,8 +142,8 @@ const ClassVendorDashboard = () => {
     <div className="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen md:p-12 p-4 font-sans text-gray-800">
       {/* 🎓 Hero Header Section */}
       <section className="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden mb-10 relative group hover:shadow-2xl transition-shadow duration-500">
-  {/* ✅ Main Image with Better Height Handling */}
-  {/* <div className="relative h-48 sm:h-60 md:h-72 lg:h-60">
+        {/* ✅ Main Image with Better Height Handling */}
+        {/* <div className="relative h-48 sm:h-60 md:h-72 lg:h-60">
     <img
       src={`${API_BASE_URL}${classDetails?.image}`}
       alt={classDetails?.className}
@@ -153,9 +153,9 @@ const ClassVendorDashboard = () => {
     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent h-full" />
 
     {/* Avatar & Info in Mobile-Friendly Flex */}
-    {/* <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:items-center gap-4 z-10">
+        {/* <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:items-center gap-4 z-10">
       {/* Avatar Circle */}
-      {/* <div className="self-start sm:self-center">
+        {/* <div className="self-start sm:self-center">
         <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 p-1 shadow-xl">
           <div className="w-full h-full bg-white rounded-full flex items-center justify-center text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-700 select-none">
             {classDetails?.className?.[0]}
@@ -163,8 +163,8 @@ const ClassVendorDashboard = () => {
         </div>
       </div> */}
 
-      {/* Info Glass Card */}
-      {/* <motion.div
+        {/* Info Glass Card */}
+        {/* <motion.div
         initial={{ opacity: 0, x: 30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
@@ -178,97 +178,96 @@ const ClassVendorDashboard = () => {
         </p>
       </motion.div>
     </div>
-  </div> */} 
+  </div> */}
 
-<div className="relative h-48 sm:h-60 md:h-72 lg:h-60 rounded-xl overflow-hidden">
-  {/* Conditional Image OR Fallback */}
-  {classDetails?.image ? (
-    <img
-      src={`${API_BASE_URL}${classDetails.image}`}
-      alt={classDetails?.className}
-      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-      loading="lazy"
-    />
-  ) : (
-    <div className="w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center relative">
-      {/* ✨ Star Dots */}
-      {[...Array(30)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-1 h-1 rounded-full bg-white opacity-30 animate-pulse"
-          style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 3}s`,
-          }}
-        />
-      ))}
+        <div className="relative h-48 sm:h-60 md:h-72 lg:h-60 rounded-xl overflow-hidden">
+          {/* Conditional Image OR Fallback */}
+          {classDetails?.image ? (
+            <img
+              src={`${API_BASE_URL}${classDetails.image}`}
+              alt={classDetails?.className}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center relative">
+              {/* ✨ Star Dots */}
+              {[...Array(30)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 rounded-full bg-white opacity-30 animate-pulse"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 3}s`,
+                  }}
+                />
+              ))}
 
-      <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white drop-shadow-md z-10">
-        {classDetails?.className?.[0] || "C"}
-      </h1>
-    </div>
-  )}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white drop-shadow-md z-10">
+                {classDetails?.className?.[0] || "C"}
+              </h1>
+            </div>
+          )}
 
-  {/* Overlay gradient */}
-  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
-  {/* Avatar & Info Section */}
-  <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:items-center gap-4 z-10">
-    {/* Avatar Circle */}
-    <div className="self-start sm:self-center">
-      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 p-1 shadow-xl">
-        <div className="w-full h-full bg-white rounded-full flex items-center justify-center text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-700 select-none">
-          {classDetails?.className?.[0]}
+          {/* Avatar & Info Section */}
+          <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row sm:items-center gap-4 z-10">
+            {/* Avatar Circle */}
+            <div className="self-start sm:self-center">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 p-1 shadow-xl">
+                <div className="w-full h-full bg-white rounded-full flex items-center justify-center text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-700 select-none">
+                  {classDetails?.className?.[0]}
+                </div>
+              </div>
+            </div>
+
+            {/* Info Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="backdrop-blur-sm bg-white/10 border border-white/20 text-white px-4 py-3 rounded-xl shadow-lg w-full sm:w-auto"
+            >
+              <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold leading-snug drop-shadow-sm">
+                {classDetails?.className}
+              </h1>
+              <p className="mt-1 text-sm sm:text-base font-medium text-white/90 truncate">
+                {classDetails?.ownerOrInstituteName}
+              </p>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </div>
-
-    {/* Info Card */}
-    <motion.div
-      initial={{ opacity: 0, x: 30 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="backdrop-blur-sm bg-white/10 border border-white/20 text-white px-4 py-3 rounded-xl shadow-lg w-full sm:w-auto"
-    >
-      <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold leading-snug drop-shadow-sm">
-        {classDetails?.className}
-      </h1>
-      <p className="mt-1 text-sm sm:text-base font-medium text-white/90 truncate">
-        {classDetails?.ownerOrInstituteName}
-      </p>
-    </motion.div>
-  </div>
-</div>
 
 
-  {/* ✅ Info Bar */}
-  <div className="hidden sm:flex bg-gradient-to-r from-blue-900 to-blue-700 text-white px-4 py-3 flex-wrap justify-between items-center gap-3 text-sm sm:text-base font-semibold rounded-b-2xl">
-  <InfoBadge
-    icon={<FaCalendarAlt />}
-    label={`Established: ${classDetails?.yearEstablished || "N/A"}`}
-  />
-  <InfoBadge
-    icon={<FaPhone />}
-    label={classDetails?.contactDetails || "N/A"}
-  />
-  <InfoBadge
-    icon={<FaChalkboard />}
-    label={classDetails?.modeOfTeaching?.join(", ") || "N/A"}
-  />
-  <InfoBadge
-    icon={<FaTags />}
-    label={
-      classDetails?.keywords?.length > 0
-        ? `${classDetails.keywords.slice(0, 2).join(", ")}${
-            classDetails.keywords.length > 2 ? "..." : ""
-          }`
-        : "N/A"
-    }
-  />
-</div>
+        {/* ✅ Info Bar */}
+        <div className="hidden sm:flex bg-gradient-to-r from-blue-900 to-blue-700 text-white px-4 py-3 flex-wrap justify-between items-center gap-3 text-sm sm:text-base font-semibold rounded-b-2xl">
+          <InfoBadge
+            icon={<FaCalendarAlt />}
+            label={`Established: ${classDetails?.yearEstablished || "N/A"}`}
+          />
+          <InfoBadge
+            icon={<FaPhone />}
+            label={classDetails?.contactDetails || "N/A"}
+          />
+          <InfoBadge
+            icon={<FaChalkboard />}
+            label={classDetails?.modeOfTeaching?.join(", ") || "N/A"}
+          />
+          <InfoBadge
+            icon={<FaTags />}
+            label={
+              classDetails?.keywords?.length > 0
+                ? `${classDetails.keywords.slice(0, 2).join(", ")}${classDetails.keywords.length > 2 ? "..." : ""
+                }`
+                : "N/A"
+            }
+          />
+        </div>
 
-</section>
+      </section>
 
 
       {/* 📄 Main Content Grid */}

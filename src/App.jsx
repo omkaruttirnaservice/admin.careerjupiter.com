@@ -89,7 +89,7 @@ function App() {
               <Route path="/add-test/:mainCategoryId" element={<AddTest />} />
               <Route path="/reports" element={<ReportandAnalytics />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/add-cutoff-eligibility" element={<CollegeCutoffForm/>} />
+              <Route path="/add-cutoff-eligibility" element={<CollegeCutoffForm />} />
               <Route path="/colleges/courses/:collegeId" element={<CollegeCourses />} />
               <Route path="/colleges/edit/:id" element={<ManageCollege />} />
               <Route path="/colleges/infrastructure/:collegeId" element={<Infrastructure />} />
@@ -103,8 +103,8 @@ function App() {
               <Route path="/add-cutoff-excel" element={<CutoffExcelUploader />} />
               <Route path="/add-college-excel" element={<CollegeExcelUploader />} />
               <Route path="/add-college-courses-excel" element={<CollegeCoursesExcelUpload />} />
-               <Route path="/view-cutoff-list/:id" element={<ViewCutoffTable />} />
-                          
+              <Route path="/view-cutoff-list/:id" element={<ViewCutoffTable />} />
+
             </Route>
 
             {/* Protected Routes for VENDOR - All Subroles */}
@@ -168,7 +168,7 @@ function App() {
             </Route>
 
             {/* ❌ Redirect Unauthenticated Users to Login */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
           {/* ✅ Registration Route for Vendors */}
           <Route path="/register-class" element={<ClassForm />} />
