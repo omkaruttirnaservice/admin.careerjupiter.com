@@ -56,6 +56,7 @@ import CollegeCoursesExcelUpload from "./pages/collegeCoursesExcelUpload.jsx";
 import ViewCutoffTable from "./pages/viewCutoffTable.jsx";
 import CollegeTestPage from "./pages/CollegeTestPage.jsx";
 import CollegeTestDetailsPage from "./pages/CollegeTestDetailsPage.jsx";
+import CollegeRegistrationApproved from "./component/collegeRegistrationApproved.jsx";
 
 
 const queryClient = new QueryClient();
@@ -94,6 +95,7 @@ function App() {
               <Route path="/add-cutoff-eligibility" element={<CollegeCutoffForm/>} />
               <Route path="/colleges/courses/:collegeId" element={<CollegeCourses />} />
               <Route path="/colleges/edit/:id" element={<ManageCollege />} />
+              
               <Route path="/colleges/infrastructure/:collegeId" element={<Infrastructure />} />
               <Route path="/colleges/placement/:collegeId" element={<Placement />} />
               <Route path="/edit-college/:id" element={<EditCollegeDetails />} />
@@ -106,6 +108,10 @@ function App() {
               <Route path="/add-college-excel" element={<CollegeExcelUploader />} />
               <Route path="/add-college-courses-excel" element={<CollegeCoursesExcelUpload />} />
                <Route path="/view-cutoff-list/:id" element={<ViewCutoffTable />} />
+               <Route
+ path="/college-registration-approved"
+ element={<CollegeRegistrationApproved/>}
+/>
                           
             </Route>
 

@@ -62,6 +62,12 @@ const navigation = [
         icon: BookAIcon,
         color: "text-orange-400",
       },
+       {
+        name: "College registration request",
+        href: "/college-registration-approved",
+        icon: BookAIcon,
+        color: "text-orange-400",
+      },
     ],
   },
   {

@@ -64,7 +64,6 @@ const AddNewCollege = () => {
   const [editingAddressIndex, setEditingAddressIndex] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [verifiedOtp, setVerifiedOtp] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [referenceId, setReferenceId] = useState("");
   const [otp, setOtp] = useState("");
@@ -73,48 +72,55 @@ const AddNewCollege = () => {
   const navigate = useNavigate();
   const [entranceExams, setEntranceExams] = useState([]);
   const [emailOtpSent, setEmailOtpSent] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(false);
   const [emailOtp, setEmailOtp] = useState("");
   const [emailReferenceId, setEmailReferenceId] = useState("");
   const [lastEmailId, setLastEmailId] = useState("");
   const [roadmapOptions, setRoadmapOptions] = useState([]);
+  const [registrationStatus, setRegistrationStatus] = useState(null);
 
   // used Mutation for api calling from createCollege component
-  const mutation = useMutation({
-    mutationFn: createCollege,
-    onSuccess: (data) => {
-      toast.success("College created successfully!");
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "College Created Successfully",
-        confirmButtonColor: "#3085d6",
-        background: "#f9f9f9",
-      }).then(() => {
-        window.location.href = "/";
-      });
+const mutation = useMutation({
+  mutationFn: createCollege,
 
-      // Set the _id from the API response to collegeId
-      const collegeId = data?.data?.college?._id;
-      console.log("API Response clg id:", data?.data?.college?._id);
+  onSuccess: (data) => {
+    const college = data?.data?.college;
 
-      // Store collegeId in cookies
-      setAuthCookies({
-        collegeId: collegeId,
-      });
+toast.success(
+"College registered successfully. Admin approval pending."
+);
+    setRegistrationStatus("pending");
 
-      // the form gets reset and fields gets empty
-      formik.resetForm();
-      setKeywordInput("");
-    },
-    // If Submission Fail = shows error message
-    onError: (error) => {
-      console.log(
-        "API Error:",
-        error.response?.data?.usrMsg || error.response?.data.errMessage
-      );
-    },
-  });
+    Swal.fire({
+      icon: "success",
+      title: "Registration Submitted",
+      html: `
+        <p>Your college registration request has been submitted successfully.</p>
+        <p>Status: <b style="color:#f59e0b">Pending Approval</b></p>
+        <p>Admin will review and approve your college account.</p>
+      `,
+      confirmButtonColor: "#2563eb",
+    }).then(() => {
+      navigate("/college-registration-approved");
+    });
+
+setAuthCookies({
+  collegeId: college?._id || college?.collegeId
+}); 
+
+    console.log("API Response clg id:", college?._id);
+
+    formik.resetForm();
+    setKeywordInput("");
+  },
+
+  onError: (error) => {
+    console.log(
+      "API Error:",
+      error.response?.data?.usrMsg ||
+      error.response?.data?.errMessage
+    );
+  },
+});
 
   // Validation section
   const validationSchema = Yup.object().shape({
@@ -261,6 +267,8 @@ const AddNewCollege = () => {
       gallery_image: [],
       imageGallery: [],
       entrance_exam_required: [],
+       isVerified: false,
+  isEmailVerified: false,
     },
     validationSchema,
 
@@ -504,14 +512,11 @@ const AddNewCollege = () => {
           confirmButtonColor: "#3085d6",
         });
       } else {
-        Swal.fire(
-          "Failed!",
-          response.data.usrMsg ||
-            error.response?.data?.message ||
-            error.response?.data.errMessage ||
-            "Could not send OTP.",
-          "warning"
-        );
+       Swal.fire(
+ "Failed!",
+ response.data.usrMsg || "Could not send OTP.",
+ "warning"
+);
       }
     } catch (error) {
       Swal.fire({
@@ -569,7 +574,6 @@ const AddNewCollege = () => {
         formik.setFieldValue("otp", otp);
         formik.setFieldValue("reference_id", referenceId);
         formik.setFieldValue("isVerified", true);
-        setVerifiedOtp(response.data.success);
         setOtpSent(false);
         setOtp("");
       } else {
@@ -652,8 +656,7 @@ const AddNewCollege = () => {
       );
 
       if (response.data.success) {
-        setEmailVerified(true);
-        formik.setFieldValue("isEmailVerified", true);
+formik.setFieldValue("isEmailVerified", true);
         setEmailOtp("");
         setEmailOtpSent(false);
 
@@ -737,10 +740,13 @@ const AddNewCollege = () => {
   //     "NBA",
   //   ].includes(value);
 
-  const isNaacOrNba = (value) => {
-    return value.includes("NAAC") || value === "NBA";
-  };
+ const isNaacOrNba = (value = "") => {
+  return value.includes("NAAC") || value === "NBA";
 
+
+
+  
+};
   return (
     <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
       <div className="absolute inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm"></div>
@@ -765,6 +771,20 @@ const AddNewCollege = () => {
             Add New College
           </h2>
         </div>
+
+         {/* ADD HERE */}
+  {registrationStatus === "pending" && (
+    <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 p-4 rounded-lg mt-5">
+      <h3 className="font-bold">
+        Registration Pending Approval
+      </h3>
+
+      <p>
+        Your college has been registered successfully.
+        Please wait until admin approves your request.
+      </p>
+    </div>
+  )}
 
         <form onSubmit={formik.handleSubmit} className="space-y-6 mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -959,14 +979,14 @@ const AddNewCollege = () => {
                     value={formik.values.email_id}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    disabled={emailVerified}
-                    className={`flex-grow px-4 py-3 focus:outline-none ${
-                      emailVerified ? "bg-gray-200 cursor-not-allowed" : ""
-                    }`}
+disabled={formik.values.isEmailVerified}
+className={`flex-grow px-4 py-3 focus:outline-none ${
+  formik.values.isEmailVerified ? "bg-gray-200 cursor-not-allowed" : ""
+}`}
                   />
 
                   <div className="flex items-center">
-                    {emailVerified ? (
+                  {formik.values.isEmailVerified ? (
                       <div className="flex items-center gap-2 px-4 text-green-600 font-semibold">
                         <FaCheckCircle size={20} />
                         <span className="text-sm whitespace-nowrap">
@@ -977,19 +997,19 @@ const AddNewCollege = () => {
                       <button
                         type="button"
                         onClick={sendEmailOtp}
-                        disabled={emailOtpSent || emailVerified}
-                        className="px-4 py-3 h-full bg-blue-500 text-white hover:bg-blue-600 transition cursor-pointer"
+disabled={emailOtpSent || formik.values.isEmailVerified}       
+                 className="px-4 py-3 h-full bg-blue-500 text-white hover:bg-blue-600 transition cursor-pointer"
                       >
                         {emailOtpSent ? "OTP Sent" : "Send OTP"}
                       </button>
                     )}
                   </div>
                 </div>
-                {formik.touched.email && formik.errors.email && (
-                  <p className="text-red-500 text-sm mt-2 font-semibold">
-                    {formik.errors.email}
-                  </p>
-                )}
+               {formik.touched.email_id && formik.errors.email_id && (
+  <p className="text-red-500 text-sm mt-2 font-semibold">
+    {formik.errors.email_id}
+  </p>
+)}
               </div>
 
               {/* Email OTP Input + Verify Button */}
@@ -1318,8 +1338,19 @@ const AddNewCollege = () => {
               className="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => formik.resetForm()}
-            >
+onClick={()=>{
+ formik.resetForm();
+
+ setOtp("");
+ setEmailOtp("");
+
+ setOtpSent(false);
+ setEmailOtpSent(false);
+
+ setReferenceId("");
+ setEmailReferenceId("");
+
+}}            >
               Reset
             </motion.button>
 
@@ -1332,8 +1363,8 @@ const AddNewCollege = () => {
               disabled={formik.isSubmitting || mutation.isPending}
               onClick={(e) => {
                 // Show error if contact number is not verified
-                if (!verifiedOtp) {
-                  e.preventDefault();
+if (!formik.values.isVerified){            
+        e.preventDefault();
                   Swal.fire({
                     icon: "warning",
                     title: "Contact Number Not Verified",
@@ -1344,16 +1375,18 @@ const AddNewCollege = () => {
                 }
 
                 // Show error if Email ID is not verified
-                if (!emailVerified) {
-                  e.preventDefault();
-                  Swal.fire({
-                    icon: "warning",
-                    title: "Email Not Verified",
-                    text: "Please verify your Email id before submitting the form.",
-                    confirmButtonColor: "#f0ad4e",
-                  });
-                  return;
-                }
+              if (!formik.values.isEmailVerified) {
+  e.preventDefault();
+
+  Swal.fire({
+    icon: "warning",
+    title: "Email Not Verified",
+    text: "Please verify your Email id before submitting the form.",
+    confirmButtonColor: "#f0ad4e",
+  });
+
+  return;
+}
 
                 // Show error if address not entered
                 if (
@@ -1400,6 +1433,8 @@ const AddNewCollege = () => {
           }}
         />
       </div>
+
+      
     </div>
   );
 };
