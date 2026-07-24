@@ -201,113 +201,414 @@ const ManageClassCategory = ({ onCategoriesChange }) => {
     }
   };
 
-  return (
-    <div className="p-8 bg-white h-[690px] rounded-2xl m-4 shadow-xl max-w-6xl mx-auto">
-      {/* Heading  */}
-      <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2">
-        📁 Manage Category <span className="capitalize">{type}</span>
-      </h2>
+ return (
+  <div
+  className="
+  h-screen
+  overflow-hidden
+  bg-gradient-to-br
+  from-blue-50
+  via-white
+  to-indigo-50
+  p-4
+  "
+>
 
-      <div className="mb-6">
-        <label className="block font-semibold mb-2 text-gray-700">
-          Add Category
-        </label>
-        {/* Search Section  */}
-        <div className="flex gap-3 items-center">
-          <input
-            type="text"
-            value={categoryInput}
-            onChange={(e) => setCategoryInput(e.target.value)}
-            placeholder="Enter the category"
-            className="border border-blue-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
-          />
-          {/* Add New Category Button  */}
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all duration-200 cursor-pointer"
-            onClick={handleAddCategory}
-          >
-            Add
-          </button>
-        </div>
+<div
+  className="
+  h-full
+  bg-white
+  rounded-2xl
+  shadow-xl
+  max-w-6xl
+  mx-auto
+  flex
+  flex-col
+  overflow-hidden
+  "
+>
+
+      {/* Header */}
+      <div
+        className="
+        bg-gradient-to-r
+        from-blue-700
+        to-indigo-600
+        p-6
+        text-white
+        "
+      >
+
+        <h2
+          className="
+          text-2xl
+          font-bold
+          flex
+          items-center
+          gap-3
+          "
+        >
+          📁 Manage Category
+          <span className="capitalize">
+            {type}
+          </span>
+        </h2>
+
+
+        <p className="text-blue-100 text-sm mt-2">
+          Add, edit and manage class categories
+        </p>
+
       </div>
 
-      {/* Category table section */}
-      <div>
-        <h4 className="font-semibold mb-4 text-gray-800">
-          Categories for{" "}
-          <span className="capitalize text-blue-700">{type}</span>
-        </h4>
 
-        {/* List */}
-        <ul className="space-y-4  max-h-95 overflow-y-auto pr-2">
-          {loading ? (
-            <p className="text-center text-blue-600">Loading categories...</p>
-          ) : categories[type]?.length > 0 ? (
-            categories[type].map((cat) => (
-              <li
-                key={cat._id}
-                className="flex items-center justify-between bg-white border-2 border-blue-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
-              >
-                {editCategoryId === cat._id ? (
-                  <div className="flex w-full items-center justify-between gap-4">
-                    {/* Edit category Input Field */}
-                    <input
-                      type="text"
-                      value={editCategoryName}
-                      onChange={(e) => setEditCategoryName(e.target.value)}
-                      className="border px-3 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    />
-                    {/* Update Button */}
-                    <div className="flex gap-2">
-                      <button
-                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg shadow cursor-pointer"
-                        onClick={() => handleUpdateCategory(cat._id)}
-                      >
-                        <Save size={18} />
-                      </button>
-                      {/* Close Button */}
-                      <button
-                        className="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded-lg shadow cursor-pointer"
-                        onClick={() => setEditCategoryId(null)}
-                      >
-                        <X size={18} />
-                      </button>
+
+
+      <div className="p-6 flex-1 overflow-hidden flex flex-col">
+
+
+        {/* Add Category Card */}
+        <div
+          className="
+          bg-blue-50
+          border
+          border-blue-200
+          rounded-xl
+          p-5
+          mb-6
+          "
+        >
+
+          <label
+            className="
+            block
+            font-semibold
+            text-blue-900
+            mb-3
+            "
+          >
+            Add New Category
+          </label>
+
+
+          <div
+            className="
+            flex
+            gap-3
+            "
+          >
+
+            <input
+              type="text"
+              value={categoryInput}
+              onChange={(e)=>setCategoryInput(e.target.value)}
+              placeholder="Enter category name"
+              className="
+              flex-1
+              px-4
+              py-3
+              rounded-xl
+              border
+              border-blue-300
+              bg-white
+              focus:outline-none
+              focus:ring-2
+              focus:ring-blue-400
+              "
+            />
+
+
+            <button
+              onClick={handleAddCategory}
+              className="
+              px-6
+              py-3
+              rounded-xl
+              bg-gradient-to-r
+              from-blue-600
+              to-indigo-600
+              text-white
+              font-semibold
+              shadow-md
+              hover:shadow-lg
+              hover:scale-105
+              transition
+              cursor-pointer
+              "
+            >
+              + Add
+            </button>
+
+          </div>
+
+        </div>
+
+
+
+
+
+
+        {/* Category List Header */}
+        <div
+          className="
+          flex
+          justify-between
+          items-center
+          mb-4
+          "
+        >
+
+          <h3
+            className="
+            text-lg
+            font-bold
+            text-gray-800
+            "
+          >
+            Categories
+            <span className="text-blue-700 ml-1 capitalize">
+              ({type})
+            </span>
+          </h3>
+
+
+          <span
+            className="
+            bg-blue-100
+            text-blue-700
+            px-3
+            py-1
+            rounded-full
+            text-sm
+            font-semibold
+            "
+          >
+            {categories[type]?.length || 0} Total
+          </span>
+
+
+        </div>
+
+
+
+
+
+
+
+        {/* Category Cards */}
+       <div
+ className="
+ flex-1
+ space-y-3
+ overflow-y-auto
+ pr-2
+ custom-scrollbar
+ "
+>
+
+        {loading ? (
+
+          <div className="text-center text-blue-600 py-10">
+            Loading categories...
+          </div>
+
+        ) : categories[type]?.length > 0 ? (
+
+          categories[type].map((cat)=>(
+
+            <div
+              key={cat._id}
+              className="
+              bg-white
+              border
+              border-blue-200
+              rounded-xl
+              p-4
+              shadow-sm
+              hover:shadow-lg
+              transition
+              "
+            >
+
+
+            {
+              editCategoryId === cat._id ? (
+
+                <div
+                  className="
+                  flex
+                  gap-3
+                  items-center
+                  "
+                >
+
+                  <input
+                    type="text"
+                    value={editCategoryName}
+                    onChange={(e)=>setEditCategoryName(e.target.value)}
+                    className="
+                    flex-1
+                    px-3
+                    py-2
+                    border
+                    rounded-lg
+                    focus:ring-2
+                    focus:ring-blue-400
+                    outline-none
+                    "
+                  />
+
+
+                  <button
+                    onClick={()=>handleUpdateCategory(cat._id)}
+                    className="
+                    bg-green-500
+                    hover:bg-green-600
+                    text-white
+                    p-2
+                    rounded-lg
+                    cursor-pointer
+                    "
+                  >
+                    <Save size={18}/>
+                  </button>
+
+
+                  <button
+                    onClick={()=>setEditCategoryId(null)}
+                    className="
+                    bg-gray-400
+                    hover:bg-gray-500
+                    text-white
+                    p-2
+                    rounded-lg
+                    cursor-pointer
+                    "
+                  >
+                    <X size={18}/>
+                  </button>
+
+
+                </div>
+
+
+              ) : (
+
+                <div
+                  className="
+                  flex
+                  justify-between
+                  items-center
+                  "
+                >
+
+                  <div
+                    className="
+                    flex
+                    items-center
+                    gap-3
+                    "
+                  >
+
+                    <div
+                      className="
+                      h-10
+                      w-10
+                      rounded-xl
+                      bg-blue-100
+                      flex
+                      items-center
+                      justify-center
+                      text-blue-700
+                      font-bold
+                      "
+                    >
+                      {cat.category.charAt(0).toUpperCase()}
                     </div>
-                  </div>
-                ) : (
-                  <>
-                    {/* Outside Edit Input */}
-                    <span className="font-medium text-gray-800">
+
+
+                    <span
+                      className="
+                      font-semibold
+                      text-gray-800
+                      "
+                    >
                       {cat.category}
                     </span>
-                    {/* Edit Button */}
-                    <div className="flex gap-2">
-                      <button
-                        className="bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded-lg shadow cursor-pointer"
-                        onClick={() => handleEditCategory(cat)}
-                      >
-                        <Pencil size={18} />
-                      </button>
-                      {/* Delete Button */}
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg shadow cursor-pointer"
-                        onClick={() => handleDeleteCategory(cat._id)}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </>
-                )}
-              </li>
-            ))
-          ) : (
-            // Handled if no categories found
-            <p className="text-center text-gray-500">No categories found.</p>
-          )}
-        </ul>
+
+                  </div>
+
+
+
+                  <div className="flex gap-2">
+
+                    <button
+                      onClick={()=>handleEditCategory(cat)}
+                      className="
+                      bg-yellow-400
+                      hover:bg-yellow-500
+                      text-white
+                      p-2
+                      rounded-lg
+                      cursor-pointer
+                      "
+                    >
+                      <Pencil size={17}/>
+                    </button>
+
+
+                    <button
+                      onClick={()=>handleDeleteCategory(cat._id)}
+                      className="
+                      bg-red-500
+                      hover:bg-red-600
+                      text-white
+                      p-2
+                      rounded-lg
+                      cursor-pointer
+                      "
+                    >
+                      <Trash2 size={17}/>
+                    </button>
+
+
+                  </div>
+
+
+                </div>
+
+              )
+            }
+
+
+            </div>
+
+          ))
+
+        ) : (
+
+          <div
+            className="
+            text-center
+            text-gray-500
+            py-10
+            "
+          >
+            No categories found
+          </div>
+
+        )}
+
+        </div>
+
+
       </div>
+
+
     </div>
-  );
+
+  </div>
+);
 };
 
 export default ManageClassCategory;
