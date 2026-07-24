@@ -747,22 +747,86 @@ formik.setFieldValue("isEmailVerified", true);
 
   
 };
-  return (
-    <div className="min-h-screen flex items-center justify-center relative bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')] bg-cover bg-center bg-fixed">
-      <div className="absolute inset-0 bg-opacity-50 bg-black/50 backdrop-blur-sm"></div>
-      <div className="w-full max-w-5xl bg-white shadow-lg p-3 border border-blue-500 lg:my-4 sm:my-2 sm:p-6 lg:p-6 relative z-10">
-        <div className="text-right mb-4">
-          {/* Route to college login page - button */}
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="text-blue-600 underline hover:text-blue-800 transition cursor-pointer"
-          >
-            College Login
-          </button>
-        </div>
-        <div className="flex justify-between items-center bg-gradient-to-r from-blue-700 to-blue-500 text-white p-5 rounded-t-lg shadow-lg">
-          {/* Heading */}
+
+   return (
+  <div
+    className="
+    h-screen
+    overflow-hidden
+    flex
+    items-center
+    justify-center
+    relative
+    bg-[url('https://wallpapers.com/images/hd/virtual-classroom-background-xl1p59ku6y834y02.jpg')]
+    bg-cover
+    bg-center
+    bg-fixed
+    "
+  >
+
+    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+
+    <div
+      className="
+      relative
+      z-10
+      w-full
+      max-w-5xl
+      h-[90vh]
+      bg-white
+      shadow-2xl
+      border
+      border-blue-500
+      rounded-xl
+      flex
+      flex-col
+      overflow-hidden
+      "
+    >
+      <div className="flex justify-end mb-4">
+  <button
+    type="button"
+    onClick={() => navigate("/")}
+    className="
+    flex
+    items-center
+    gap-2
+    px-4
+    py-2
+    rounded-lg
+    bg-blue-50
+    text-blue-700
+    font-semibold
+    text-sm
+    border
+    border-blue-200
+    hover:bg-blue-600
+    hover:text-white
+    hover:shadow-md
+    transition-all
+    duration-300
+    cursor-pointer
+    "
+  >
+    <span>🏫</span>
+    College Login
+  </button>
+</div>
+<div
+className="
+flex
+justify-between
+items-center
+bg-gradient-to-r
+from-blue-700
+to-blue-500
+text-white
+p-5
+shadow-lg
+flex-shrink-0
+"
+>          {/* Heading */}
           <h2 className="text-3xl font-bold flex items-center gap-4">
             <FaUniversity
               className="text-black bg-white p-2 rounded-md shadow-md"
@@ -786,8 +850,18 @@ formik.setFieldValue("isEmailVerified", true);
     </div>
   )}
 
-        <form onSubmit={formik.handleSubmit} className="space-y-6 mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<form
+onSubmit={formik.handleSubmit}
+className="
+flex-1
+overflow-y-auto
+space-y-6
+mt-6
+px-6
+pb-6
+custom-scrollbar
+"
+>          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* College ID  */}
             <InputField
               label="College DTE code / College ID"
