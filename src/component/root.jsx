@@ -1,23 +1,63 @@
-
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom"; // ✅ Import useLocation
+import { Outlet, useLocation } from "react-router-dom";
 import SideMenu from "../pages/sideMenu";
 
 const Root = () => {
+
   const location = useLocation();
-  const isLoginPage = location.pathname === "/" || location.pathname === "/add-admin" || location.pathname === "/add-college" || location.pathname === "/university" ||  location.pathname === "/login";
+
+  const isLoginPage =
+    location.pathname === "/" ||
+    location.pathname === "/add-admin" ||
+    location.pathname === "/add-college" ||
+    location.pathname === "/university" ||
+    location.pathname === "/login";
 
 
   return (
-    <div className="flex">
-      {/* ✅ Hide Sidebar on Login Page */}
-      {!isLoginPage && <SideMenu />}  
 
-      <div className={`flex-1  ${!isLoginPage ? "md:pl-64" : ""} bg-blue-100 overflow-hidden min-h-lvh`}>
-        <Outlet /> 
+    <div className="flex min-h-screen">
+
+
+      {/* Sidebar */}
+
+      {!isLoginPage && <SideMenu />}
+
+
+
+      {/* Main Content */}
+
+      <div
+
+        className={`
+        flex-1
+        min-h-screen
+        overflow-x-hidden
+        bg-gradient-to-br
+        from-blue-50
+        via-white
+        to-indigo-50
+
+        ${
+          !isLoginPage
+          ? "md:ml-80"
+          : ""
+        }
+
+        `}
+
+      >
+
+        <Outlet />
+
       </div>
+
+
+
     </div>
+
   );
 };
+
 
 export default Root;

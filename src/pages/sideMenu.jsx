@@ -12,7 +12,7 @@ import {
   LogoutIcon,
   IdentificationIcon,
 } from "@heroicons/react/solid";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Puzzle,
@@ -196,9 +196,12 @@ const navigation = [
 const SideMenu = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [activeLink, setActiveLink] = useState(location.pathname);
   const [dropdownStates, setDropdownStates] = useState({});
+const [activeLink,setActiveLink]=useState("");
 
+useEffect(()=>{
+ setActiveLink(location.pathname);
+},[location.pathname]);
   const toggleDropdown = (itemName) => {
     setDropdownStates((prev) => ({
       ...prev,
@@ -222,122 +225,647 @@ const SideMenu = () => {
     });
   };
 
-  return (
-    <div className="hidden md:flex md:w-64 flex-col md:fixed md:inset-y-0 bg-gray-900 shadow-xl z-10">
-      {/* Fixed Logo Section */}
-      <div className="flex flex-col items-center justify-center mb-2 mt-5 px-4 py-2 border-b border-gray-700 bg-gray-900 z-20">
-        <div className="bg-blue-100 rounded-full border-4 border-white shadow h-20 w-20 flex items-center justify-center">
-          <img className="h-16 w-16" src={mainLogo} alt="Logo" />
-        </div>
-        <h4 className="text-lg font-extrabold bg-gradient-to-r from-red-600 to-purple-600 bg-clip-text text-transparent mt-2">
-          CAREER JUPITER
-        </h4>
-      </div>
+ 
+   return (
+<div
+className="
+hidden
+md:flex
+md:w-80
+flex-col
+md:fixed
+md:inset-y-0
+h-screen
+bg-slate-900
+shadow-2xl
+z-50
+border-r
+border-slate-700
+"
+>
 
-      {/* Scrollable Navigation */}
-      <div className="flex-1 flex flex-col overflow-y-auto pt-2">
-        <nav className="px-4 space-y-2 mb-6">
-          {navigation.map((item) => {
-            const isActive = activeLink === item.href;
 
-            if (item.children) {
-              const isDropdownOpen = dropdownStates[item.name] || false;
+{/* LOGO SECTION */}
 
-              return (
-                <div key={item.name}>
-                  <button
-                    onClick={() => toggleDropdown(item.name)}
-                    className="w-full flex items-center justify-between px-3 py-3 text-sm font-medium text-white transition cursor-pointer"
-                  >
-                    <span className="flex items-center">
-                      <item.icon className={`mr-3 h-5 w-5 ${item.color}`} />
-                      {item.name}
-                    </span>
-                    {isDropdownOpen ? (
-                      <ChevronUpIcon className="w-5 h-5 text-white" />
-                    ) : (
-                      <ChevronDownIcon className="w-5 h-5 text-white" />
-                    )}
-                  </button>
+<div
+className="
+relative
+flex
+flex-col
+items-center
+justify-center
+py-6
+bg-slate-800
+border-b
+border-slate-700
+"
+>
 
-                  <AnimatePresence>
-                    {isDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="ml-4 mt-1 rounded-md shadow-inner p-2"
-                      >
-                        {item.children.map((child) => {
-                          const isChildActive = activeLink === child.href;
-                          return (
-                            <button
-                              key={child.name}
-                              onClick={() => {
-                                setActiveLink(child.href);
-                                navigate(child.href);
-                              }}
-                              className={`w-full text-left px-4 py-2 text-sm rounded-md transition duration-200 cursor-pointer ${
-                                isChildActive
-                                  ? "bg-blue-500 text-white font-semibold shadow"
-                                  : "text-gray-100 hover:bg-blue-700"
-                              }`}
-                            >
-                              <div className="flex flex-row gap-2">
-                                <child.icon
-                                  className={`h-5 w-5 ${child.color}`}
-                                />
-                                {child.name}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            }
 
-            // Navigates to the specified route on click.
-            return (
-              <button
-                key={item.name}
-                onClick={() => {
-                  setActiveLink(item.href);
-                  navigate(item.href);
-                }}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition duration-300 cursor-pointer ${
-                  isActive
-                    ? "bg-blue-500 text-white shadow-md transform scale-105"
-                    : "text-gray-200 hover:bg-blue-600 hover:text-white"
-                }`}
-              >
-                <item.icon
-                  className={`mr-3 h-6 w-6 ${
-                    isActive ? "text-white" : item.color
-                  }`}
-                />
-                {item.name}
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+<div
+className="
+absolute
+top-0
+left-0
+right-0
+h-1
+bg-gradient-to-r
+from-blue-500
+via-purple-500
+to-pink-500
+"
+/>
 
-      {/* Fixed Logout Button */}
-      <div className="p-4 border-t border-gray-800 bg-gray-900">
-        <button
-          className="flex items-center w-full px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
-          onClick={handleLogout}
-        >
-          <LogoutIcon className="h-6 w-6 mr-3" />
-          Logout
-        </button>
-      </div>
-    </div>
-  );
-};
 
+
+<div
+className="
+h-20
+w-20
+rounded-full
+bg-blue-100
+backdrop-blur
+border
+border-white/30
+shadow-xl
+flex
+items-center
+justify-center
+"
+>
+
+<img
+
+src={mainLogo}
+
+alt="Career Jupiter"
+
+className="
+h-14
+w-14
+object-contain
+"
+
+ />
+
+</div>
+
+
+
+<h4
+className="
+mt-3
+text-xl
+font-extrabold
+tracking-wider
+bg-gradient-to-r
+from-cyan-400
+to-blue-400
+bg-clip-text
+text-transparent
+"
+>
+
+CAREER JUPITER
+
+</h4>
+
+
+
+<p
+className="
+text-xs
+text-gray-400
+mt-1
+"
+>
+
+Admin Panel
+
+</p>
+
+
+</div>
+
+
+
+
+
+{/* MENU AREA */}
+
+
+ <div
+  className="
+  flex-1
+  overflow-y-auto
+  overflow-x-hidden
+  px-4
+  py-5
+  scrollbar-hide
+  pb-24
+  "
+>
+
+<nav
+className="
+space-y-2
+"
+>
+
+{navigation.map((item) => {
+
+const isActive = activeLink === item.href;
+
+
+if(item.children){
+
+const isDropdownOpen =
+dropdownStates[item.name] || false;
+
+
+return (
+
+<div
+key={item.name}
+className="
+space-y-1
+"
+>
+
+
+<button
+
+onClick={()=>toggleDropdown(item.name)}
+
+className="
+w-full
+flex
+items-center
+justify-between
+px-4
+py-3
+rounded-xl
+text-sm
+font-semibold
+text-slate-200
+hover:bg-slate-700
+transition-all
+duration-300
+group
+cursor-pointer
+"
+
+>
+
+
+<div
+className="
+flex
+items-center
+gap-3
+"
+>
+
+
+<div
+className="
+h-9
+w-9
+rounded-xl
+bg-slate-700
+flex
+items-center
+justify-center
+group-hover:scale-110
+transition-transform
+duration-300
+"
+>
+
+<item.icon
+
+className={`
+h-5
+w-5
+${item.color}
+`}
+
+/>
+
+</div>
+
+
+
+<span>
+
+{item.name}
+
+</span>
+
+
+</div>
+
+
+
+{
+isDropdownOpen ?
+
+<ChevronUpIcon
+className="
+h-5
+w-5
+text-gray-300
+"
+/>
+
+:
+
+<ChevronDownIcon
+className="
+h-5
+w-5
+text-gray-300
+"
+/>
+
+}
+
+
+
+</button>
+
+
+
+
+
+
+<AnimatePresence>
+
+
+{
+isDropdownOpen &&
+<motion.div
+initial={{opacity:0,height:0}}
+animate={{opacity:1,height:"auto"}}
+exit={{opacity:0,height:0}}
+transition={{duration:0.3}}
+className="
+ml-12
+mt-2
+space-y-2
+overflow-hidden
+"
+>
+
+
+{
+
+item.children.map((child)=>{
+
+
+const isChildActive =
+activeLink === child.href;
+
+
+
+return(
+
+
+<button
+
+key={child.name}
+
+onClick={()=>{
+
+setActiveLink(child.href);
+
+navigate(child.href);
+
+}}
+
+
+className={`
+
+w-full
+flex
+items-center
+gap-3
+px-3
+py-2.5
+rounded-lg
+text-sm
+transition-all
+duration-300
+cursor-pointer
+
+${
+isChildActive
+
+?
+
+"text-slate-300 hover:bg-slate-700 hover:text-white shadow-lg"
+
+:
+
+"text-slate-300 hover:bg-slate-700 hover:text-white"
+
+}
+
+`}
+
+
+>
+
+
+<div
+className="
+h-7
+w-7
+rounded-md
+bg-blue-100
+flex
+items-center
+justify-center
+"
+>
+
+
+<child.icon
+
+className={`
+h-4
+w-4
+${child.color}
+`}
+
+/>
+
+
+</div>
+
+
+<span>
+
+{child.name}
+
+</span>
+
+
+
+</button>
+
+
+)
+
+
+})
+
+}
+
+
+
+</motion.div>
+
+
+}
+
+
+
+</AnimatePresence>
+
+
+</div>
+
+
+)
+
+
+}
+
+
+
+
+
+
+return (
+
+<button
+
+key={item.name}
+
+onClick={()=>{
+
+setActiveLink(item.href);
+
+navigate(item.href);
+
+}}
+
+
+className={`
+
+w-full
+
+flex
+
+items-center
+
+gap-3
+
+px-4
+
+py-3
+
+rounded-xl
+
+text-sm
+
+font-semibold
+
+transition-all
+
+duration-300
+
+cursor-pointer
+
+
+${
+isActive
+
+?
+
+"bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg"
+
+:
+
+"text-gray-300 hover:bg-blue-100 hover:text-white"
+
+}
+
+`}
+
+
+>
+
+
+<div
+
+className="
+h-9
+w-9
+rounded-lg
+bg-blue-100
+flex
+items-center
+justify-center
+"
+
+>
+
+
+<item.icon
+
+className={`
+h-5
+w-5
+
+${
+isActive
+
+?
+
+"text-white"
+
+:
+
+item.color
+
+}
+
+`}
+
+/>
+
+
+</div>
+
+
+
+<span>
+
+{item.name}
+
+</span>
+
+
+
+</button>
+
+
+)
+
+
+})}
+</nav>
+
+</div>
+
+
+
+
+
+{/* LOGOUT SECTION */}
+
+<div
+
+className="
+p-4
+border-t
+border-white/10
+bg-slate-800
+"
+
+>
+
+
+<button
+
+onClick={handleLogout}
+
+className="
+group
+w-full
+flex
+items-center
+justify-center
+gap-3
+px-4
+py-3
+rounded-xl
+bg-gradient-to-r from-rose-500 to-red-600
+text-white
+font-semibold
+shadow-lg
+hover:shadow-red-500/30
+hover:scale-[1.03]
+transition-all
+duration-300
+cursor-pointer
+"
+
+>
+
+
+<div
+
+className="
+h-8
+w-8
+rounded-lg
+bg-white/20
+flex
+items-center
+justify-center
+group-hover:rotate-12
+transition
+"
+
+>
+
+
+<LogoutIcon
+
+className="
+h-5
+w-5
+"
+
+/>
+
+
+</div>
+
+
+
+<span>
+
+Logout
+
+</span>
+
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+</div>
+);
+}
 export default SideMenu;
+
