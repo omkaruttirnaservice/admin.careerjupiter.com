@@ -58,5 +58,81 @@ export const createCollege = async (collegeData) => {
   }
 };
 
+// Function to update college registration status
+export const updateCollegeStatus = async ({ id, status }) => {
+  try {
+    const response = await api.patch(
+      `/api/college/status/${id}`,
+      {
+        status: status,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("✅ College Status Updated:", response.data);
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error(
+      "Status Update Error:",
+      error.response?.data || error.message
+    );
+
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.usrMsg ||
+      error.response?.data?.errMessage ||
+      "Failed to update college status.";
+
+    Swal.fire({
+      icon: "warning",
+      title: "Warning",
+      text: errorMessage,
+    });
+
+    throw error.response?.data || new Error(errorMessage);
+  }
+};
+
+// Fetch college registration list
+export const getCollegeRegistrations = async () => {
+  try {
+
+    const response = await api.get(
+      "/api/college/all"
+    );
+
+    console.log("✅ College List API:", response.data);
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error(
+      "Fetch College Error:",
+      error.response?.data || error.message
+    );
+
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.usrMsg ||
+      "Failed to fetch colleges";
+
+    Swal.fire({
+      icon: "warning",
+      title: "Warning",
+      text: errorMessage,
+    });
+
+    throw error;
+  }
+};
+
 
 

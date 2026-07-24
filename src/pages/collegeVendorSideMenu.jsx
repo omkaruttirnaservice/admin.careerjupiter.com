@@ -7,7 +7,7 @@ import { HomeIcon, ClipboardCheckIcon, LogoutIcon, AcademicCapIcon } from "@hero
 import { FaUniversity } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
-import { BookOpenIcon, BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
+import { BookCheckIcon, BookOpenIcon, BookOpenTextIcon, BriefcaseIcon, ChartBarIcon } from "lucide-react";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -46,6 +46,12 @@ const navigation = [
     href: "/vendor-college/add-college-placement",
     icon: BriefcaseIcon,
     color: "text-gray-400",
+  },
+  {
+    name: "Assigned Tests",
+    href: "/vendor-college/assigned-tests",
+    icon: BookCheckIcon,
+    color: "text-orange-400",
   },
 ];
 
