@@ -78,93 +78,354 @@ const CollegeExcelUploader = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-8">
-        <h2 className="text-2xl font-bold text-indigo-700 mb-6 flex items-center gap-2">
-          <FileUp className="text-indigo-500" />
-          Upload College Excel
-        </h2>
+return (
+  <div
+    className="
+    min-h-screen
+    bg-gradient-to-br
+    from-blue-50
+    via-white
+    to-indigo-50
+    p-6
+    "
+  >
 
-        <div className="mb-6">
+    <div
+      className="
+      max-w-6xl
+      mx-auto
+      bg-white
+      rounded-2xl
+      shadow-xl
+      border
+      border-blue-100
+      overflow-hidden
+      "
+    >
+
+      {/* Header */}
+      <div
+        className="
+        bg-gradient-to-r
+        from-blue-700
+        to-indigo-600
+        p-6
+        text-white
+        flex
+        items-center
+        gap-4
+        "
+      >
+        <div
+          className="
+          bg-white/20
+          p-3
+          rounded-xl
+          "
+        >
+          <FileUp size={32}/>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-bold">
+            Upload College Excel
+          </h2>
+
+          <p className="text-blue-100 text-sm mt-1">
+            Upload bulk college data using Excel file
+          </p>
+        </div>
+
+      </div>
+
+
+      {/* Content */}
+      <div className="p-8">
+
+
+        {/* Upload Box */}
+        <div
+          className="
+          border-2
+          border-dashed
+          border-blue-300
+          rounded-2xl
+          p-8
+          bg-blue-50/50
+          text-center
+          hover:border-blue-500
+          transition
+          "
+        >
+
+          <FileUp
+            className="
+            mx-auto
+            text-blue-600
+            mb-4
+            "
+            size={45}
+          />
+
+
           <label
-            htmlFor="collegeExcelFile"
-            className="font-semibold block mb-2"
+            htmlFor="excelFile"
+            className="
+            block
+            text-lg
+            font-semibold
+            text-gray-700
+            mb-3
+            "
           >
-            Select Excel File
+            Select College Excel File
           </label>
+
 
           <input
             type="file"
             id="excelFile"
-            ref={fileInputRef} // 👈 important
-            accept=".xlsx, .xls"
+            ref={fileInputRef}
+            accept=".xlsx,.xls"
             onChange={handleFileChange}
-            className="block w-full rounded border border-gray-300 p-2 shadow-sm"
+            className="
+            mx-auto
+            block
+            w-full
+            max-w-md
+            bg-white
+            border
+            border-gray-300
+            rounded-lg
+            p-3
+            cursor-pointer
+            shadow-sm
+            "
           />
 
-          {warning && <p className="text-sm text-red-600">{warning}</p>}
+
+          {warning && (
+            <p className="text-red-500 mt-3 text-sm font-semibold">
+              {warning}
+            </p>
+          )}
+
         </div>
 
+
+
+        {/* File Name */}
         {fileName && (
-          <div className="mb-4 text-gray-700 text-sm">
-            <FileText className="inline w-4 h-4 mr-1" />
-            <strong>Selected:</strong> {fileName}
+
+          <div
+            className="
+            mt-5
+            flex
+            items-center
+            gap-2
+            bg-green-50
+            border
+            border-green-200
+            rounded-lg
+            p-3
+            text-green-700
+            "
+          >
+
+            <FileText size={18}/>
+
+            <span>
+              Selected:
+              <b className="ml-1">
+                {fileName}
+              </b>
+            </span>
+
           </div>
+
         )}
 
-        <div className="mb-4">
+
+
+        {/* Download Sample */}
+        <div className="mt-6">
+
           <a
             href="/Sample_College_Excel.xlsx"
             download
-            className="text-blue-600 underline text-sm"
+            className="
+            inline-flex
+            items-center
+            gap-2
+            px-4
+            py-2
+            rounded-lg
+            bg-gray-100
+            text-blue-700
+            font-semibold
+            text-sm
+            hover:bg-blue-600
+            hover:text-white
+            transition
+            "
           >
-            📄 Download Sample College Excel Format
+            📄 Download Sample Excel Format
           </a>
+
         </div>
 
-        <button
-          onClick={handleUpload}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg shadow"
-        >
-          Upload Excel
-        </button>
 
+
+        {/* Upload Button */}
+        <div className="mt-6 flex justify-end">
+
+          <button
+            onClick={handleUpload}
+            className="
+            flex
+            items-center
+            gap-2
+            px-6
+            py-3
+            rounded-xl
+            bg-gradient-to-r
+            from-blue-600
+            to-indigo-600
+            text-white
+            font-semibold
+            shadow-lg
+            hover:shadow-xl
+            hover:scale-105
+            transition-all
+            "
+          >
+
+            <FileUp size={20}/>
+
+            Upload Excel
+
+          </button>
+
+        </div>
+
+
+
+
+        {/* Preview Table */}
         {excelData.length > 0 && (
-          <div className="mt-8 overflow-auto max-h-[500px] border rounded shadow-inner">
-            <table className="min-w-full text-sm border-collapse">
-              <thead className="sticky top-0 bg-indigo-100 z-10">
-                <tr>
-                  {Object.keys(excelData[0]).map((col, i) => (
-                    <th
-                      key={i}
-                      className="border px-3 py-2 text-left font-semibold text-indigo-700"
-                    >
-                      {col}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {excelData.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="even:bg-gray-50">
-                    {Object.values(row).map((val, colIndex) => (
+
+          <div className="mt-8">
+
+            <h3
+              className="
+              text-lg
+              font-bold
+              text-blue-800
+              mb-4
+              "
+            >
+              Excel Preview
+            </h3>
+
+
+            <div
+              className="
+              overflow-auto
+              max-h-[450px]
+              rounded-xl
+              border
+              shadow-inner
+              "
+            >
+
+              <table
+                className="
+                min-w-full
+                text-sm
+                "
+              >
+
+                <thead
+                  className="
+                  sticky
+                  top-0
+                  bg-blue-100
+                  "
+                >
+
+                  <tr>
+
+                    {Object.keys(excelData[0]).map((col,i)=>(
+
+                      <th
+                        key={i}
+                        className="
+                        px-4
+                        py-3
+                        text-left
+                        text-blue-700
+                        border
+                        font-bold
+                        "
+                      >
+                        {col}
+                      </th>
+
+                    ))}
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {excelData.map((row,rowIndex)=>(
+
+                  <tr
+                    key={rowIndex}
+                    className="
+                    hover:bg-blue-50
+                    "
+                  >
+
+                    {Object.values(row).map((val,colIndex)=>(
+
                       <td
                         key={colIndex}
-                        className="border px-3 py-1 text-gray-700"
+                        className="
+                        px-4
+                        py-2
+                        border
+                        text-gray-700
+                        "
                       >
                         {val || "-"}
                       </td>
+
                     ))}
+
                   </tr>
+
                 ))}
-              </tbody>
-            </table>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
           </div>
+
         )}
+
+
       </div>
+
     </div>
-  );
+
+  </div>
+);
 };
 
 export default CollegeExcelUploader;
